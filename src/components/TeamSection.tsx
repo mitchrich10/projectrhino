@@ -71,7 +71,10 @@ const TeamSection: FC = () => {
             <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-8">
               The Rhino <br />Journey
             </h2>
-            <p className="text-xl text-muted-foreground leading-relaxed italic border-l-2 border-border pl-8 mb-6">
+            <p className="text-base text-muted-foreground leading-relaxed mb-6">
+              Since 2015, we've been partnering with ambitious builders across industries.
+            </p>
+            <p className="text-xl text-foreground leading-relaxed italic border-l-2 border-border pl-8 mb-6">
               "Rhinos are tough, thick-skinned, and carry scars on their backs. This is what we believe it takes to build a successful company."
             </p>
             <p className="text-base text-foreground font-medium">
