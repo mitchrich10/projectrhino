@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Target, Shield, Briefcase, Layers } from "lucide-react";
 import { StatCard } from "./StatCard";
+import vancouverSkyline from "@/assets/vancouver-skyline.jpg";
 
 const strategyItems = [
   { 
@@ -27,15 +28,28 @@ const strategyItems = [
 
 const StrategySection: FC = () => {
   return (
-    <section id="strategy" className="py-32 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-20">
-          <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">
+    <section id="strategy" className="py-32 px-6 relative overflow-hidden">
+      {/* Vancouver Background */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src={vancouverSkyline} 
+          alt="Vancouver skyline" 
+          className="w-full h-full object-cover opacity-15"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="mb-20 text-center">
+          <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-4">
+            Building out of Vancouver, investing across Canada
+          </p>
+          <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
             Fewer Investments.<br />Deeper Conviction.
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-muted/20 border border-border">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {strategyItems.map((item, i) => (
             <StatCard 
               key={i}
