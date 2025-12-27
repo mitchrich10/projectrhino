@@ -1,4 +1,14 @@
 import { FC } from "react";
+import teamGroup from "@/assets/team-group.png";
+
+// Placeholder photos - replace with actual headshots when uploaded
+const teamPhotos: Record<string, string | null> = {
+  "Fraser Hall": null,
+  "Jay Rhind": null,
+  "Candace Hobin": null,
+  "Nicholas Hyldelund": null,
+  "Mitch Richardson": null,
+};
 
 interface TeamMember {
   name: string;
@@ -34,15 +44,23 @@ const team: TeamMember[] = [
   }
 ];
 
-const TeamMemberCard: FC<TeamMember> = ({ name, role, bio }) => (
+interface TeamMemberCardProps extends TeamMember {
+  photo?: string | null;
+}
+
+const TeamMemberCard: FC<TeamMemberCardProps> = ({ name, role, bio, photo }) => (
   <div className="group p-8 border border-border bg-surface-elevated hover:bg-muted/30 transition-all duration-300">
-    <div className="w-16 h-16 rounded-full bg-muted/50 mb-6 flex items-center justify-center">
-      <span className="text-xl font-black text-muted-foreground">
-        {name.split(' ').map(n => n[0]).join('')}
-      </span>
+    <div className="w-20 h-20 rounded-full mb-6 overflow-hidden bg-muted/50 flex items-center justify-center">
+      {photo ? (
+        <img src={photo} alt={name} className="w-full h-full object-cover" />
+      ) : (
+        <span className="text-2xl font-black text-muted-foreground">
+          {name.split(' ').map(n => n[0]).join('')}
+        </span>
+      )}
     </div>
-    <h4 className="text-lg font-black uppercase tracking-tight mb-1">{name}</h4>
-    <p className="text-[10px] font-bold uppercase tracking-ultra text-muted-foreground mb-4">{role}</p>
+    <h4 className="text-lg font-black uppercase tracking-tight mb-1 group-hover:text-primary transition-colors">{name}</h4>
+    <p className="text-[10px] font-bold uppercase tracking-ultra text-primary/80 mb-4">{role}</p>
     <p className="text-xs text-muted-foreground leading-relaxed">{bio}</p>
   </div>
 );
@@ -51,6 +69,18 @@ const TeamSection: FC = () => {
   return (
     <section id="team" className="py-32 px-6 bg-secondary border-y border-border">
       <div className="max-w-7xl mx-auto">
+        {/* Hero team photo */}
+        <div className="mb-20 relative">
+          <div className="aspect-[21/9] overflow-hidden border border-border">
+            <img 
+              src={teamGroup} 
+              alt="The Rhino team" 
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-transparent" />
+        </div>
+
         <div className="mb-16 text-center">
           <p className="text-xs font-bold uppercase tracking-ultra text-muted-foreground mb-4">
             About Us
@@ -65,7 +95,11 @@ const TeamSection: FC = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
           {team.map((member, i) => (
-            <TeamMemberCard key={i} {...member} />
+            <TeamMemberCard 
+              key={i} 
+              {...member} 
+              photo={teamPhotos[member.name]}
+            />
           ))}
           <div className="p-8 border border-dashed border-border bg-background/50 flex items-center justify-center">
             <a 
