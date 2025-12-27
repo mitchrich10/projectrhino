@@ -48,8 +48,7 @@ const Navigation: FC = () => {
         <Logo />
         
         <div className="hidden md:flex gap-10 items-center">
-          <NavLink href="#thesis">Thesis</NavLink>
-          <NavLink href="#team">Team</NavLink>
+          <NavLink href="#team">About Us</NavLink>
           <NavLink href="#strategy">Strategy</NavLink>
           <NavLink href="#verticals">Verticals</NavLink>
           <NavLink href="#portfolio">Portfolio</NavLink>
@@ -67,8 +66,7 @@ const Navigation: FC = () => {
 
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-background border-b border-border p-6 flex flex-col gap-6 md:hidden">
-          <NavLink href="#thesis" onClick={() => setIsMenuOpen(false)}>Thesis</NavLink>
-          <NavLink href="#team" onClick={() => setIsMenuOpen(false)}>Team</NavLink>
+          <NavLink href="#team" onClick={() => setIsMenuOpen(false)}>About Us</NavLink>
           <NavLink href="#strategy" onClick={() => setIsMenuOpen(false)}>Strategy</NavLink>
           <NavLink href="#verticals" onClick={() => setIsMenuOpen(false)}>Verticals</NavLink>
           <NavLink href="#portfolio" onClick={() => setIsMenuOpen(false)}>Portfolio</NavLink>
