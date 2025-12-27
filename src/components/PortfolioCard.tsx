@@ -10,31 +10,29 @@ interface PortfolioCardProps {
   className?: string;
 }
 
-const RhinoIcon: FC<{ className?: string }> = ({ className }) => (
-  <svg className={cn("w-5 h-5", className)} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2C8.5 2 5.5 4 4 7L2 8V11L4 12C4 12 5 14 6 15L5 18L7 20L9 18C10 18.5 11 19 12 19C13 19 14 18.5 15 18L17 20L19 18L18 15C19 14 20 12 20 12L22 11V8L20 7C18.5 4 15.5 2 12 2ZM8 9C8.55 9 9 9.45 9 10C9 10.55 8.55 11 8 11C7.45 11 7 10.55 7 10C7 9.45 7.45 9 8 9ZM16 9C16.55 9 17 9.45 17 10C17 10.55 16.55 11 16 11C15.45 11 15 10.55 15 10C15 9.45 15.45 9 16 9Z"/>
-  </svg>
-);
-
 const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, isRepresentative, acquiredBy, className }) => {
   return (
     <div 
       className={cn(
-        "group bg-card border border-border flex flex-col justify-between p-8 transition-all hover:shadow-md",
+        "group bg-card border flex flex-col justify-between p-8 transition-all hover:shadow-md",
+        isRepresentative ? "border-primary border-2" : "border-border",
         acquiredBy ? "min-h-[180px]" : "aspect-square",
         className
       )}
     >
       <div>
         <div className="flex items-center justify-between mb-4">
-          <p className="text-[10px] font-black uppercase tracking-mega text-text-tertiary">
+          <p className={cn(
+            "text-[10px] font-black uppercase tracking-mega",
+            isRepresentative ? "text-primary" : "text-text-tertiary"
+          )}>
             {category}
           </p>
-          {isRepresentative && (
-            <RhinoIcon className="text-primary" />
-          )}
         </div>
-        <h4 className="text-2xl font-black uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors">
+        <h4 className={cn(
+          "text-2xl font-black uppercase tracking-tighter transition-colors",
+          isRepresentative ? "text-primary" : "text-foreground group-hover:text-primary"
+        )}>
           {name}
         </h4>
       </div>
