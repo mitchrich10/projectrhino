@@ -14,9 +14,8 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
   return (
     <div 
       className={cn(
-        "group bg-card border flex flex-col justify-between p-8 transition-all hover:shadow-md",
+        "group bg-card border flex flex-col justify-between p-6 transition-all hover:shadow-md min-h-[160px]",
         isRepresentative ? "border-primary border-2" : "border-border",
-        acquiredBy ? "min-h-[180px]" : "aspect-square",
         className
       )}
     >
@@ -55,7 +54,7 @@ const PortfolioCardEmpty: FC<{ className?: string }> = ({ className }) => {
   return (
     <div 
       className={cn(
-        "aspect-square border border-dashed border-border flex flex-col items-center justify-center p-12 text-center opacity-50 hover:opacity-100 transition-opacity cursor-pointer bg-card",
+        "min-h-[160px] border border-dashed border-border flex flex-col items-center justify-center p-8 text-center opacity-50 hover:opacity-100 transition-opacity cursor-pointer bg-card",
         className
       )}
     >

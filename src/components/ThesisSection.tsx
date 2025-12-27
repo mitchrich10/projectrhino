@@ -9,8 +9,11 @@ const ThesisSection: FC = () => {
           <h2 className="text-2xl md:text-5xl font-black uppercase tracking-tighter mb-8">
             The Rhino <br />Journey
           </h2>
-          <p className="text-xl text-muted-foreground leading-relaxed italic border-l-2 border-border pl-8 mb-8">
+          <p className="text-xl text-muted-foreground leading-relaxed italic border-l-2 border-border pl-8 mb-6">
             "Rhinos are tough, thick-skinned, and carry scars on their backs. This is what we believe it takes to build a successful company."
+          </p>
+          <p className="text-base text-foreground font-medium">
+            We earn the right to be the partner of choice to the entrepreneurs we work with.
           </p>
         </div>
         <div className="order-1 md:order-2 relative">
