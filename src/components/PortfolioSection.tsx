@@ -24,7 +24,7 @@ const portfolio = [
   },
   { 
     name: "Flint", 
-    category: "Enterprise Services", 
+    category: "Healthcare Recruiting", 
     description: "Specialized recruiting and HR." 
   }
 ];
