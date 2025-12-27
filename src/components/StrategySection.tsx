@@ -14,8 +14,8 @@ const strategyItems = [
     icon: <Shield className="w-5 h-5" /> 
   },
   { 
-    title: "$2M - $10M FIRST CHEQUE", 
-    desc: "Backing founders from day one—whether organic growth or acquisition-led expansion.", 
+    title: "FLEXIBLE INVESTMENTS", 
+    desc: "$2M-$10M first cheques. Backing founders from inception through growth—organic expansion or acquisition-led strategies.", 
     icon: <DollarSign className="w-5 h-5" /> 
   },
   { 
