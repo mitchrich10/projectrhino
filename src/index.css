@@ -6,41 +6,41 @@
 
 @layer base {
   :root {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 100%;
+    --background: 210 10% 96%;
+    --foreground: 210 20% 20%;
 
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 20% 20%;
 
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 20%;
 
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 4%;
+    --primary: 205 65% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 210 10% 92%;
+    --secondary-foreground: 210 20% 20%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 210 10% 88%;
+    --muted-foreground: 210 10% 45%;
 
-    --accent: 0 0% 15%;
+    --accent: 205 65% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 100%;
+    --border: 210 10% 85%;
+    --input: 210 10% 85%;
+    --ring: 205 65% 45%;
 
     --radius: 0rem;
 
     /* Custom tokens */
-    --surface-elevated: 0 0% 6%;
-    --surface-hover: 0 0% 8%;
-    --text-tertiary: 0 0% 35%;
-    --border-subtle: 0 0% 10%;
+    --surface-elevated: 0 0% 100%;
+    --surface-hover: 210 10% 94%;
+    --text-tertiary: 210 10% 50%;
+    --border-subtle: 210 10% 90%;
   }
 }
 
@@ -56,6 +56,10 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground;
   }
 
   ::selection {
