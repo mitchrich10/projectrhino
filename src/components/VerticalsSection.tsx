@@ -30,7 +30,7 @@ const VerticalsSection: FC = () => {
               Producer Industries
             </h2>
             <p className="text-muted-foreground text-base leading-relaxed max-w-md">
-              We invest in industries driven by skilled professionals where technology and systems unlock scale. Here are some examples:
+              We invest in industries driven by skilled professionals where technology and systems unlock unique advantages. Here are some examples:
             </p>
           </div>
 
