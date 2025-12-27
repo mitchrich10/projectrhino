@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Target, Shield, Briefcase, Layers } from "lucide-react";
+import { Target, Shield, DollarSign, Layers } from "lucide-react";
 import { StatCard } from "./StatCard";
 
 const strategyItems = [
@@ -14,9 +14,9 @@ const strategyItems = [
     icon: <Shield className="w-5 h-5" /> 
   },
   { 
-    title: "$2M - $10M", 
-    desc: "Primary capital for organic growth or acquisition-led strategies.", 
-    icon: <Briefcase className="w-5 h-5" /> 
+    title: "$2M - $10M FIRST CHEQUE", 
+    desc: "We can invest at inception, organic growth capital, or acquisition-led strategies.", 
+    icon: <DollarSign className="w-5 h-5" /> 
   },
   { 
     title: "FIRST PARTNER", 
