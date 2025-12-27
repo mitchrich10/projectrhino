@@ -34,9 +34,9 @@ const StrategySection: FC = () => {
         <img 
           src={vancouverSkyline} 
           alt="Vancouver skyline" 
-          className="w-full h-full object-cover opacity-15"
+          className="w-full h-full object-cover opacity-40"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background/60" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
