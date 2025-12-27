@@ -1,27 +1,34 @@
 import { FC } from "react";
 import { Logo } from "./Navigation";
+import vancouverSkyline from "@/assets/vancouver-skyline.jpg";
 
 const ContactSection: FC = () => {
   return (
     <section className="py-40 px-6 border-t border-border text-center relative overflow-hidden">
-      {/* Background watermark */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
-        <span className="text-[20vw] font-black uppercase italic leading-none">RHINO</span>
+      {/* Vancouver Skyline Background */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src={vancouverSkyline} 
+          alt="Vancouver skyline" 
+          className="w-full h-full object-cover opacity-30"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/80" />
       </div>
 
       <div className="relative z-10">
-        <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter mb-16">
+        <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter mb-16 text-foreground">
           Let's Build.
         </h2>
         <a 
           href="mailto:hello@rhinovc.com" 
-          className="text-2xl md:text-4xl font-light tracking-tight hover:text-muted-foreground transition-colors border-b border-border pb-2"
+          className="text-2xl md:text-4xl font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
         >
           hello@rhinovc.com
         </a>
-        <div className="mt-16 flex justify-center gap-12">
-          <p className="text-[10px] font-black uppercase tracking-mega text-text-tertiary">Vancouver</p>
-          <p className="text-[10px] font-black uppercase tracking-mega text-text-tertiary">Global</p>
+        <div className="mt-16">
+          <p className="text-sm font-medium text-muted-foreground">
+            Investing out of Vancouver in exceptional companies across Canada
+          </p>
         </div>
       </div>
     </section>
