@@ -12,9 +12,6 @@ const ThesisSection: FC = () => {
           <p className="text-xl text-muted-foreground leading-relaxed italic border-l-2 border-border pl-8 mb-8">
             "Rhinos are tough, thick-skinned, and carry scars on their backs. This is what we believe it takes to build a successful company."
           </p>
-          <p className="text-sm text-muted-foreground uppercase tracking-widest font-bold">
-            Resilience as a Core Thesis
-          </p>
         </div>
         <div className="order-1 md:order-2 relative">
           <div className="relative z-10 p-4 border border-border bg-background/40 backdrop-blur-sm">
