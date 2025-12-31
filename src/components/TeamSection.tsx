@@ -117,14 +117,6 @@ const TeamSection: FC = () => {
           {team.map((member, i) => (
             <TeamMemberCard key={i} {...member} />
           ))}
-          <div className="p-8 border border-dashed border-border bg-card flex items-center justify-center">
-            <a 
-              href="#contact" 
-              className="text-[11px] font-black uppercase tracking-ultra text-muted-foreground hover:text-primary transition-colors"
-            >
-              Join Our Team →
-            </a>
-          </div>
         </div>
       </div>
     </section>
