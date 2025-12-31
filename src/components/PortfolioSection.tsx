@@ -3,33 +3,9 @@ import { PortfolioCard, PortfolioCardEmpty } from "./PortfolioCard";
 
 const activePortfolio = [
   { 
-    name: "Twig Fertility", 
-    category: "Healthcare Services", 
-    description: "National reproductive healthcare brand.",
-    isRepresentative: true
-  },
-  { 
-    name: "Stem Health", 
-    category: "Executive Health", 
-    description: "Proactive preventative care platform.",
-    isRepresentative: true
-  },
-  { 
     name: "Arlo", 
     category: "Physical Therapy", 
     description: "Consolidation of MSK clinics.",
-    isRepresentative: true
-  },
-  { 
-    name: "Upper Village", 
-    category: "Veterinary", 
-    description: "Associate-owner clinic network.",
-    isRepresentative: true
-  },
-  { 
-    name: "Flint", 
-    category: "Healthcare Recruiting", 
-    description: "Specialized recruiting and HR.",
     isRepresentative: true
   },
   { 
@@ -43,49 +19,9 @@ const activePortfolio = [
     description: "3D bioprinting technology platform." 
   },
   { 
-    name: "Klue", 
-    category: "Competitive Intelligence", 
-    description: "AI-powered competitive enablement." 
-  },
-  { 
-    name: "Showbie", 
-    category: "EdTech", 
-    description: "Classroom workflow management." 
-  },
-  { 
-    name: "NetNow", 
-    category: "FinTech", 
-    description: "B2B credit and payments platform." 
-  },
-  { 
-    name: "Quinn AI", 
-    category: "AI", 
-    description: "AI-powered business tools." 
-  },
-  { 
-    name: "FISPAN", 
-    category: "Banking", 
-    description: "Embedded banking infrastructure." 
-  },
-  { 
-    name: "Fatigue Science", 
-    category: "Workforce Analytics", 
-    description: "Predictive fatigue analytics." 
-  },
-  { 
-    name: "Pluto", 
-    category: "FinTech", 
-    description: "Investment and trading platform." 
-  },
-  { 
-    name: "ShopVision", 
-    category: "Retail Tech", 
-    description: "Retail analytics platform." 
-  },
-  { 
-    name: "Elective", 
-    category: "EdTech", 
-    description: "Live virtual learning marketplace." 
+    name: "Contact", 
+    category: "Marketing", 
+    description: "Influencer marketing platform." 
   },
   { 
     name: "Edvisor", 
@@ -93,14 +29,30 @@ const activePortfolio = [
     description: "Student recruitment platform." 
   },
   { 
-    name: "Side Door", 
-    category: "Music", 
-    description: "Artist-hosted concert marketplace." 
+    name: "Elective", 
+    category: "EdTech", 
+    description: "Live virtual learning marketplace." 
   },
   { 
-    name: "MYFO", 
-    category: "FinTech", 
-    description: "Family office technology." 
+    name: "Fatigue Science", 
+    category: "Workforce Analytics", 
+    description: "Predictive fatigue analytics." 
+  },
+  { 
+    name: "FISPAN", 
+    category: "Banking", 
+    description: "Embedded banking infrastructure." 
+  },
+  { 
+    name: "Flint", 
+    category: "Healthcare Recruiting", 
+    description: "Specialized recruiting and HR.",
+    isRepresentative: true
+  },
+  { 
+    name: "Klue", 
+    category: "Competitive Intelligence", 
+    description: "AI-powered competitive enablement." 
   },
   { 
     name: "Marz", 
@@ -108,14 +60,62 @@ const activePortfolio = [
     description: "AI-powered visual effects." 
   },
   { 
-    name: "Contact", 
-    category: "Marketing", 
-    description: "Influencer marketing platform." 
+    name: "MYFO", 
+    category: "FinTech", 
+    description: "Family office technology." 
+  },
+  { 
+    name: "NetNow", 
+    category: "FinTech", 
+    description: "B2B credit and payments platform." 
+  },
+  { 
+    name: "Pluto", 
+    category: "FinTech", 
+    description: "Investment and trading platform." 
+  },
+  { 
+    name: "Quinn AI", 
+    category: "AI", 
+    description: "AI-powered business tools." 
+  },
+  { 
+    name: "ShopVision", 
+    category: "Retail Tech", 
+    description: "Retail analytics platform." 
+  },
+  { 
+    name: "Showbie", 
+    category: "EdTech", 
+    description: "Classroom workflow management." 
+  },
+  { 
+    name: "Side Door", 
+    category: "Music", 
+    description: "Artist-hosted concert marketplace." 
+  },
+  { 
+    name: "Stem Health", 
+    category: "Executive Health", 
+    description: "Proactive preventative care platform.",
+    isRepresentative: true
   },
   { 
     name: "SuperAdvisor", 
     category: "Consulting", 
     description: "Expert network platform." 
+  },
+  { 
+    name: "Twig Fertility", 
+    category: "Healthcare Services", 
+    description: "National reproductive healthcare brand.",
+    isRepresentative: true
+  },
+  { 
+    name: "Upper Village", 
+    category: "Veterinary", 
+    description: "Associate-owner clinic network.",
+    isRepresentative: true
   }
 ];
 
