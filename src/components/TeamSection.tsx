@@ -1,6 +1,5 @@
 import { FC } from "react";
 import teamGroup from "@/assets/team-group.png";
-import rhinoDetail from "@/assets/rhino-detail.jpg";
 import fraserPhoto from "@/assets/team-fraser.png";
 import jayPhoto from "@/assets/team-jay.png";
 import candacePhoto from "@/assets/team-candace.png";
@@ -62,37 +61,6 @@ const TeamSection: FC = () => {
   return (
     <section id="team" className="py-32 px-6 bg-secondary border-y border-border">
       <div className="max-w-7xl mx-auto">
-        {/* About Us Header with Rhino Philosophy */}
-        <div className="grid md:grid-cols-2 gap-16 items-center mb-20">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-4">
-              About Us
-            </p>
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-8">
-              The Rhino <br />Journey
-            </h2>
-            <p className="text-base text-muted-foreground leading-relaxed mb-6">
-              Since 2015, we've been partnering with ambitious builders across industries.
-            </p>
-            <p className="text-xl text-foreground leading-relaxed italic border-l-2 border-border pl-8 mb-6">
-              "Rhinos are tough, thick-skinned, and carry scars on their backs. This is what we believe it takes to build a successful company."
-            </p>
-            <p className="text-base text-foreground font-medium">
-              We earn the right to be the partner of choice to the entrepreneurs we work with.
-            </p>
-          </div>
-          <div className="relative">
-            <div className="relative z-10 p-4 border border-border bg-background/40 backdrop-blur-sm">
-              <img 
-                src={rhinoDetail} 
-                alt="Rhino detail" 
-                className="w-full h-auto grayscale opacity-80"
-              />
-            </div>
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-muted/30 blur-3xl rounded-full" />
-          </div>
-        </div>
-
         {/* Team photo */}
         <div className="mb-20">
           <div className="overflow-hidden border border-border rounded-sm">
