@@ -8,10 +8,26 @@ interface PortfolioCardProps {
   isRepresentative?: boolean;
   acquiredBy?: string;
   logo?: string;
+  website?: string;
   className?: string;
 }
 
-const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, isRepresentative, acquiredBy, logo, className }) => {
+const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, isRepresentative, acquiredBy, logo, website, className }) => {
+  const content = logo ? (
+    <img 
+      src={logo} 
+      alt={`${name} logo`} 
+      className="h-8 max-w-[160px] object-contain object-left"
+    />
+  ) : (
+    <h4 className={cn(
+      "text-2xl font-black uppercase tracking-tighter transition-colors",
+      isRepresentative ? "text-primary" : "text-foreground group-hover:text-primary"
+    )}>
+      {name}
+    </h4>
+  );
+
   return (
     <div 
       className={cn(
@@ -29,19 +45,17 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
             {category}
           </p>
         </div>
-        {logo ? (
-          <img 
-            src={logo} 
-            alt={`${name} logo`} 
-            className="h-8 max-w-[160px] object-contain object-left"
-          />
+        {website ? (
+          <a 
+            href={website} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity"
+          >
+            {content}
+          </a>
         ) : (
-          <h4 className={cn(
-            "text-2xl font-black uppercase tracking-tighter transition-colors",
-            isRepresentative ? "text-primary" : "text-foreground group-hover:text-primary"
-          )}>
-            {name}
-          </h4>
+          content
         )}
       </div>
       <div>
