@@ -30,14 +30,6 @@ const HeroSection: FC = () => {
               Partner with Us <ArrowRight className="w-4 h-4" />
             </RhinoButton>
           </div>
-          <div className="border-l-2 border-primary pl-6 max-w-xl">
-            <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-2">
-              Producer Definition
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
-            </p>
-          </div>
         </div>
       </div>
     </section>

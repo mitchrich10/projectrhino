@@ -29,9 +29,17 @@ const VerticalsSection: FC = () => {
             <h2 className="text-4xl font-black uppercase tracking-tighter mb-8">
               Producer Industries
             </h2>
-            <p className="text-muted-foreground text-base leading-relaxed max-w-md">
+            <p className="text-muted-foreground text-base leading-relaxed max-w-md mb-8">
               We invest in industries driven by skilled professionals where technology and systems unlock unique advantages. Here are some examples:
             </p>
+            <div className="border-l-2 border-primary pl-6 max-w-md">
+              <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-2">
+                Producer Definition
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
+              </p>
+            </div>
           </div>
 
           <div className="lg:col-span-7 grid gap-4">
