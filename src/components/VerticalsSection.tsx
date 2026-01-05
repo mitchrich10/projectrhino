@@ -13,7 +13,7 @@ const verticals = [
   },
   {
     title: "Enterprise",
-    items: ["IT Services", "Technical Services", "HR & Recruiting", "Managed Services"],
+    items: ["IT Services", "HR & Recruiting", "Managed Services"],
   }
 ];
 
