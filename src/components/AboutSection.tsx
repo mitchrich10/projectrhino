@@ -8,7 +8,8 @@ const AboutSection: FC = () => {
             <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-4">
               About Us
             </p>
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-8">HOW WE INVEST<br />Journey
+            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-8">
+              HOW WE INVEST
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed mb-6">
               Since 2015, we've been partnering with ambitious builders across industries.
