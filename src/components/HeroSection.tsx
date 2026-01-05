@@ -23,7 +23,7 @@ const HeroSection: FC = () => {
             Scaling Producer Industries.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium mb-10 max-w-2xl leading-relaxed">
-            You deserve a capital partner who thinks like an operator. Rhino works with entrepreneurs to build, acquire, and scale market-leading platforms.
+            You deserve a capital partner who thinks like an operator.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <RhinoButton className="group hover:gap-4">

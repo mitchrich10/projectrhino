@@ -13,6 +13,9 @@ const AboutSection: FC = () => {
             <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-8">
               The Rhino <br />Journey
             </h2>
+            <p className="text-lg text-foreground font-medium leading-relaxed mb-6">
+              Rhino works with entrepreneurs to build, acquire, and scale market-leading platforms.
+            </p>
             <p className="text-base text-muted-foreground leading-relaxed mb-6">
               Since 2015, we've been partnering with ambitious builders across industries.
             </p>
