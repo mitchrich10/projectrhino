@@ -30,9 +30,6 @@ const VerticalsSection: FC = () => {
               Producer Industries
             </h2>
             <div className="border-l-2 border-primary pl-6 max-w-md mb-8">
-              <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-2">
-                Producer Definition
-              </p>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
               </p>
