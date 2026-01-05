@@ -59,19 +59,8 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, bio, photo }) => (
 
 const TeamSection: FC = () => {
   return (
-    <section id="team" className="py-32 px-6 bg-secondary border-y border-border">
+    <section id="team" className="py-32 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
       <div className="max-w-7xl mx-auto">
-        {/* Team photo */}
-        <div className="mb-20">
-          <div className="overflow-hidden border border-border rounded-sm">
-            <img 
-              src={teamGroup} 
-              alt="The Rhino team" 
-              className="w-full h-auto object-contain"
-            />
-          </div>
-        </div>
-
         <div className="mb-16 text-center">
           <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground mb-6">
             Meet The Team
@@ -80,6 +69,18 @@ const TeamSection: FC = () => {
             Combined decades of technology and entrepreneurial experience
           </p>
         </div>
+
+        {/* Team photo */}
+        <div className="mb-20">
+          <div className="overflow-hidden rounded-sm">
+            <img 
+              src={teamGroup} 
+              alt="The Rhino team" 
+              className="w-full h-auto object-contain"
+            />
+          </div>
+        </div>
+
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {team.map((member, i) => (

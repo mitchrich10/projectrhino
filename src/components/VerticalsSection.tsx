@@ -19,7 +19,7 @@ const verticals = [
 
 const VerticalsSection: FC = () => {
   return (
-    <section id="verticals" className="py-32 px-6 bg-secondary">
+    <section id="verticals" className="py-32 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-16">
           <div className="lg:col-span-5">

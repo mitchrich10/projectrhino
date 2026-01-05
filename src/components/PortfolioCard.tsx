@@ -20,10 +20,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
       className="h-8 max-w-[160px] object-contain object-left"
     />
   ) : (
-    <h4 className={cn(
-      "text-2xl font-black uppercase tracking-tighter transition-colors",
-      isRepresentative ? "text-primary" : "text-foreground group-hover:text-primary"
-    )}>
+    <h4 className="text-2xl font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary">
       {name}
     </h4>
   );
@@ -31,19 +28,20 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
   return (
     <div 
       className={cn(
-        "group bg-card border flex flex-col justify-between p-6 transition-all hover:shadow-md min-h-[160px]",
-        isRepresentative ? "border-primary border-2" : "border-border",
+        "group bg-card border border-border flex flex-col justify-between p-6 transition-all hover:shadow-md min-h-[160px]",
         className
       )}
     >
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <p className={cn(
-            "text-[10px] font-black uppercase tracking-mega",
-            isRepresentative ? "text-primary" : "text-text-tertiary"
-          )}>
+        <div className="flex items-center gap-2 mb-4">
+          <p className="text-[10px] font-black uppercase tracking-mega text-text-tertiary">
             {category}
           </p>
+          {isRepresentative && (
+            <span className="text-[8px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+              Featured
+            </span>
+          )}
         </div>
         {website ? (
           <a 
