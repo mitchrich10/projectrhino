@@ -11,7 +11,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ title, items, className }) => {
   return (
     <div 
       className={cn(
-        "border border-border bg-background/60 backdrop-blur-sm p-8 hover:bg-surface-hover hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group",
+        "border-2 border-border/60 bg-card/80 backdrop-blur-sm p-8 shadow-sm hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 transition-all duration-300 group",
         className
       )}
     >
