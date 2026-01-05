@@ -125,7 +125,7 @@ const exitedPortfolio = [
   { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform" },
   { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform" },
   { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform" },
-  { name: "PG", acquiredBy: "Docebo", category: "EdTech", description: "Learning technology" },
+  { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Learning technology" },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics" },
   { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform" },
   { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Customer experience analytics" },
