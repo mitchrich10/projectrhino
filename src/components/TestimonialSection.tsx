@@ -18,7 +18,7 @@ const TestimonialSection: FC = () => {
           
           <div className="text-center md:text-left">
             <blockquote className="text-xl md:text-2xl text-foreground leading-relaxed italic mb-6">
-              "Rhino possesses a rare ability to master a niche industry at record speed and translate that insight into actionable support. They've been fantastic partners and instrumental in helping us evolve from a startup into a category leader."
+              "What stood out immediately was how quickly Rhino got under the hood of our business. They possess a rare ability to master a niche industry at record speed and translate that insight into actionable support. They've been fantastic partners and instrumental in helping us evolve from a startup into a category leader."
             </blockquote>
             <div>
               <p className="font-black uppercase tracking-tight">Zach Shapiro</p>
