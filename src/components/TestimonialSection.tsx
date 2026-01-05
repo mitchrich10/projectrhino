@@ -18,7 +18,7 @@ const TestimonialSection: FC = () => {
           
           <div className="text-center md:text-left">
             <blockquote className="text-xl md:text-2xl text-foreground leading-relaxed italic mb-6">
-              "Rhino has been an incredible partner from day one. Their hands-on approach and deep understanding of healthcare has been invaluable to our growth."
+              "Rhino possesses a rare ability to master a niche industry at record speed and translate that insight into actionable support. They've been fantastic partners and instrumental in helping us evolve from a startup into a category leader."
             </blockquote>
             <div>
               <p className="font-black uppercase tracking-tight">Zach Shapiro</p>
