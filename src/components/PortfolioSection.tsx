@@ -135,7 +135,7 @@ const exitedPortfolio = [
 
 const PortfolioSection: FC = () => {
   return (
-    <section id="portfolio" className="py-32 px-6 bg-background">
+    <section id="portfolio" className="py-32 px-6 bg-gradient-to-b from-secondary via-background to-background">
       <div className="max-w-7xl mx-auto">
         {/* Active Portfolio */}
         <div className="mb-24">
@@ -146,9 +146,6 @@ const PortfolioSection: FC = () => {
             <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
               Active Portfolio
             </h3>
-            <p className="text-sm text-muted-foreground mt-4">
-              <span className="text-primary font-semibold">Blue highlighted</span> = Representative Investments
-            </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

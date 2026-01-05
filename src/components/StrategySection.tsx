@@ -27,7 +27,7 @@ const strategyItems = [
 
 const StrategySection: FC = () => {
   return (
-    <section id="strategy" className="py-32 px-6 bg-background">
+    <section id="strategy" className="py-32 px-6 bg-gradient-to-b from-secondary via-background to-background">
       <div className="max-w-7xl mx-auto">
         <div className="mb-20 text-center">
           <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">

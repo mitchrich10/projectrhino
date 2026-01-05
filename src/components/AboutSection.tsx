@@ -3,7 +3,7 @@ import rhinoDetail from "@/assets/rhino-detail.jpg";
 
 const AboutSection: FC = () => {
   return (
-    <section id="about" className="py-32 px-6 bg-secondary border-y border-border">
+    <section id="about" className="py-32 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div>

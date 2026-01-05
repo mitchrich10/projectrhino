@@ -4,7 +4,7 @@ import vancouverSkyline from "@/assets/vancouver-skyline.jpg";
 
 const ContactSection: FC = () => {
   return (
-    <section className="py-40 px-6 border-t border-border text-center relative overflow-hidden">
+    <section className="py-40 px-6 text-center relative overflow-hidden bg-gradient-to-b from-secondary to-background">
       {/* Vancouver Skyline Background */}
       <div className="absolute inset-0 z-0">
         <img 
