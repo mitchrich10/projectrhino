@@ -39,7 +39,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
           </p>
           {isRepresentative && (
             <span className="text-[8px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-              Featured
+              Producer
             </span>
           )}
         </div>
