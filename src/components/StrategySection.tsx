@@ -35,7 +35,7 @@ const StrategySection: FC = () => {
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
           {strategyItems.map((item, i) => (
             <StatCard 
               key={i}
@@ -44,6 +44,19 @@ const StrategySection: FC = () => {
               icon={item.icon}
             />
           ))}
+        </div>
+
+        {/* How We Invest Placeholder */}
+        <div className="border-2 border-dashed border-border/60 bg-card/40 p-12 text-center">
+          <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-2">
+            Coming Soon
+          </p>
+          <h4 className="text-2xl font-black uppercase tracking-tighter mb-4">
+            How We Invest
+          </h4>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            Placeholder section for investment process and methodology.
+          </p>
         </div>
       </div>
     </section>
