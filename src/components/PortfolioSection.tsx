@@ -10,7 +10,7 @@ const activePortfolio = [
   },
   { 
     name: "Article", 
-    category: "Furniture", 
+    category: "Ecommerce", 
     description: "Direct-to-consumer modern furniture." 
   },
   { 
@@ -40,7 +40,7 @@ const activePortfolio = [
   },
   { 
     name: "FISPAN", 
-    category: "Banking", 
+    category: "FinTech", 
     description: "Embedded banking infrastructure." 
   },
   { 
@@ -96,13 +96,13 @@ const activePortfolio = [
   },
   { 
     name: "Stem Health", 
-    category: "Executive Health", 
+    category: "Healthcare Services", 
     description: "Proactive preventative care platform.",
     isRepresentative: true
   },
   { 
     name: "SuperAdvisor", 
-    category: "Consulting", 
+    category: "FinTech", 
     description: "Expert network platform." 
   },
   { 
@@ -113,7 +113,7 @@ const activePortfolio = [
   },
   { 
     name: "Upper Village", 
-    category: "Veterinary", 
+    category: "Healthcare Services", 
     description: "Associate-owner clinic network.",
     isRepresentative: true
   }
