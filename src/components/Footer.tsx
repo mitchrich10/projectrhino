@@ -37,7 +37,7 @@ const ContactSection: FC = () => {
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <div className="text-left">
           <Link to="/contact">
-            <h2 className="text-[3.4rem] md:text-[7.2rem] font-black uppercase tracking-tighter text-foreground hover:text-primary transition-colors cursor-pointer mb-6">
+            <h2 className="text-[3.2rem] md:text-[6.8rem] font-black uppercase tracking-tighter text-foreground hover:text-primary transition-colors cursor-pointer mb-6">
               Let's Build.
             </h2>
           </Link>
@@ -45,7 +45,7 @@ const ContactSection: FC = () => {
         <div className="text-left mt-12">
           <a 
             href="mailto:hello@rhinovc.com" 
-            className="text-[1.35rem] md:text-[2rem] font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
+            className="text-[1.28rem] md:text-[1.9rem] font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
           >
             hello@rhinovc.com
           </a>
