@@ -14,6 +14,7 @@ interface TeamMember {
   role: string;
   bio: string;
   photo: string;
+  portfolio?: string[];
 }
 
 const team: TeamMember[] = [
@@ -21,13 +22,15 @@ const team: TeamMember[] = [
     name: "Fraser Hall",
     role: "Investor",
     bio: "Co-founder and former Chairman of Recon Instruments. After a successful exit to Intel in 2015, Fraser co-founded Rhino to support entrepreneurs underserved in Western Canada.",
-    photo: fraserPhoto
+    photo: fraserPhoto,
+    portfolio: ["Company A", "Company B", "Company C"]
   },
   {
     name: "Jay Rhind",
     role: "Investor",
     bio: "Co-founded Rhino in 2015. Intensely focused on finding companies not well served by the traditional venture model. Former Adjunct Professor at UBC.",
-    photo: jayPhoto
+    photo: jayPhoto,
+    portfolio: ["Company D", "Company E", "Company F"]
   },
   {
     name: "Candace Hobin",
@@ -39,24 +42,32 @@ const team: TeamMember[] = [
     name: "Nicholas Hyldelund",
     role: "Investor",
     bio: "Originally from Denmark, passionate about technologies with global impact. Responsible for deal sourcing, due diligence, and supporting portfolio companies.",
-    photo: nicholasPhoto
+    photo: nicholasPhoto,
+    portfolio: ["Company G", "Company H", "Company I"]
   },
   {
     name: "Mitch Richardson",
     role: "Investor",
     bio: "Deeply driven to support founders in reaching ambitious goals. Previously spent five years with a Canadian financial services company across North America and Asia.",
-    photo: mitchPhoto
+    photo: mitchPhoto,
+    portfolio: ["Company J", "Company K", "Company L"]
   }
 ];
 
-const TeamMemberCard: FC<TeamMember> = ({ name, role, bio, photo }) => (
-  <div className="group p-8 border border-border bg-card hover:shadow-md transition-all duration-300">
+const TeamMemberCard: FC<TeamMember> = ({ name, role, bio, photo, portfolio }) => (
+  <div className="group p-8 border border-border bg-card hover:shadow-md transition-all duration-300 flex flex-col">
     <div className="w-24 h-24 rounded-full mb-6 overflow-hidden border-2 border-border group-hover:border-primary transition-colors">
       <img src={photo} alt={name} className="w-full h-full object-cover" />
     </div>
     <h4 className="text-lg font-black uppercase tracking-tight mb-1 text-foreground group-hover:text-primary transition-colors">{name}</h4>
     <p className="text-[10px] font-bold uppercase tracking-ultra text-primary mb-4">{role}</p>
-    <p className="text-xs text-muted-foreground leading-relaxed">{bio}</p>
+    <p className="text-xs text-muted-foreground leading-relaxed flex-grow">{bio}</p>
+    {portfolio && portfolio.length > 0 && (
+      <div className="mt-4 pt-4 border-t border-border">
+        <p className="text-[9px] font-bold uppercase tracking-ultra text-muted-foreground mb-2">Portfolio</p>
+        <p className="text-[11px] text-foreground">{portfolio.join(" · ")}</p>
+      </div>
+    )}
   </div>
 );
 
