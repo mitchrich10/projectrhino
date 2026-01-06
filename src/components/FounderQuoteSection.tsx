@@ -3,7 +3,7 @@ import lisaPhoto from "@/assets/lisa-shields.png";
 
 const FounderQuoteSection: FC = () => {
   return (
-    <section className="pt-32 pb-20 px-6 bg-gradient-to-b from-secondary to-background">
+    <section className="pt-20 pb-20 px-6 bg-gradient-to-b from-secondary to-background">
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col md:flex-row items-center gap-12">
           <div className="flex-shrink-0">
