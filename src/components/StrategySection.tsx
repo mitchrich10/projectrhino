@@ -67,16 +67,16 @@ const StrategySection: FC = () => {
               
               <div className="grid sm:grid-cols-3 gap-4 py-4">
                 <div className="border-l-2 border-primary/40 pl-4">
-                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Entrepreneurs</p>
-                  <p className="text-xs text-muted-foreground">By acquisition</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Build</p>
+                  <p className="text-xs text-muted-foreground">Starting a new platform or business from the ground up</p>
                 </div>
                 <div className="border-l-2 border-primary/40 pl-4">
-                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Operators</p>
-                  <p className="text-xs text-muted-foreground">Stepping into ownership</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Buy</p>
+                  <p className="text-xs text-muted-foreground">Acquiring an existing business and scaling it with the right capital partner</p>
                 </div>
                 <div className="border-l-2 border-primary/40 pl-4">
-                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Founders</p>
-                  <p className="text-xs text-muted-foreground">Seeking long-term capital</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Scale</p>
+                  <p className="text-xs text-muted-foreground">Partnering with long-term capital to professionalize and grow an existing company</p>
                 </div>
               </div>
               
