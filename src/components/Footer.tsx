@@ -36,8 +36,8 @@ const ContactSection: FC = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto w-full text-left">
         <Link to="/contact">
-          <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter text-foreground hover:text-primary transition-colors cursor-pointer mb-6">
-            Let's Build.
+          <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter text-foreground hover:text-primary transition-colors cursor-pointer mb-6 leading-[0.85]">
+            Let's<br />Build.
           </h2>
         </Link>
         <a 
