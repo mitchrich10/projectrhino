@@ -2,6 +2,7 @@ import { FC, useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RhinoButton } from "./RhinoButton";
+import { Link } from "react-router-dom";
 
 const Logo: FC<{ className?: string }> = ({ className }) => (
   <div className={cn("flex items-center", className)}>
@@ -52,7 +53,9 @@ const Navigation: FC = () => {
           <NavLink href="#strategy">Strategy</NavLink>
           <NavLink href="#verticals">Verticals</NavLink>
           <NavLink href="#portfolio">Portfolio</NavLink>
-          <RhinoButton size="sm">Contact</RhinoButton>
+          <Link to="/contact">
+            <RhinoButton size="sm">Contact</RhinoButton>
+          </Link>
         </div>
 
         <button 
@@ -70,7 +73,7 @@ const Navigation: FC = () => {
           <NavLink href="#strategy" onClick={() => setIsMenuOpen(false)}>Strategy</NavLink>
           <NavLink href="#verticals" onClick={() => setIsMenuOpen(false)}>Verticals</NavLink>
           <NavLink href="#portfolio" onClick={() => setIsMenuOpen(false)}>Portfolio</NavLink>
-          <NavLink href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</NavLink>
+          <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Contact</Link>
         </div>
       )}
     </nav>
