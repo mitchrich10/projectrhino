@@ -66,7 +66,7 @@ const TeamSection: FC = () => {
             Meet The Team
           </h3>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Combined decades of technology and entrepreneurial experience
+            Decades of combined technology and entrepreneurial experience
           </p>
         </div>
 
