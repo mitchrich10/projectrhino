@@ -1,19 +1,37 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Logo } from "./Navigation";
-import vancouverSkyline from "@/assets/vancouver-skyline.jpg";
+import foundersHike from "@/assets/founders-hike.jpg";
+import foundersPickleball from "@/assets/founders-pickleball.jpg";
+import foundersOntopical from "@/assets/founders-ontopical.jpg";
 
 const ContactSection: FC = () => {
   return (
     <section className="py-40 px-6 text-center relative overflow-hidden bg-gradient-to-b from-secondary to-background">
-      {/* Vancouver Skyline Background */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src={vancouverSkyline} 
-          alt="Vancouver skyline" 
-          className="w-full h-full object-cover opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background/80" />
+      {/* Founder Photos Background */}
+      <div className="absolute inset-0 z-0 grid grid-cols-3">
+        <div className="relative overflow-hidden">
+          <img 
+            src={foundersHike} 
+            alt="ShopVision and Rhino team" 
+            className="w-full h-full object-cover opacity-25"
+          />
+        </div>
+        <div className="relative overflow-hidden">
+          <img 
+            src={foundersPickleball} 
+            alt="FSPAN and Rhino team" 
+            className="w-full h-full object-cover opacity-25"
+          />
+        </div>
+        <div className="relative overflow-hidden">
+          <img 
+            src={foundersOntopical} 
+            alt="Ontopical and Rhino team" 
+            className="w-full h-full object-cover opacity-25"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/80 via-background/60 to-background/90" />
       </div>
 
       <div className="relative z-10">
