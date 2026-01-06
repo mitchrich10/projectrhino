@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { Link } from "react-router-dom";
 import { Logo } from "./Navigation";
 import vancouverSkyline from "@/assets/vancouver-skyline.jpg";
 
@@ -16,9 +17,11 @@ const ContactSection: FC = () => {
       </div>
 
       <div className="relative z-10">
-        <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter mb-16 text-foreground">
-          Let's Build.
-        </h2>
+        <Link to="/contact">
+          <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter mb-16 text-foreground hover:text-primary transition-colors cursor-pointer">
+            Let's Build.
+          </h2>
+        </Link>
         <a 
           href="mailto:hello@rhinovc.com" 
           className="text-2xl md:text-4xl font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
