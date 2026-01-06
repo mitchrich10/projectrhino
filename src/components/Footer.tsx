@@ -14,7 +14,7 @@ const ContactSection: FC = () => {
           <img 
             src={foundersHike} 
             alt="ShopVision and Rhino team" 
-            className="w-full h-full object-cover object-[center_75%] opacity-40"
+            className="w-full h-full object-cover object-[center_85%] opacity-40"
           />
         </div>
         <div className="relative overflow-hidden">
@@ -35,17 +35,17 @@ const ContactSection: FC = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
-        <div className="text-center mb-auto">
+        <div className="text-left">
           <Link to="/contact">
-            <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-foreground hover:text-primary transition-colors cursor-pointer mb-6 leading-[0.85]">
-              Let's<br />Build.
+            <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter text-foreground hover:text-primary transition-colors cursor-pointer mb-6">
+              Let's Build.
             </h2>
           </Link>
         </div>
         <div className="text-left mt-12">
           <a 
             href="mailto:hello@rhinovc.com" 
-            className="text-xl md:text-3xl font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
+            className="text-2xl md:text-4xl font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
           >
             hello@rhinovc.com
           </a>
