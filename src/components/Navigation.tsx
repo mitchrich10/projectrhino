@@ -5,9 +5,9 @@ import { RhinoButton } from "./RhinoButton";
 import { Link } from "react-router-dom";
 
 const Logo: FC<{ className?: string }> = ({ className }) => (
-  <div className={cn("flex items-center", className)}>
+  <Link to="/" className={cn("flex items-center", className)}>
     <span className="text-xl font-black tracking-tighter uppercase">RHINO</span>
-  </div>
+  </Link>
 );
 
 interface NavLinkProps {
@@ -16,15 +16,32 @@ interface NavLinkProps {
   onClick?: () => void;
 }
 
-const NavLink: FC<NavLinkProps> = ({ href, children, onClick }) => (
-  <a 
-    href={href} 
-    onClick={onClick}
-    className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest"
-  >
-    {children}
-  </a>
-);
+const NavLink: FC<NavLinkProps> = ({ href, children, onClick }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        // If on a different page, navigate home then scroll
+        window.location.href = `/${href}`;
+      }
+    }
+    onClick?.();
+  };
+
+  return (
+    <a 
+      href={href} 
+      onClick={handleClick}
+      className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest"
+    >
+      {children}
+    </a>
+  );
+};
 
 const Navigation: FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
