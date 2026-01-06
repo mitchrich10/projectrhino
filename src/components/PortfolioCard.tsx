@@ -20,7 +20,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
       className="h-8 max-w-[160px] object-contain object-left"
     />
   ) : (
-    <h4 className="text-2xl font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary">
+    <h4 className="text-lg font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary">
       {name}
     </h4>
   );
@@ -28,13 +28,13 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
   return (
     <div 
       className={cn(
-        "group bg-card border border-border flex flex-col justify-between p-6 transition-all hover:shadow-md min-h-[160px]",
+        "group bg-card border border-border flex flex-col justify-between p-4 transition-all hover:shadow-md min-h-[120px]",
         className
       )}
     >
       <div>
-        <div className="flex items-center gap-2 mb-4">
-          <p className="text-[10px] font-black uppercase tracking-mega text-text-tertiary">
+        <div className="flex items-center gap-2 mb-2">
+          <p className="text-[9px] font-black uppercase tracking-mega text-text-tertiary">
             {category}
           </p>
           {isRepresentative && (
@@ -57,12 +57,12 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
         )}
       </div>
       <div>
-        <div className="h-px w-0 bg-primary mb-4 group-hover:w-full transition-all duration-500" />
-        <p className="text-xs text-muted-foreground leading-relaxed">
+        <div className="h-px w-0 bg-primary mb-2 group-hover:w-full transition-all duration-500" />
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
           {description}
         </p>
         {acquiredBy && (
-          <p className="text-[10px] font-bold uppercase tracking-wider text-primary mt-3">
+          <p className="text-[9px] font-bold uppercase tracking-wider text-primary mt-2">
             Acquired by {acquiredBy}
           </p>
         )}
@@ -75,12 +75,12 @@ const PortfolioCardEmpty: FC<{ className?: string }> = ({ className }) => {
   return (
     <div 
       className={cn(
-        "min-h-[160px] border border-dashed border-border flex flex-col items-center justify-center p-8 text-center opacity-50 hover:opacity-100 transition-opacity cursor-pointer bg-card",
+        "min-h-[120px] border border-dashed border-border flex flex-col items-center justify-center p-4 text-center opacity-50 hover:opacity-100 transition-opacity cursor-pointer bg-card",
         className
       )}
     >
-      <p className="text-[11px] font-black uppercase tracking-ultra text-foreground">Build With Us</p>
-      <div className="w-8 h-px bg-primary mt-4" />
+      <p className="text-[10px] font-black uppercase tracking-ultra text-foreground">Build With Us</p>
+      <div className="w-6 h-px bg-primary mt-3" />
     </div>
   );
 };
