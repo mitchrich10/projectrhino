@@ -103,8 +103,8 @@ const TeamSection: FC = () => {
           </div>
         </div>
 
-        <div className="mb-16 text-center">
-          <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground mb-6">
+        <div className="mb-8 text-center">
+          <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground mb-4">
             Meet The Team
           </h3>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -113,7 +113,7 @@ const TeamSection: FC = () => {
         </div>
 
         {/* Team photo */}
-        <div className="mb-16">
+        <div className="mb-12">
           <div className="overflow-hidden rounded-sm">
             <img 
               src={teamGroup} 
