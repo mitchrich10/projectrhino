@@ -64,6 +64,45 @@ const TeamSection: FC = () => {
   return (
     <section id="team" className="py-32 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
       <div className="max-w-7xl mx-auto">
+        {/* Founder relationship photos - moved above Meet The Team */}
+        <div className="mb-20">
+          <p className="text-center text-sm text-muted-foreground mb-6 uppercase tracking-wider font-medium">
+            Building relationships with our founders
+          </p>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="group">
+              <div className="overflow-hidden rounded-sm aspect-[4/3]">
+                <img 
+                  src={foundersHike} 
+                  alt="ShopVision and Rhino team hiking" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2 text-center">ShopVision & Rhino team</p>
+            </div>
+            <div className="group">
+              <div className="overflow-hidden rounded-sm aspect-[4/3]">
+                <img 
+                  src={foundersPickleball} 
+                  alt="FSPAN and Rhino team at pickleball event" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2 text-center">FSPAN & Rhino team</p>
+            </div>
+            <div className="group">
+              <div className="overflow-hidden rounded-sm aspect-[4/3]">
+                <img 
+                  src={foundersOntopical} 
+                  alt="Ontopical and Rhino team celebrating" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2 text-center">Ontopical & Rhino team</p>
+            </div>
+          </div>
+        </div>
+
         <div className="mb-16 text-center">
           <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground mb-6">
             Meet The Team
@@ -83,37 +122,6 @@ const TeamSection: FC = () => {
             />
           </div>
         </div>
-
-        {/* Founder relationship photos */}
-        <div className="mb-20">
-          <p className="text-center text-sm text-muted-foreground mb-6 uppercase tracking-wider font-medium">
-            Building relationships with our founders
-          </p>
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="overflow-hidden rounded-sm aspect-[4/3]">
-              <img 
-                src={foundersHike} 
-                alt="Rhino team hiking with founders" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="overflow-hidden rounded-sm aspect-[4/3]">
-              <img 
-                src={foundersPickleball} 
-                alt="Rhino team and founders at pickleball event" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="overflow-hidden rounded-sm aspect-[4/3]">
-              <img 
-                src={foundersOntopical} 
-                alt="Celebrating with Ontopical founders" 
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          </div>
-        </div>
-
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {team.map((member, i) => (
