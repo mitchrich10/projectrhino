@@ -4,7 +4,7 @@ import { PortfolioCard, PortfolioCardEmpty } from "./PortfolioCard";
 const activePortfolio = [
   { 
     name: "Arlo", 
-    category: "Healthcare", 
+    category: "Healthcare Services", 
     description: "Consolidation of MSK clinics.",
     isRepresentative: true
   },
@@ -20,8 +20,8 @@ const activePortfolio = [
   },
   { 
     name: "Contact", 
-    category: "Marketing", 
-    description: "Influencer marketing platform." 
+    category: "Marketplace", 
+    description: "Marketplace to book creative talent." 
   },
   { 
     name: "Edvisor", 
@@ -30,12 +30,12 @@ const activePortfolio = [
   },
   { 
     name: "Elective", 
-    category: "EdTech", 
-    description: "Live virtual learning marketplace." 
+    category: "Lending", 
+    description: "BNPL for digital entrepreneurs." 
   },
   { 
     name: "Fatigue Science", 
-    category: "Workforce Analytics", 
+    category: "Enterprise SaaS", 
     description: "Predictive fatigue analytics." 
   },
   { 
@@ -45,13 +45,13 @@ const activePortfolio = [
   },
   { 
     name: "Flint", 
-    category: "Healthcare Recruiting", 
+    category: "Healthcare Services", 
     description: "Specialized recruiting and HR.",
     isRepresentative: true
   },
   { 
     name: "Klue", 
-    category: "Competitive Intelligence", 
+    category: "Enterprise SaaS", 
     description: "AI-powered competitive enablement." 
   },
   { 
@@ -72,17 +72,17 @@ const activePortfolio = [
   { 
     name: "Pluto", 
     category: "FinTech", 
-    description: "Investment and trading platform." 
+    description: "Spend management and payments." 
   },
   { 
     name: "Quinn AI", 
     category: "AI", 
-    description: "AI-powered business tools." 
+    description: "AI-powered revenue operations." 
   },
   { 
     name: "ShopVision", 
-    category: "Retail Tech", 
-    description: "Retail analytics platform." 
+    category: "AI", 
+    description: "AI-powered eCommerce analytics." 
   },
   { 
     name: "Showbie", 
@@ -91,30 +91,30 @@ const activePortfolio = [
   },
   { 
     name: "Side Door", 
-    category: "Music", 
-    description: "Artist-hosted concert marketplace." 
+    category: "Marketplace", 
+    description: "Live show marketplace." 
   },
   { 
     name: "Stem Health", 
     category: "Healthcare Services", 
-    description: "Proactive preventative care platform.",
+    description: "Private-pay primary health.",
     isRepresentative: true
   },
   { 
     name: "SuperAdvisor", 
     category: "FinTech", 
-    description: "Expert network platform." 
+    description: "Wealth management technology." 
   },
   { 
     name: "Twig Fertility", 
     category: "Healthcare Services", 
-    description: "National reproductive healthcare brand.",
+    description: "Reproductive healthcare.",
     isRepresentative: true
   },
   { 
     name: "Upper Village", 
     category: "Healthcare Services", 
-    description: "Associate-owner clinic network.",
+    description: "Animal health.",
     isRepresentative: true
   }
 ];
