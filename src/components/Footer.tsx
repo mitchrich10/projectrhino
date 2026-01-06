@@ -14,24 +14,24 @@ const ContactSection: FC = () => {
           <img 
             src={foundersHike} 
             alt="ShopVision and Rhino team" 
-            className="w-full h-full object-cover opacity-25"
+            className="w-full h-full object-cover opacity-40"
           />
         </div>
         <div className="relative overflow-hidden">
           <img 
             src={foundersPickleball} 
             alt="FSPAN and Rhino team" 
-            className="w-full h-full object-cover opacity-25"
+            className="w-full h-full object-cover opacity-40"
           />
         </div>
         <div className="relative overflow-hidden">
           <img 
             src={foundersOntopical} 
             alt="Ontopical and Rhino team" 
-            className="w-full h-full object-cover opacity-25"
+            className="w-full h-full object-cover opacity-40"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary/80 via-background/60 to-background/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-background/40 to-background/80" />
       </div>
 
       <div className="relative z-10">
