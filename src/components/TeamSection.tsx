@@ -62,10 +62,10 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, bio, photo }) => (
 
 const TeamSection: FC = () => {
   return (
-    <section id="team" className="py-32 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
+    <section id="team" className="pt-12 pb-32 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
       <div className="max-w-7xl mx-auto">
-        {/* Founder relationship photos - moved above Meet The Team */}
-        <div className="mb-20">
+        {/* Founder relationship photos - closer to portfolio */}
+        <div className="mb-32">
           <p className="text-center text-sm text-muted-foreground mb-6 uppercase tracking-wider font-medium">
             Building relationships with our founders
           </p>
