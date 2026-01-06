@@ -4,7 +4,7 @@ import { PortfolioCard, PortfolioCardEmpty } from "./PortfolioCard";
 const activePortfolio = [
   { 
     name: "Arlo", 
-    category: "Physical Therapy", 
+    category: "Healthcare", 
     description: "Consolidation of MSK clinics.",
     isRepresentative: true
   },
