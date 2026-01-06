@@ -14,7 +14,7 @@ const ContactSection: FC = () => {
           <img 
             src={foundersHike} 
             alt="ShopVision and Rhino team" 
-            className="w-full h-full object-cover object-[center_60%] opacity-40"
+            className="w-full h-full object-cover object-[center_75%] opacity-40"
           />
         </div>
         <div className="relative overflow-hidden">
@@ -34,25 +34,21 @@ const ContactSection: FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-background/40 to-background/80" />
       </div>
 
-      <div className="relative z-10 h-full flex flex-col justify-between max-w-7xl mx-auto w-full">
-        <div className="text-left">
-          <Link to="/contact">
-            <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter text-foreground hover:text-primary transition-colors cursor-pointer">
-              Let's Build.
-            </h2>
-          </Link>
-        </div>
-        <div className="text-left">
-          <a 
-            href="mailto:hello@rhinovc.com" 
-            className="text-2xl md:text-4xl font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
-          >
-            hello@rhinovc.com
-          </a>
-          <p className="text-sm font-medium text-muted-foreground mt-4">
-            Investing out of Vancouver in exceptional companies across Canada
-          </p>
-        </div>
+      <div className="relative z-10 max-w-7xl mx-auto w-full text-left">
+        <Link to="/contact">
+          <h2 className="text-6xl md:text-9xl font-black uppercase tracking-tighter text-foreground hover:text-primary transition-colors cursor-pointer mb-6">
+            Let's Build.
+          </h2>
+        </Link>
+        <a 
+          href="mailto:hello@rhinovc.com" 
+          className="text-2xl md:text-4xl font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
+        >
+          hello@rhinovc.com
+        </a>
+        <p className="text-sm font-medium text-muted-foreground mt-4">
+          Investing out of Vancouver in exceptional companies across Canada
+        </p>
       </div>
     </section>
   );
