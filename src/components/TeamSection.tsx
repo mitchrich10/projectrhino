@@ -5,6 +5,9 @@ import jayPhoto from "@/assets/team-jay.png";
 import candacePhoto from "@/assets/team-candace.png";
 import nicholasPhoto from "@/assets/team-nicholas.png";
 import mitchPhoto from "@/assets/team-mitch.jpg";
+import foundersHike from "@/assets/founders-hike.jpg";
+import foundersPickleball from "@/assets/founders-pickleball.jpg";
+import foundersOntopical from "@/assets/founders-ontopical.jpg";
 
 interface TeamMember {
   name: string;
@@ -71,13 +74,43 @@ const TeamSection: FC = () => {
         </div>
 
         {/* Team photo */}
-        <div className="mb-20">
+        <div className="mb-16">
           <div className="overflow-hidden rounded-sm">
             <img 
               src={teamGroup} 
               alt="The Rhino team" 
               className="w-full h-auto object-contain"
             />
+          </div>
+        </div>
+
+        {/* Founder relationship photos */}
+        <div className="mb-20">
+          <p className="text-center text-sm text-muted-foreground mb-6 uppercase tracking-wider font-medium">
+            Building relationships with our founders
+          </p>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="overflow-hidden rounded-sm aspect-[4/3]">
+              <img 
+                src={foundersHike} 
+                alt="Rhino team hiking with founders" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="overflow-hidden rounded-sm aspect-[4/3]">
+              <img 
+                src={foundersPickleball} 
+                alt="Rhino team and founders at pickleball event" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div className="overflow-hidden rounded-sm aspect-[4/3]">
+              <img 
+                src={foundersOntopical} 
+                alt="Celebrating with Ontopical founders" 
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
           </div>
         </div>
 
