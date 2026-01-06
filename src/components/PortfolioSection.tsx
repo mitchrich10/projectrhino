@@ -135,7 +135,7 @@ const exitedPortfolio = [
 
 const PortfolioSection: FC = () => {
   return (
-    <section id="portfolio" className="py-32 px-6 bg-gradient-to-b from-secondary via-background to-background">
+    <section id="portfolio" className="pt-32 pb-16 px-6 bg-gradient-to-b from-secondary via-background to-background">
       <div className="max-w-7xl mx-auto">
         {/* Active Portfolio */}
         <div className="mb-24">
