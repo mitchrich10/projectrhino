@@ -39,10 +39,6 @@ const Contact: FC = () => {
 
             {/* Form */}
             <div>
-              <p className="text-muted-foreground mb-10 leading-relaxed">
-                As investors, we know resources are constrained. We also know that cutting through the noise of prospective early-stage investors is a slog. This is why one of our core tenets is to respect founders' time; we commit to responding to every inquiry within one week's time.
-              </p>
-
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="space-y-2">
