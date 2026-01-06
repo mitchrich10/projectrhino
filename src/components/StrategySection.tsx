@@ -19,8 +19,8 @@ const strategyItems = [
     icon: <DollarSign className="w-5 h-5" /> 
   },
   { 
-    title: "FIRST PARTNER", 
-    desc: "Comfortable being the first and only institutional partner.", 
+    title: "DURABLE BUSINESS MODELS", 
+    desc: "We partner with businesses built to generate real cash flow and endure over time — and are comfortable investing before profitability.", 
     icon: <Layers className="w-5 h-5" /> 
   }
 ];
@@ -46,17 +46,33 @@ const StrategySection: FC = () => {
           ))}
         </div>
 
-        {/* How We Invest Placeholder */}
-        <div className="border-2 border-dashed border-border/60 bg-card/40 p-12 text-center">
-          <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-2">
-            Coming Soon
-          </p>
-          <h4 className="text-2xl font-black uppercase tracking-tighter mb-4">
-            How We Invest
+        {/* How We Invest */}
+        <div className="border-2 border-border/60 bg-card/80 p-12">
+          <h4 className="text-xs font-bold uppercase tracking-ultra text-primary mb-6">
+            Where We Partner
           </h4>
-          <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            Placeholder section for investment process and methodology.
-          </p>
+          
+          <div className="space-y-6 max-w-3xl">
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              We invest across the business lifecycle — from building new platforms to partnering in established companies. We work closely with operators looking to build, buy, or scale businesses and take them to the next stage of growth.
+            </p>
+            
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              This includes partnering with entrepreneurs by acquisition, industry operators stepping into ownership, and founders seeking a long-term capital partner to help professionalize and scale.
+            </p>
+            
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              We move with urgency and conviction, typically completing diligence and making decisions within four weeks.
+            </p>
+            
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              Capital is only useful if it comes with judgment. Post-investment, we actively support our partners through key inflection points, including strategy development, hiring, systems, capital planning, and acquisitions.
+            </p>
+            
+            <p className="text-foreground text-sm font-semibold mt-8 border-l-2 border-primary pl-4">
+              We invest with the mindset of long-term owners, not short-term capital.
+            </p>
+          </div>
         </div>
       </div>
     </section>
