@@ -46,32 +46,59 @@ const StrategySection: FC = () => {
           ))}
         </div>
 
-        {/* How We Invest */}
-        <div className="border-2 border-border/60 bg-card/80 p-12">
-          <h4 className="text-xs font-bold uppercase tracking-ultra text-primary mb-6">
-            Where We Partner
-          </h4>
-          
-          <div className="space-y-6 max-w-3xl">
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              We invest across the business lifecycle — from building new platforms to partnering in established companies. We work closely with operators looking to build, buy, or scale businesses and take them to the next stage of growth.
-            </p>
+        {/* Where We Partner */}
+        <div className="border-2 border-border/60 bg-card/80 backdrop-blur-sm p-10 md:p-14">
+          <div className="grid lg:grid-cols-[280px_1fr] gap-10 lg:gap-16">
+            {/* Left column - Title */}
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-ultra text-primary mb-3">
+                Where We Partner
+              </h4>
+              <p className="text-2xl md:text-3xl font-black uppercase tracking-tight text-foreground leading-tight">
+                Across the<br />Business<br />Lifecycle
+              </p>
+            </div>
             
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              This includes partnering with entrepreneurs by acquisition, industry operators stepping into ownership, and founders seeking a long-term capital partner to help professionalize and scale.
-            </p>
-            
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              We move with urgency and conviction, typically completing diligence and making decisions within four weeks.
-            </p>
-            
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Capital is only useful if it comes with judgment. Post-investment, we actively support our partners through key inflection points, including strategy development, hiring, systems, capital planning, and acquisitions.
-            </p>
-            
-            <p className="text-foreground text-sm font-semibold mt-8 border-l-2 border-primary pl-4">
-              We invest with the mindset of long-term owners, not short-term capital.
-            </p>
+            {/* Right column - Content */}
+            <div className="space-y-6">
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                From building new platforms to partnering in established companies. We work closely with operators looking to build, buy, or scale businesses and take them to the next stage of growth.
+              </p>
+              
+              <div className="grid sm:grid-cols-3 gap-4 py-4">
+                <div className="border-l-2 border-primary/40 pl-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Entrepreneurs</p>
+                  <p className="text-xs text-muted-foreground">By acquisition</p>
+                </div>
+                <div className="border-l-2 border-primary/40 pl-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Operators</p>
+                  <p className="text-xs text-muted-foreground">Stepping into ownership</p>
+                </div>
+                <div className="border-l-2 border-primary/40 pl-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-foreground mb-1">Founders</p>
+                  <p className="text-xs text-muted-foreground">Seeking long-term capital</p>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-6 pt-2">
+                <div className="flex-1 bg-secondary/50 p-5 border border-border/40">
+                  <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Speed</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    We move with urgency and conviction, typically completing diligence and making decisions within four weeks.
+                  </p>
+                </div>
+                <div className="flex-1 bg-secondary/50 p-5 border border-border/40">
+                  <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Partnership</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Capital is only useful if it comes with judgment. We actively support partners through strategy, hiring, systems, and acquisitions.
+                  </p>
+                </div>
+              </div>
+              
+              <p className="text-foreground font-semibold text-base mt-6 border-l-2 border-primary pl-4">
+                We invest with the mindset of long-term owners, not short-term capital.
+              </p>
+            </div>
           </div>
         </div>
       </div>
