@@ -20,14 +20,14 @@ const team: TeamMember[] = [
     role: "Investor",
     bio: "Co-founder and former Chairman of Recon Instruments. After a successful exit to Intel in 2015, Fraser co-founded Rhino to support entrepreneurs underserved in Western Canada.",
     photo: fraserPhoto,
-    portfolio: ["Company A", "Company B", "Company C"]
+    portfolio: ["Article", "Aspect Biosystems", "Fatigue Sciences", "Klue", "ShopVision", "Thinkific"]
   },
   {
     name: "Jay Rhind",
     role: "Investor",
     bio: "Co-founded Rhino in 2015. Intensely focused on finding companies not well served by the traditional venture model. Former Adjunct Professor at UBC.",
     photo: jayPhoto,
-    portfolio: ["Company D", "Company E", "Company F"]
+    portfolio: ["Edvisor", "Elective", "FISPAN", "Flint", "MARZ", "Quinn AI", "Showbie", "Twig Fertility", "Upper Village"]
   },
   {
     name: "Candace Hobin",
@@ -40,14 +40,14 @@ const team: TeamMember[] = [
     role: "Investor",
     bio: "Originally from Denmark, passionate about technologies with global impact. Responsible for deal sourcing, due diligence, and supporting portfolio companies.",
     photo: nicholasPhoto,
-    portfolio: ["Company G", "Company H", "Company I"]
+    portfolio: ["Ontopical"]
   },
   {
     name: "Mitch Richardson",
     role: "Investor",
     bio: "Deeply driven to support founders in reaching ambitious goals. Previously spent five years with a Canadian financial services company across North America and Asia.",
     photo: mitchPhoto,
-    portfolio: ["Company J", "Company K", "Company L"]
+    portfolio: ["MyFO", "NetNow", "Stem Health", "Super Advisor"]
   }
 ];
 
