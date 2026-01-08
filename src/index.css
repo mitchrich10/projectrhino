@@ -6,41 +6,54 @@
 
 @layer base {
   :root {
-    --background: 210 10% 96%;
-    --foreground: 210 20% 20%;
+    /* Brand Colors:
+       Black: #000000 | Charcoal: #73787C | Gray: #C5C6C7
+       Pale Blue: #D7E5F0 | Beige: #C9AD93 | Taupe: #554940 | Soft Green: #879A77
+    */
+    --background: 206 43% 95%;
+    --foreground: 22 14% 29%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 20% 20%;
+    --card-foreground: 22 14% 29%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 20%;
+    --popover-foreground: 22 14% 29%;
 
-    --primary: 205 65% 45%;
+    --primary: 22 14% 29%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 10% 92%;
-    --secondary-foreground: 210 20% 20%;
+    --secondary: 210 1% 78%;
+    --secondary-foreground: 22 14% 29%;
 
-    --muted: 210 10% 88%;
-    --muted-foreground: 210 10% 45%;
+    --muted: 206 43% 89%;
+    --muted-foreground: 207 4% 47%;
 
-    --accent: 205 65% 45%;
+    --accent: 93 16% 54%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 10% 85%;
-    --input: 210 10% 85%;
-    --ring: 205 65% 45%;
+    --border: 210 1% 78%;
+    --input: 210 1% 78%;
+    --ring: 22 14% 29%;
 
     --radius: 0rem;
 
     /* Custom tokens */
     --surface-elevated: 0 0% 100%;
-    --surface-hover: 210 10% 94%;
-    --text-tertiary: 210 10% 50%;
-    --border-subtle: 210 10% 90%;
+    --surface-hover: 206 43% 92%;
+    --text-tertiary: 207 4% 47%;
+    --border-subtle: 206 43% 89%;
+    
+    /* Brand palette tokens */
+    --brand-black: 0 0% 0%;
+    --brand-charcoal: 207 4% 47%;
+    --brand-gray: 210 1% 78%;
+    --brand-pale-blue: 206 43% 89%;
+    --brand-beige: 30 32% 68%;
+    --brand-taupe: 22 14% 29%;
+    --brand-soft-green: 93 16% 54%;
   }
 }
 
