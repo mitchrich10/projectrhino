@@ -57,6 +57,12 @@ export default {
         text: {
           tertiary: "hsl(var(--text-tertiary))",
         },
+        rhino: {
+          navy: "hsl(var(--rhino-navy))",
+          forest: "hsl(var(--forest-green))",
+          teal: "hsl(var(--teal-green))",
+          charcoal: "hsl(var(--charcoal))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
