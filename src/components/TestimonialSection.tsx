@@ -5,7 +5,7 @@ const TestimonialSection: FC = () => {
   return (
     <section className="pt-32 pb-20 px-6 bg-secondary">
       <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center gap-12">
+        <div className="flex flex-col md:flex-row items-center gap-12 bg-card/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-lg border border-border/50">
           <div className="flex-shrink-0">
             <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-2 border-border">
               <img 
