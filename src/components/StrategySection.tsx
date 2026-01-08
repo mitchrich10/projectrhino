@@ -31,7 +31,7 @@ const StrategySection: FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-20 text-center">
           <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
-            Fewer Investments.<br />Deeper Conviction.
+            Fewer Investments.<br /><span className="text-primary">Deeper Conviction.</span>
           </h3>
         </div>
 

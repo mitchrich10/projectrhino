@@ -15,7 +15,7 @@ const VerticalCard: FC<VerticalCardProps> = ({ title, items, className }) => {
         className
       )}
     >
-      <h4 className="text-[11px] font-black uppercase tracking-ultra mb-6 text-muted-foreground group-hover:text-foreground transition-colors">
+      <h4 className="text-[11px] font-black uppercase tracking-ultra mb-6 text-primary group-hover:text-primary transition-colors">
         {title}
       </h4>
       <div className="flex flex-wrap gap-x-10 gap-y-4">

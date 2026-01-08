@@ -74,7 +74,7 @@ const TeamSection: FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 text-center">
           <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground mb-4">
-            Meet The Team
+            Meet <span className="text-primary">The Team</span>
           </h3>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Decades of combined technology and entrepreneurial experience
