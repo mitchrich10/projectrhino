@@ -16,7 +16,7 @@ const StatCard: FC<StatCardProps> = ({ title, description, icon, className }) =>
         className
       )}
     >
-      <div className="mb-8 text-muted-foreground">{icon}</div>
+      <div className="mb-8 text-primary">{icon}</div>
       <h4 className="text-sm font-black uppercase tracking-widest mb-4">{title}</h4>
       <p className="text-muted-foreground text-xs leading-relaxed">{description}</p>
     </div>

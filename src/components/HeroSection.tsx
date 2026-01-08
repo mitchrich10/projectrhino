@@ -20,10 +20,10 @@ const HeroSection: FC = () => {
       <div className="max-w-7xl mx-auto w-full z-10 relative">
         <div className="max-w-3xl">
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-8 text-foreground">
-            Scaling Producer Industries.
+            Scaling <span className="text-primary">Producer</span> Industries.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium mb-10 max-w-2xl leading-relaxed">
-            You deserve a capital partner who thinks like an operator.
+            You deserve a capital partner who thinks like an <span className="text-primary font-semibold">operator</span>.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <RhinoButton className="group hover:gap-4">

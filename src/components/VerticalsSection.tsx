@@ -24,7 +24,7 @@ const VerticalsSection: FC = () => {
         <div className="grid lg:grid-cols-12 gap-16">
           <div className="lg:col-span-5">
             <h2 className="text-4xl font-black uppercase tracking-tighter mb-6">
-              Producer Industries
+              <span className="text-primary">Producer</span> Industries
             </h2>
             <div className="border-l-2 border-primary pl-6 max-w-md mb-8">
               <p className="text-sm text-muted-foreground leading-relaxed">
