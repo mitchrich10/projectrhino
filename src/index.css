@@ -6,41 +6,55 @@
 
 @layer base {
   :root {
-    --background: 210 10% 96%;
-    --foreground: 210 20% 20%;
+    /* Matte Black: #0A0B0D */
+    /* Soft Charcoal: #2E3238 */
+    /* Cool Mid Grey: #8F98A3 */
+    /* Light Fog Grey: #F4F6F8 */
+    /* Rhino Navy Blue: #0F1C2E */
+    /* Forest Green: #0B6B3A */
+    /* Bright Teal-Green: #14B8A6 */
+
+    --background: 210 22% 97%;
+    --foreground: 220 13% 5%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 20% 20%;
+    --card-foreground: 220 13% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 20%;
+    --popover-foreground: 220 13% 5%;
 
-    --primary: 205 65% 45%;
+    --primary: 173 80% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 10% 92%;
-    --secondary-foreground: 210 20% 20%;
+    --secondary: 216 10% 20%;
+    --secondary-foreground: 210 22% 97%;
 
-    --muted: 210 10% 88%;
-    --muted-foreground: 210 10% 45%;
+    --muted: 213 11% 60%;
+    --muted-foreground: 216 10% 33%;
 
-    --accent: 205 65% 45%;
+    --accent: 149 81% 23%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 10% 85%;
-    --input: 210 10% 85%;
-    --ring: 205 65% 45%;
+    --border: 213 11% 80%;
+    --input: 213 11% 80%;
+    --ring: 173 80% 40%;
 
     --radius: 0rem;
 
     /* Custom tokens */
     --surface-elevated: 0 0% 100%;
-    --surface-hover: 210 10% 94%;
-    --text-tertiary: 210 10% 50%;
-    --border-subtle: 210 10% 90%;
+    --surface-hover: 210 22% 94%;
+    --text-tertiary: 213 11% 60%;
+    --border-subtle: 213 11% 88%;
+    
+    /* Brand colors */
+    --rhino-navy: 215 51% 12%;
+    --forest-green: 149 81% 23%;
+    --teal-green: 173 80% 40%;
+    --charcoal: 216 10% 20%;
   }
 }
 
