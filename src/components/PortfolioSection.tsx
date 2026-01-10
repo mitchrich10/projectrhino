@@ -120,16 +120,16 @@ const activePortfolio = [
 ];
 
 const exitedPortfolio = [
-  { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "Acquired by FansUnite" },
+  { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "iGaming and eSports" },
   { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation" },
   { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform" },
   { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform" },
   { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform" },
-  { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Learning technology" },
+  { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform" },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics" },
   { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform" },
-  { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Customer experience analytics" },
-  { name: "Thinkific", acquiredBy: "TSX (IPO)", category: "EdTech", description: "Online course platform" },
+  { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Market intelligence for telecommunications" },
+  { name: "Thinkific", acquiredBy: "TSX (IPO)", category: "EdTech", description: "Listed on the TSX (IPO)" },
   { name: "Tutela", acquiredBy: "Comlinkdata", category: "Telecom", description: "Mobile network analytics" }
 ];
 
