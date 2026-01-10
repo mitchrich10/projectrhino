@@ -47,7 +47,7 @@ const team: TeamMember[] = [
     role: "Investor",
     bio: "Deeply driven to support founders in reaching ambitious goals. Previously spent five years with a Canadian financial services company across North America and Asia.",
     photo: mitchPhoto,
-    portfolio: ["MyFO", "NetNow", "Stem Health", "Super Advisor"]
+    portfolio: ["MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"]
   }
 ];
 
