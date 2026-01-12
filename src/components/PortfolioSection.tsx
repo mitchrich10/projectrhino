@@ -129,7 +129,7 @@ const exitedPortfolio = [
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics" },
   { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform" },
   { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Market intelligence for telecommunications" },
-  { name: "Thinkific", acquiredBy: "TSX (IPO)", category: "EdTech", description: "Listed on the TSX (IPO)" },
+  { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform" },
   { name: "Tutela", acquiredBy: "Comlinkdata", category: "Telecom", description: "Mobile network analytics" }
 ];
 
