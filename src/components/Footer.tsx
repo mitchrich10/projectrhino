@@ -14,7 +14,7 @@ const ContactSection: FC = () => {
           <img 
             src={foundersHike} 
             alt="ShopVision and Rhino team" 
-            className="w-full h-full object-cover object-[center_85%] opacity-40"
+            className="w-full h-full object-cover object-[center_70%] opacity-40"
           />
         </div>
         <div className="relative overflow-hidden">
