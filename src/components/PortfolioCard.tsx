@@ -61,6 +61,11 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
         <p className="text-[11px] text-muted-foreground leading-relaxed">
           {description}
         </p>
+        {acquiredBy && (
+          <p className="text-[9px] font-bold uppercase tracking-wider text-primary mt-2">
+            Acquired by {acquiredBy}
+          </p>
+        )}
       </div>
     </div>
   );
