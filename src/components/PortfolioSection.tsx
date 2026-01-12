@@ -140,9 +140,6 @@ const PortfolioSection: FC = () => {
         {/* Active Portfolio */}
         <div className="mb-24">
           <div className="mb-12 text-center">
-            <p className="text-xs font-bold uppercase tracking-ultra text-primary mb-4">
-              Current Investments
-            </p>
             <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
               Active Portfolio
             </h3>
@@ -165,9 +162,6 @@ const PortfolioSection: FC = () => {
         {/* Exited Investments */}
         <div>
           <div className="mb-12 text-center">
-            <p className="text-xs font-bold uppercase tracking-ultra text-muted-foreground mb-4">
-              Successful Outcomes
-            </p>
             <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
               Exits
             </h3>
