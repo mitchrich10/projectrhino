@@ -8,17 +8,22 @@ interface PortfolioCardProps {
   isRepresentative?: boolean;
   acquiredBy?: string;
   logo?: string;
+  logoSize?: "normal" | "large";
   website?: string;
   className?: string;
 }
 
-const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, logo, website, className }) => {
+const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, logo, logoSize = "normal", website, className }) => {
+  const logoClasses = logoSize === "large" 
+    ? "max-h-12 max-w-[160px]" 
+    : "max-h-8 max-w-[140px]";
+
   const content = logo ? (
     <div className="flex-1 flex items-center justify-center py-3">
       <img 
         src={logo} 
         alt={`${name} logo`} 
-        className="max-h-8 max-w-[140px] w-auto h-auto object-contain mix-blend-multiply dark:mix-blend-normal dark:brightness-0 dark:invert"
+        className={cn(logoClasses, "w-auto h-auto object-contain mix-blend-multiply dark:mix-blend-normal dark:brightness-0 dark:invert")}
       />
     </div>
   ) : (

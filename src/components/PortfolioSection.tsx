@@ -89,7 +89,8 @@ const activePortfolio = [
     name: "Marz", 
     category: "VFX", 
     description: "AI-powered visual effects.",
-    logo: logoMarz
+    logo: logoMarz,
+    logoSize: "large"
   },
   { 
     name: "Showbie", 
@@ -105,7 +106,8 @@ const activePortfolio = [
     name: "Aspect Biosystems", 
     category: "Biotech", 
     description: "3D bioprinting technology platform.",
-    logo: logoAspectBiosystems
+    logo: logoAspectBiosystems,
+    logoSize: "large"
   },
   { 
     name: "Fatigue Science", 
@@ -156,10 +158,9 @@ const PortfolioSection: FC = () => {
               <PortfolioCard 
                 key={i}
                 name={p.name}
-                category={p.category}
                 description={p.description}
-                isRepresentative={p.isRepresentative}
                 logo={p.logo}
+                logoSize={p.logoSize as "normal" | "large"}
               />
             ))}
             <PortfolioCardEmpty />
