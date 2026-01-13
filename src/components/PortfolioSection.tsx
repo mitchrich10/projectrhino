@@ -28,6 +28,8 @@ import logoFatigueScience from "@/assets/logo-fatigue-science.png";
 import logoEdvisor from "@/assets/logo-edvisor.png";
 import logoCuratio from "@/assets/logo-curatio.png";
 import logoBeanworks from "@/assets/logo-beanworks.png";
+import logoShowbie from "@/assets/logo-showbie.png";
+import logoAskott from "@/assets/logo-askott.png";
 
 const activePortfolio = [
   { 
@@ -122,7 +124,8 @@ const activePortfolio = [
   { 
     name: "Showbie", 
     category: "EdTech", 
-    description: "Classroom workflow management." 
+    description: "Classroom workflow management.",
+    logo: logoShowbie
   },
   { 
     name: "Edvisor", 
@@ -158,7 +161,7 @@ const activePortfolio = [
 ];
 
 const exitedPortfolio = [
-  { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "iGaming and eSports" },
+  { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "iGaming and eSports", logo: logoAskott },
   { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation", logo: logoBeanworks },
   { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform", logo: logoCuratio },
   { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform", logo: logoGrow },
