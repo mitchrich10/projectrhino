@@ -83,19 +83,24 @@ const activePortfolio = [
     description: "AI-powered visual effects." 
   },
   { 
-    name: "Article", 
-    category: "Ecommerce", 
-    description: "Direct-to-consumer modern furniture." 
+    name: "Side Door", 
+    category: "Marketplace", 
+    description: "Live show marketplace." 
   },
   { 
-    name: "Aspect Biosystems", 
-    category: "Biotech", 
-    description: "3D bioprinting technology platform." 
+    name: "Showbie", 
+    category: "EdTech", 
+    description: "Classroom workflow management." 
   },
   { 
     name: "Edvisor", 
     category: "EdTech", 
     description: "Student recruitment platform." 
+  },
+  { 
+    name: "Aspect Biosystems", 
+    category: "Biotech", 
+    description: "3D bioprinting technology platform." 
   },
   { 
     name: "Fatigue Science", 
@@ -108,14 +113,9 @@ const activePortfolio = [
     description: "AI-powered competitive enablement." 
   },
   { 
-    name: "Showbie", 
-    category: "EdTech", 
-    description: "Classroom workflow management." 
-  },
-  { 
-    name: "Side Door", 
-    category: "Marketplace", 
-    description: "Live show marketplace." 
+    name: "Article", 
+    category: "Ecommerce", 
+    description: "Direct-to-consumer modern furniture." 
   }
 ];
 
