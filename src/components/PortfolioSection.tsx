@@ -20,6 +20,14 @@ import logoSokanu from "@/assets/logo-sokanu.png";
 import logoShopvision from "@/assets/logo-shopvision.png";
 import logoPressboard from "@/assets/logo-pressboard.png";
 import logoPluto from "@/assets/logo-pluto.png";
+import logoOntopical from "@/assets/logo-ontopical.jpg";
+import logoKlue from "@/assets/logo-klue.png";
+import logoGrow from "@/assets/logo-grow.png";
+import logoFispan from "@/assets/logo-fispan.png";
+import logoFatigueScience from "@/assets/logo-fatigue-science.png";
+import logoEdvisor from "@/assets/logo-edvisor.png";
+import logoCuratio from "@/assets/logo-curatio.png";
+import logoBeanworks from "@/assets/logo-beanworks.png";
 
 const activePortfolio = [
   { 
@@ -100,7 +108,9 @@ const activePortfolio = [
   { 
     name: "FISPAN", 
     category: "FinTech", 
-    description: "Embedded banking infrastructure." 
+    description: "Embedded banking infrastructure.",
+    logo: logoFispan,
+    logoSize: "large"
   },
   { 
     name: "Marz", 
@@ -117,7 +127,8 @@ const activePortfolio = [
   { 
     name: "Edvisor", 
     category: "EdTech", 
-    description: "Student recruitment platform." 
+    description: "Student recruitment platform.",
+    logo: logoEdvisor
   },
   { 
     name: "Aspect Biosystems", 
@@ -129,12 +140,14 @@ const activePortfolio = [
   { 
     name: "Fatigue Science", 
     category: "Enterprise SaaS", 
-    description: "Predictive fatigue analytics." 
+    description: "Predictive fatigue analytics.",
+    logo: logoFatigueScience
   },
   { 
     name: "Klue", 
     category: "Enterprise SaaS", 
-    description: "AI-powered competitive enablement." 
+    description: "AI-powered competitive enablement.",
+    logo: logoKlue
   },
   { 
     name: "Article", 
@@ -146,10 +159,10 @@ const activePortfolio = [
 
 const exitedPortfolio = [
   { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "iGaming and eSports" },
-  { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation" },
-  { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform" },
-  { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform" },
-  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform" },
+  { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation", logo: logoBeanworks },
+  { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform", logo: logoCuratio },
+  { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform", logo: logoGrow },
+  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform", logo: logoOntopical },
   { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform", logo: logoPeerboard },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics", logo: logoPressboard },
   { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform", logo: logoSokanu, invertLogo: true },
