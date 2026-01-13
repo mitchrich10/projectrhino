@@ -14,11 +14,13 @@ interface PortfolioCardProps {
 
 const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, isRepresentative, acquiredBy, logo, website, className }) => {
   const content = logo ? (
-    <img 
-      src={logo} 
-      alt={`${name} logo`} 
-      className="h-8 max-w-[160px] object-contain object-left"
-    />
+    <div className="h-7 flex items-center">
+      <img 
+        src={logo} 
+        alt={`${name} logo`} 
+        className="h-full max-w-[140px] object-contain object-left mix-blend-multiply dark:mix-blend-normal dark:brightness-0 dark:invert"
+      />
+    </div>
   ) : (
     <h4 className="text-lg font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary">
       {name}
