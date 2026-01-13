@@ -106,8 +106,7 @@ const activePortfolio = [
     name: "SuperAdvisor", 
     category: "FinTech", 
     description: "Wealth management technology.",
-    logo: logoSuperadvisor,
-    invertLogo: true
+    logo: logoSuperadvisor
   },
   { 
     name: "FISPAN", 
@@ -196,7 +195,7 @@ const PortfolioSection: FC = () => {
                 description={p.description}
                 logo={p.logo}
                 logoSize={p.logoSize as "normal" | "large" | "xlarge"}
-                invertLogo={p.invertLogo}
+                invertLogo={(p as any).invertLogo}
               />
             ))}
             <PortfolioCardEmpty />
