@@ -26,11 +26,6 @@ const VerticalsSection: FC = () => {
             <h2 className="text-4xl font-black uppercase tracking-tighter mb-6">
               <span className="text-primary">Producer</span> Industries
             </h2>
-            <div className="border-l-2 border-primary pl-6 max-w-md mb-8">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
-              </p>
-            </div>
             <p className="text-muted-foreground text-base leading-relaxed max-w-md">
               Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
             </p>
