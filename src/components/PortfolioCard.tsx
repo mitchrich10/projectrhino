@@ -14,15 +14,15 @@ interface PortfolioCardProps {
 
 const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, isRepresentative, acquiredBy, logo, website, className }) => {
   const content = logo ? (
-    <div className="h-7 flex items-center">
+    <div className="w-full h-10 flex items-center justify-center">
       <img 
         src={logo} 
         alt={`${name} logo`} 
-        className="h-full max-w-[140px] object-contain object-left mix-blend-multiply dark:mix-blend-normal dark:brightness-0 dark:invert"
+        className="max-h-10 max-w-[120px] w-auto h-auto object-contain mix-blend-multiply dark:mix-blend-normal dark:brightness-0 dark:invert"
       />
     </div>
   ) : (
-    <h4 className="text-lg font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary">
+    <h4 className="text-lg font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary text-center">
       {name}
     </h4>
   );
@@ -34,8 +34,8 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
         className
       )}
     >
-      <div>
-        <div className="flex items-center gap-2 mb-2">
+      <div className="flex flex-col items-center">
+        <div className="flex items-center gap-2 mb-3">
           <p className="text-[9px] font-black uppercase tracking-mega text-text-tertiary">
             {category}
           </p>
@@ -58,8 +58,8 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, category, description, is
           content
         )}
       </div>
-      <div>
-        <div className="h-px w-0 bg-primary mb-2 group-hover:w-full transition-all duration-500" />
+      <div className="text-center">
+        <div className="h-px w-0 bg-primary mb-2 mx-auto group-hover:w-full transition-all duration-500" />
         <p className="text-[11px] text-muted-foreground leading-relaxed">
           {description}
         </p>
