@@ -9,11 +9,12 @@ interface PortfolioCardProps {
   acquiredBy?: string;
   logo?: string;
   logoSize?: "normal" | "large" | "xlarge";
+  invertLogo?: boolean;
   website?: string;
   className?: string;
 }
 
-const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, logo, logoSize = "normal", website, className }) => {
+const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, logo, logoSize = "normal", invertLogo = false, website, className }) => {
   const logoClasses = {
     normal: "max-h-8 max-w-[140px]",
     large: "max-h-12 max-w-[160px]",
@@ -25,7 +26,11 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       <img 
         src={logo} 
         alt={`${name} logo`} 
-        className={cn(logoClasses, "w-auto h-auto object-contain mix-blend-multiply dark:mix-blend-normal dark:brightness-0 dark:invert")}
+        className={cn(
+          logoClasses, 
+          "w-auto h-auto object-contain",
+          invertLogo ? "invert" : "mix-blend-multiply dark:mix-blend-normal dark:brightness-0 dark:invert"
+        )}
       />
     </div>
   ) : (

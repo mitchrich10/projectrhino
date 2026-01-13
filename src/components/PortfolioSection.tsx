@@ -10,6 +10,16 @@ import logoArticle from "@/assets/logo-article.png";
 import logoAspectBiosystems from "@/assets/logo-aspect-biosystems.png";
 import logoTutela from "@/assets/logo-tutela.png";
 import logoThinkCX from "@/assets/logo-thinkcx.png";
+import logoPeerboard from "@/assets/logo-peerboard.png";
+import logoMyfo from "@/assets/logo-myfo.png";
+import logoElective from "@/assets/logo-elective.png";
+import logoTwig from "@/assets/logo-twig.png";
+import logoThinkific from "@/assets/logo-thinkific.png";
+import logoSuperadvisor from "@/assets/logo-superadvisor.png";
+import logoSokanu from "@/assets/logo-sokanu.png";
+import logoShopvision from "@/assets/logo-shopvision.png";
+import logoPressboard from "@/assets/logo-pressboard.png";
+import logoPluto from "@/assets/logo-pluto.png";
 
 const activePortfolio = [
   { 
@@ -46,7 +56,8 @@ const activePortfolio = [
   { 
     name: "ShopVision", 
     category: "AI", 
-    description: "AI-powered eCommerce analytics." 
+    description: "AI-powered eCommerce analytics.",
+    logo: logoShopvision
   },
   { 
     name: "NetNow", 
@@ -57,28 +68,34 @@ const activePortfolio = [
   { 
     name: "Pluto", 
     category: "FinTech", 
-    description: "Spend management and payments." 
+    description: "Spend management and payments.",
+    logo: logoPluto
   },
   { 
     name: "Elective", 
     category: "Lending", 
-    description: "BNPL for digital entrepreneurs." 
+    description: "BNPL for digital entrepreneurs.",
+    logo: logoElective
   },
   { 
     name: "MYFO", 
     category: "FinTech", 
-    description: "Family office technology." 
+    description: "Family office technology.",
+    logo: logoMyfo
   },
   { 
     name: "Twig Fertility", 
     category: "Healthcare Services", 
     description: "Reproductive healthcare.",
-    isRepresentative: true
+    isRepresentative: true,
+    logo: logoTwig
   },
   { 
     name: "SuperAdvisor", 
     category: "FinTech", 
-    description: "Wealth management technology." 
+    description: "Wealth management technology.",
+    logo: logoSuperadvisor,
+    invertLogo: true
   },
   { 
     name: "FISPAN", 
@@ -133,11 +150,11 @@ const exitedPortfolio = [
   { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform" },
   { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform" },
   { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform" },
-  { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform" },
-  { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics" },
-  { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform" },
+  { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform", logo: logoPeerboard },
+  { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics", logo: logoPressboard },
+  { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform", logo: logoSokanu, invertLogo: true },
   { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Market intelligence for telecommunications", logo: logoThinkCX },
-  { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform" },
+  { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform", logo: logoThinkific },
   { name: "Tutela", acquiredBy: "Comlinkdata", category: "Telecom", description: "Mobile network analytics", logo: logoTutela }
 ];
 
@@ -161,6 +178,7 @@ const PortfolioSection: FC = () => {
                 description={p.description}
                 logo={p.logo}
                 logoSize={p.logoSize as "normal" | "large" | "xlarge"}
+                invertLogo={p.invertLogo}
               />
             ))}
             <PortfolioCardEmpty />
@@ -180,10 +198,10 @@ const PortfolioSection: FC = () => {
               <PortfolioCard 
                 key={i}
                 name={p.name}
-                category={p.category}
                 description={p.description}
                 acquiredBy={p.acquiredBy}
                 logo={p.logo}
+                invertLogo={p.invertLogo}
               />
             ))}
           </div>
