@@ -30,6 +30,7 @@ import logoCuratio from "@/assets/logo-curatio.png";
 import logoBeanworks from "@/assets/logo-beanworks.png";
 import logoShowbie from "@/assets/logo-showbie.png";
 import logoAskott from "@/assets/logo-askott.png";
+import logoFlint from "@/assets/logo-flint.png";
 
 const activePortfolio = [
   { 
@@ -49,7 +50,8 @@ const activePortfolio = [
     name: "Flint", 
     category: "Healthcare Services", 
     description: "Specialized recruiting and HR.",
-    isRepresentative: true
+    isRepresentative: true,
+    logo: logoFlint
   },
   { 
     name: "Stem Health", 
