@@ -1,6 +1,16 @@
 import { FC } from "react";
 import { PortfolioCard, PortfolioCardEmpty } from "./PortfolioCard";
 
+// Logo imports
+import logoMarz from "@/assets/logo-marz.jpg";
+import logoQuinnAI from "@/assets/logo-quinn-ai.png";
+import logoUpperVillage from "@/assets/logo-upper-village.png";
+import logoNetNow from "@/assets/logo-netnow.png";
+import logoArticle from "@/assets/logo-article.png";
+import logoAspectBiosystems from "@/assets/logo-aspect-biosystems.png";
+import logoTutela from "@/assets/logo-tutela.png";
+import logoThinkCX from "@/assets/logo-thinkcx.png";
+
 const activePortfolio = [
   { 
     name: "Arlo", 
@@ -12,7 +22,8 @@ const activePortfolio = [
     name: "Upper Village", 
     category: "Healthcare Services", 
     description: "Animal health.",
-    isRepresentative: true
+    isRepresentative: true,
+    logo: logoUpperVillage
   },
   { 
     name: "Flint", 
@@ -29,7 +40,8 @@ const activePortfolio = [
   { 
     name: "Quinn AI", 
     category: "AI", 
-    description: "AI-powered revenue operations." 
+    description: "AI-powered revenue operations.",
+    logo: logoQuinnAI
   },
   { 
     name: "ShopVision", 
@@ -39,7 +51,8 @@ const activePortfolio = [
   { 
     name: "NetNow", 
     category: "FinTech", 
-    description: "B2B credit and payments platform." 
+    description: "B2B credit and payments platform.",
+    logo: logoNetNow
   },
   { 
     name: "Pluto", 
@@ -75,7 +88,8 @@ const activePortfolio = [
   { 
     name: "Marz", 
     category: "VFX", 
-    description: "AI-powered visual effects." 
+    description: "AI-powered visual effects.",
+    logo: logoMarz
   },
   { 
     name: "Showbie", 
@@ -90,7 +104,8 @@ const activePortfolio = [
   { 
     name: "Aspect Biosystems", 
     category: "Biotech", 
-    description: "3D bioprinting technology platform." 
+    description: "3D bioprinting technology platform.",
+    logo: logoAspectBiosystems
   },
   { 
     name: "Fatigue Science", 
@@ -105,7 +120,8 @@ const activePortfolio = [
   { 
     name: "Article", 
     category: "Ecommerce", 
-    description: "Direct-to-consumer modern furniture." 
+    description: "Direct-to-consumer modern furniture.",
+    logo: logoArticle
   }
 ];
 
@@ -118,9 +134,9 @@ const exitedPortfolio = [
   { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform" },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics" },
   { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform" },
-  { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Market intelligence for telecommunications" },
+  { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Market intelligence for telecommunications", logo: logoThinkCX },
   { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform" },
-  { name: "Tutela", acquiredBy: "Comlinkdata", category: "Telecom", description: "Mobile network analytics" }
+  { name: "Tutela", acquiredBy: "Comlinkdata", category: "Telecom", description: "Mobile network analytics", logo: logoTutela }
 ];
 
 const PortfolioSection: FC = () => {
@@ -143,6 +159,7 @@ const PortfolioSection: FC = () => {
                 category={p.category}
                 description={p.description}
                 isRepresentative={p.isRepresentative}
+                logo={p.logo}
               />
             ))}
             <PortfolioCardEmpty />
@@ -165,6 +182,7 @@ const PortfolioSection: FC = () => {
                 category={p.category}
                 description={p.description}
                 acquiredBy={p.acquiredBy}
+                logo={p.logo}
               />
             ))}
           </div>
