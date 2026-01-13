@@ -107,7 +107,7 @@ const activePortfolio = [
     category: "Biotech", 
     description: "3D bioprinting technology platform.",
     logo: logoAspectBiosystems,
-    logoSize: "large"
+    logoSize: "xlarge"
   },
   { 
     name: "Fatigue Science", 
@@ -160,7 +160,7 @@ const PortfolioSection: FC = () => {
                 name={p.name}
                 description={p.description}
                 logo={p.logo}
-                logoSize={p.logoSize as "normal" | "large"}
+                logoSize={p.logoSize as "normal" | "large" | "xlarge"}
               />
             ))}
             <PortfolioCardEmpty />
