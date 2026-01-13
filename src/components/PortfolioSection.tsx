@@ -68,11 +68,6 @@ const activePortfolio = [
     description: "Wealth management technology." 
   },
   { 
-    name: "Contact", 
-    category: "Marketplace", 
-    description: "Marketplace to book creative talent." 
-  },
-  { 
     name: "FISPAN", 
     category: "FinTech", 
     description: "Embedded banking infrastructure." 
@@ -81,11 +76,6 @@ const activePortfolio = [
     name: "Marz", 
     category: "VFX", 
     description: "AI-powered visual effects." 
-  },
-  { 
-    name: "Side Door", 
-    category: "Marketplace", 
-    description: "Live show marketplace." 
   },
   { 
     name: "Showbie", 
