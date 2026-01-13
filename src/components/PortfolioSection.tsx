@@ -9,39 +9,10 @@ const activePortfolio = [
     isRepresentative: true
   },
   { 
-    name: "Article", 
-    category: "Ecommerce", 
-    description: "Direct-to-consumer modern furniture." 
-  },
-  { 
-    name: "Aspect Biosystems", 
-    category: "Biotech", 
-    description: "3D bioprinting technology platform." 
-  },
-  { 
-    name: "Contact", 
-    category: "Marketplace", 
-    description: "Marketplace to book creative talent." 
-  },
-  { 
-    name: "Edvisor", 
-    category: "EdTech", 
-    description: "Student recruitment platform." 
-  },
-  { 
-    name: "Elective", 
-    category: "Lending", 
-    description: "BNPL for digital entrepreneurs." 
-  },
-  { 
-    name: "Fatigue Science", 
-    category: "Enterprise SaaS", 
-    description: "Predictive fatigue analytics." 
-  },
-  { 
-    name: "FISPAN", 
-    category: "FinTech", 
-    description: "Embedded banking infrastructure." 
+    name: "Upper Village", 
+    category: "Healthcare Services", 
+    description: "Animal health.",
+    isRepresentative: true
   },
   { 
     name: "Flint", 
@@ -50,29 +21,10 @@ const activePortfolio = [
     isRepresentative: true
   },
   { 
-    name: "Klue", 
-    category: "Enterprise SaaS", 
-    description: "AI-powered competitive enablement." 
-  },
-  { 
-    name: "Marz", 
-    category: "VFX", 
-    description: "AI-powered visual effects." 
-  },
-  { 
-    name: "MYFO", 
-    category: "FinTech", 
-    description: "Family office technology." 
-  },
-  { 
-    name: "NetNow", 
-    category: "FinTech", 
-    description: "B2B credit and payments platform." 
-  },
-  { 
-    name: "Pluto", 
-    category: "FinTech", 
-    description: "Spend management and payments." 
+    name: "Stem Health", 
+    category: "Healthcare Services", 
+    description: "Private-pay primary health.",
+    isRepresentative: true
   },
   { 
     name: "Quinn AI", 
@@ -85,25 +37,24 @@ const activePortfolio = [
     description: "AI-powered eCommerce analytics." 
   },
   { 
-    name: "Showbie", 
-    category: "EdTech", 
-    description: "Classroom workflow management." 
-  },
-  { 
-    name: "Side Door", 
-    category: "Marketplace", 
-    description: "Live show marketplace." 
-  },
-  { 
-    name: "Stem Health", 
-    category: "Healthcare Services", 
-    description: "Private-pay primary health.",
-    isRepresentative: true
-  },
-  { 
-    name: "SuperAdvisor", 
+    name: "NetNow", 
     category: "FinTech", 
-    description: "Wealth management technology." 
+    description: "B2B credit and payments platform." 
+  },
+  { 
+    name: "Pluto", 
+    category: "FinTech", 
+    description: "Spend management and payments." 
+  },
+  { 
+    name: "Elective", 
+    category: "Lending", 
+    description: "BNPL for digital entrepreneurs." 
+  },
+  { 
+    name: "MYFO", 
+    category: "FinTech", 
+    description: "Family office technology." 
   },
   { 
     name: "Twig Fertility", 
@@ -112,10 +63,59 @@ const activePortfolio = [
     isRepresentative: true
   },
   { 
-    name: "Upper Village", 
-    category: "Healthcare Services", 
-    description: "Animal health.",
-    isRepresentative: true
+    name: "SuperAdvisor", 
+    category: "FinTech", 
+    description: "Wealth management technology." 
+  },
+  { 
+    name: "Contact", 
+    category: "Marketplace", 
+    description: "Marketplace to book creative talent." 
+  },
+  { 
+    name: "FISPAN", 
+    category: "FinTech", 
+    description: "Embedded banking infrastructure." 
+  },
+  { 
+    name: "Marz", 
+    category: "VFX", 
+    description: "AI-powered visual effects." 
+  },
+  { 
+    name: "Article", 
+    category: "Ecommerce", 
+    description: "Direct-to-consumer modern furniture." 
+  },
+  { 
+    name: "Aspect Biosystems", 
+    category: "Biotech", 
+    description: "3D bioprinting technology platform." 
+  },
+  { 
+    name: "Edvisor", 
+    category: "EdTech", 
+    description: "Student recruitment platform." 
+  },
+  { 
+    name: "Fatigue Science", 
+    category: "Enterprise SaaS", 
+    description: "Predictive fatigue analytics." 
+  },
+  { 
+    name: "Klue", 
+    category: "Enterprise SaaS", 
+    description: "AI-powered competitive enablement." 
+  },
+  { 
+    name: "Showbie", 
+    category: "EdTech", 
+    description: "Classroom workflow management." 
+  },
+  { 
+    name: "Side Door", 
+    category: "Marketplace", 
+    description: "Live show marketplace." 
   }
 ];
 
