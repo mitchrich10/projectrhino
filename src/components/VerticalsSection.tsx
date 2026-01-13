@@ -1,47 +1,59 @@
 import { FC } from "react";
 
-import { VerticalCard } from "./VerticalCard";
+const healthcareProducers = [
+  { role: "Reproductive Endocrinologist", vertical: "Fertility" },
+  { role: "Doctor of Veterinary Medicine", vertical: "Veterinary" },
+  { role: "Physiotherapist", vertical: "Physical Therapy" },
+];
 
-const verticals = [
-  {
-    title: "Healthcare",
-    items: ["Fertility", "Veterinary", "Physical Therapy", "Imaging"],
-  },
-  {
-    title: "Finance",
-    items: ["Wealth Management", "Insurance", "Accounting", "Estate Planning"],
-  },
-  {
-    title: "Enterprise",
-    items: ["IT Services", "HR & Recruiting", "Managed Services"],
-  }
+const financeProducers = [
+  { role: "Wealth Advisor", vertical: "Wealth Management" },
+  { role: "Broker", vertical: "Insurance" },
+  { role: "Chartered Professional Accountant", vertical: "Accounting" },
 ];
 
 const VerticalsSection: FC = () => {
   return (
-    <section id="verticals" className="py-20 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
+    <section id="verticals" className="py-20 px-6 bg-gradient-to-b from-secondary via-secondary to-background">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-5">
-            <h2 className="text-4xl font-black uppercase tracking-tighter mb-6">
-              <span className="text-primary">Producer</span> Industries
-            </h2>
-            <p className="text-muted-foreground text-base leading-relaxed max-w-md">
-              Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
-            </p>
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-black uppercase tracking-tighter mb-4">
+            <span className="text-primary">Producer</span> Industries
+          </h2>
+          <p className="text-muted-foreground text-base leading-relaxed max-w-2xl mx-auto">
+            Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
+          </p>
+        </div>
+
+        {/* Two Tiles */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Healthcare Tile */}
+          <div className="border-2 border-border/60 bg-card/80 backdrop-blur-sm p-8 shadow-sm hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 transition-all duration-300">
+            <h4 className="text-[11px] font-black uppercase tracking-ultra mb-6 text-primary">
+              Healthcare
+            </h4>
+            <div className="space-y-4">
+              {healthcareProducers.map((item, idx) => (
+                <div key={idx} className="flex items-baseline justify-between gap-4">
+                  <span className="text-sm font-bold text-foreground">{item.role}</span>
+                  <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="lg:col-span-7">
-            <p className="text-xs font-bold uppercase tracking-ultra text-muted-foreground mb-4">
-              Example Verticals
-            </p>
-            <div className="grid gap-4">
-              {verticals.map((v, i) => (
-                <VerticalCard 
-                  key={i}
-                  title={v.title}
-                  items={v.items}
-                />
+          {/* Finance Tile */}
+          <div className="border-2 border-border/60 bg-card/80 backdrop-blur-sm p-8 shadow-sm hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 transition-all duration-300">
+            <h4 className="text-[11px] font-black uppercase tracking-ultra mb-6 text-primary">
+              Finance
+            </h4>
+            <div className="space-y-4">
+              {financeProducers.map((item, idx) => (
+                <div key={idx} className="flex items-baseline justify-between gap-4">
+                  <span className="text-sm font-bold text-foreground">{item.role}</span>
+                  <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
+                </div>
               ))}
             </div>
           </div>
