@@ -32,7 +32,7 @@ const VerticalsSection: FC = () => {
               </p>
             </div>
             <p className="text-muted-foreground text-base leading-relaxed max-w-md">
-              We invest in industries driven by skilled professionals where technology and systems unlock unique advantages.
+              Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
             </p>
           </div>
 
