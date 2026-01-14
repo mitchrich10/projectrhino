@@ -15,7 +15,7 @@ const strategyItems = [
   },
   { 
     title: "DURABLE BUSINESS MODELS", 
-    desc: "Built for real cash flow. Comfortable investing pre-profitability.", 
+    desc: "Path to cash flow generation, but comfortable investing pre-profitability.", 
     icon: <Layers className="w-5 h-5" /> 
   }
 ];
