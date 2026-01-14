@@ -32,20 +32,18 @@ const VerticalsSection: FC = () => {
         <div className="grid md:grid-cols-2 gap-6">
           {/* Healthcare Tile */}
           <div className="border-2 border-border/60 bg-card/80 backdrop-blur-sm p-8 shadow-sm hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 transition-all duration-300">
-            <h4 className="text-[11px] font-black uppercase tracking-ultra mb-6 text-primary">
+            <h4 className="text-[11px] font-black uppercase tracking-ultra mb-4 text-primary">
               Healthcare
             </h4>
-            <div className="space-y-4">
+            <div className="flex items-baseline justify-between gap-4 mb-3 border-b border-border/40 pb-2">
+              <span className="text-[10px] uppercase tracking-widest text-primary font-bold">Producer</span>
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60">Industry</span>
+            </div>
+            <div className="space-y-3">
               {healthcareProducers.map((item, idx) => (
                 <div key={idx} className="flex items-baseline justify-between gap-4">
-                  <div>
-                    <span className="text-sm font-bold text-foreground">{item.role}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-primary ml-2">Producer</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 ml-2">Industry</span>
-                  </div>
+                  <span className="text-sm font-bold text-foreground">{item.role}</span>
+                  <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
                 </div>
               ))}
             </div>
@@ -53,20 +51,18 @@ const VerticalsSection: FC = () => {
 
           {/* Finance Tile */}
           <div className="border-2 border-border/60 bg-card/80 backdrop-blur-sm p-8 shadow-sm hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 transition-all duration-300">
-            <h4 className="text-[11px] font-black uppercase tracking-ultra mb-6 text-primary">
+            <h4 className="text-[11px] font-black uppercase tracking-ultra mb-4 text-primary">
               Finance
             </h4>
-            <div className="space-y-4">
+            <div className="flex items-baseline justify-between gap-4 mb-3 border-b border-border/40 pb-2">
+              <span className="text-[10px] uppercase tracking-widest text-primary font-bold">Producer</span>
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60">Industry</span>
+            </div>
+            <div className="space-y-3">
               {financeProducers.map((item, idx) => (
                 <div key={idx} className="flex items-baseline justify-between gap-4">
-                  <div>
-                    <span className="text-sm font-bold text-foreground">{item.role}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-primary ml-2">Producer</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
-                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 ml-2">Industry</span>
-                  </div>
+                  <span className="text-sm font-bold text-foreground">{item.role}</span>
+                  <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
                 </div>
               ))}
             </div>
