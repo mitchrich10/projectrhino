@@ -12,13 +12,18 @@ const TestimonialSection: FC = () => {
     <section className="pt-24 pb-20 px-6 bg-secondary">
       <div className="max-w-4xl mx-auto">
         {/* Highlights */}
-        <div className="flex justify-center gap-12 md:gap-20 mb-16">
-          {highlights.map((item, idx) => (
-            <div key={idx} className="text-center">
-              <p className="text-4xl md:text-5xl font-black text-primary">{item.value}</p>
-              <p className="text-xs uppercase tracking-widest text-muted-foreground mt-2">{item.label}</p>
-            </div>
-          ))}
+        <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-lg border border-border/50 mb-16">
+          <p className="text-xl md:text-2xl font-bold text-foreground text-center mb-8">
+            We partner with ambitious builders to scale enduring companies.
+          </p>
+          <div className="flex justify-center gap-12 md:gap-20">
+            {highlights.map((item, idx) => (
+              <div key={idx} className="text-center">
+                <p className="text-4xl md:text-5xl font-black text-primary">{item.value}</p>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground mt-2">{item.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Zach Quote */}
