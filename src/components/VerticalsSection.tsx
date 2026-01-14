@@ -8,7 +8,7 @@ const healthcareProducers = [
 
 const financeProducers = [
   { role: "Wealth Advisor", vertical: "Wealth Management" },
-  { role: "Broker", vertical: "Insurance" },
+  { role: "Insurance Broker", vertical: "Insurance" },
   { role: "Chartered Professional Accountant", vertical: "Accounting" },
 ];
 
@@ -17,14 +17,16 @@ const VerticalsSection: FC = () => {
     <section id="verticals" className="py-20 px-6 bg-gradient-to-b from-secondary via-secondary to-background">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-6">
           <h2 className="text-4xl font-black uppercase tracking-tighter mb-4">
             <span className="text-primary">Producer</span> Industries
           </h2>
-          <p className="text-muted-foreground text-base leading-relaxed max-w-2xl mx-auto">
-            Producers are experts whose productivity translates directly into their firm's revenue, margin and growth profile.
-          </p>
         </div>
+        
+        {/* Full-width description */}
+        <p className="text-muted-foreground text-base leading-relaxed mb-12">
+          From building new platforms to partnering in established companies. We work closely with operators looking to buy or scale businesses and take them to the next stage of growth.
+        </p>
 
         {/* Two Tiles */}
         <div className="grid md:grid-cols-2 gap-6">
@@ -36,8 +38,14 @@ const VerticalsSection: FC = () => {
             <div className="space-y-4">
               {healthcareProducers.map((item, idx) => (
                 <div key={idx} className="flex items-baseline justify-between gap-4">
-                  <span className="text-sm font-bold text-foreground">{item.role}</span>
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
+                  <div>
+                    <span className="text-sm font-bold text-foreground">{item.role}</span>
+                    <span className="text-[10px] uppercase tracking-widest text-primary ml-2">Producer</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 ml-2">Industry</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -51,8 +59,14 @@ const VerticalsSection: FC = () => {
             <div className="space-y-4">
               {financeProducers.map((item, idx) => (
                 <div key={idx} className="flex items-baseline justify-between gap-4">
-                  <span className="text-sm font-bold text-foreground">{item.role}</span>
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
+                  <div>
+                    <span className="text-sm font-bold text-foreground">{item.role}</span>
+                    <span className="text-[10px] uppercase tracking-widest text-primary ml-2">Producer</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs uppercase tracking-widest text-muted-foreground">{item.vertical}</span>
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground/60 ml-2">Industry</span>
+                  </div>
                 </div>
               ))}
             </div>
