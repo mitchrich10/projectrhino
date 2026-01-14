@@ -18,8 +18,8 @@ const VerticalsSection: FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <h2 className="text-4xl font-black uppercase tracking-tighter mb-4 text-center">
-            <span className="text-primary">Producer</span> Industries
+        <h2 className="text-4xl font-black uppercase tracking-tighter mb-4 text-center">
+            <span className="text-primary">Producer</span> Businesses
           </h2>
           <p className="text-muted-foreground text-base leading-relaxed text-center">
             Producers are the experts whose work directly drives a company's revenue, margins, and growth.
