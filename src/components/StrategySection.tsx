@@ -15,7 +15,7 @@ const strategyItems = [
   },
   { 
     title: "DURABLE BUSINESS MODELS", 
-    desc: "We partner with businesses built to generate real cash flow and endure over time — and are comfortable investing before profitability.", 
+    desc: "Built for real cash flow. Comfortable investing pre-profitability.", 
     icon: <Layers className="w-5 h-5" /> 
   }
 ];
