@@ -12,18 +12,20 @@ const TestimonialSection: FC = () => {
     <section className="pt-24 pb-20 px-6 bg-secondary">
       <div className="max-w-4xl mx-auto">
         {/* Highlights */}
-        <div className="bg-card/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-lg border border-border/50 mb-16">
-          <p className="text-xl md:text-2xl font-bold text-foreground text-center mb-8">
+        <div className="mb-20">
+          <p className="text-2xl md:text-3xl font-bold text-foreground text-center mb-10">
             We partner with ambitious builders to scale enduring companies.
           </p>
-          <div className="flex justify-center gap-12 md:gap-20">
+          <div className="flex justify-center items-end gap-8 md:gap-16">
             {highlights.map((item, idx) => (
-              <div key={idx} className="text-center">
-                <p className="text-4xl md:text-5xl font-black text-primary">{item.value}</p>
-                <p className="text-xs uppercase tracking-widest text-muted-foreground mt-2">{item.label}</p>
+              <div key={idx} className="text-center group">
+                <p className="text-5xl md:text-7xl font-black text-primary leading-none">{item.value}</p>
+                <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">{item.label}</p>
               </div>
             ))}
           </div>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 text-center mt-6">Since Inception</p>
         </div>
 
         {/* Zach Quote */}
