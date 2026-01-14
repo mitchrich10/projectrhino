@@ -1,13 +1,8 @@
 import { FC } from "react";
-import { Target, Shield, DollarSign, Layers } from "lucide-react";
+import { Shield, DollarSign, Layers } from "lucide-react";
 import { StatCard } from "./StatCard";
 
 const strategyItems = [
-  { 
-    title: "6-8 COMPANIES", 
-    desc: "Concentrated capital. We double down on winners.", 
-    icon: <Target className="w-5 h-5" /> 
-  },
   { 
     title: "ALIGNED STRUCTURES", 
     desc: "Minority or majority partners. Designed for the long-term.", 
@@ -35,13 +30,13 @@ const StrategySection: FC = () => {
             <h4 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground mb-4">
               Where We <span className="text-primary">Partner</span>
             </h4>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
-              From building new platforms to partnering in established companies. We work closely with operators looking to buy or scale businesses and take them to the next stage of growth.
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              From building new platforms to partnering in established companies. We work closely with operators looking to build, buy or scale businesses and take them to the next stage of growth.
             </p>
           </div>
 
           {/* Strategy Tiles */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             {strategyItems.map((item, i) => (
               <StatCard 
                 key={i}
