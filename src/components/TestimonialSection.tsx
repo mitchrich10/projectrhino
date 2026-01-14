@@ -13,9 +13,7 @@ const TestimonialSection: FC = () => {
       <div className="max-w-4xl mx-auto">
         {/* Highlights */}
         <div className="mb-20">
-          <p className="text-2xl md:text-3xl font-bold text-foreground text-center mb-10">
-            We partner with ambitious builders to scale enduring companies.
-          </p>
+          <p className="text-2xl md:text-3xl font-bold text-foreground text-center mb-10">We partner with ambitious builders to scale enduring companies.</p>
           <div className="flex justify-center items-end gap-8 md:gap-16">
             {highlights.map((item, idx) => (
               <div key={idx} className="text-center group">

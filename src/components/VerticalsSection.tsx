@@ -22,7 +22,7 @@ const VerticalsSection: FC = () => {
             <span className="text-primary">Producer</span> Industries
           </h2>
           <p className="text-muted-foreground text-base leading-relaxed text-center">
-            Producers are the operators whose work directly drives a company's revenue, margins, and growth.
+            Producers are the experts whose work directly drives a company's revenue, margins, and growth.
           </p>
         </div>
 
