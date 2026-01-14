@@ -17,11 +17,11 @@ const VerticalsSection: FC = () => {
     <section id="verticals" className="py-20 px-6 bg-gradient-to-b from-secondary via-secondary to-background">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-10">
-          <h2 className="text-4xl font-black uppercase tracking-tighter mb-4">
+        <div className="mb-10">
+          <h2 className="text-4xl font-black uppercase tracking-tighter mb-4 text-center">
             <span className="text-primary">Producer</span> Industries
           </h2>
-          <p className="text-muted-foreground text-base leading-relaxed max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-base leading-relaxed">
             Producers are the operators whose work directly drives a company's revenue, margins, and growth.
           </p>
         </div>
