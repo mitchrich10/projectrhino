@@ -26,6 +26,9 @@ const VerticalsSection: FC = () => {
           </p>
         </div>
 
+        {/* Examples Label */}
+        <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 text-center mb-4">Examples</p>
+
         {/* Two Tiles */}
         <div className="grid md:grid-cols-2 gap-6">
           {/* Healthcare Tile */}
