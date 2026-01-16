@@ -4,7 +4,6 @@ import zachPhoto from "@/assets/zach-shapiro.png";
 const highlights = [
   { value: "35", label: "Investments" },
   { value: "11", label: "Exits" },
-  { value: "7%", label: "Loss Ratio" },
 ];
 
 const TestimonialSection: FC = () => {
