@@ -4,6 +4,7 @@ import { Logo } from "./Navigation";
 import foundersHike from "@/assets/founders-hike.jpg";
 import foundersPickleball from "@/assets/founders-pickleball.jpg";
 import foundersOntopical from "@/assets/founders-ontopical.jpg";
+import rhinoIconBlack from "@/assets/rhino-icon-black.png";
 
 const ContactSection: FC = () => {
   return (
@@ -60,7 +61,7 @@ const ContactSection: FC = () => {
 
 const Footer: FC = () => {
   return (
-    <footer className="py-12 px-6 bg-background border-t border-border/50">
+    <footer className="py-12 px-6 bg-background border-t border-border/50 relative">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         <div className="opacity-40 hover:opacity-100 transition-opacity">
           <Logo />
@@ -83,6 +84,13 @@ const Footer: FC = () => {
           © 2025 Rhino GP Inc.
         </p>
       </div>
+      
+      {/* Black Rhino Icon - Bottom Right */}
+      <img 
+        src={rhinoIconBlack} 
+        alt="Rhino" 
+        className="absolute bottom-4 right-6 w-16 h-auto opacity-30"
+      />
     </footer>
   );
 };
