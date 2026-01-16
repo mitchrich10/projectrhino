@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface PortfolioCardProps {
@@ -77,7 +78,8 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
 
 const PortfolioCardEmpty: FC<{ className?: string }> = ({ className }) => {
   return (
-    <div 
+    <Link 
+      to="/contact"
       className={cn(
         "min-h-[120px] border border-dashed border-border flex flex-col items-center justify-center p-4 text-center opacity-50 hover:opacity-100 transition-opacity cursor-pointer bg-card",
         className
@@ -85,7 +87,7 @@ const PortfolioCardEmpty: FC<{ className?: string }> = ({ className }) => {
     >
       <p className="text-[10px] font-black uppercase tracking-ultra text-foreground">Build With Us</p>
       <div className="w-6 h-px bg-primary mt-3" />
-    </div>
+    </Link>
   );
 };
 
