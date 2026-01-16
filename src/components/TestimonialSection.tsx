@@ -14,10 +14,10 @@ const TestimonialSection: FC = () => {
         {/* Highlights */}
         <div className="mb-20">
           <p className="text-2xl md:text-3xl font-bold text-foreground text-center mb-10">We partner with ambitious builders to scale enduring companies.</p>
-          <div className="flex justify-center items-end gap-8 md:gap-16">
+          <div className="flex justify-center items-start gap-8 md:gap-16">
             {/* Investments */}
             <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none">35</p>
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">35</p>
               <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Investments</p>
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
@@ -25,14 +25,15 @@ const TestimonialSection: FC = () => {
             
             {/* Portfolio Annual Revenue */}
             <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none">$500M+</p>
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">$500M+</p>
               <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Annual Revenue</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2 invisible">Since Inception</p>
             </div>
             
             {/* Exits */}
             <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none">11</p>
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">11</p>
               <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
@@ -41,7 +42,7 @@ const TestimonialSection: FC = () => {
         </div>
 
         {/* Zach Quote */}
-        <div className="flex flex-col md:flex-row items-center gap-12 bg-card/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-lg border border-border/50">
+        <div className="flex flex-col md:flex-row items-center gap-12 bg-card/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-lg border-2 border-border/50 hover:border-primary transition-colors duration-300">
           <div className="flex-shrink-0">
             <div className="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-2 border-primary/50">
               <img 
