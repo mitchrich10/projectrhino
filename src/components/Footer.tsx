@@ -4,7 +4,6 @@ import { Logo } from "./Navigation";
 import foundersHike from "@/assets/founders-hike.jpg";
 import foundersPickleball from "@/assets/founders-pickleball.jpg";
 import foundersOntopical from "@/assets/founders-ontopical.jpg";
-import rhinoRunning from "@/assets/rhino-running-banner.png";
 
 const ContactSection: FC = () => {
   return (
@@ -61,39 +60,28 @@ const ContactSection: FC = () => {
 
 const Footer: FC = () => {
   return (
-    <footer className="bg-background border-t border-border/50">
-      {/* Rhino Running Banner */}
-      <div className="w-full overflow-hidden">
-        <img 
-          src={rhinoRunning} 
-          alt="Crash of rhinos running" 
-          className="w-full h-auto object-cover"
-        />
-      </div>
-      
-      <div className="py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="opacity-40 hover:opacity-100 transition-opacity">
-            <Logo />
-          </div>
-          <div className="flex gap-12">
-            <a 
-              href="#" 
-              className="text-[10px] text-text-tertiary font-black uppercase tracking-widest hover:text-foreground transition-colors"
-            >
-              LinkedIn
-            </a>
-            <a 
-              href="#" 
-              className="text-[10px] text-text-tertiary font-black uppercase tracking-widest hover:text-foreground transition-colors"
-            >
-              Privacy
-            </a>
-          </div>
-          <p className="text-[10px] text-text-tertiary font-black uppercase tracking-widest">
-            © 2025 Rhino GP Inc.
-          </p>
+    <footer className="py-12 px-6 bg-background border-t border-border/50">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="opacity-40 hover:opacity-100 transition-opacity">
+          <Logo />
         </div>
+        <div className="flex gap-12">
+          <a 
+            href="#" 
+            className="text-[10px] text-text-tertiary font-black uppercase tracking-widest hover:text-foreground transition-colors"
+          >
+            LinkedIn
+          </a>
+          <a 
+            href="#" 
+            className="text-[10px] text-text-tertiary font-black uppercase tracking-widest hover:text-foreground transition-colors"
+          >
+            Privacy
+          </a>
+        </div>
+        <p className="text-[10px] text-text-tertiary font-black uppercase tracking-widest">
+          © 2025 Rhino GP Inc.
+        </p>
       </div>
     </footer>
   );
