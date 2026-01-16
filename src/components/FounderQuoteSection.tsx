@@ -25,6 +25,9 @@ const FounderQuoteSection: FC = () => {
               <p className="text-xs text-muted-foreground uppercase tracking-widest">
                 Co-Founder & CEO, FISPAN
               </p>
+              <p className="text-sm text-primary font-semibold mt-3">
+                Grown from pre-revenue to &gt;$35M in annual revenue since Rhino invested in 2018
+              </p>
             </div>
           </div>
         </div>
