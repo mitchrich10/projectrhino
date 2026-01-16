@@ -21,7 +21,7 @@ const HeroSection: FC = () => {
       <div className="max-w-7xl mx-auto w-full z-10 relative">
         <div className="max-w-3xl">
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-8 text-foreground">
-            Scaling Canadian <span className="text-primary">Producer</span> Businesses<img src={mapleLeaf} alt="Canadian maple leaf" className="inline-block h-[0.6em] ml-2 align-baseline" />
+            Scaling Canadian <span className="text-primary">Producer</span> Businesses<img src={mapleLeaf} alt="Canadian maple leaf" className="inline-block h-[0.5em] ml-2 align-baseline" />
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground font-medium mb-10 max-w-2xl leading-relaxed">
             You deserve a capital partner who thinks like an <span className="text-primary font-semibold">operator</span>.
