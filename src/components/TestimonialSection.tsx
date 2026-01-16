@@ -13,7 +13,7 @@ const TestimonialSection: FC = () => {
       <div className="max-w-4xl mx-auto">
         {/* Highlights */}
         <div className="mb-20">
-          <p className="text-2xl md:text-3xl font-bold text-foreground text-center mb-10">We partner with ambitious builders to scale enduring companies.</p>
+          <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-10 whitespace-nowrap">We partner with ambitious builders to scale enduring companies.</p>
           <div className="flex justify-center items-start gap-8 md:gap-16">
             {/* Investments */}
             <div className="text-center group">
