@@ -15,15 +15,29 @@ const TestimonialSection: FC = () => {
         <div className="mb-20">
           <p className="text-2xl md:text-3xl font-bold text-foreground text-center mb-10">We partner with ambitious builders to scale enduring companies.</p>
           <div className="flex justify-center items-end gap-8 md:gap-16">
-            {highlights.map((item, idx) => (
-              <div key={idx} className="text-center group">
-                <p className="text-5xl md:text-7xl font-black text-primary leading-none">{item.value}</p>
-                <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-                <p className="text-xs uppercase tracking-widest text-muted-foreground">{item.label}</p>
-              </div>
-            ))}
+            {/* Investments */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none">35</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Investments</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
+            </div>
+            
+            {/* Portfolio Annual Revenue */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none">$500M+</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Annual Revenue</p>
+            </div>
+            
+            {/* Exits */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none">11</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
+            </div>
           </div>
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 text-center mt-6">Since Inception</p>
         </div>
 
         {/* Zach Quote */}
