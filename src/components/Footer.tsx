@@ -68,7 +68,9 @@ const Footer: FC = () => {
         </div>
         <div className="flex gap-12">
           <a 
-            href="#" 
+            href="https://www.linkedin.com/company/rhinoventuresog" 
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-[10px] text-text-tertiary font-black uppercase tracking-widest hover:text-foreground transition-colors"
           >
             LinkedIn
