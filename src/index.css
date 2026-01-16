@@ -56,7 +56,6 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', system-ui, sans-serif;
-    cursor: url('/rhino-cursor.png') 12 12, auto;
   }
 
   h1, h2, h3, h4, h5, h6 {
