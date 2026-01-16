@@ -49,7 +49,7 @@ const activePortfolio = [
   { 
     name: "Flint", 
     category: "Healthcare Services", 
-    description: "Specialized recruiting and HR.",
+    description: "Healthcare recruitment agency.",
     isRepresentative: true,
     logo: logoFlint
   },
