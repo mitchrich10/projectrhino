@@ -63,7 +63,7 @@ const TestimonialSection: FC = () => {
                 CEO & Co-Founder, Twig Fertility
               </p>
               <p className="text-sm text-primary font-semibold mt-3">
-                &gt;7x revenue growth since Rhino invested in 2022
+                &gt;7x annual revenue since Rhino invested in 2022
               </p>
             </div>
           </div>
