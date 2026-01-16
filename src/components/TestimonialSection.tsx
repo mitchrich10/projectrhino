@@ -2,8 +2,8 @@ import { FC } from "react";
 import zachPhoto from "@/assets/zach-shapiro.png";
 
 const highlights = [
-  { value: "$500M+", label: "Portfolio Annual Revenue" },
   { value: "35", label: "Investments" },
+  { value: "$500M+", label: "Portfolio Annual Revenue" },
   { value: "11", label: "Exits" },
 ];
 
