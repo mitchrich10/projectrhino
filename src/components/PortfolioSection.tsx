@@ -15,7 +15,7 @@ import logoMyfo from "@/assets/logo-myfo.png";
 import logoElective from "@/assets/logo-elective.png";
 import logoTwig from "@/assets/logo-twig.png";
 import logoThinkific from "@/assets/logo-thinkific.png";
-import logoSuperadvisor from "@/assets/logo-superadvisor.png";
+import logoSuperadvisor from "@/assets/logo-superadvisor-black.png";
 import logoSokanu from "@/assets/logo-sokanu.png";
 import logoShopvision from "@/assets/logo-shopvision.png";
 import logoPressboard from "@/assets/logo-pressboard.png";
@@ -31,6 +31,7 @@ import logoBeanworks from "@/assets/logo-beanworks.png";
 import logoShowbie from "@/assets/logo-showbie.png";
 import logoAskott from "@/assets/logo-askott.png";
 import logoFlint from "@/assets/logo-flint.png";
+import logoStemHealth from "@/assets/logo-stem-health.png";
 
 const activePortfolio = [
   { 
@@ -57,7 +58,8 @@ const activePortfolio = [
     name: "Stem Health", 
     category: "Healthcare Services", 
     description: "Private-pay primary health.",
-    isRepresentative: true
+    isRepresentative: true,
+    logo: logoStemHealth
   },
   { 
     name: "Quinn AI", 
@@ -69,7 +71,8 @@ const activePortfolio = [
     name: "ShopVision", 
     category: "AI", 
     description: "AI-powered eCommerce analytics.",
-    logo: logoShopvision
+    logo: logoShopvision,
+    logoSize: "large"
   },
   { 
     name: "NetNow", 
@@ -81,19 +84,22 @@ const activePortfolio = [
     name: "Pluto", 
     category: "FinTech", 
     description: "Spend management and payments.",
-    logo: logoPluto
+    logo: logoPluto,
+    logoSize: "small"
   },
   { 
     name: "Elective", 
     category: "Lending", 
     description: "BNPL for digital entrepreneurs.",
-    logo: logoElective
+    logo: logoElective,
+    logoSize: "small"
   },
   { 
     name: "MYFO", 
     category: "FinTech", 
     description: "Family office technology.",
-    logo: logoMyfo
+    logo: logoMyfo,
+    logoSize: "xxlarge"
   },
   { 
     name: "Twig Fertility", 
@@ -126,13 +132,15 @@ const activePortfolio = [
     name: "Showbie", 
     category: "EdTech", 
     description: "Classroom workflow management.",
-    logo: logoShowbie
+    logo: logoShowbie,
+    logoSize: "xlarge"
   },
   { 
     name: "Edvisor", 
     category: "EdTech", 
     description: "Student recruitment platform.",
-    logo: logoEdvisor
+    logo: logoEdvisor,
+    logoSize: "small"
   },
   { 
     name: "Aspect Biosystems", 
@@ -166,10 +174,10 @@ const exitedPortfolio = [
   { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation", logo: logoBeanworks },
   { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform", logo: logoCuratio },
   { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform", logo: logoGrow },
-  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform", logo: logoOntopical },
+  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform", logo: logoOntopical, logoSize: "xlarge" },
   { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform", logo: logoPeerboard },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics", logo: logoPressboard },
-  { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform", logo: logoSokanu, invertLogo: true },
+  { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform", logo: logoSokanu, invertLogo: false, bgColor: "#5b3d8c" },
   { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Market intelligence for telecommunications", logo: logoThinkCX },
   { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform", logo: logoThinkific },
   { name: "Tutela", acquiredBy: "Comlinkdata", category: "Telecom", description: "Mobile network analytics", logo: logoTutela }
@@ -194,8 +202,9 @@ const PortfolioSection: FC = () => {
                 name={p.name}
                 description={p.description}
                 logo={p.logo}
-                logoSize={p.logoSize as "normal" | "large" | "xlarge"}
+                logoSize={p.logoSize as "xsmall" | "small" | "normal" | "large" | "xlarge" | "xxlarge"}
                 invertLogo={(p as any).invertLogo}
+                bgColor={(p as any).bgColor}
               />
             ))}
             <PortfolioCardEmpty />
@@ -218,7 +227,9 @@ const PortfolioSection: FC = () => {
                 description={p.description}
                 acquiredBy={p.acquiredBy}
                 logo={p.logo}
+                logoSize={(p as any).logoSize as "xsmall" | "small" | "normal" | "large" | "xlarge" | "xxlarge"}
                 invertLogo={p.invertLogo}
+                bgColor={(p as any).bgColor}
               />
             ))}
           </div>
