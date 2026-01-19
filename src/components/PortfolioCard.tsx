@@ -14,9 +14,10 @@ interface PortfolioCardProps {
   bgColor?: string;
   website?: string;
   className?: string;
+  variant?: "active" | "exited";
 }
 
-const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, logo, logoSize = "normal", invertLogo = false, bgColor, website, className }) => {
+const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, logo, logoSize = "normal", invertLogo = false, bgColor, website, className, variant = "active" }) => {
   const logoClasses = {
     xsmall: "max-h-5 max-w-[100px]",
     small: "max-h-6 max-w-[120px]",
@@ -60,10 +61,15 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
     </div>
   );
 
+  const variantStyles = variant === "exited" 
+    ? "bg-gradient-to-br from-amber-50/80 via-card to-yellow-50/50 border-amber-200/60 hover:border-amber-400/80 hover:shadow-amber-200/30"
+    : "bg-gradient-to-br from-primary/5 via-card to-secondary/30 border-border hover:border-primary/40 hover:shadow-primary/10";
+
   return (
     <div 
       className={cn(
-        "group bg-card border border-border flex flex-col p-4 transition-all hover:shadow-md h-[140px]",
+        "group flex flex-col p-4 transition-all hover:shadow-lg h-[140px] border",
+        variantStyles,
         className
       )}
     >
