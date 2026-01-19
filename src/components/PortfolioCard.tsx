@@ -27,7 +27,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
   }[logoSize];
 
   const content = logo ? (
-    <div className="flex-1 flex items-center justify-center py-3">
+    <div className="h-12 flex items-center justify-center">
       {bgColor ? (
         <div className="p-2 rounded" style={{ backgroundColor: bgColor }}>
           <img 
@@ -53,7 +53,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       )}
     </div>
   ) : (
-    <div className="flex-1 flex items-center justify-center py-3">
+    <div className="h-12 flex items-center justify-center">
       <h4 className="text-base font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary text-center">
         {name}
       </h4>
@@ -63,7 +63,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
   return (
     <div 
       className={cn(
-        "group bg-card border border-border flex flex-col p-4 transition-all hover:shadow-md min-h-[110px]",
+        "group bg-card border border-border flex flex-col p-4 transition-all hover:shadow-md h-[140px]",
         className
       )}
     >
@@ -99,7 +99,7 @@ const PortfolioCardEmpty: FC<{ className?: string }> = ({ className }) => {
     <Link 
       to="/contact"
       className={cn(
-        "min-h-[120px] border border-dashed border-border flex flex-col items-center justify-center p-4 text-center opacity-50 hover:opacity-100 transition-opacity cursor-pointer bg-card",
+        "h-[140px] border border-dashed border-border flex flex-col items-center justify-center p-4 text-center opacity-50 hover:opacity-100 transition-opacity cursor-pointer bg-card",
         className
       )}
     >

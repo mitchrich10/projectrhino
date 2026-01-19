@@ -71,7 +71,8 @@ const activePortfolio = [
     name: "ShopVision", 
     category: "AI", 
     description: "AI-powered eCommerce analytics.",
-    logo: logoShopvision
+    logo: logoShopvision,
+    logoSize: "large"
   },
   { 
     name: "NetNow", 
@@ -83,19 +84,22 @@ const activePortfolio = [
     name: "Pluto", 
     category: "FinTech", 
     description: "Spend management and payments.",
-    logo: logoPluto
+    logo: logoPluto,
+    logoSize: "small"
   },
   { 
     name: "Elective", 
     category: "Lending", 
     description: "BNPL for digital entrepreneurs.",
-    logo: logoElective
+    logo: logoElective,
+    logoSize: "small"
   },
   { 
     name: "MYFO", 
     category: "FinTech", 
     description: "Family office technology.",
-    logo: logoMyfo
+    logo: logoMyfo,
+    logoSize: "xxlarge"
   },
   { 
     name: "Twig Fertility", 
@@ -114,31 +118,36 @@ const activePortfolio = [
     name: "FISPAN", 
     category: "FinTech", 
     description: "Embedded banking infrastructure.",
-    logo: logoFispan
+    logo: logoFispan,
+    logoSize: "large"
   },
   { 
     name: "Marz", 
     category: "VFX", 
     description: "AI-powered visual effects.",
-    logo: logoMarz
+    logo: logoMarz,
+    logoSize: "large"
   },
   { 
     name: "Showbie", 
     category: "EdTech", 
     description: "Classroom workflow management.",
-    logo: logoShowbie
+    logo: logoShowbie,
+    logoSize: "xlarge"
   },
   { 
     name: "Edvisor", 
     category: "EdTech", 
     description: "Student recruitment platform.",
-    logo: logoEdvisor
+    logo: logoEdvisor,
+    logoSize: "small"
   },
   { 
     name: "Aspect Biosystems", 
     category: "Biotech", 
     description: "3D bioprinting technology platform.",
-    logo: logoAspectBiosystems
+    logo: logoAspectBiosystems,
+    logoSize: "xlarge"
   },
   { 
     name: "Fatigue Science", 
@@ -165,7 +174,7 @@ const exitedPortfolio = [
   { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation", logo: logoBeanworks },
   { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform", logo: logoCuratio },
   { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform", logo: logoGrow },
-  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform", logo: logoOntopical },
+  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform", logo: logoOntopical, logoSize: "xlarge" },
   { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform", logo: logoPeerboard },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics", logo: logoPressboard },
   { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform", logo: logoSokanu, invertLogo: false, bgColor: "#5b3d8c" },
@@ -193,6 +202,7 @@ const PortfolioSection: FC = () => {
                 name={p.name}
                 description={p.description}
                 logo={p.logo}
+                logoSize={(p as any).logoSize}
                 invertLogo={(p as any).invertLogo}
                 bgColor={(p as any).bgColor}
               />
@@ -217,6 +227,7 @@ const PortfolioSection: FC = () => {
                 description={p.description}
                 acquiredBy={p.acquiredBy}
                 logo={p.logo}
+                logoSize={(p as any).logoSize}
                 invertLogo={p.invertLogo}
                 bgColor={(p as any).bgColor}
               />
