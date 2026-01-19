@@ -49,7 +49,7 @@ const TestimonialSection: FC = () => {
                 </div>
               </div>
               <div className="p-5">
-                <div className="h-8 mb-4">
+                <div className="h-8 mb-4 flex items-center justify-center">
                   <img src={logoTwig} alt="Twig Fertility" className="h-full w-auto object-contain" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">7x Revenue</p>
@@ -65,7 +65,7 @@ const TestimonialSection: FC = () => {
                 </div>
               </div>
               <div className="p-5">
-                <div className="h-8 mb-4">
+                <div className="h-8 mb-4 flex items-center justify-center">
                   <img src={logoStemHealth} alt="Stem Health" className="h-full w-auto object-contain" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
@@ -81,7 +81,7 @@ const TestimonialSection: FC = () => {
                 </div>
               </div>
               <div className="p-5">
-                <div className="h-8 mb-4">
+                <div className="h-8 mb-4 flex items-center justify-center">
                   <img src={logoFispan} alt="FISPAN" className="h-full w-auto object-contain" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">$35M+ ARR</p>
@@ -97,7 +97,7 @@ const TestimonialSection: FC = () => {
                 </div>
               </div>
               <div className="p-5">
-                <div className="h-8 mb-4">
+                <div className="h-8 mb-4 flex items-center justify-center">
                   <img src={logoUpperVillage} alt="Upper Village" className="h-full w-auto object-contain" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
