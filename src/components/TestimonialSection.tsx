@@ -1,5 +1,9 @@
 import { FC } from "react";
 import zachPhoto from "@/assets/zach-shapiro.png";
+import logoTwig from "@/assets/logo-twig.png";
+import logoStemHealth from "@/assets/logo-stem-health.png";
+import logoFlint from "@/assets/logo-flint.png";
+import logoUpperVillage from "@/assets/logo-upper-village.png";
 
 const highlights = [
   { value: "35", label: "Investments" },
@@ -13,7 +17,16 @@ const TestimonialSection: FC = () => {
       <div className="max-w-4xl mx-auto">
         {/* Highlights */}
         <div className="mb-20">
-          <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-10 whitespace-nowrap">We partner with ambitious builders to scale enduring companies.</p>
+          <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-8 whitespace-nowrap">We partner with ambitious builders to scale enduring companies.</p>
+          
+          {/* Featured Portfolio Logos */}
+          <div className="flex justify-center items-center gap-8 md:gap-12 mb-12">
+            <img src={logoTwig} alt="Twig Fertility" className="h-6 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity mix-blend-multiply" />
+            <img src={logoStemHealth} alt="Stem Health" className="h-5 md:h-6 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity mix-blend-multiply" />
+            <img src={logoFlint} alt="Flint" className="h-6 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity mix-blend-multiply" />
+            <img src={logoUpperVillage} alt="Upper Village" className="h-6 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity mix-blend-multiply" />
+          </div>
+
           <div className="flex justify-center items-start gap-8 md:gap-16">
             {/* Investments */}
             <div className="text-center group">
