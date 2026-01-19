@@ -49,8 +49,8 @@ const TestimonialSection: FC = () => {
                 </div>
               </div>
               <div className="p-5">
-                <div className="h-8 w-full mb-4 flex items-center justify-center">
-                  <img src={logoTwig} alt="Twig Fertility" className="h-full w-auto object-contain mx-auto" />
+                <div className="h-10 w-full mb-4 flex items-center justify-center">
+                  <img src={logoTwig} alt="Twig Fertility" className="max-h-8 w-auto object-contain mix-blend-multiply" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">7x Revenue</p>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Since 2022</p>
@@ -65,8 +65,8 @@ const TestimonialSection: FC = () => {
                 </div>
               </div>
               <div className="p-5">
-                <div className="h-8 w-full mb-4 flex items-center justify-center">
-                  <img src={logoStemHealth} alt="Stem Health" className="h-full w-auto object-contain mx-auto" />
+                <div className="h-10 w-full mb-4 flex items-center justify-center">
+                  <img src={logoStemHealth} alt="Stem Health" className="max-h-8 w-auto object-contain mix-blend-multiply" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">KPI Placeholder</p>
@@ -81,8 +81,8 @@ const TestimonialSection: FC = () => {
                 </div>
               </div>
               <div className="p-5">
-                <div className="h-8 w-full mb-4 flex items-center justify-center">
-                  <img src={logoFispan} alt="FISPAN" className="h-full w-auto object-contain mx-auto" />
+                <div className="h-10 w-full mb-4 flex items-center justify-center">
+                  <img src={logoFispan} alt="FISPAN" className="max-h-8 w-auto object-contain mix-blend-multiply" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">$35M+ ARR</p>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Since 2018</p>
@@ -97,8 +97,8 @@ const TestimonialSection: FC = () => {
                 </div>
               </div>
               <div className="p-5">
-                <div className="h-8 w-full mb-4 flex items-center justify-center">
-                  <img src={logoUpperVillage} alt="Upper Village" className="h-full w-auto object-contain mx-auto" />
+                <div className="h-10 w-full mb-4 flex items-center justify-center">
+                  <img src={logoUpperVillage} alt="Upper Village" className="max-h-8 w-auto object-contain mix-blend-multiply" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">KPI Placeholder</p>
