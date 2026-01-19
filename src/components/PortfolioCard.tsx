@@ -65,6 +65,12 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
     ? "bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200/80 border-amber-400 hover:border-amber-500 hover:shadow-amber-300/50 shadow-sm"
     : "bg-white border-border hover:bg-primary/10 hover:border-primary hover:shadow-primary/20 shadow-sm transition-all duration-300";
 
+  const contentArea = (
+    <div className="flex-1 flex items-center justify-center">
+      {content}
+    </div>
+  );
+
   return (
     <div 
       className={cn(
@@ -78,12 +84,12 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
           href={website} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center hover:opacity-80 transition-opacity"
+          className="hover:opacity-80 transition-opacity"
         >
-          {content}
+          {contentArea}
         </a>
       ) : (
-        content
+        contentArea
       )}
       <div className="text-center mt-auto">
         <div className="h-px w-0 bg-primary mb-2 mx-auto group-hover:w-full transition-all duration-500" />
