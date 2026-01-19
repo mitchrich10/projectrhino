@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const Logo: FC<{ className?: string }> = ({ className }) => (
   <Link to="/" className={cn("flex items-center", className)}>
-    <span className="text-xl font-black tracking-tighter uppercase">RHINO</span>
+    <span className="text-xl font-black tracking-tighter uppercase text-white">RHINO</span>
   </Link>
 );
 
@@ -36,7 +36,7 @@ const NavLink: FC<NavLinkProps> = ({ href, children, onClick }) => {
     <a 
       href={href} 
       onClick={handleClick}
-      className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest"
+      className="text-xs font-bold text-white/80 hover:text-white transition-colors duration-200 uppercase tracking-widest"
     >
       {children}
     </a>
@@ -76,7 +76,7 @@ const Navigation: FC = () => {
         </div>
 
         <button 
-          className="md:hidden text-foreground" 
+          className="md:hidden text-white" 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
