@@ -58,7 +58,7 @@ const Navigation: FC = () => {
       className={cn(
         "fixed w-full z-50 transition-all duration-300",
         scrolled 
-          ? "bg-background/95 backdrop-blur-md py-4 border-b border-border" 
+          ? "bg-black/95 backdrop-blur-md py-4 border-b border-white/10" 
           : "bg-transparent py-8"
       )}
     >
