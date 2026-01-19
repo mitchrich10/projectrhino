@@ -12,12 +12,12 @@ const HeroSection: FC = () => {
         <img 
           src={rhinoDetail} 
           alt="Rhino breaking through" 
-          className="w-full h-full object-cover opacity-60"
+          className="w-full h-full object-cover opacity-70"
         />
-        {/* Bold black gradient from left for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+        {/* Lighter black gradient from left for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
         {/* Subtle vignette effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
       </div>
 
       <div className="max-w-7xl mx-auto w-full z-10 relative">
