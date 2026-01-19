@@ -1,9 +1,9 @@
 import { FC } from "react";
 import zachPhoto from "@/assets/zach-shapiro.png";
 import logoTwig from "@/assets/logo-twig.png";
-import logoStemHealth from "@/assets/logo-stem-health.png";
+import logoArticle from "@/assets/logo-article.png";
 import logoFispan from "@/assets/logo-fispan.png";
-import logoUpperVillage from "@/assets/logo-upper-village.png";
+import logoFlint from "@/assets/logo-flint.png";
 
 const TestimonialSection: FC = () => {
   return (
@@ -57,7 +57,7 @@ const TestimonialSection: FC = () => {
               </div>
             </div>
 
-            {/* Company 2 - Stem Health */}
+            {/* Company 2 - Article */}
             <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
               <div className="aspect-[4/3] bg-muted relative overflow-hidden">
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
@@ -66,7 +66,7 @@ const TestimonialSection: FC = () => {
               </div>
               <div className="p-5">
                 <div className="h-10 w-full mb-4 flex items-center justify-center">
-                  <img src={logoStemHealth} alt="Stem Health" className="max-h-8 w-auto object-contain mix-blend-multiply" />
+                  <img src={logoArticle} alt="Article" className="max-h-8 w-auto object-contain mix-blend-multiply" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">KPI Placeholder</p>
@@ -89,7 +89,7 @@ const TestimonialSection: FC = () => {
               </div>
             </div>
 
-            {/* Company 4 - Upper Village */}
+            {/* Company 4 - Flint */}
             <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
               <div className="aspect-[4/3] bg-muted relative overflow-hidden">
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
@@ -98,7 +98,7 @@ const TestimonialSection: FC = () => {
               </div>
               <div className="p-5">
                 <div className="h-10 w-full mb-4 flex items-center justify-center">
-                  <img src={logoUpperVillage} alt="Upper Village" className="max-h-8 w-auto object-contain mix-blend-multiply" />
+                  <img src={logoFlint} alt="Flint" className="max-h-8 w-auto object-contain mix-blend-multiply" />
                 </div>
                 <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">KPI Placeholder</p>
