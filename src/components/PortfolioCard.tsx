@@ -63,7 +63,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
 
   const variantStyles = variant === "exited" 
     ? "bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200/80 border-amber-400 hover:border-amber-500 hover:shadow-amber-300/50 shadow-sm"
-    : "bg-white border-border hover:bg-primary hover:border-primary hover:shadow-primary/30 shadow-sm transition-all duration-300 hover:[&_*]:text-primary-foreground";
+    : "bg-white border-border hover:bg-primary/10 hover:border-primary hover:shadow-primary/20 shadow-sm transition-all duration-300";
 
   return (
     <div 
