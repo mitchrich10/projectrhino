@@ -193,6 +193,7 @@ const PortfolioSection: FC = () => {
             <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
               Active Portfolio
             </h3>
+            <p className="text-lg md:text-xl text-muted-foreground mt-3 italic">The Crash — a herd of Rhinos</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -205,6 +206,7 @@ const PortfolioSection: FC = () => {
                 logoSize={(p as any).logoSize}
                 invertLogo={(p as any).invertLogo}
                 bgColor={(p as any).bgColor}
+                variant="active"
               />
             ))}
             <PortfolioCardEmpty />
@@ -217,6 +219,7 @@ const PortfolioSection: FC = () => {
             <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
               Exits
             </h3>
+            <p className="text-lg md:text-xl text-muted-foreground mt-3 italic">The Golden Crash</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -230,6 +233,7 @@ const PortfolioSection: FC = () => {
                 logoSize={(p as any).logoSize}
                 invertLogo={p.invertLogo}
                 bgColor={(p as any).bgColor}
+                variant="exited"
               />
             ))}
           </div>
