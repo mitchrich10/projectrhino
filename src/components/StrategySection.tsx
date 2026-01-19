@@ -46,11 +46,6 @@ const StrategySection: FC = () => {
               />
             ))}
           </div>
-
-          {/* Bottom Statement */}
-          <p className="text-muted-foreground text-sm leading-relaxed mt-10 text-center">
-            If you're looking for growth capital but don't fit neatly into venture capital or private equity playbooks, that's where we partner.
-          </p>
         </div>
       </div>
     </section>
