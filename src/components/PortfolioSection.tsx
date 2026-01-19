@@ -52,134 +52,152 @@ const activePortfolio = [
     category: "Healthcare Services", 
     description: "Healthcare recruitment agency.",
     isRepresentative: true,
-    logo: logoFlint
+    logo: logoFlint,
+    website: "https://www.withflint.com"
   },
   { 
     name: "Stem Health", 
     category: "Healthcare Services", 
     description: "Private-pay primary health.",
     isRepresentative: true,
-    logo: logoStemHealth
+    logo: logoStemHealth,
+    website: "http://www.stemhealth.ca"
   },
   { 
     name: "Quinn AI", 
     category: "AI", 
     description: "AI-powered revenue operations.",
-    logo: logoQuinnAI
+    logo: logoQuinnAI,
+    website: "http://quinn-ai.com"
   },
   { 
     name: "ShopVision", 
     category: "AI", 
     description: "AI-powered eCommerce analytics.",
     logo: logoShopvision,
-    logoSize: "large"
+    logoSize: "large",
+    website: "https://www.shopvision.ai"
   },
   { 
     name: "NetNow", 
     category: "FinTech", 
     description: "B2B credit and payments platform.",
-    logo: logoNetNow
+    logo: logoNetNow,
+    website: "http://www.netnow.io"
   },
   { 
     name: "Pluto", 
     category: "FinTech", 
     description: "Spend management and payments.",
     logo: logoPluto,
-    logoSize: "small"
+    logoSize: "small",
+    website: "https://www.getpluto.com"
   },
   { 
     name: "Elective", 
     category: "Lending", 
     description: "BNPL for digital entrepreneurs.",
     logo: logoElective,
-    logoSize: "small"
+    logoSize: "small",
+    website: "http://www.elective.com"
   },
   { 
     name: "MYFO", 
     category: "FinTech", 
     description: "Family office technology.",
     logo: logoMyfo,
-    logoSize: "xxlarge"
+    logoSize: "xxlarge",
+    website: "https://www.myfotech.com"
   },
   { 
     name: "Twig Fertility", 
     category: "Healthcare Services", 
     description: "Reproductive healthcare.",
     isRepresentative: true,
-    logo: logoTwig
+    logo: logoTwig,
+    website: "https://twigfertility.com"
   },
   { 
     name: "SuperAdvisor", 
     category: "FinTech", 
     description: "Wealth management technology.",
-    logo: logoSuperadvisor
+    logo: logoSuperadvisor,
+    website: "http://www.superadvisor.ai"
   },
   { 
     name: "FISPAN", 
     category: "FinTech", 
     description: "Embedded banking infrastructure.",
     logo: logoFispan,
-    logoSize: "large"
+    logoSize: "large",
+    website: "http://www.fispan.com"
   },
   { 
     name: "Marz", 
     category: "VFX", 
     description: "AI-powered visual effects.",
     logo: logoMarz,
-    logoSize: "large"
+    logoSize: "large",
+    website: "https://monstersaliensrobotszombies.com"
   },
   { 
     name: "Showbie", 
     category: "EdTech", 
     description: "Classroom workflow management.",
     logo: logoShowbie,
-    logoSize: "xlarge"
+    logoSize: "xlarge",
+    website: "http://www.showbie.com"
   },
   { 
     name: "Edvisor", 
     category: "EdTech", 
     description: "Student recruitment platform.",
     logo: logoEdvisor,
-    logoSize: "small"
+    logoSize: "small",
+    website: "http://www.edvisor.io"
   },
   { 
     name: "Aspect Biosystems", 
     category: "Biotech", 
     description: "3D bioprinting technology platform.",
     logo: logoAspectBiosystems,
-    logoSize: "xlarge"
+    logoSize: "xlarge",
+    website: "http://www.aspectbiosystems.com"
   },
   { 
     name: "Fatigue Science", 
     category: "Enterprise SaaS", 
     description: "Predictive fatigue analytics.",
-    logo: logoFatigueScience
+    logo: logoFatigueScience,
+    website: "http://www.fatiguescience.com"
   },
   { 
     name: "Klue", 
     category: "Enterprise SaaS", 
     description: "AI-powered competitive enablement.",
-    logo: logoKlue
+    logo: logoKlue,
+    website: "http://www.klue.com"
   },
   { 
     name: "Article", 
     category: "Ecommerce", 
     description: "Direct-to-consumer modern furniture.",
-    logo: logoArticle
+    logo: logoArticle,
+    website: "http://www.article.com"
   }
 ];
 
 const exitedPortfolio = [
-  { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "iGaming and eSports", logo: logoAskott },
-  { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation", logo: logoBeanworks },
-  { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform", logo: logoCuratio },
-  { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform", logo: logoGrow },
-  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform", logo: logoOntopical, logoSize: "xlarge" },
+  { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "iGaming and eSports", logo: logoAskott, website: "http://www.askottentertainment.com" },
+  { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation", logo: logoBeanworks, website: "http://www.beanworks.com" },
+  { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform", logo: logoCuratio, website: "http://www.curatio.me" },
+  { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform", logo: logoGrow, website: "http://www.poweredbygrow.com" },
+  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform", logo: logoOntopical, logoSize: "xlarge", website: "https://www.ontopical.com" },
   { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform", logo: logoPeerboard },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics", logo: logoPressboard },
-  { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform", logo: logoSokanu, invertLogo: false, bgColor: "#5b3d8c" },
+  { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform", logo: logoSokanu, invertLogo: false, bgColor: "#5b3d8c", website: "http://www.sokanu.com" },
   { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Market intelligence for telecommunications", logo: logoThinkCX },
-  { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform", logo: logoThinkific },
+  { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform", logo: logoThinkific, website: "http://www.thinkific.com" },
   { name: "Tutela", acquiredBy: "Comlinkdata", category: "Telecom", description: "Mobile network analytics", logo: logoTutela }
 ];
 
@@ -206,6 +224,7 @@ const PortfolioSection: FC = () => {
                 logoSize={(p as any).logoSize}
                 invertLogo={(p as any).invertLogo}
                 bgColor={(p as any).bgColor}
+                website={(p as any).website}
                 variant="active"
               />
             ))}
@@ -233,6 +252,7 @@ const PortfolioSection: FC = () => {
                 logoSize={(p as any).logoSize}
                 invertLogo={p.invertLogo}
                 bgColor={(p as any).bgColor}
+                website={(p as any).website}
                 variant="exited"
               />
             ))}
