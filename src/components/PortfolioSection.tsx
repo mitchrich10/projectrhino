@@ -15,7 +15,7 @@ import logoMyfo from "@/assets/logo-myfo.png";
 import logoElective from "@/assets/logo-elective.png";
 import logoTwig from "@/assets/logo-twig.png";
 import logoThinkific from "@/assets/logo-thinkific.png";
-import logoSuperadvisor from "@/assets/logo-superadvisor-black.png";
+import logoSuperadvisor from "@/assets/logo-superadvisor-color.png";
 import logoSokanu from "@/assets/logo-sokanu.png";
 import logoShopvision from "@/assets/logo-shopvision.png";
 import logoPressboard from "@/assets/logo-pressboard.png";
