@@ -8,7 +8,7 @@ import logoUpperVillage from "@/assets/logo-upper-village.png";
 const TestimonialSection: FC = () => {
   return (
     <section className="pt-24 pb-20 px-6 bg-secondary">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Highlights */}
         <div className="mb-20">
           <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-8 whitespace-nowrap">We partner with ambitious builders to scale enduring companies.</p>
@@ -39,12 +39,71 @@ const TestimonialSection: FC = () => {
             </div>
           </div>
 
-          {/* Featured Portfolio Logos */}
-          <div className="flex justify-center items-center gap-8 md:gap-12 mt-12">
-            <img src={logoTwig} alt="Twig Fertility" className="h-6 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity mix-blend-multiply" />
-            <img src={logoStemHealth} alt="Stem Health" className="h-5 md:h-6 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity mix-blend-multiply" />
-            <img src={logoFispan} alt="FISPAN" className="h-6 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity mix-blend-multiply" />
-            <img src={logoUpperVillage} alt="Upper Village" className="h-6 md:h-8 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity mix-blend-multiply" />
+          {/* Featured Company Highlights */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+            {/* Company 1 - Twig */}
+            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
+              <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+                  Photo Placeholder
+                </div>
+              </div>
+              <div className="p-5">
+                <div className="h-8 mb-4">
+                  <img src={logoTwig} alt="Twig Fertility" className="h-full w-auto object-contain" />
+                </div>
+                <p className="text-2xl font-black text-primary mb-1">7x Revenue</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">Since 2022</p>
+              </div>
+            </div>
+
+            {/* Company 2 - Stem Health */}
+            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
+              <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+                  Photo Placeholder
+                </div>
+              </div>
+              <div className="p-5">
+                <div className="h-8 mb-4">
+                  <img src={logoStemHealth} alt="Stem Health" className="h-full w-auto object-contain" />
+                </div>
+                <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">KPI Placeholder</p>
+              </div>
+            </div>
+
+            {/* Company 3 - FISPAN */}
+            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
+              <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+                  Photo Placeholder
+                </div>
+              </div>
+              <div className="p-5">
+                <div className="h-8 mb-4">
+                  <img src={logoFispan} alt="FISPAN" className="h-full w-auto object-contain" />
+                </div>
+                <p className="text-2xl font-black text-primary mb-1">$35M+ ARR</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">Since 2018</p>
+              </div>
+            </div>
+
+            {/* Company 4 - Upper Village */}
+            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
+              <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+                  Photo Placeholder
+                </div>
+              </div>
+              <div className="p-5">
+                <div className="h-8 mb-4">
+                  <img src={logoUpperVillage} alt="Upper Village" className="h-full w-auto object-contain" />
+                </div>
+                <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">KPI Placeholder</p>
+              </div>
+            </div>
           </div>
         </div>
 
