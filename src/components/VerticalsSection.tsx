@@ -44,16 +44,7 @@ const VerticalsSection: FC = () => {
           {/* SVG for Connecting Lines and Arc Labels */}
           <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 800">
             <defs>
-              {/* Healthcare gradient - teal/emerald */}
-              <linearGradient id="healthcareGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="hsl(170, 50%, 45%)" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="hsl(170, 50%, 45%)" stopOpacity="0.1" />
-              </linearGradient>
-              {/* Finance gradient - indigo/blue */}
-              <linearGradient id="financeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="hsl(220, 60%, 50%)" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="hsl(220, 60%, 50%)" stopOpacity="0.1" />
-              </linearGradient>
+              {/* Glow filters */}
               {/* Glow filters */}
               <filter id="glowHealthcare" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -86,7 +77,8 @@ const VerticalsSection: FC = () => {
                   y1={centerY}
                   x2={x}
                   y2={y}
-                  stroke="url(#healthcareGradient)"
+                  stroke="hsl(170, 50%, 45%)"
+                  strokeOpacity="0.5"
                   strokeWidth="2"
                   filter="url(#glowHealthcare)"
                 />
@@ -108,7 +100,8 @@ const VerticalsSection: FC = () => {
                   y1={centerY}
                   x2={x}
                   y2={y}
-                  stroke="url(#financeGradient)"
+                  stroke="hsl(220, 60%, 50%)"
+                  strokeOpacity="0.5"
                   strokeWidth="2"
                   filter="url(#glowFinance)"
                 />
