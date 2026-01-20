@@ -42,22 +42,21 @@ const VerticalsSection: FC = () => {
           </div>
 
           {/* SVG for Connecting Lines and Arc Labels */}
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 800">
+          <svg className="absolute inset-0 w-full h-full z-10" viewBox="0 0 800 800">
             <defs>
-              {/* Glow filters */}
-              {/* Glow filters */}
-              <filter id="glowHealthcare" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              {/* Glow filters (use userSpaceOnUse so horizontal lines don't disappear) */}
+              <filter id="glowHealthcare" filterUnits="userSpaceOnUse" x="0" y="0" width="800" height="800">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
-              <filter id="glowFinance" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <filter id="glowFinance" filterUnits="userSpaceOnUse" x="0" y="0" width="800" height="800">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
@@ -80,6 +79,7 @@ const VerticalsSection: FC = () => {
                   stroke="hsl(170, 50%, 45%)"
                   strokeOpacity="0.5"
                   strokeWidth="2"
+                  strokeLinecap="round"
                   filter="url(#glowHealthcare)"
                 />
               );
@@ -103,6 +103,7 @@ const VerticalsSection: FC = () => {
                   stroke="hsl(220, 60%, 50%)"
                   strokeOpacity="0.5"
                   strokeWidth="2"
+                  strokeLinecap="round"
                   filter="url(#glowFinance)"
                 />
               );
@@ -122,7 +123,7 @@ const VerticalsSection: FC = () => {
           </svg>
 
           {/* Central Hub - Layered with depth */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
             {/* Outer glow ring */}
             <div className="absolute -inset-4 rounded-full bg-primary/10 blur-xl" />
             {/* Middle ring */}
@@ -145,7 +146,7 @@ const VerticalsSection: FC = () => {
             return (
               <div
                 key={`health-spoke-${idx}`}
-                className="absolute -translate-x-1/2 -translate-y-1/2 group"
+                className="absolute -translate-x-1/2 -translate-y-1/2 group z-20"
                 style={{ left: x, top: y }}
               >
                 <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30 transition-all duration-300 w-[180px] min-h-[180px]">
@@ -181,7 +182,7 @@ const VerticalsSection: FC = () => {
             return (
               <div
                 key={`finance-spoke-${idx}`}
-                className="absolute -translate-x-1/2 -translate-y-1/2 group"
+                className="absolute -translate-x-1/2 -translate-y-1/2 group z-20"
                 style={{ left: x, top: y }}
               >
                 <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-blue-500/30 transition-all duration-300 w-[180px] min-h-[180px]">
@@ -215,7 +216,7 @@ const VerticalsSection: FC = () => {
             return (
               <div
                 key={idx}
-                className="absolute w-1.5 h-1.5 rounded-full bg-muted-foreground/25 -translate-x-1/2 -translate-y-1/2"
+                className="absolute w-1.5 h-1.5 rounded-full bg-muted-foreground/25 -translate-x-1/2 -translate-y-1/2 z-10"
                 style={{ left: x, top: y }}
               />
             );
