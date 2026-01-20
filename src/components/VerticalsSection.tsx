@@ -155,7 +155,7 @@ const VerticalsSection: FC = () => {
                 className="absolute -translate-x-1/2 -translate-y-1/2 group"
                 style={{ left: x, top: y }}
               >
-                <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30 transition-all duration-300">
+                <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30 transition-all duration-300 w-[180px] min-h-[180px]">
                   {/* Category badge */}
                   <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full mb-2">
                     Healthcare
@@ -191,7 +191,7 @@ const VerticalsSection: FC = () => {
                 className="absolute -translate-x-1/2 -translate-y-1/2 group"
                 style={{ left: x, top: y }}
               >
-                <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-blue-500/30 transition-all duration-300">
+                <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-blue-500/30 transition-all duration-300 w-[180px] min-h-[180px]">
                   {/* Category badge */}
                   <span className="text-[9px] font-bold uppercase tracking-widest text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full mb-2">
                     Finance
