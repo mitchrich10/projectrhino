@@ -42,7 +42,7 @@ const VerticalsSection: FC = () => {
           </div>
 
           {/* SVG for Connecting Lines and Arc Labels */}
-          <svg className="absolute inset-0 w-full h-full z-10" viewBox="0 0 800 800">
+          <svg className="absolute inset-0 w-full h-full z-0" viewBox="0 0 800 800">
             <defs>
               {/* Glow filters (use userSpaceOnUse so horizontal lines don't disappear) */}
               <filter id="glowHealthcare" filterUnits="userSpaceOnUse" x="0" y="0" width="800" height="800">
@@ -123,7 +123,7 @@ const VerticalsSection: FC = () => {
           </svg>
 
           {/* Central Hub - Layered with depth */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
             {/* Outer glow ring */}
             <div className="absolute -inset-4 rounded-full bg-primary/10 blur-xl" />
             {/* Middle ring */}
