@@ -2,25 +2,29 @@ import { FC } from "react";
 import { Baby, Dog, Activity, TrendingUp, Shield, Calculator } from "lucide-react";
 
 const healthcareVerticals = [
-  { icon: Baby, industry: "Fertility", producer: "Reproductive Endocrinologist", angle: -120 },
-  { icon: Dog, industry: "Veterinary", producer: "Doctor of Veterinary Medicine", angle: -180 },
-  { icon: Activity, industry: "Physical Therapy", producer: "Physiotherapist", angle: -240 },
+  { icon: Baby, industry: "Fertility", producer: "Reproductive Endocrinologist", angle: 150 },
+  { icon: Dog, industry: "Veterinary", producer: "Doctor of Veterinary Medicine", angle: 180 },
+  { icon: Activity, industry: "Physical Therapy", producer: "Physiotherapist", angle: 210 },
 ];
 
 const financeVerticals = [
-  { icon: Calculator, industry: "Accounting", producer: "Chartered Professional Accountant", angle: -60 },
+  { icon: Calculator, industry: "Accounting", producer: "Chartered Professional Accountant", angle: 330 },
   { icon: TrendingUp, industry: "Wealth Mgmt", producer: "Wealth Advisor", angle: 0 },
-  { icon: Shield, industry: "Insurance", producer: "Insurance Broker", angle: 60 },
+  { icon: Shield, industry: "Insurance", producer: "Insurance Broker", angle: 30 },
 ];
 
 const allVerticals = [...healthcareVerticals, ...financeVerticals];
 
 const VerticalsSection: FC = () => {
+  const centerX = 400;
+  const centerY = 400;
+  const radius = 260;
+
   return (
     <section id="verticals" className="py-20 px-6 bg-gradient-to-b from-secondary via-secondary to-background overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8 text-center">
+        <div className="mb-12 text-center">
           <h2 className="text-4xl font-black uppercase tracking-tighter mb-4">
             <span className="text-primary">Producer</span> Businesses
           </h2>
@@ -34,49 +38,29 @@ const VerticalsSection: FC = () => {
           
           {/* Background Atmosphere */}
           <div className="absolute inset-0 pointer-events-none">
-            {/* Large radial gradient */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-gradient-radial from-primary/5 via-transparent to-transparent" />
             {/* Decorative rings */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-border/20" />
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-border/10" />
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-border/10" />
           </div>
 
-          {/* SVG for Connecting Lines and Arc Labels */}
+          {/* SVG for Connecting Lines */}
           <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 800">
             <defs>
               {/* Healthcare gradient - teal/emerald */}
-              <linearGradient id="healthcareGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="hsl(170, 50%, 45%)" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="hsl(170, 50%, 45%)" stopOpacity="0.1" />
+              <linearGradient id="healthcareGradient" x1="50%" y1="50%" x2="0%" y2="50%">
+                <stop offset="0%" stopColor="hsl(160, 45%, 40%)" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="hsl(160, 45%, 40%)" stopOpacity="0.2" />
               </linearGradient>
               {/* Finance gradient - indigo/blue */}
-              <linearGradient id="financeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="hsl(220, 60%, 50%)" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="hsl(220, 60%, 50%)" stopOpacity="0.1" />
+              <linearGradient id="financeGradient" x1="50%" y1="50%" x2="100%" y2="50%">
+                <stop offset="0%" stopColor="hsl(220, 60%, 50%)" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="hsl(220, 60%, 50%)" stopOpacity="0.2" />
               </linearGradient>
-              {/* Glow filters */}
-              <filter id="glowHealthcare" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-              <filter id="glowFinance" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
             </defs>
 
             {/* Healthcare connecting lines */}
             {healthcareVerticals.map((item, idx) => {
               const angleRad = (item.angle * Math.PI) / 180;
-              const radius = 280;
-              const centerX = 400;
-              const centerY = 400;
               const x = centerX + radius * Math.cos(angleRad);
               const y = centerY + radius * Math.sin(angleRad);
               return (
@@ -88,7 +72,6 @@ const VerticalsSection: FC = () => {
                   y2={y}
                   stroke="url(#healthcareGradient)"
                   strokeWidth="2"
-                  filter="url(#glowHealthcare)"
                 />
               );
             })}
@@ -96,9 +79,6 @@ const VerticalsSection: FC = () => {
             {/* Finance connecting lines */}
             {financeVerticals.map((item, idx) => {
               const angleRad = (item.angle * Math.PI) / 180;
-              const radius = 280;
-              const centerX = 400;
-              const centerY = 400;
               const x = centerX + radius * Math.cos(angleRad);
               const y = centerY + radius * Math.sin(angleRad);
               return (
@@ -110,40 +90,15 @@ const VerticalsSection: FC = () => {
                   y2={y}
                   stroke="url(#financeGradient)"
                   strokeWidth="2"
-                  filter="url(#glowFinance)"
                 />
               );
             })}
 
-            {/* Healthcare arc label */}
-            <path
-              id="healthcareArc"
-              d="M 100 400 A 300 300 0 0 1 400 100"
-              fill="none"
-            />
-            <text className="fill-emerald-600/70 text-xs uppercase tracking-[0.3em] font-semibold">
-              <textPath href="#healthcareArc" startOffset="50%" textAnchor="middle">
-                Healthcare
-              </textPath>
-            </text>
-
-            {/* Finance arc label */}
-            <path
-              id="financeArc"
-              d="M 700 400 A 300 300 0 0 1 400 100"
-              fill="none"
-            />
-            <text className="fill-blue-600/70 text-xs uppercase tracking-[0.3em] font-semibold">
-              <textPath href="#financeArc" startOffset="50%" textAnchor="middle">
-                Finance
-              </textPath>
-            </text>
-
-            {/* Outer ring suggesting more */}
+            {/* Outer ring */}
             <circle
-              cx="400"
-              cy="400"
-              r="360"
+              cx={centerX}
+              cy={centerY}
+              r="340"
               fill="none"
               stroke="hsl(var(--border) / 0.15)"
               strokeWidth="1"
@@ -151,14 +106,25 @@ const VerticalsSection: FC = () => {
             />
           </svg>
 
-          {/* Central Hub - Layered with depth */}
+          {/* Category Labels - Healthcare (left) */}
+          <div className="absolute left-8 top-1/2 -translate-y-1/2 z-20">
+            <div className="bg-card/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-emerald-500/30 shadow-lg">
+              <span className="text-xs font-bold uppercase tracking-widest text-emerald-600">Healthcare</span>
+            </div>
+          </div>
+
+          {/* Category Labels - Finance (right) */}
+          <div className="absolute right-8 top-1/2 -translate-y-1/2 z-20">
+            <div className="bg-card/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-blue-500/30 shadow-lg">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-600">Finance</span>
+            </div>
+          </div>
+
+          {/* Central Hub */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            {/* Outer glow ring */}
             <div className="absolute -inset-4 rounded-full bg-primary/10 blur-xl" />
-            {/* Middle ring */}
             <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-primary/20 to-transparent" />
-            {/* Main hub */}
-            <div className="relative w-48 h-48 rounded-full bg-gradient-to-br from-card via-card to-card/90 border-2 border-primary shadow-xl shadow-primary/20 ring-4 ring-primary/10 flex flex-col items-center justify-center text-center p-4">
+            <div className="relative w-44 h-44 rounded-full bg-gradient-to-br from-card via-card to-card/90 border-2 border-primary shadow-xl shadow-primary/20 ring-4 ring-primary/10 flex flex-col items-center justify-center text-center p-4">
               <span className="text-xs uppercase tracking-widest text-primary font-semibold mb-1">Examples</span>
               <span className="text-sm font-black uppercase tracking-tight text-foreground leading-tight">Across Industries</span>
             </div>
@@ -168,9 +134,8 @@ const VerticalsSection: FC = () => {
           {healthcareVerticals.map((item, idx) => {
             const Icon = item.icon;
             const angleRad = (item.angle * Math.PI) / 180;
-            const radius = 280;
-            const x = 400 + radius * Math.cos(angleRad);
-            const y = 400 + radius * Math.sin(angleRad);
+            const x = centerX + radius * Math.cos(angleRad);
+            const y = centerY + radius * Math.sin(angleRad);
             
             return (
               <div
@@ -178,17 +143,14 @@ const VerticalsSection: FC = () => {
                 className="absolute -translate-x-1/2 -translate-y-1/2 group"
                 style={{ left: x, top: y }}
               >
-                <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30 transition-all duration-300">
-                  {/* Icon with teal accent */}
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center shadow-inner mb-3">
-                    <Icon className="w-7 h-7 text-emerald-600 group-hover:scale-110 transition-transform duration-300" />
+                <div className="w-[180px] h-[140px] flex flex-col items-center justify-center bg-card/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center shadow-inner mb-2">
+                    <Icon className="w-6 h-6 text-emerald-600 group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  {/* Industry - smaller context */}
                   <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
                     {item.industry}
                   </span>
-                  {/* Producer Role - prominent */}
-                  <span className="text-sm font-bold text-foreground text-center leading-tight max-w-[160px]">
+                  <span className="text-xs font-bold text-foreground text-center leading-tight">
                     {item.producer}
                   </span>
                 </div>
@@ -200,9 +162,8 @@ const VerticalsSection: FC = () => {
           {financeVerticals.map((item, idx) => {
             const Icon = item.icon;
             const angleRad = (item.angle * Math.PI) / 180;
-            const radius = 280;
-            const x = 400 + radius * Math.cos(angleRad);
-            const y = 400 + radius * Math.sin(angleRad);
+            const x = centerX + radius * Math.cos(angleRad);
+            const y = centerY + radius * Math.sin(angleRad);
             
             return (
               <div
@@ -210,17 +171,14 @@ const VerticalsSection: FC = () => {
                 className="absolute -translate-x-1/2 -translate-y-1/2 group"
                 style={{ left: x, top: y }}
               >
-                <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-blue-500/30 transition-all duration-300">
-                  {/* Icon with blue accent */}
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner mb-3">
-                    <Icon className="w-7 h-7 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+                <div className="w-[180px] h-[140px] flex flex-col items-center justify-center bg-card/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-blue-500/40 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner mb-2">
+                    <Icon className="w-6 h-6 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  {/* Industry - smaller context */}
                   <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
                     {item.industry}
                   </span>
-                  {/* Producer Role - prominent */}
-                  <span className="text-sm font-bold text-foreground text-center leading-tight max-w-[160px]">
+                  <span className="text-xs font-bold text-foreground text-center leading-tight">
                     {item.producer}
                   </span>
                 </div>
@@ -228,23 +186,23 @@ const VerticalsSection: FC = () => {
             );
           })}
 
-          {/* "And More" dots around the outer edge */}
-          {[15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345].map((angle, idx) => {
+          {/* "And More" dots */}
+          {[60, 90, 120, 240, 270, 300].map((angle, idx) => {
             const angleRad = (angle * Math.PI) / 180;
-            const radius = 370;
-            const x = 400 + radius * Math.cos(angleRad);
-            const y = 400 + radius * Math.sin(angleRad);
+            const dotRadius = 350;
+            const x = centerX + dotRadius * Math.cos(angleRad);
+            const y = centerY + dotRadius * Math.sin(angleRad);
             return (
               <div
                 key={idx}
-                className="absolute w-1.5 h-1.5 rounded-full bg-muted-foreground/25 -translate-x-1/2 -translate-y-1/2"
+                className="absolute w-1.5 h-1.5 rounded-full bg-muted-foreground/30 -translate-x-1/2 -translate-y-1/2"
                 style={{ left: x, top: y }}
               />
             );
           })}
         </div>
 
-        {/* Mobile/Tablet Layout - Enhanced with depth */}
+        {/* Mobile/Tablet Layout */}
         <div className="lg:hidden">
           {/* Healthcare Section */}
           <div className="mb-8">
@@ -259,7 +217,7 @@ const VerticalsSection: FC = () => {
                 return (
                   <div 
                     key={idx} 
-                    className="flex flex-col items-center text-center p-4 bg-card/85 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
+                    className="flex flex-col items-center text-center p-4 bg-card/90 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
                   >
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center shadow-inner mb-3">
                       <Icon className="w-6 h-6 text-emerald-600" />
@@ -289,7 +247,7 @@ const VerticalsSection: FC = () => {
                 return (
                   <div 
                     key={idx} 
-                    className="flex flex-col items-center text-center p-4 bg-card/85 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
+                    className="flex flex-col items-center text-center p-4 bg-card/90 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
                   >
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner mb-3">
                       <Icon className="w-6 h-6 text-blue-600" />
