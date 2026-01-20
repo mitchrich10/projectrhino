@@ -169,7 +169,7 @@ const VerticalsSection: FC = () => {
                     {item.industry}
                   </span>
                   {/* Producer Role - prominent */}
-                  <span className="text-sm font-bold text-foreground text-center leading-tight max-w-[160px]">
+                  <span className="text-sm font-bold text-foreground text-center leading-tight w-[160px] h-[36px] flex items-center justify-center">
                     {item.producer}
                   </span>
                 </div>
@@ -205,7 +205,7 @@ const VerticalsSection: FC = () => {
                     {item.industry}
                   </span>
                   {/* Producer Role - prominent */}
-                  <span className="text-sm font-bold text-foreground text-center leading-tight max-w-[160px]">
+                  <span className="text-sm font-bold text-foreground text-center leading-tight w-[160px] h-[36px] flex items-center justify-center">
                     {item.producer}
                   </span>
                 </div>
