@@ -115,29 +115,6 @@ const VerticalsSection: FC = () => {
               );
             })}
 
-            {/* Healthcare arc label */}
-            <path
-              id="healthcareArc"
-              d="M 100 400 A 300 300 0 0 1 400 100"
-              fill="none"
-            />
-            <text className="fill-emerald-600/70 text-xs uppercase tracking-[0.3em] font-semibold">
-              <textPath href="#healthcareArc" startOffset="50%" textAnchor="middle">
-                Healthcare
-              </textPath>
-            </text>
-
-            {/* Finance arc label */}
-            <path
-              id="financeArc"
-              d="M 700 400 A 300 300 0 0 1 400 100"
-              fill="none"
-            />
-            <text className="fill-blue-600/70 text-xs uppercase tracking-[0.3em] font-semibold">
-              <textPath href="#financeArc" startOffset="50%" textAnchor="middle">
-                Finance
-              </textPath>
-            </text>
 
             {/* Outer ring suggesting more */}
             <circle
@@ -179,6 +156,10 @@ const VerticalsSection: FC = () => {
                 style={{ left: x, top: y }}
               >
                 <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30 transition-all duration-300">
+                  {/* Category badge */}
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full mb-2">
+                    Healthcare
+                  </span>
                   {/* Icon with teal accent */}
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center shadow-inner mb-3">
                     <Icon className="w-7 h-7 text-emerald-600 group-hover:scale-110 transition-transform duration-300" />
@@ -211,6 +192,10 @@ const VerticalsSection: FC = () => {
                 style={{ left: x, top: y }}
               >
                 <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-blue-500/30 transition-all duration-300">
+                  {/* Category badge */}
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full mb-2">
+                    Finance
+                  </span>
                   {/* Icon with blue accent */}
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner mb-3">
                     <Icon className="w-7 h-7 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
