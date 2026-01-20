@@ -1,18 +1,23 @@
 import { FC } from "react";
 import { Baby, Dog, Activity, TrendingUp, Shield, Calculator } from "lucide-react";
 
-const verticals = [
-  { icon: Baby, industry: "Fertility", producer: "Reproductive Endocrinologist", angle: -60 },
-  { icon: Dog, industry: "Veterinary", producer: "Doctor of Veterinary Medicine", angle: 0 },
-  { icon: Activity, industry: "Physical Therapy", producer: "Physiotherapist", angle: 60 },
-  { icon: Calculator, industry: "Accounting", producer: "Chartered Professional Accountant", angle: 120 },
-  { icon: TrendingUp, industry: "Wealth Mgmt", producer: "Wealth Advisor", angle: 180 },
-  { icon: Shield, industry: "Insurance", producer: "Insurance Broker", angle: 240 },
+const healthcareVerticals = [
+  { icon: Baby, industry: "Fertility", producer: "Reproductive Endocrinologist", angle: -120 },
+  { icon: Dog, industry: "Veterinary", producer: "Doctor of Veterinary Medicine", angle: -180 },
+  { icon: Activity, industry: "Physical Therapy", producer: "Physiotherapist", angle: -240 },
 ];
+
+const financeVerticals = [
+  { icon: Calculator, industry: "Accounting", producer: "Chartered Professional Accountant", angle: -60 },
+  { icon: TrendingUp, industry: "Wealth Mgmt", producer: "Wealth Advisor", angle: 0 },
+  { icon: Shield, industry: "Insurance", producer: "Insurance Broker", angle: 60 },
+];
+
+const allVerticals = [...healthcareVerticals, ...financeVerticals];
 
 const VerticalsSection: FC = () => {
   return (
-    <section id="verticals" className="py-20 px-6 bg-gradient-to-b from-secondary via-secondary to-background">
+    <section id="verticals" className="py-20 px-6 bg-gradient-to-b from-secondary via-secondary to-background overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
@@ -25,72 +30,197 @@ const VerticalsSection: FC = () => {
         </div>
 
         {/* Radial Diagram - Desktop */}
-        <div className="hidden lg:block relative mx-auto" style={{ width: '700px', height: '700px' }}>
-          {/* Connecting Lines */}
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 700 700">
-            {verticals.map((item, idx) => {
+        <div className="hidden lg:block relative mx-auto" style={{ width: '800px', height: '800px' }}>
+          
+          {/* Background Atmosphere */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Large radial gradient */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-gradient-radial from-primary/5 via-transparent to-transparent" />
+            {/* Decorative rings */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-border/20" />
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-border/10" />
+          </div>
+
+          {/* SVG for Connecting Lines and Arc Labels */}
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 800">
+            <defs>
+              {/* Healthcare gradient - teal/emerald */}
+              <linearGradient id="healthcareGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="hsl(170, 50%, 45%)" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(170, 50%, 45%)" stopOpacity="0.1" />
+              </linearGradient>
+              {/* Finance gradient - indigo/blue */}
+              <linearGradient id="financeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="hsl(220, 60%, 50%)" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(220, 60%, 50%)" stopOpacity="0.1" />
+              </linearGradient>
+              {/* Glow filters */}
+              <filter id="glowHealthcare" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <filter id="glowFinance" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* Healthcare connecting lines */}
+            {healthcareVerticals.map((item, idx) => {
               const angleRad = (item.angle * Math.PI) / 180;
-              const radius = 250;
-              const centerX = 350;
-              const centerY = 350;
+              const radius = 280;
+              const centerX = 400;
+              const centerY = 400;
               const x = centerX + radius * Math.cos(angleRad);
               const y = centerY + radius * Math.sin(angleRad);
               return (
                 <line
-                  key={idx}
+                  key={`health-${idx}`}
                   x1={centerX}
                   y1={centerY}
                   x2={x}
                   y2={y}
-                  stroke="hsl(var(--primary) / 0.2)"
+                  stroke="url(#healthcareGradient)"
                   strokeWidth="2"
-                  strokeDasharray="4 4"
+                  filter="url(#glowHealthcare)"
                 />
               );
             })}
+
+            {/* Finance connecting lines */}
+            {financeVerticals.map((item, idx) => {
+              const angleRad = (item.angle * Math.PI) / 180;
+              const radius = 280;
+              const centerX = 400;
+              const centerY = 400;
+              const x = centerX + radius * Math.cos(angleRad);
+              const y = centerY + radius * Math.sin(angleRad);
+              return (
+                <line
+                  key={`finance-${idx}`}
+                  x1={centerX}
+                  y1={centerY}
+                  x2={x}
+                  y2={y}
+                  stroke="url(#financeGradient)"
+                  strokeWidth="2"
+                  filter="url(#glowFinance)"
+                />
+              );
+            })}
+
+            {/* Healthcare arc label */}
+            <path
+              id="healthcareArc"
+              d="M 100 400 A 300 300 0 0 1 400 100"
+              fill="none"
+            />
+            <text className="fill-emerald-600/70 text-xs uppercase tracking-[0.3em] font-semibold">
+              <textPath href="#healthcareArc" startOffset="50%" textAnchor="middle">
+                Healthcare
+              </textPath>
+            </text>
+
+            {/* Finance arc label */}
+            <path
+              id="financeArc"
+              d="M 700 400 A 300 300 0 0 1 400 100"
+              fill="none"
+            />
+            <text className="fill-blue-600/70 text-xs uppercase tracking-[0.3em] font-semibold">
+              <textPath href="#financeArc" startOffset="50%" textAnchor="middle">
+                Finance
+              </textPath>
+            </text>
+
             {/* Outer ring suggesting more */}
             <circle
-              cx="350"
-              cy="350"
-              r="290"
+              cx="400"
+              cy="400"
+              r="360"
               fill="none"
-              stroke="hsl(var(--primary) / 0.1)"
+              stroke="hsl(var(--border) / 0.15)"
               strokeWidth="1"
-              strokeDasharray="8 12"
+              strokeDasharray="6 10"
             />
           </svg>
 
-          {/* Central Hub */}
+          {/* Central Hub - Layered with depth */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            <div className="w-44 h-44 rounded-full bg-card/95 border-2 border-primary shadow-lg shadow-primary/20 flex flex-col items-center justify-center text-center p-4">
+            {/* Outer glow ring */}
+            <div className="absolute -inset-4 rounded-full bg-primary/10 blur-xl" />
+            {/* Middle ring */}
+            <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-primary/20 to-transparent" />
+            {/* Main hub */}
+            <div className="relative w-48 h-48 rounded-full bg-gradient-to-br from-card via-card to-card/90 border-2 border-primary shadow-xl shadow-primary/20 ring-4 ring-primary/10 flex flex-col items-center justify-center text-center p-4">
               <span className="text-xs uppercase tracking-widest text-primary font-semibold mb-1">Examples</span>
               <span className="text-sm font-black uppercase tracking-tight text-foreground leading-tight">Across Industries</span>
             </div>
           </div>
 
-          {/* Radiating Spokes */}
-          {verticals.map((item, idx) => {
+          {/* Radiating Spokes - Healthcare */}
+          {healthcareVerticals.map((item, idx) => {
             const Icon = item.icon;
             const angleRad = (item.angle * Math.PI) / 180;
-            const radius = 250;
-            const x = 350 + radius * Math.cos(angleRad);
-            const y = 350 + radius * Math.sin(angleRad);
+            const radius = 280;
+            const x = 400 + radius * Math.cos(angleRad);
+            const y = 400 + radius * Math.sin(angleRad);
             
             return (
               <div
-                key={idx}
+                key={`health-spoke-${idx}`}
                 className="absolute -translate-x-1/2 -translate-y-1/2 group"
                 style={{ left: x, top: y }}
               >
-                <div className="flex flex-col items-center">
-                  <div className="w-20 h-20 rounded-full bg-card/90 border-2 border-border/60 flex items-center justify-center shadow-sm group-hover:border-primary/60 group-hover:shadow-md group-hover:shadow-primary/10 transition-all duration-300">
-                    <Icon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-300" />
+                <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/30 transition-all duration-300">
+                  {/* Icon with teal accent */}
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center shadow-inner mb-3">
+                    <Icon className="w-7 h-7 text-emerald-600 group-hover:scale-110 transition-transform duration-300" />
                   </div>
-                  <span className="mt-3 text-xs font-black uppercase tracking-widest text-foreground whitespace-nowrap">
+                  {/* Industry - smaller context */}
+                  <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
                     {item.industry}
                   </span>
-                  {/* Tooltip on hover */}
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1 text-[10px] text-muted-foreground max-w-[140px] text-center leading-tight">
+                  {/* Producer Role - prominent */}
+                  <span className="text-sm font-bold text-foreground text-center leading-tight max-w-[160px]">
+                    {item.producer}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Radiating Spokes - Finance */}
+          {financeVerticals.map((item, idx) => {
+            const Icon = item.icon;
+            const angleRad = (item.angle * Math.PI) / 180;
+            const radius = 280;
+            const x = 400 + radius * Math.cos(angleRad);
+            const y = 400 + radius * Math.sin(angleRad);
+            
+            return (
+              <div
+                key={`finance-spoke-${idx}`}
+                className="absolute -translate-x-1/2 -translate-y-1/2 group"
+                style={{ left: x, top: y }}
+              >
+                <div className="flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl hover:border-blue-500/30 transition-all duration-300">
+                  {/* Icon with blue accent */}
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner mb-3">
+                    <Icon className="w-7 h-7 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                  {/* Industry - smaller context */}
+                  <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                    {item.industry}
+                  </span>
+                  {/* Producer Role - prominent */}
+                  <span className="text-sm font-bold text-foreground text-center leading-tight max-w-[160px]">
                     {item.producer}
                   </span>
                 </div>
@@ -99,45 +229,84 @@ const VerticalsSection: FC = () => {
           })}
 
           {/* "And More" dots around the outer edge */}
-          {[30, 90, 150, 210, 270, 330].map((angle, idx) => {
+          {[15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345].map((angle, idx) => {
             const angleRad = (angle * Math.PI) / 180;
-            const radius = 310;
-            const x = 350 + radius * Math.cos(angleRad);
-            const y = 350 + radius * Math.sin(angleRad);
+            const radius = 370;
+            const x = 400 + radius * Math.cos(angleRad);
+            const y = 400 + radius * Math.sin(angleRad);
             return (
               <div
                 key={idx}
-                className="absolute w-2 h-2 rounded-full bg-muted-foreground/30 -translate-x-1/2 -translate-y-1/2"
+                className="absolute w-1.5 h-1.5 rounded-full bg-muted-foreground/25 -translate-x-1/2 -translate-y-1/2"
                 style={{ left: x, top: y }}
               />
             );
           })}
         </div>
 
-        {/* Mobile/Tablet Layout - Simpler 2x3 Grid */}
+        {/* Mobile/Tablet Layout - Enhanced with depth */}
         <div className="lg:hidden">
-          <p className="text-xs uppercase tracking-widest text-primary font-semibold text-center mb-6">
-            Examples across industries
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-            {verticals.map((item, idx) => {
-              const Icon = item.icon;
-              return (
-                <div key={idx} className="flex flex-col items-center text-center group">
-                  <div className="w-16 h-16 rounded-full bg-card/90 border-2 border-border/60 flex items-center justify-center shadow-sm group-hover:border-primary/60 transition-all duration-300">
-                    <Icon className="w-6 h-6 text-primary" />
+          {/* Healthcare Section */}
+          <div className="mb-8">
+            <p className="text-xs uppercase tracking-widest text-emerald-600 font-semibold text-center mb-4 flex items-center justify-center gap-2">
+              <span className="w-8 h-px bg-emerald-500/30" />
+              Healthcare
+              <span className="w-8 h-px bg-emerald-500/30" />
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {healthcareVerticals.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <div 
+                    key={idx} 
+                    className="flex flex-col items-center text-center p-4 bg-card/85 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center shadow-inner mb-3">
+                      <Icon className="w-6 h-6 text-emerald-600" />
+                    </div>
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                      {item.industry}
+                    </span>
+                    <span className="text-sm font-bold text-foreground leading-tight">
+                      {item.producer}
+                    </span>
                   </div>
-                  <span className="mt-2 text-xs font-black uppercase tracking-widest text-foreground">
-                    {item.industry}
-                  </span>
-                  <span className="mt-1 text-[10px] text-muted-foreground leading-tight">
-                    {item.producer}
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
-          <p className="text-center text-xs text-muted-foreground/60 mt-6 uppercase tracking-widest">
+
+          {/* Finance Section */}
+          <div className="mb-6">
+            <p className="text-xs uppercase tracking-widest text-blue-600 font-semibold text-center mb-4 flex items-center justify-center gap-2">
+              <span className="w-8 h-px bg-blue-500/30" />
+              Finance
+              <span className="w-8 h-px bg-blue-500/30" />
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {financeVerticals.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <div 
+                    key={idx} 
+                    className="flex flex-col items-center text-center p-4 bg-card/85 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner mb-3">
+                      <Icon className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                      {item.industry}
+                    </span>
+                    <span className="text-sm font-bold text-foreground leading-tight">
+                      {item.producer}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground/60 uppercase tracking-widest">
             And many more...
           </p>
         </div>
