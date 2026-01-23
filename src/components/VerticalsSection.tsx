@@ -36,22 +36,15 @@ const categoryColors: Record<Category, { badge: string; iconBg: string; iconBord
   },
 };
 
-// Grouped verticals with clean, symmetric spacing
-// 6 cards total: 2 per category
-// Three evenly balanced clusters (top / bottom-right / bottom-left)
-// with identical internal spread for a uniform read.
-const groupedVerticals: { vertical: Vertical; angle: number }[] = [
-  // Healthcare cluster (top)
-  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: 248 },
-  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: 292 },
-  
-  // Financial & Advisory Services cluster (bottom-right)
-  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 8 },
-  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 52 },
-  
-  // Wealth Management cluster (bottom-left)
-  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 128 },
-  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 172 },
+// Hexagon layout: 6 cards at 60° intervals, starting from top (-90°)
+// Each vertex is exactly 60° apart for perfect symmetry
+const hexagonVerticals: { vertical: Vertical; angle: number }[] = [
+  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: -90 },        // Top
+  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: -30 },       // Top-right
+  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 30 }, // Bottom-right
+  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 90 },  // Bottom
+  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 150 },         // Bottom-left
+  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 210 },           // Top-left
 ];
 
 // For mobile layout - grouped by category
@@ -93,23 +86,19 @@ const VerticalsSection: FC = () => {
           </p>
         </div>
 
-        {/* Radial Diagram - Desktop */}
-        <div className="hidden lg:block relative mx-auto" style={{ width: '900px', height: '900px' }}>
+        {/* Hexagon Diagram - Desktop */}
+        <div className="hidden lg:block relative mx-auto" style={{ width: '800px', height: '700px' }}>
           
           {/* Background Atmosphere */}
           <div className="absolute inset-0 pointer-events-none">
-            {/* Large radial gradient */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-gradient-radial from-primary/5 via-transparent to-transparent" />
-            {/* Decorative rings */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-border/20" />
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-border/10" />
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-radial from-primary/5 via-transparent to-transparent" />
           </div>
 
-          {/* SVG for Connecting Lines */}
-          <svg className="absolute inset-0 w-full h-full z-0" viewBox="0 0 900 900">
+          {/* SVG for Hexagon Shape and Connecting Lines */}
+          <svg className="absolute inset-0 w-full h-full z-0" viewBox="0 0 800 700">
             <defs>
-              <filter id="glowLine" filterUnits="userSpaceOnUse" x="0" y="0" width="900" height="900">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+              <filter id="glowLine" filterUnits="userSpaceOnUse" x="0" y="0" width="800" height="700">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
                 <feMerge>
                   <feMergeNode in="coloredBlur" />
                   <feMergeNode in="SourceGraphic" />
@@ -117,101 +106,83 @@ const VerticalsSection: FC = () => {
               </filter>
             </defs>
 
-            {/* Connecting lines for all verticals */}
-            {groupedVerticals.map((item, idx) => {
+            {/* Hexagon outline */}
+            <polygon
+              points={hexagonVerticals.map((item) => {
+                const angleRad = (item.angle * Math.PI) / 180;
+                const radius = 260;
+                const x = 400 + radius * Math.cos(angleRad);
+                const y = 350 + radius * Math.sin(angleRad);
+                return `${x},${y}`;
+              }).join(' ')}
+              fill="none"
+              stroke="hsl(var(--border) / 0.3)"
+              strokeWidth="1"
+            />
+
+            {/* Connecting lines from center to each vertex */}
+            {hexagonVerticals.map((item, idx) => {
               const angleRad = (item.angle * Math.PI) / 180;
-              const radius = 320;
-              const centerX = 450;
-              const centerY = 450;
-              const x = centerX + radius * Math.cos(angleRad);
-              const y = centerY + radius * Math.sin(angleRad);
+              const radius = 260;
+              const x = 400 + radius * Math.cos(angleRad);
+              const y = 350 + radius * Math.sin(angleRad);
               const colors = categoryColors[item.vertical.category];
               return (
                 <line
                   key={`line-${idx}`}
-              x1={centerX}
-              y1={centerY}
+                  x1={400}
+                  y1={350}
                   x2={x}
                   y2={y}
                   stroke={colors.lineColor}
-                  strokeOpacity="0.5"
-                  strokeWidth="2"
+                  strokeOpacity="0.4"
+                  strokeWidth="1.5"
                   strokeLinecap="round"
                   filter="url(#glowLine)"
                 />
               );
             })}
-
-            {/* Outer ring suggesting more */}
-            <circle
-              cx="450"
-              cy="450"
-              r="405"
-              fill="none"
-              stroke="hsl(var(--border) / 0.15)"
-              strokeWidth="1"
-              strokeDasharray="6 10"
-            />
           </svg>
 
-          {/* Central Hub - Layered with depth */}
+          {/* Central Hub */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            {/* Outer glow ring */}
-            <div className="absolute -inset-4 rounded-full bg-primary/10 blur-xl" />
-            {/* Middle ring */}
-            <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-primary/20 to-transparent" />
-            {/* Main hub */}
-            <div className="relative w-48 h-48 rounded-full bg-gradient-to-br from-card via-card to-card/90 border-2 border-primary shadow-xl shadow-primary/20 ring-4 ring-primary/10 flex flex-col items-center justify-center text-center p-4">
-              <span className="text-xs uppercase tracking-widest text-primary font-semibold mb-1">Examples</span>
-              <span className="text-sm font-black uppercase tracking-tight text-foreground leading-tight">Across Industries</span>
+            <div className="absolute -inset-3 rounded-full bg-primary/10 blur-lg" />
+            <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-card via-card to-card/90 border-2 border-primary shadow-xl shadow-primary/20 ring-4 ring-primary/10 flex flex-col items-center justify-center text-center p-3">
+              <span className="text-[10px] uppercase tracking-widest text-primary font-semibold mb-1">Examples</span>
+              <span className="text-xs font-black uppercase tracking-tight text-foreground leading-tight">Across Industries</span>
             </div>
           </div>
 
-          {/* Radiating Spokes - Grouped Verticals */}
-          {groupedVerticals.map((item, idx) => {
+          {/* Hexagon Vertex Cards */}
+          {hexagonVerticals.map((item, idx) => {
             const Icon = item.vertical.icon;
             const angleRad = (item.angle * Math.PI) / 180;
-            const radius = 320;
-            const x = 450 + radius * Math.cos(angleRad);
-            const y = 450 + radius * Math.sin(angleRad);
+            const radius = 260;
+            const x = 400 + radius * Math.cos(angleRad);
+            const y = 350 + radius * Math.sin(angleRad);
             const colors = categoryColors[item.vertical.category];
             
             return (
               <div
-                key={`spoke-${idx}`}
+                key={`vertex-${idx}`}
                 className="absolute -translate-x-1/2 -translate-y-1/2 group z-20"
                 style={{ left: x, top: y }}
               >
-                <div className={`flex flex-col items-center justify-between bg-card/85 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[220px] h-[220px]`}>
+                <div className={`flex flex-col items-center justify-center gap-3 bg-card/95 backdrop-blur-sm rounded-xl p-4 shadow-lg shadow-black/10 border border-border/50 ${colors.hoverBorder} transition-all duration-300 w-[160px] h-[160px] hover:-translate-y-1 hover:shadow-xl`}>
                   {/* Category badge */}
-                  <span className={`text-[9px] font-bold uppercase tracking-widest ${colors.badge} px-2.5 py-1 rounded-full`}>
+                  <span className={`text-[8px] font-bold uppercase tracking-widest ${colors.badge} px-2 py-0.5 rounded-full`}>
                     {item.vertical.category}
                   </span>
                   {/* Icon */}
-                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner`}>
-                    <Icon className={`w-8 h-8 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
+                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner`}>
+                    <Icon className={`w-6 h-6 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
                   </div>
-                  {/* Producer Role - prominent */}
-                  <span className="text-sm font-bold text-foreground text-center leading-snug px-1">
+                  {/* Producer Role */}
+                  <span className="text-xs font-bold text-foreground text-center leading-tight px-1">
                     {item.vertical.producer}
                   </span>
                 </div>
               </div>
-            );
-          })}
-
-          {/* "And More" dots in the gaps between clusters */}
-          {[90, 210, 330].map((angle, idx) => {
-            const angleRad = (angle * Math.PI) / 180;
-            const radius = 370;
-            const x = 450 + radius * Math.cos(angleRad);
-            const y = 450 + radius * Math.sin(angleRad);
-            return (
-              <div
-                key={idx}
-                className="absolute w-1.5 h-1.5 rounded-full bg-muted-foreground/25 -translate-x-1/2 -translate-y-1/2 z-10"
-                style={{ left: x, top: y }}
-              />
             );
           })}
         </div>
