@@ -63,8 +63,8 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
   );
 
   const variantStyles = variant === "exited" 
-    ? "bg-white border-border hover:border-amber-400 hover:shadow-amber-200/40 shadow-sm relative overflow-hidden"
-    : "bg-white border-border hover:bg-primary/10 hover:border-primary hover:shadow-primary/20 shadow-sm transition-all duration-300";
+    ? "bg-white border-border hover:border-amber-400 hover:shadow-amber-200/40 shadow-sm relative overflow-hidden border-t-2 border-t-amber-100"
+    : "bg-white border-border hover:bg-primary/10 hover:border-primary hover:shadow-primary/20 shadow-sm transition-all duration-300 border-t-2 border-t-primary/20";
 
   const contentArea = (
     <div className="flex-1 flex items-center justify-center">
@@ -103,9 +103,9 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       ) : (
         contentArea
       )}
-      <div className="text-center mt-auto">
-        <div className="h-px w-0 bg-primary mb-2 mx-auto group-hover:w-full transition-all duration-500" />
+      <div className="text-center mt-auto pt-3 border-t border-border/50">
         <p className="text-[11px] text-muted-foreground leading-relaxed">
+          {description}
           {description}
         </p>
         {acquiredBy && (
