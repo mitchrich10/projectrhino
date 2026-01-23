@@ -145,27 +145,20 @@ const VerticalsSection: FC = () => {
             const pos = getPosition(cat.angle);
             const colors = categoryColors[cat.category];
             
-            // Watermark rotation based on position
-            const watermarkRotation = cat.angle === 270 ? -3 : cat.angle === 150 ? 3 : -2;
-            
             return (
               <div
                 key={`zone-${idx}`}
                 className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
                 style={{ left: pos.x, top: pos.y }}
               >
-                {/* Watermark - oversized category name behind */}
-                <div 
-                  className={`absolute inset-0 flex items-center justify-center pointer-events-none select-none`}
-                  style={{ transform: `rotate(${watermarkRotation}deg)` }}
-                >
-                  <span className={`text-5xl font-black uppercase tracking-tight whitespace-nowrap ${colors.watermark}`}>
+                {/* Content container with subtle background */}
+                <div className="relative flex flex-col items-center gap-2 py-5 px-6 rounded-xl bg-card/60 backdrop-blur-sm border border-border/30">
+                  {/* Category label */}
+                  <span className={`text-[10px] font-bold uppercase tracking-widest ${colors.badge} px-2.5 py-1 rounded-full mb-1`}>
                     {cat.category}
                   </span>
-                </div>
-
-                {/* Content - producer list */}
-                <div className="relative flex flex-col items-center gap-3 py-6 px-4 min-w-[220px]">
+                  
+                  {/* Producer list */}
                   {cat.producers.map((producer, pIdx) => {
                     const Icon = producer.icon;
                     return (
