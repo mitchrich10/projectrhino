@@ -1,78 +1,93 @@
 import { FC } from "react";
-import { Baby, Dog, TrendingUp, Shield, Calculator, Scale } from "lucide-react";
+import { Baby, Dog, TrendingUp, Shield, Calculator, Scale, Activity, Home, Users } from "lucide-react";
 
 type Category = "Healthcare" | "Wealth Management" | "Financial & Advisory Services";
 
-interface Vertical {
+interface Producer {
   icon: typeof Baby;
-  producer: string;
-  category: Category;
+  title: string;
 }
 
-const categoryColors: Record<Category, { badge: string; iconBg: string; iconBorder: string; iconText: string; hoverBorder: string; lineColor: string }> = {
+interface CategoryData {
+  category: Category;
+  angle: number;
+  producers: Producer[];
+}
+
+const categoryColors: Record<Category, { 
+  text: string; 
+  icon: string; 
+  watermark: string;
+  underline: string;
+  badge: string;
+}> = {
   Healthcare: {
+    text: "text-emerald-600",
+    icon: "text-emerald-500",
+    watermark: "text-emerald-500/[0.06]",
+    underline: "bg-emerald-500",
     badge: "text-emerald-600 bg-emerald-500/10",
-    iconBg: "from-emerald-500/20 to-teal-500/10",
-    iconBorder: "border-emerald-500/30",
-    iconText: "text-emerald-600",
-    hoverBorder: "hover:border-emerald-500/30",
-    lineColor: "hsl(160, 60%, 45%)",
   },
   "Wealth Management": {
+    text: "text-blue-600",
+    icon: "text-blue-500",
+    watermark: "text-blue-500/[0.06]",
+    underline: "bg-blue-500",
     badge: "text-blue-600 bg-blue-500/10",
-    iconBg: "from-blue-500/20 to-indigo-500/10",
-    iconBorder: "border-blue-500/30",
-    iconText: "text-blue-600",
-    hoverBorder: "hover:border-blue-500/30",
-    lineColor: "hsl(220, 60%, 50%)",
   },
   "Financial & Advisory Services": {
+    text: "text-purple-600",
+    icon: "text-purple-500",
+    watermark: "text-purple-500/[0.06]",
+    underline: "bg-purple-500",
     badge: "text-purple-600 bg-purple-500/10",
-    iconBg: "from-purple-500/20 to-violet-500/10",
-    iconBorder: "border-purple-500/30",
-    iconText: "text-purple-600",
-    hoverBorder: "hover:border-purple-500/30",
-    lineColor: "hsl(270, 60%, 55%)",
   },
 };
 
-// Hexagon layout: 6 cards at 60° intervals, starting from top (-90°)
-// Each vertex is exactly 60° apart for perfect symmetry
-const hexagonVerticals: { vertical: Vertical; angle: number }[] = [
-  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: -90 },        // Top
-  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: -30 },       // Top-right
-  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 30 }, // Bottom-right
-  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 90 },  // Bottom
-  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 150 },         // Bottom-left
-  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 210 },           // Top-left
-];
-
-// For mobile layout - grouped by category
-const mobileGroups = [
+const triangleCategories: CategoryData[] = [
   {
-    category: "Healthcare" as Category,
-    items: [
-      { icon: Baby, producer: "Reproductive Endocrinologist" },
-      { icon: Dog, producer: "Doctor of Veterinary Medicine" },
+    category: "Healthcare",
+    angle: 270, // Top center
+    producers: [
+      { icon: Baby, title: "Reproductive Endocrinologist" },
+      { icon: Activity, title: "Physiotherapist" },
+      { icon: Dog, title: "Doctor of Veterinary Medicine" },
     ],
   },
   {
-    category: "Wealth Management" as Category,
-    items: [
-      { icon: TrendingUp, producer: "Wealth Advisor" },
-      { icon: Shield, producer: "Insurance Broker" },
+    category: "Wealth Management",
+    angle: 150, // Bottom-left
+    producers: [
+      { icon: TrendingUp, title: "Wealth Advisor" },
+      { icon: Shield, title: "Insurance Broker" },
+      { icon: Home, title: "Mortgage Broker" },
     ],
   },
   {
-    category: "Financial & Advisory Services" as Category,
-    items: [
-      { icon: Calculator, producer: "Chartered Professional Accountant" },
-      { icon: Scale, producer: "Estate & Trust Advisor" },
+    category: "Financial & Advisory Services",
+    angle: 30, // Bottom-right
+    producers: [
+      { icon: Calculator, title: "Chartered Professional Accountant" },
+      { icon: Scale, title: "Estate & Trust Advisor" },
+      { icon: Users, title: "Corporate Benefits Advisor" },
     ],
   },
 ];
 
 const VerticalsSection: FC = () => {
+  const centerX = 400;
+  const centerY = 350;
+  const radius = 240;
+
+  // Calculate vertex positions
+  const getPosition = (angle: number) => {
+    const angleRad = (angle * Math.PI) / 180;
+    return {
+      x: centerX + radius * Math.cos(angleRad),
+      y: centerY + radius * Math.sin(angleRad),
+    };
+  };
+
   return (
     <section id="verticals" className="py-20 px-6 bg-gradient-to-b from-secondary via-secondary to-background overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -86,59 +101,35 @@ const VerticalsSection: FC = () => {
           </p>
         </div>
 
-        {/* Hexagon Diagram - Desktop */}
+        {/* Triangle Diagram - Desktop */}
         <div className="hidden lg:block relative mx-auto" style={{ width: '800px', height: '700px' }}>
           
-          {/* Background Atmosphere */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-gradient-radial from-primary/5 via-transparent to-transparent" />
-          </div>
-
-          {/* SVG for Hexagon Shape and Connecting Lines */}
+          {/* SVG for Triangle Outline and Connecting Lines */}
           <svg className="absolute inset-0 w-full h-full z-0" viewBox="0 0 800 700">
-            <defs>
-              <filter id="glowLine" filterUnits="userSpaceOnUse" x="0" y="0" width="800" height="700">
-                <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-
-            {/* Hexagon outline */}
+            {/* Triangle outline */}
             <polygon
-              points={hexagonVerticals.map((item) => {
-                const angleRad = (item.angle * Math.PI) / 180;
-                const radius = 260;
-                const x = 400 + radius * Math.cos(angleRad);
-                const y = 350 + radius * Math.sin(angleRad);
-                return `${x},${y}`;
+              points={triangleCategories.map((cat) => {
+                const pos = getPosition(cat.angle);
+                return `${pos.x},${pos.y}`;
               }).join(' ')}
               fill="none"
-              stroke="hsl(var(--border) / 0.3)"
+              stroke="hsl(var(--border) / 0.25)"
               strokeWidth="1"
             />
 
             {/* Connecting lines from center to each vertex */}
-            {hexagonVerticals.map((item, idx) => {
-              const angleRad = (item.angle * Math.PI) / 180;
-              const radius = 260;
-              const x = 400 + radius * Math.cos(angleRad);
-              const y = 350 + radius * Math.sin(angleRad);
-              const colors = categoryColors[item.vertical.category];
+            {triangleCategories.map((cat, idx) => {
+              const pos = getPosition(cat.angle);
               return (
                 <line
                   key={`line-${idx}`}
-                  x1={400}
-                  y1={350}
-                  x2={x}
-                  y2={y}
-                  stroke={colors.lineColor}
-                  strokeOpacity="0.4"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  filter="url(#glowLine)"
+                  x1={centerX}
+                  y1={centerY}
+                  x2={pos.x}
+                  y2={pos.y}
+                  stroke="hsl(var(--border) / 0.15)"
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
                 />
               );
             })}
@@ -146,75 +137,82 @@ const VerticalsSection: FC = () => {
 
           {/* Central Hub */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            <div className="absolute -inset-3 rounded-full bg-primary/10 blur-lg" />
-            <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-card via-card to-card/90 border-2 border-primary shadow-xl shadow-primary/20 ring-4 ring-primary/10 flex flex-col items-center justify-center text-center p-3">
-              <span className="text-[10px] uppercase tracking-widest text-primary font-semibold mb-1">Examples</span>
-              <span className="text-xs font-black uppercase tracking-tight text-foreground leading-tight">Across Industries</span>
-            </div>
+            <div className="w-3 h-3 rounded-full bg-primary/40" />
           </div>
 
-          {/* Hexagon Vertex Cards */}
-          {hexagonVerticals.map((item, idx) => {
-            const Icon = item.vertical.icon;
-            const angleRad = (item.angle * Math.PI) / 180;
-            const radius = 260;
-            const x = 400 + radius * Math.cos(angleRad);
-            const y = 350 + radius * Math.sin(angleRad);
-            const colors = categoryColors[item.vertical.category];
+          {/* Category Zones at Triangle Vertices */}
+          {triangleCategories.map((cat, idx) => {
+            const pos = getPosition(cat.angle);
+            const colors = categoryColors[cat.category];
+            
+            // Watermark rotation based on position
+            const watermarkRotation = cat.angle === 270 ? -3 : cat.angle === 150 ? 3 : -2;
             
             return (
               <div
-                key={`vertex-${idx}`}
-                className="absolute -translate-x-1/2 -translate-y-1/2 group z-20"
-                style={{ left: x, top: y }}
+                key={`zone-${idx}`}
+                className="absolute -translate-x-1/2 -translate-y-1/2 z-20"
+                style={{ left: pos.x, top: pos.y }}
               >
-                <div className={`flex flex-col items-center justify-center gap-3 bg-card/95 backdrop-blur-sm rounded-xl p-4 shadow-lg shadow-black/10 border border-border/50 ${colors.hoverBorder} transition-all duration-300 w-[160px] h-[160px] hover:-translate-y-1 hover:shadow-xl`}>
-                  {/* Category badge */}
-                  <span className={`text-[8px] font-bold uppercase tracking-widest ${colors.badge} px-2 py-0.5 rounded-full`}>
-                    {item.vertical.category}
+                {/* Watermark - oversized category name behind */}
+                <div 
+                  className={`absolute inset-0 flex items-center justify-center pointer-events-none select-none`}
+                  style={{ transform: `rotate(${watermarkRotation}deg)` }}
+                >
+                  <span className={`text-5xl font-black uppercase tracking-tight whitespace-nowrap ${colors.watermark}`}>
+                    {cat.category}
                   </span>
-                  {/* Icon */}
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner`}>
-                    <Icon className={`w-6 h-6 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
-                  </div>
-                  {/* Producer Role */}
-                  <span className="text-xs font-bold text-foreground text-center leading-tight px-1">
-                    {item.vertical.producer}
-                  </span>
+                </div>
+
+                {/* Content - producer list */}
+                <div className="relative flex flex-col items-center gap-3 py-6 px-4 min-w-[220px]">
+                  {cat.producers.map((producer, pIdx) => {
+                    const Icon = producer.icon;
+                    return (
+                      <div 
+                        key={pIdx}
+                        className="group flex items-center gap-2.5 cursor-default"
+                      >
+                        <Icon className={`w-5 h-5 ${colors.icon} group-hover:scale-110 transition-transform duration-200`} />
+                        <span className="relative text-sm font-semibold text-foreground">
+                          {producer.title}
+                          <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 ${colors.underline} group-hover:w-full transition-all duration-300`} />
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Mobile/Tablet Layout - Grouped by Category */}
-        <div className="lg:hidden space-y-6">
-          {mobileGroups.map((group, groupIdx) => {
-            const colors = categoryColors[group.category];
+        {/* Mobile/Tablet Layout */}
+        <div className="lg:hidden space-y-8">
+          {triangleCategories.map((cat, groupIdx) => {
+            const colors = categoryColors[cat.category];
             return (
               <div key={groupIdx}>
                 {/* Category Header */}
-                <div className="flex items-center gap-2 mb-3">
-                  <span className={`text-xs font-bold uppercase tracking-widest ${colors.badge} px-3 py-1 rounded-full`}>
-                    {group.category}
+                <div className="flex items-center gap-3 mb-4">
+                  <span className={`text-xs font-bold uppercase tracking-widest ${colors.badge} px-3 py-1.5 rounded-full`}>
+                    {cat.category}
                   </span>
                   <div className="flex-1 h-px bg-border/30" />
                 </div>
                 
-                {/* Cards Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {group.items.map((item, idx) => {
-                    const Icon = item.icon;
+                {/* Producer List */}
+                <div className="space-y-3 pl-2">
+                  {cat.producers.map((producer, idx) => {
+                    const Icon = producer.icon;
                     return (
                       <div 
                         key={idx} 
-                        className="flex flex-col items-center text-center p-4 bg-card/85 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
+                        className="flex items-center gap-3"
                       >
-                        <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner mb-3`}>
-                          <Icon className={`w-6 h-6 ${colors.iconText}`} />
-                        </div>
-                        <span className="text-sm font-bold text-foreground leading-tight">
-                          {item.producer}
+                        <Icon className={`w-5 h-5 ${colors.icon}`} />
+                        <span className="text-sm font-semibold text-foreground">
+                          {producer.title}
                         </span>
                       </div>
                     );
@@ -224,7 +222,7 @@ const VerticalsSection: FC = () => {
             );
           })}
 
-          <p className="text-center text-xs text-muted-foreground/60 uppercase tracking-widest pt-2">
+          <p className="text-center text-xs text-muted-foreground/60 uppercase tracking-widest pt-4">
             And many more...
           </p>
         </div>
