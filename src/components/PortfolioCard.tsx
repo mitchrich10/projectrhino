@@ -82,7 +82,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       {/* Gold corner accent for exited companies */}
       {variant === "exited" && (
         <div 
-          className="absolute top-0 right-0 w-0 h-0"
+          className="absolute top-0 right-0 w-0 h-0 transition-all duration-300 group-hover:scale-125 origin-top-right"
           style={{
             borderStyle: 'solid',
             borderWidth: '0 28px 28px 0',
