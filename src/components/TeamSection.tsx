@@ -53,7 +53,7 @@ const team: TeamMember[] = [
 
 const TeamMemberCard: FC<TeamMember> = ({ name, role, bio, photo, portfolio }) => (
   <div className="group p-8 border border-border bg-card hover:shadow-md transition-all duration-300 flex flex-col">
-    <div className="w-40 h-40 mb-6 overflow-hidden border-2 border-border group-hover:border-primary transition-colors">
+    <div className="w-48 h-48 mb-6 overflow-hidden border-2 border-border group-hover:border-primary transition-colors">
       <img 
         src={photo} 
         alt={name} 
