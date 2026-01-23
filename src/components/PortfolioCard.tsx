@@ -62,7 +62,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
   );
 
   const variantStyles = variant === "exited" 
-    ? "bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200/80 border-amber-400 hover:border-amber-500 hover:shadow-amber-300/50 shadow-sm"
+    ? "bg-white border-border hover:border-amber-400 hover:shadow-amber-200/40 shadow-sm relative overflow-hidden"
     : "bg-white border-border hover:bg-primary/10 hover:border-primary hover:shadow-primary/20 shadow-sm transition-all duration-300";
 
   const contentArea = (
@@ -79,6 +79,17 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
         className
       )}
     >
+      {/* Gold corner accent for exited companies */}
+      {variant === "exited" && (
+        <div 
+          className="absolute top-0 right-0 w-0 h-0"
+          style={{
+            borderStyle: 'solid',
+            borderWidth: '0 28px 28px 0',
+            borderColor: 'transparent #f59e0b transparent transparent',
+          }}
+        />
+      )}
       {website ? (
         <a 
           href={website} 
