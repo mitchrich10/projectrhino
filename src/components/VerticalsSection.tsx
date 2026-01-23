@@ -37,24 +37,25 @@ const categoryColors: Record<Category, { badge: string; iconBg: string; iconBord
 };
 
 // Grouped verticals with evenly distributed spacing
-// Cards within groups are 30° apart, gaps between groups are 70° apart
-// Healthcare (top): 240°, 270°, 300°
-// Financial & Advisory (bottom-right): 10°, 40°
-// Wealth Management (bottom-left): 110°, 140°, 170°
+// Cards within groups are 40° apart, gaps between groups are 53° apart
+// 8 cards total: (3×40 + 2×40 + 1×40) internal = 240° + 3 gaps of 40° = 360°
+// Healthcare (top): 225°, 265°, 305°
+// Financial & Advisory (bottom-right): 358°, 38°
+// Wealth Management (bottom-left): 91°, 131°, 171°
 const groupedVerticals: { vertical: Vertical; angle: number }[] = [
   // Healthcare cluster (top)
-  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: 240 },
-  { vertical: { icon: Activity, producer: "Physiotherapist", category: "Healthcare" }, angle: 270 },
-  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: 300 },
+  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: 225 },
+  { vertical: { icon: Activity, producer: "Physiotherapist", category: "Healthcare" }, angle: 265 },
+  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: 305 },
   
   // Financial & Advisory Services cluster (bottom-right)
-  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 10 },
-  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 40 },
+  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 358 },
+  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 38 },
   
   // Wealth Management cluster (bottom-left)
-  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 110 },
-  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 140 },
-  { vertical: { icon: Home, producer: "Mortgage Broker", category: "Wealth Management" }, angle: 170 },
+  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 91 },
+  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 131 },
+  { vertical: { icon: Home, producer: "Mortgage Broker", category: "Wealth Management" }, angle: 171 },
 ];
 
 // For mobile layout - grouped by category
@@ -176,7 +177,7 @@ const VerticalsSection: FC = () => {
           {groupedVerticals.map((item, idx) => {
             const Icon = item.vertical.icon;
             const angleRad = (item.angle * Math.PI) / 180;
-            const radius = 280;
+            const radius = 310;
             const x = 400 + radius * Math.cos(angleRad);
             const y = 400 + radius * Math.sin(angleRad);
             const colors = categoryColors[item.vertical.category];
@@ -187,17 +188,17 @@ const VerticalsSection: FC = () => {
                 className="absolute -translate-x-1/2 -translate-y-1/2 group z-20"
                 style={{ left: x, top: y }}
               >
-                <div className={`flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[170px] min-h-[150px]`}>
+                <div className={`flex flex-col items-center justify-between bg-card/85 backdrop-blur-sm rounded-2xl p-3 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[140px] h-[140px]`}>
                   {/* Category badge */}
-                  <span className={`text-[9px] font-bold uppercase tracking-widest ${colors.badge} px-2 py-0.5 rounded-full mb-2`}>
+                  <span className={`text-[8px] font-bold uppercase tracking-widest ${colors.badge} px-2 py-0.5 rounded-full`}>
                     {item.vertical.category}
                   </span>
                   {/* Icon */}
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner mb-3`}>
-                    <Icon className={`w-6 h-6 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
+                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner`}>
+                    <Icon className={`w-5 h-5 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
                   </div>
                   {/* Producer Role - prominent */}
-                  <span className="text-sm font-bold text-foreground text-center leading-tight">
+                  <span className="text-[11px] font-bold text-foreground text-center leading-tight line-clamp-2">
                     {item.vertical.producer}
                   </span>
                 </div>
