@@ -103,7 +103,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       ) : (
         contentArea
       )}
-      <div className="text-center mt-auto pt-3 border-t border-border/50">
+      <div className="text-center mt-auto pt-3 border-t border-border/50 group-hover:border-primary/50 transition-colors">
         <p className="text-[11px] text-muted-foreground leading-relaxed">
           {description}
         </p>
