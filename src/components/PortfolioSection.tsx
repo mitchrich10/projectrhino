@@ -2,7 +2,7 @@ import { FC } from "react";
 import { PortfolioCard, PortfolioCardEmpty } from "./PortfolioCard";
 
 // Logo imports
-import logoMarz from "@/assets/logo-marz.jpg";
+import logoMarz from "@/assets/logo-marz.png";
 import logoQuinnAI from "@/assets/logo-quinn-ai.png";
 import logoUpperVillage from "@/assets/logo-upper-village.png";
 import logoNetNow from "@/assets/logo-netnow.png";
