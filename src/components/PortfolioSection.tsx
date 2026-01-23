@@ -46,7 +46,8 @@ const activePortfolio = [
     description: "Animal health.",
     isRepresentative: true,
     logo: logoUpperVillage,
-    logoSize: "small"
+    logoSize: "large",
+    logoOffset: -2
   },
   { 
     name: "Flint", 
@@ -223,6 +224,7 @@ const PortfolioSection: FC = () => {
                 description={p.description}
                 logo={p.logo}
                 logoSize={(p as any).logoSize}
+                logoOffset={(p as any).logoOffset}
                 invertLogo={(p as any).invertLogo}
                 bgColor={(p as any).bgColor}
                 website={(p as any).website}
@@ -251,6 +253,7 @@ const PortfolioSection: FC = () => {
                 acquiredBy={p.acquiredBy}
                 logo={p.logo}
                 logoSize={(p as any).logoSize}
+                logoOffset={(p as any).logoOffset}
                 invertLogo={p.invertLogo}
                 bgColor={(p as any).bgColor}
                 website={(p as any).website}

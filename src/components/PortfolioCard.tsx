@@ -10,6 +10,7 @@ interface PortfolioCardProps {
   acquiredBy?: string;
   logo?: string;
   logoSize?: "xsmall" | "small" | "normal" | "large" | "xlarge" | "xxlarge";
+  logoOffset?: number;
   invertLogo?: boolean;
   bgColor?: string;
   website?: string;
@@ -17,7 +18,7 @@ interface PortfolioCardProps {
   variant?: "active" | "exited";
 }
 
-const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, logo, logoSize = "normal", invertLogo = false, bgColor, website, className, variant = "active" }) => {
+const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, logo, logoSize = "normal", logoOffset = 0, invertLogo = false, bgColor, website, className, variant = "active" }) => {
   const logoClasses = {
     xsmall: "max-h-5 max-w-[100px]",
     small: "max-h-6 max-w-[120px]",
@@ -28,7 +29,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
   }[logoSize];
 
   const content = logo ? (
-    <div className="h-12 flex items-center justify-center">
+    <div className="h-12 flex items-center justify-center" style={{ marginTop: logoOffset ? `${logoOffset * 0.25}rem` : undefined }}>
       {bgColor ? (
         <div className="p-2 rounded" style={{ backgroundColor: bgColor }}>
           <img 
@@ -54,8 +55,8 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       )}
     </div>
   ) : (
-    <div className="h-12 flex items-center justify-center -mt-3">
-      <h4 className="text-base font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary text-center">
+    <div className="h-12 flex items-center justify-center -mt-4">
+      <h4 className="text-xl font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary text-center">
         {name}
       </h4>
     </div>
