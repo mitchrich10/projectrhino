@@ -53,8 +53,13 @@ const team: TeamMember[] = [
 
 const TeamMemberCard: FC<TeamMember> = ({ name, role, bio, photo, portfolio }) => (
   <div className="group p-8 border border-border bg-card hover:shadow-md transition-all duration-300 flex flex-col">
-    <div className="w-32 h-32 rounded-full mb-6 overflow-hidden border-2 border-border group-hover:border-primary transition-colors">
-      <img src={photo} alt={name} className="w-full h-full object-cover" />
+    <div className="w-40 h-40 mb-6 overflow-hidden border-2 border-border group-hover:border-primary transition-colors">
+      <img 
+        src={photo} 
+        alt={name} 
+        className="w-full h-full object-cover"
+        style={{ imageRendering: 'auto' }}
+      />
     </div>
     <h4 className="text-lg font-black uppercase tracking-tight mb-1 text-foreground group-hover:text-primary transition-colors">{name}</h4>
     <p className="text-[10px] font-bold uppercase tracking-ultra text-primary mb-4">{role}</p>
