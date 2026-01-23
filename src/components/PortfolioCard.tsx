@@ -43,17 +43,15 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
           />
         </div>
       ) : (
-        <div className="bg-white rounded px-2 py-1">
-          <img 
-            src={logo} 
-            alt={`${name} logo`} 
-            className={cn(
-              logoClasses, 
-              "w-auto h-auto object-contain",
-              invertLogo ? "invert" : "mix-blend-multiply"
-            )}
-          />
-        </div>
+        <img 
+          src={logo} 
+          alt={`${name} logo`} 
+          className={cn(
+            logoClasses, 
+            "w-auto h-auto object-contain",
+            invertLogo ? "invert" : "mix-blend-multiply"
+          )}
+        />
       )}
     </div>
   ) : (
@@ -65,8 +63,8 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
   );
 
   const variantStyles = variant === "exited" 
-    ? "bg-white border-border hover:border-amber-400 hover:shadow-amber-200/40 shadow-sm relative overflow-hidden border-t-2 border-t-amber-100"
-    : "bg-white border-border hover:bg-primary/10 hover:border-primary hover:shadow-primary/20 shadow-sm transition-all duration-300 border-t-2 border-t-primary/20";
+    ? "bg-white border-border hover:border-amber-400 hover:shadow-lg hover:shadow-amber-200/40 relative overflow-hidden border-t-2 border-t-amber-100"
+    : "bg-white border-border hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 border-t-2 border-t-primary/20";
 
   const contentArea = (
     <div className="flex-1 flex items-center justify-center">
