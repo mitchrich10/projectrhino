@@ -172,7 +172,7 @@ const VerticalsSection: FC = () => {
           {groupedVerticals.map((item, idx) => {
             const Icon = item.vertical.icon;
             const angleRad = (item.angle * Math.PI) / 180;
-            const radius = 280;
+            const radius = 320;
             const x = 400 + radius * Math.cos(angleRad);
             const y = 400 + radius * Math.sin(angleRad);
             const colors = categoryColors[item.vertical.category];
@@ -183,7 +183,7 @@ const VerticalsSection: FC = () => {
                 className="absolute -translate-x-1/2 -translate-y-1/2 group z-20"
                 style={{ left: x, top: y }}
               >
-                <div className={`flex flex-col items-center justify-between bg-card/85 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[180px] h-[180px]`}>
+                <div className={`flex flex-col items-center justify-between bg-card/85 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[200px] h-[200px]`}>
                   {/* Category badge */}
                   <span className={`text-[9px] font-bold uppercase tracking-widest ${colors.badge} px-2.5 py-1 rounded-full`}>
                     {item.vertical.category}
@@ -193,7 +193,7 @@ const VerticalsSection: FC = () => {
                     <Icon className={`w-7 h-7 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
                   </div>
                   {/* Producer Role - prominent */}
-                  <span className="text-sm font-bold text-foreground text-center leading-tight line-clamp-2">
+                  <span className="text-sm font-bold text-foreground text-center leading-snug">
                     {item.vertical.producer}
                   </span>
                 </div>
