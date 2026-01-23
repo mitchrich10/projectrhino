@@ -1,11 +1,10 @@
 import { FC } from "react";
-import { Baby, Dog, Activity, TrendingUp, Shield, Calculator, Users } from "lucide-react";
+import { Baby, Dog, Activity, TrendingUp, Shield, Calculator, Home, Scale } from "lucide-react";
 
-type Category = "Healthcare" | "Finance" | "Enterprise";
+type Category = "Healthcare" | "Wealth Management" | "Financial & Advisory Services";
 
 interface Vertical {
   icon: typeof Baby;
-  industry: string;
   producer: string;
   category: Category;
 }
@@ -17,9 +16,9 @@ const categoryColors: Record<Category, { badge: string; iconBg: string; iconBord
     iconBorder: "border-emerald-500/30",
     iconText: "text-emerald-600",
     hoverBorder: "hover:border-emerald-500/30",
-    lineColor: "hsl(170, 50%, 45%)",
+    lineColor: "hsl(160, 60%, 45%)",
   },
-  Finance: {
+  "Wealth Management": {
     badge: "text-blue-600 bg-blue-500/10",
     iconBg: "from-blue-500/20 to-indigo-500/10",
     iconBorder: "border-blue-500/30",
@@ -27,29 +26,62 @@ const categoryColors: Record<Category, { badge: string; iconBg: string; iconBord
     hoverBorder: "hover:border-blue-500/30",
     lineColor: "hsl(220, 60%, 50%)",
   },
-  Enterprise: {
-    badge: "text-amber-600 bg-amber-500/10",
-    iconBg: "from-amber-500/20 to-orange-500/10",
-    iconBorder: "border-amber-500/30",
-    iconText: "text-amber-600",
-    hoverBorder: "hover:border-amber-500/30",
-    lineColor: "hsl(35, 70%, 50%)",
+  "Financial & Advisory Services": {
+    badge: "text-purple-600 bg-purple-500/10",
+    iconBg: "from-purple-500/20 to-violet-500/10",
+    iconBorder: "border-purple-500/30",
+    iconText: "text-purple-600",
+    hoverBorder: "hover:border-purple-500/30",
+    lineColor: "hsl(270, 60%, 55%)",
   },
 };
 
-// All verticals - will be distributed around the circle
-const allVerticals: Vertical[] = [
-  { icon: Baby, industry: "Fertility", producer: "Reproductive Endocrinologist", category: "Healthcare" },
-  { icon: Calculator, industry: "Accounting", producer: "Chartered Professional Accountant", category: "Finance" },
-  { icon: Users, industry: "People Services", producer: "Specialized Recruiter", category: "Enterprise" },
-  { icon: Dog, industry: "Veterinary", producer: "Doctor of Veterinary Medicine", category: "Healthcare" },
-  { icon: TrendingUp, industry: "Wealth Mgmt", producer: "Wealth Advisor", category: "Finance" },
-  { icon: Activity, industry: "Physical Therapy", producer: "Physiotherapist", category: "Healthcare" },
-  { icon: Shield, industry: "Insurance", producer: "Insurance Broker", category: "Finance" },
+// Grouped verticals with their angular positions
+// Healthcare: top arc (-150° to -30°)
+// Wealth Management: bottom-left arc (120° to 210°)
+// Financial & Advisory: bottom-right arc (30° to 60°)
+const groupedVerticals: { vertical: Vertical; angle: number }[] = [
+  // Healthcare cluster (top)
+  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: -130 },
+  { vertical: { icon: Activity, producer: "Physiotherapist", category: "Healthcare" }, angle: -90 },
+  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: -50 },
+  
+  // Wealth Management cluster (bottom-left)
+  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 150 },
+  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 190 },
+  { vertical: { icon: Home, producer: "Mortgage Broker", category: "Wealth Management" }, angle: 230 },
+  
+  // Financial & Advisory Services cluster (bottom-right)
+  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 30 },
+  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 70 },
 ];
 
-// Calculate angles for each vertical (evenly distributed)
-const getAngle = (index: number, total: number) => (360 / total) * index - 90; // Start from top
+// For mobile layout - grouped by category
+const mobileGroups = [
+  {
+    category: "Healthcare" as Category,
+    items: [
+      { icon: Baby, producer: "Reproductive Endocrinologist" },
+      { icon: Activity, producer: "Physiotherapist" },
+      { icon: Dog, producer: "Doctor of Veterinary Medicine" },
+    ],
+  },
+  {
+    category: "Wealth Management" as Category,
+    items: [
+      { icon: TrendingUp, producer: "Wealth Advisor" },
+      { icon: Shield, producer: "Insurance Broker" },
+      { icon: Home, producer: "Mortgage Broker" },
+    ],
+  },
+  {
+    category: "Financial & Advisory Services" as Category,
+    items: [
+      { icon: Calculator, producer: "Chartered Professional Accountant" },
+      { icon: Scale, producer: "Estate & Trust Advisor" },
+    ],
+  },
+];
 
 const VerticalsSection: FC = () => {
   return (
@@ -90,15 +122,14 @@ const VerticalsSection: FC = () => {
             </defs>
 
             {/* Connecting lines for all verticals */}
-            {allVerticals.map((item, idx) => {
-              const angle = getAngle(idx, allVerticals.length);
-              const angleRad = (angle * Math.PI) / 180;
+            {groupedVerticals.map((item, idx) => {
+              const angleRad = (item.angle * Math.PI) / 180;
               const radius = 280;
               const centerX = 400;
               const centerY = 400;
               const x = centerX + radius * Math.cos(angleRad);
               const y = centerY + radius * Math.sin(angleRad);
-              const colors = categoryColors[item.category];
+              const colors = categoryColors[item.vertical.category];
               return (
                 <line
                   key={`line-${idx}`}
@@ -140,15 +171,14 @@ const VerticalsSection: FC = () => {
             </div>
           </div>
 
-          {/* Radiating Spokes - All Verticals */}
-          {allVerticals.map((item, idx) => {
-            const Icon = item.icon;
-            const angle = getAngle(idx, allVerticals.length);
-            const angleRad = (angle * Math.PI) / 180;
+          {/* Radiating Spokes - Grouped Verticals */}
+          {groupedVerticals.map((item, idx) => {
+            const Icon = item.vertical.icon;
+            const angleRad = (item.angle * Math.PI) / 180;
             const radius = 280;
             const x = 400 + radius * Math.cos(angleRad);
             const y = 400 + radius * Math.sin(angleRad);
-            const colors = categoryColors[item.category];
+            const colors = categoryColors[item.vertical.category];
             
             return (
               <div
@@ -156,22 +186,18 @@ const VerticalsSection: FC = () => {
                 className="absolute -translate-x-1/2 -translate-y-1/2 group z-20"
                 style={{ left: x, top: y }}
               >
-                <div className={`flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[180px] min-h-[180px]`}>
+                <div className={`flex flex-col items-center bg-card/85 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[170px] min-h-[150px]`}>
                   {/* Category badge */}
                   <span className={`text-[9px] font-bold uppercase tracking-widest ${colors.badge} px-2 py-0.5 rounded-full mb-2`}>
-                    {item.category}
+                    {item.vertical.category}
                   </span>
                   {/* Icon */}
-                  <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner mb-3`}>
-                    <Icon className={`w-7 h-7 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
+                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner mb-3`}>
+                    <Icon className={`w-6 h-6 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
                   </div>
-                  {/* Industry - smaller context */}
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
-                    {item.industry}
-                  </span>
                   {/* Producer Role - prominent */}
-                  <span className="text-sm font-bold text-foreground text-center leading-tight w-[160px] h-[36px] flex items-center justify-center">
-                    {item.producer}
+                  <span className="text-sm font-bold text-foreground text-center leading-tight">
+                    {item.vertical.producer}
                   </span>
                 </div>
               </div>
@@ -179,7 +205,7 @@ const VerticalsSection: FC = () => {
           })}
 
           {/* "And More" dots around the outer edge */}
-          {[15, 45, 75, 105, 135, 165, 195, 225, 255, 285, 315, 345].map((angle, idx) => {
+          {[15, 105, 255, 285, 315, 345].map((angle, idx) => {
             const angleRad = (angle * Math.PI) / 180;
             const radius = 370;
             const x = 400 + radius * Math.cos(angleRad);
@@ -194,35 +220,44 @@ const VerticalsSection: FC = () => {
           })}
         </div>
 
-        {/* Mobile/Tablet Layout - Enhanced with depth */}
-        <div className="lg:hidden">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            {allVerticals.map((item, idx) => {
-              const Icon = item.icon;
-              const colors = categoryColors[item.category];
-              return (
-                <div 
-                  key={idx} 
-                  className="flex flex-col items-center text-center p-4 bg-card/85 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
-                >
-                  <span className={`text-[9px] font-bold uppercase tracking-widest ${colors.badge} px-2 py-0.5 rounded-full mb-2`}>
-                    {item.category}
+        {/* Mobile/Tablet Layout - Grouped by Category */}
+        <div className="lg:hidden space-y-6">
+          {mobileGroups.map((group, groupIdx) => {
+            const colors = categoryColors[group.category];
+            return (
+              <div key={groupIdx}>
+                {/* Category Header */}
+                <div className="flex items-center gap-2 mb-3">
+                  <span className={`text-xs font-bold uppercase tracking-widest ${colors.badge} px-3 py-1 rounded-full`}>
+                    {group.category}
                   </span>
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner mb-3`}>
-                    <Icon className={`w-6 h-6 ${colors.iconText}`} />
-                  </div>
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
-                    {item.industry}
-                  </span>
-                  <span className="text-sm font-bold text-foreground leading-tight">
-                    {item.producer}
-                  </span>
+                  <div className="flex-1 h-px bg-border/30" />
                 </div>
-              );
-            })}
-          </div>
+                
+                {/* Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {group.items.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <div 
+                        key={idx} 
+                        className="flex flex-col items-center text-center p-4 bg-card/85 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 border border-border/50 border-t-white/20"
+                      >
+                        <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner mb-3`}>
+                          <Icon className={`w-6 h-6 ${colors.iconText}`} />
+                        </div>
+                        <span className="text-sm font-bold text-foreground leading-tight">
+                          {item.producer}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
 
-          <p className="text-center text-xs text-muted-foreground/60 uppercase tracking-widest">
+          <p className="text-center text-xs text-muted-foreground/60 uppercase tracking-widest pt-2">
             And many more...
           </p>
         </div>
