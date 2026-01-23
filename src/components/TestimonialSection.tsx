@@ -40,69 +40,40 @@ const TestimonialSection: FC = () => {
           </div>
 
           {/* Featured Company Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
-            {/* Company 1 - Twig */}
-            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
-              <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
-                  Photo Placeholder
+          <div className="mt-16">
+            <p className="text-sm uppercase tracking-widest text-muted-foreground text-center mb-10">
+              A few of our investments
+            </p>
+            
+            <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
+              {[
+                { logo: logoTwig, name: "Twig", year: "2022", kpi: ">7x Revenue", url: "https://twigfertility.com" },
+                { logo: logoArticle, name: "Article", year: "2016", kpi: "KPI Placeholder", url: "https://www.article.com" },
+                { logo: logoFispan, name: "FISPAN", year: "2018", kpi: ">$35M ARR", url: "https://www.fispan.com" },
+                { logo: logoFlint, name: "Flint", year: "2025", kpi: "KPI Placeholder", url: "https://www.withflint.com" },
+              ].map((company) => (
+                <div key={company.name} className="text-center group flex-1 max-w-[180px]">
+                  <a 
+                    href={company.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="h-16 flex items-center justify-center mb-4 hover:opacity-70 transition-opacity"
+                  >
+                    <img 
+                      src={company.logo} 
+                      alt={company.name} 
+                      className="max-h-10 w-auto object-contain mix-blend-multiply"
+                    />
+                  </a>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                    Partnered in {company.year}
+                  </p>
+                  <p className="text-xl font-black text-primary leading-none">
+                    {company.kpi}
+                  </p>
+                  <div className="h-1 w-8 bg-primary/30 mx-auto mt-3 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
                 </div>
-              </div>
-              <div className="p-5">
-                <div className="h-10 w-full mb-4 flex items-center justify-center">
-                  <img src={logoTwig} alt="Twig Fertility" className="max-h-8 w-auto object-contain mix-blend-multiply" />
-                </div>
-                <p className="text-2xl font-black text-primary mb-1">7x Revenue</p>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Since 2022</p>
-              </div>
-            </div>
-
-            {/* Company 2 - Article */}
-            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
-              <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
-                  Photo Placeholder
-                </div>
-              </div>
-              <div className="p-5">
-                <div className="h-10 w-full mb-4 flex items-center justify-center">
-                  <img src={logoArticle} alt="Article" className="max-h-8 w-auto object-contain mix-blend-multiply" />
-                </div>
-                <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">KPI Placeholder</p>
-              </div>
-            </div>
-
-            {/* Company 3 - FISPAN */}
-            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
-              <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
-                  Photo Placeholder
-                </div>
-              </div>
-              <div className="p-5">
-                <div className="h-10 w-full mb-4 flex items-center justify-center">
-                  <img src={logoFispan} alt="FISPAN" className="max-h-8 w-auto object-contain mix-blend-multiply" />
-                </div>
-                <p className="text-2xl font-black text-primary mb-1">$35M+ ARR</p>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Since 2018</p>
-              </div>
-            </div>
-
-            {/* Company 4 - Flint */}
-            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary transition-all duration-300 hover:shadow-lg">
-              <div className="aspect-[4/3] bg-muted relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
-                  Photo Placeholder
-                </div>
-              </div>
-              <div className="p-5">
-                <div className="h-10 w-full mb-4 flex items-center justify-center">
-                  <img src={logoFlint} alt="Flint" className="max-h-8 w-auto object-contain mix-blend-multiply" />
-                </div>
-                <p className="text-2xl font-black text-primary mb-1">$XX M ARR</p>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">KPI Placeholder</p>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -127,9 +98,6 @@ const TestimonialSection: FC = () => {
               <p className="font-black uppercase tracking-tight">Zach Shapiro</p>
               <p className="text-xs text-muted-foreground uppercase tracking-widest">
                 CEO & Co-Founder, Twig Fertility
-              </p>
-              <p className="text-sm text-primary font-semibold mt-3">
-                &gt;7x annual revenue since Rhino invested in 2022
               </p>
             </div>
           </div>
