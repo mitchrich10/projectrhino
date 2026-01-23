@@ -43,15 +43,17 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
           />
         </div>
       ) : (
-        <img 
-          src={logo} 
-          alt={`${name} logo`} 
-          className={cn(
-            logoClasses, 
-            "w-auto h-auto object-contain",
-            invertLogo ? "invert" : "mix-blend-multiply dark:mix-blend-normal dark:brightness-0 dark:invert"
-          )}
-        />
+        <div className="bg-white rounded px-2 py-1">
+          <img 
+            src={logo} 
+            alt={`${name} logo`} 
+            className={cn(
+              logoClasses, 
+              "w-auto h-auto object-contain",
+              invertLogo ? "invert" : "mix-blend-multiply"
+            )}
+          />
+        </div>
       )}
     </div>
   ) : (
