@@ -36,30 +36,23 @@ const categoryColors: Record<Category, { badge: string; iconBg: string; iconBord
   },
 };
 
-// Fixed hexagon positions - 6 vertices with exact pixel coordinates
-// Cards from same category placed on opposite sides to prevent overlap
-const hexagonVerticals: { vertical: Vertical; left: number; top: number }[] = [
-  // Top vertex
-  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, left: 450, top: 130 },
-  // Top-right vertex
-  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, left: 727, top: 290 },
-  // Bottom-right vertex
-  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, left: 727, top: 610 },
-  // Bottom vertex
-  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, left: 450, top: 770 },
-  // Bottom-left vertex
-  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, left: 173, top: 610 },
-  // Top-left vertex
-  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, left: 173, top: 290 },
+// Grouped verticals with clean, symmetric spacing
+// 6 cards total: 2 per category
+// Three evenly balanced clusters (top / bottom-right / bottom-left)
+// with identical internal spread for a uniform read.
+const groupedVerticals: { vertical: Vertical; angle: number }[] = [
+  // Healthcare cluster (top)
+  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: 248 },
+  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: 292 },
+  
+  // Financial & Advisory Services cluster (bottom-right)
+  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 8 },
+  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 52 },
+  
+  // Wealth Management cluster (bottom-left)
+  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 128 },
+  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 172 },
 ];
-
-// Backwards-compatible derived lists (some rendering blocks still reference these)
-const healthcareVerticals = hexagonVerticals.filter(
-  (v) => v.vertical.category === "Healthcare",
-);
-const financeVerticals = hexagonVerticals.filter(
-  (v) => v.vertical.category === "Financial & Advisory Services",
-);
 
 // For mobile layout - grouped by category
 const mobileGroups = [
@@ -100,11 +93,8 @@ const VerticalsSection: FC = () => {
           </p>
         </div>
 
-        {/* Diagram - Desktop/Tablet */}
-        <div
-          className="hidden md:block relative mx-auto md:scale-[0.85] lg:scale-100 md:origin-top"
-          style={{ width: "900px", height: "900px" }}
-        >
+        {/* Radial Diagram - Desktop */}
+        <div className="hidden lg:block relative mx-auto" style={{ width: '900px', height: '900px' }}>
           
           {/* Background Atmosphere */}
           <div className="absolute inset-0 pointer-events-none">
@@ -127,16 +117,22 @@ const VerticalsSection: FC = () => {
               </filter>
             </defs>
 
-            {/* Connecting lines for all verticals - fixed positions */}
-            {hexagonVerticals.map((item, idx) => {
+            {/* Connecting lines for all verticals */}
+            {groupedVerticals.map((item, idx) => {
+              const angleRad = (item.angle * Math.PI) / 180;
+              const radius = 320;
+              const centerX = 450;
+              const centerY = 450;
+              const x = centerX + radius * Math.cos(angleRad);
+              const y = centerY + radius * Math.sin(angleRad);
               const colors = categoryColors[item.vertical.category];
               return (
                 <line
                   key={`line-${idx}`}
-                  x1={450}
-                  y1={450}
-                  x2={item.left}
-                  y2={item.top}
+              x1={centerX}
+              y1={centerY}
+                  x2={x}
+                  y2={y}
                   stroke={colors.lineColor}
                   strokeOpacity="0.5"
                   strokeWidth="2"
@@ -171,25 +167,29 @@ const VerticalsSection: FC = () => {
             </div>
           </div>
 
-          {/* Hexagon Vertices - Fixed Positions */}
-          {hexagonVerticals.map((item, idx) => {
+          {/* Radiating Spokes - Grouped Verticals */}
+          {groupedVerticals.map((item, idx) => {
             const Icon = item.vertical.icon;
+            const angleRad = (item.angle * Math.PI) / 180;
+            const radius = 320;
+            const x = 450 + radius * Math.cos(angleRad);
+            const y = 450 + radius * Math.sin(angleRad);
             const colors = categoryColors[item.vertical.category];
             
             return (
               <div
-                key={`vertex-${idx}`}
+                key={`spoke-${idx}`}
                 className="absolute -translate-x-1/2 -translate-y-1/2 group z-20"
-                style={{ left: item.left, top: item.top }}
+                style={{ left: x, top: y }}
               >
-                <div className={`flex flex-col items-center justify-between bg-card/85 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[200px] h-[200px]`}>
+                <div className={`flex flex-col items-center justify-between bg-card/85 backdrop-blur-sm rounded-2xl p-5 shadow-lg shadow-black/10 border border-border/50 border-t-white/20 hover:-translate-y-1 hover:shadow-xl ${colors.hoverBorder} transition-all duration-300 w-[220px] h-[220px]`}>
                   {/* Category badge */}
                   <span className={`text-[9px] font-bold uppercase tracking-widest ${colors.badge} px-2.5 py-1 rounded-full`}>
                     {item.vertical.category}
                   </span>
                   {/* Icon */}
-                  <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner`}>
-                    <Icon className={`w-7 h-7 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
+                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${colors.iconBg} border ${colors.iconBorder} flex items-center justify-center shadow-inner`}>
+                    <Icon className={`w-8 h-8 ${colors.iconText} group-hover:scale-110 transition-transform duration-300`} />
                   </div>
                   {/* Producer Role - prominent */}
                   <span className="text-sm font-bold text-foreground text-center leading-snug px-1">
@@ -200,10 +200,24 @@ const VerticalsSection: FC = () => {
             );
           })}
 
+          {/* "And More" dots in the gaps between clusters */}
+          {[90, 210, 330].map((angle, idx) => {
+            const angleRad = (angle * Math.PI) / 180;
+            const radius = 370;
+            const x = 450 + radius * Math.cos(angleRad);
+            const y = 450 + radius * Math.sin(angleRad);
+            return (
+              <div
+                key={idx}
+                className="absolute w-1.5 h-1.5 rounded-full bg-muted-foreground/25 -translate-x-1/2 -translate-y-1/2 z-10"
+                style={{ left: x, top: y }}
+              />
+            );
+          })}
         </div>
 
-        {/* Mobile Layout - Grouped by Category */}
-        <div className="md:hidden space-y-6">
+        {/* Mobile/Tablet Layout - Grouped by Category */}
+        <div className="lg:hidden space-y-6">
           {mobileGroups.map((group, groupIdx) => {
             const colors = categoryColors[group.category];
             return (
