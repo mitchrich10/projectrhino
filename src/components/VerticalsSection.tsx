@@ -53,6 +53,14 @@ const hexagonVerticals: { vertical: Vertical; left: number; top: number }[] = [
   { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, left: 173, top: 290 },
 ];
 
+// Backwards-compatible derived lists (some rendering blocks still reference these)
+const healthcareVerticals = hexagonVerticals.filter(
+  (v) => v.vertical.category === "Healthcare",
+);
+const financeVerticals = hexagonVerticals.filter(
+  (v) => v.vertical.category === "Financial & Advisory Services",
+);
+
 // For mobile layout - grouped by category
 const mobileGroups = [
   {
@@ -92,8 +100,11 @@ const VerticalsSection: FC = () => {
           </p>
         </div>
 
-        {/* Radial Diagram - Desktop */}
-        <div className="hidden lg:block relative mx-auto" style={{ width: '900px', height: '900px' }}>
+        {/* Diagram - Desktop/Tablet */}
+        <div
+          className="hidden md:block relative mx-auto md:scale-[0.85] lg:scale-100 md:origin-top"
+          style={{ width: "900px", height: "900px" }}
+        >
           
           {/* Background Atmosphere */}
           <div className="absolute inset-0 pointer-events-none">
@@ -191,8 +202,8 @@ const VerticalsSection: FC = () => {
 
         </div>
 
-        {/* Mobile/Tablet Layout - Grouped by Category */}
-        <div className="lg:hidden space-y-6">
+        {/* Mobile Layout - Grouped by Category */}
+        <div className="md:hidden space-y-6">
           {mobileGroups.map((group, groupIdx) => {
             const colors = categoryColors[group.category];
             return (
