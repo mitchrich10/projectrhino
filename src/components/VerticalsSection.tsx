@@ -36,24 +36,25 @@ const categoryColors: Record<Category, { badge: string; iconBg: string; iconBord
   },
 };
 
-// Grouped verticals with their angular positions
-// Healthcare: top arc (-150° to -30°)
-// Wealth Management: bottom-left arc (120° to 210°)
-// Financial & Advisory: bottom-right arc (30° to 60°)
+// Grouped verticals with evenly distributed spacing
+// Cards within groups are 30° apart, gaps between groups are 70° apart
+// Healthcare (top): 240°, 270°, 300°
+// Financial & Advisory (bottom-right): 10°, 40°
+// Wealth Management (bottom-left): 110°, 140°, 170°
 const groupedVerticals: { vertical: Vertical; angle: number }[] = [
   // Healthcare cluster (top)
-  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: -130 },
-  { vertical: { icon: Activity, producer: "Physiotherapist", category: "Healthcare" }, angle: -90 },
-  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: -50 },
-  
-  // Wealth Management cluster (bottom-left)
-  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 150 },
-  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 190 },
-  { vertical: { icon: Home, producer: "Mortgage Broker", category: "Wealth Management" }, angle: 230 },
+  { vertical: { icon: Baby, producer: "Reproductive Endocrinologist", category: "Healthcare" }, angle: 240 },
+  { vertical: { icon: Activity, producer: "Physiotherapist", category: "Healthcare" }, angle: 270 },
+  { vertical: { icon: Dog, producer: "Doctor of Veterinary Medicine", category: "Healthcare" }, angle: 300 },
   
   // Financial & Advisory Services cluster (bottom-right)
-  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 30 },
-  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 70 },
+  { vertical: { icon: Calculator, producer: "Chartered Professional Accountant", category: "Financial & Advisory Services" }, angle: 10 },
+  { vertical: { icon: Scale, producer: "Estate & Trust Advisor", category: "Financial & Advisory Services" }, angle: 40 },
+  
+  // Wealth Management cluster (bottom-left)
+  { vertical: { icon: TrendingUp, producer: "Wealth Advisor", category: "Wealth Management" }, angle: 110 },
+  { vertical: { icon: Shield, producer: "Insurance Broker", category: "Wealth Management" }, angle: 140 },
+  { vertical: { icon: Home, producer: "Mortgage Broker", category: "Wealth Management" }, angle: 170 },
 ];
 
 // For mobile layout - grouped by category
@@ -204,8 +205,8 @@ const VerticalsSection: FC = () => {
             );
           })}
 
-          {/* "And More" dots around the outer edge */}
-          {[15, 105, 255, 285, 315, 345].map((angle, idx) => {
+          {/* "And More" dots in the gaps between clusters */}
+          {[325, 75, 195].map((angle, idx) => {
             const angleRad = (angle * Math.PI) / 180;
             const radius = 370;
             const x = 400 + radius * Math.cos(angleRad);
