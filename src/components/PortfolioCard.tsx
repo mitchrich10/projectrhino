@@ -106,7 +106,6 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       <div className="text-center mt-auto pt-3 border-t border-border/50">
         <p className="text-[11px] text-muted-foreground leading-relaxed">
           {description}
-          {description}
         </p>
         {acquiredBy && (
           <p className="text-[9px] font-bold uppercase tracking-wider text-primary mt-2">
