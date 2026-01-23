@@ -45,7 +45,8 @@ const activePortfolio = [
     category: "Healthcare Services", 
     description: "Animal health.",
     isRepresentative: true,
-    logo: logoUpperVillage
+    logo: logoUpperVillage,
+    logoSize: "small"
   },
   { 
     name: "Flint", 

@@ -54,7 +54,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       )}
     </div>
   ) : (
-    <div className="h-12 flex items-center justify-center -mt-1">
+    <div className="h-12 flex items-center justify-center -mt-3">
       <h4 className="text-base font-black uppercase tracking-tighter transition-colors text-foreground group-hover:text-primary text-center">
         {name}
       </h4>
