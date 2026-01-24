@@ -20,14 +20,14 @@ const team: TeamMember[] = [
     role: "Investor",
     bio: "Co-founder and former Chairman of Recon Instruments. After a successful exit to Intel in 2015, Fraser co-founded Rhino to support entrepreneurs underserved in Western Canada.",
     photo: fraserPhoto,
-    portfolio: ["Article", "Aspect Biosystems", "Fatigue Sciences", "Klue", "ShopVision", "Thinkific"]
+    portfolio: ["Article", "Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
   },
   {
     name: "Jay Rhind",
     role: "Investor",
     bio: "Co-founded Rhino in 2015. Intensely focused on finding companies not well served by the traditional venture model. Former Adjunct Professor at UBC.",
     photo: jayPhoto,
-    portfolio: ["Edvisor", "Elective", "FISPAN", "Flint", "MARZ", "Quinn AI", "Showbie", "Twig Fertility", "Upper Village"]
+    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow", "Klue", "MARZ", "Peerboard", "Quinn AI", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
   },
   {
     name: "Candace Hobin",
@@ -40,14 +40,14 @@ const team: TeamMember[] = [
     role: "Investor",
     bio: "Originally from Denmark, passionate about technologies with global impact. Responsible for deal sourcing, due diligence, and supporting portfolio companies.",
     photo: nicholasPhoto,
-    portfolio: ["Ontopical"]
+    portfolio: ["Curatio", "Ontopical", "Peerboard", "Showbie"]
   },
   {
     name: "Mitch Richardson",
     role: "Investor",
     bio: "Deeply driven to support founders in reaching ambitious goals. Previously spent five years with a Canadian financial services company across North America and Asia.",
     photo: mitchPhoto,
-    portfolio: ["MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"]
+    portfolio: ["Elective", "MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"]
   }
 ];
 
