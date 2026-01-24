@@ -30,12 +30,6 @@ const team: TeamMember[] = [
     portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow", "Klue", "MARZ", "Peerboard", "Quinn AI", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
   },
   {
-    name: "Candace Hobin",
-    role: "Operations",
-    bio: "Responsible for organizing events, LP communications, marketing, and fund management. Background in traditional finance and client relations.",
-    photo: candacePhoto
-  },
-  {
     name: "Nicholas Hyldelund",
     role: "Investor",
     bio: "Originally from Denmark, passionate about technologies with global impact. Responsible for deal sourcing, due diligence, and supporting portfolio companies.",
@@ -48,6 +42,12 @@ const team: TeamMember[] = [
     bio: "Deeply driven to support founders in reaching ambitious goals. Previously spent five years with a Canadian financial services company across North America and Asia.",
     photo: mitchPhoto,
     portfolio: ["Elective", "MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"]
+  },
+  {
+    name: "Candace Hobin",
+    role: "Operations",
+    bio: "Responsible for organizing events, LP communications, marketing, and fund management. Background in traditional finance and client relations.",
+    photo: candacePhoto
   }
 ];
 
