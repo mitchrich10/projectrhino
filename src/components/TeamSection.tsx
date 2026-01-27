@@ -78,12 +78,9 @@ const TeamSection: FC = () => {
     <section id="team" className="py-32 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 text-center">
-          <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground mb-4">
+          <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground">
             Meet <span className="text-primary">The Team</span>
           </h3>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Decades of combined technology and entrepreneurial experience
-          </p>
         </div>
 
         {/* Team photo */}

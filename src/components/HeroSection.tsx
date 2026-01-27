@@ -26,7 +26,7 @@ const HeroSection: FC = () => {
             Scaling Canadian <span className="text-primary">Producer</span> Businesses<img src={mapleLeaf} alt="Canadian maple leaf" className="inline-block h-[0.5em] ml-2 align-baseline" />
           </h1>
           <p className="text-lg md:text-xl text-white/70 font-medium mb-10 max-w-2xl leading-relaxed">
-            You deserve a capital partner who thinks like an <span className="text-primary font-semibold">operator</span>.
+            You deserve a capital partner who <span className="text-primary font-semibold">amplifies your success</span>.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <RhinoButton className="group hover:gap-4">

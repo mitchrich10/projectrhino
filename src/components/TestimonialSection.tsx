@@ -14,20 +14,18 @@ const TestimonialSection: FC = () => {
           <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-8 whitespace-nowrap">We partner with ambitious builders to scale enduring companies.</p>
           
           <div className="flex justify-center items-start gap-8 md:gap-16">
-            {/* Investments */}
+            {/* Companies */}
             <div className="text-center group">
               <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">35</p>
               <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Investments</p>
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Companies</p>
             </div>
             
             {/* Portfolio Annual Revenue */}
             <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">$500M+</p>
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">$700M+</p>
               <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Annual Revenue</p>
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2 invisible">Since Inception</p>
             </div>
             
             {/* Exits */}
@@ -35,7 +33,6 @@ const TestimonialSection: FC = () => {
               <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">11</p>
               <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
             </div>
           </div>
 
@@ -48,9 +45,9 @@ const TestimonialSection: FC = () => {
             <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
               {[
                 { logo: logoTwig, name: "Twig", year: "2022", kpi: ">7x Revenue", url: "https://twigfertility.com" },
-                { logo: logoArticle, name: "Article", year: "2016", kpi: "KPI Placeholder", url: "https://www.article.com" },
+                { logo: logoArticle, name: "Article", year: "2016", kpi: ">20x revenue", url: "https://www.article.com" },
                 { logo: logoFispan, name: "FISPAN", year: "2018", kpi: "$500K → $35M ARR", url: "https://www.fispan.com" },
-                { logo: logoFlint, name: "Flint", year: "2025", kpi: "KPI Placeholder", url: "https://www.withflint.com" },
+                { logo: logoFlint, name: "Flint", year: "2025", kpi: "300% annualized growth", url: "https://www.withflint.com" },
               ].map((company) => (
                 <div key={company.name} className="text-center group flex-1 max-w-[180px]">
                   <a 

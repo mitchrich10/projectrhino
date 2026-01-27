@@ -18,7 +18,7 @@ const FounderQuoteSection: FC = () => {
           
           <div className="text-center md:text-left">
             <blockquote className="text-xl md:text-2xl text-foreground leading-relaxed italic mb-6">
-              "They are the rare partner that asks the tough questions, and when your back is against the wall, they are the ones standing right beside you."
+              "Rhino is the rare partner that asks the tough questions, and when your back is against the wall, they are the ones standing right beside you."
             </blockquote>
             <div>
               <p className="font-black uppercase tracking-tight">Lisa Shields</p>
