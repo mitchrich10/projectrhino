@@ -264,11 +264,32 @@ const PortfolioSection: FC = () => {
 
         {/* Exited Investments */}
         <div>
-          <div className="mb-12 text-center">
-            <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
-              Exits
-            </h3>
-            <p className="text-lg md:text-xl text-muted-foreground mt-3 italic">The Golden Crash</p>
+          <div className="mb-12 text-center relative overflow-hidden py-16">
+            {/* Placeholder Photo Background Grid - 4 columns */}
+            <div className="absolute inset-0 z-0 grid grid-cols-4">
+              <div className="relative overflow-hidden bg-amber-100/30">
+                <div className="w-full h-full flex items-center justify-center text-amber-300/50 text-xs uppercase tracking-wider">Photo 1</div>
+              </div>
+              <div className="relative overflow-hidden bg-amber-100/30">
+                <div className="w-full h-full flex items-center justify-center text-amber-300/50 text-xs uppercase tracking-wider">Photo 2</div>
+              </div>
+              <div className="relative overflow-hidden bg-amber-100/30">
+                <div className="w-full h-full flex items-center justify-center text-amber-300/50 text-xs uppercase tracking-wider">Photo 3</div>
+              </div>
+              <div className="relative overflow-hidden bg-amber-100/30">
+                <div className="w-full h-full flex items-center justify-center text-amber-300/50 text-xs uppercase tracking-wider">Photo 4</div>
+              </div>
+              {/* Gradient overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background/60" />
+            </div>
+            
+            {/* Header text - positioned above photos */}
+            <div className="relative z-10">
+              <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
+                Exits
+              </h3>
+              <p className="text-lg md:text-xl text-muted-foreground mt-3 italic">The Golden Crash</p>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
