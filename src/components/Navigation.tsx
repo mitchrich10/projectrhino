@@ -66,10 +66,9 @@ const Navigation: FC = () => {
         <Logo />
         
         <div className="hidden md:flex gap-10 items-center">
-          <NavLink href="#team">About Us</NavLink>
-          <NavLink href="#strategy">Strategy</NavLink>
-          <NavLink href="#verticals">Verticals</NavLink>
+          <NavLink href="#strategy">How We Invest</NavLink>
           <NavLink href="#portfolio">Portfolio</NavLink>
+          <NavLink href="#team">The Team</NavLink>
           <Link to="/contact">
             <RhinoButton size="sm">Contact</RhinoButton>
           </Link>
@@ -86,10 +85,9 @@ const Navigation: FC = () => {
 
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-background border-b border-border p-6 flex flex-col gap-6 md:hidden">
-          <NavLink href="#team" onClick={() => setIsMenuOpen(false)}>About Us</NavLink>
-          <NavLink href="#strategy" onClick={() => setIsMenuOpen(false)}>Strategy</NavLink>
-          <NavLink href="#verticals" onClick={() => setIsMenuOpen(false)}>Verticals</NavLink>
+          <NavLink href="#strategy" onClick={() => setIsMenuOpen(false)}>How We Invest</NavLink>
           <NavLink href="#portfolio" onClick={() => setIsMenuOpen(false)}>Portfolio</NavLink>
+          <NavLink href="#team" onClick={() => setIsMenuOpen(false)}>The Team</NavLink>
           <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Contact</Link>
         </div>
       )}
