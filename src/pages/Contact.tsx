@@ -33,7 +33,7 @@ const Contact: FC = () => {
             {/* Heading */}
             <div>
               <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-primary leading-tight">
-                We Want to Hear From You!
+                We Want to Hear From You
               </h1>
             </div>
 

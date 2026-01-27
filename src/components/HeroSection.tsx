@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { RhinoButton } from "./RhinoButton";
 import rhinoDetail from "@/assets/rhino-detail.jpg";
 import mapleLeaf from "@/assets/maple-leaf.png";
@@ -29,9 +30,11 @@ const HeroSection: FC = () => {
             You deserve a capital partner who <span className="text-primary font-semibold">amplifies your success</span>.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <RhinoButton className="group hover:gap-4">
-              Partner with Us <ArrowRight className="w-4 h-4" />
-            </RhinoButton>
+            <Link to="/contact">
+              <RhinoButton className="group hover:gap-4">
+                Partner with Us <ArrowRight className="w-4 h-4" />
+              </RhinoButton>
+            </Link>
           </div>
         </div>
       </div>
