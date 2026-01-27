@@ -87,7 +87,7 @@ const StrategySection: FC = () => {
     <section id="strategy" className="py-20 px-6 bg-gradient-to-b from-background via-background to-secondary">
       <div className="max-w-7xl mx-auto">
         {/* Where We Partner */}
-        <div className="border-2 border-border/60 bg-card/80 backdrop-blur-sm p-10 md:p-14">
+        <div className="border-2 border-border/50 bg-white/95 backdrop-blur-sm p-10 md:p-14 shadow-lg">
           <div className="mb-10">
             <h4 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground mb-4">
               Where We <span className="text-primary">Partner</span>
@@ -127,7 +127,7 @@ const StrategySection: FC = () => {
             {categories.map((cat, idx) => {
               const colors = categoryColors[cat.category];
               return (
-                <div key={idx} className="flex flex-col">
+                <div key={idx} className="flex flex-col bg-white/60 p-6 rounded-lg border border-border/30 hover:border-primary/30 hover:shadow-md transition-all duration-300">
                   {/* Category Header */}
                   <div className={`mb-4 pb-3 border-b ${colors.border}`}>
                     <span className={`text-xs font-bold uppercase tracking-widest ${colors.badge} px-3 py-1 rounded-full`}>
