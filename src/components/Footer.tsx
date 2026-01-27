@@ -66,22 +66,6 @@ const Footer: FC = () => {
         <div className="opacity-40 hover:opacity-100 transition-opacity">
           <Logo />
         </div>
-        <div className="flex gap-12">
-          <a 
-            href="https://www.linkedin.com/company/rhinoventuresog" 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[10px] text-text-tertiary font-black uppercase tracking-widest hover:text-foreground transition-colors"
-          >
-            LinkedIn
-          </a>
-          <a 
-            href="#" 
-            className="text-[10px] text-text-tertiary font-black uppercase tracking-widest hover:text-foreground transition-colors"
-          >
-            Privacy
-          </a>
-        </div>
         <p className="text-[10px] text-text-tertiary font-black uppercase tracking-widest">
           © 2025 Rhino GP Inc.
         </p>

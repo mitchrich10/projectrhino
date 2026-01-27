@@ -97,7 +97,7 @@ const StrategySection: FC = () => {
               Where We <span className="text-primary">Partner</span>
             </h4>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              From building new platforms to partnering in established companies. We work closely with operators looking to build, buy or scale businesses and take them to the next stage of growth.
+              We work closely with operators looking to build, buy or scale businesses and take them to the next stage of growth.
             </p>
           </div>
 
