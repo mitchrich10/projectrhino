@@ -90,41 +90,22 @@ const StrategySection: FC = () => {
   return (
     <section id="strategy" className="py-20 px-6 bg-gradient-to-b from-background via-background to-secondary">
       <div className="max-w-7xl mx-auto">
-        {/* Where We Partner */}
+        {/* Main Card */}
         <div className="border-2 border-border/50 bg-white/95 backdrop-blur-sm p-10 md:p-14 shadow-lg">
+          {/* Producer Businesses - Now on top */}
           <div className="mb-10">
             <h4 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-foreground mb-4">
-              Where We <span className="text-primary">Partner</span>
-            </h4>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              We work closely with operators looking to build, buy or scale businesses and take them to the next stage of growth.
-            </p>
-          </div>
-
-          {/* Strategy Tiles */}
-          <div className="grid md:grid-cols-3 gap-4">
-            {strategyItems.map((item, i) => (
-              <StatCard 
-                key={i}
-                title={item.title}
-                description={item.desc}
-                icon={item.icon}
-              />
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div className="border-t-2 border-primary/40 my-10" />
-
-          {/* Producer Businesses */}
-          <div className="mb-10">
-            <h5 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-foreground mb-4">
               <span className="text-primary">Producer</span> Businesses
-            </h5>
+            </h4>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
               Producers are the experts whose work directly drives a company's revenue, margins, and growth.
             </p>
           </div>
+
+          {/* Producer Examples Label */}
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6">
+            Producer Examples
+          </p>
 
           {/* Three Column Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -161,18 +142,39 @@ const StrategySection: FC = () => {
             })}
           </div>
 
-          <p className="text-center text-xs text-muted-foreground/60 uppercase tracking-widest mt-8">
-            And many more...
-          </p>
+          {/* Divider */}
+          <div className="border-t-2 border-primary/40 my-10" />
+
+          {/* Where We Partner - Now below */}
+          <div className="mb-10">
+            <h5 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-foreground mb-4">
+              Where We <span className="text-primary">Partner</span>
+            </h5>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              We work closely with operators looking to build, buy or scale businesses and take them to the next stage of growth.
+            </p>
+          </div>
+
+          {/* Strategy Tiles */}
+          <div className="grid md:grid-cols-3 gap-4">
+            {strategyItems.map((item, i) => (
+              <StatCard 
+                key={i}
+                title={item.title}
+                description={item.desc}
+                icon={item.icon}
+              />
+            ))}
+          </div>
 
           {/* Bottom Statement */}
           <p className="text-foreground text-base md:text-lg font-medium leading-relaxed mt-10 text-center italic">
-            If you're looking for growth capital but don't fit neatly into venture or private equity playbooks,{" "}
+            If you're exploring capital partners to take your producer business to the next level,{" "}
             <Link 
               to="/contact" 
               className="text-primary font-semibold hover:underline transition-all"
             >
-              that's where we partner.
+              let's chat.
             </Link>
           </p>
         </div>
