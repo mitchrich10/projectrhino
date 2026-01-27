@@ -114,7 +114,7 @@ const StrategySection: FC = () => {
           </div>
 
           {/* Divider */}
-          <div className="border-t border-border/40 my-10" />
+          <div className="border-t-2 border-primary/40 my-10" />
 
           {/* Producer Businesses */}
           <div className="mb-10">
