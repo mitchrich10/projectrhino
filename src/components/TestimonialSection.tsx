@@ -44,10 +44,10 @@ const TestimonialSection: FC = () => {
             
             <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
               {[
-                { logo: logoTwig, name: "Twig", year: "2022", kpi: ">7x Revenue", url: "https://twigfertility.com" },
+                { logo: logoTwig, name: "Twig", year: "2022", kpi: ">7x revenue", url: "https://twigfertility.com" },
                 { logo: logoArticle, name: "Article", year: "2016", kpi: ">20x revenue", url: "https://www.article.com" },
                 { logo: logoFispan, name: "FISPAN", year: "2018", kpi: "$500K → $35M ARR", url: "https://www.fispan.com" },
-                { logo: logoFlint, name: "Flint", year: "2025", kpi: "300% annualized growth", url: "https://www.withflint.com" },
+                { logo: logoFlint, name: "Flint", year: "2025", kpi: "300% annual growth", url: "https://www.withflint.com" },
               ].map((company) => (
                 <div key={company.name} className="text-center group flex-1 max-w-[180px]">
                   <a 
