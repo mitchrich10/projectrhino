@@ -37,21 +37,25 @@ const categoryColors: Record<Category, {
   icon: string; 
   badge: string;
   border: string;
+  leftBorder: string;
 }> = {
   Healthcare: {
     icon: "text-emerald-500",
     badge: "text-emerald-600 bg-emerald-500/10",
     border: "border-emerald-500/20",
+    leftBorder: "border-l-emerald-400",
   },
   "Wealth Management": {
     icon: "text-blue-500",
     badge: "text-blue-600 bg-blue-500/10",
     border: "border-blue-500/20",
+    leftBorder: "border-l-blue-400",
   },
   "Financial & Advisory Services": {
     icon: "text-purple-500",
     badge: "text-purple-600 bg-purple-500/10",
     border: "border-purple-500/20",
+    leftBorder: "border-l-purple-400",
   },
 };
 
@@ -127,7 +131,7 @@ const StrategySection: FC = () => {
             {categories.map((cat, idx) => {
               const colors = categoryColors[cat.category];
               return (
-                <div key={idx} className="flex flex-col bg-white/60 p-6 rounded-lg border border-border/30 hover:border-primary/30 hover:shadow-md transition-all duration-300">
+                <div key={idx} className={`flex flex-col pl-4 border-l-4 ${colors.leftBorder} hover:translate-x-1 transition-all duration-300`}>
                   {/* Category Header */}
                   <div className={`mb-4 pb-3 border-b ${colors.border}`}>
                     <span className={`text-xs font-bold uppercase tracking-widest ${colors.badge} px-3 py-1 rounded-full`}>
