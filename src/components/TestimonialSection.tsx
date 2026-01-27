@@ -13,42 +13,34 @@ const TestimonialSection: FC = () => {
         <div className="mb-20">
           <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-8 whitespace-nowrap">We partner with ambitious builders to scale enduring companies.</p>
           
-          <div className="bg-white/60 border border-slate-200/60 rounded-lg shadow-sm p-8 md:p-10">
-            <div className="flex justify-center items-start gap-8 md:gap-16">
-              {/* Investments */}
-              <div className="text-center group">
-                <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">35</p>
-                <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-                <p className="text-xs uppercase tracking-widest text-muted-foreground">Investments</p>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
-              </div>
-              
-              {/* Divider */}
-              <div className="hidden md:block w-px h-20 bg-slate-300/50 self-center" />
-              
-              {/* Portfolio Annual Revenue */}
-              <div className="text-center group">
-                <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">$500M+</p>
-                <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-                <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Annual Revenue</p>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2 invisible">Since Inception</p>
-              </div>
-              
-              {/* Divider */}
-              <div className="hidden md:block w-px h-20 bg-slate-300/50 self-center" />
-              
-              {/* Exits */}
-              <div className="text-center group">
-                <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">11</p>
-                <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-                <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
-              </div>
+          <div className="flex justify-center items-start gap-8 md:gap-16">
+            {/* Investments */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">35</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Investments</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
+            </div>
+            
+            {/* Portfolio Annual Revenue */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">$500M+</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Annual Revenue</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2 invisible">Since Inception</p>
+            </div>
+            
+            {/* Exits */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">11</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-2">Since Inception</p>
             </div>
           </div>
 
           {/* Featured Company Highlights */}
-          <div className="mt-16 bg-white/60 border border-slate-200/60 border-t-4 border-t-primary/40 rounded-lg shadow-sm p-8 md:p-10">
+          <div className="mt-16">
             <p className="text-sm uppercase tracking-widest text-muted-foreground text-center mb-10">
               A few of our investments
             </p>
