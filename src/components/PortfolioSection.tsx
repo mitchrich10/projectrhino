@@ -215,27 +215,27 @@ const PortfolioSection: FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Active Portfolio */}
         <div className="mb-24">
-          <div className="mb-12 text-center relative overflow-hidden py-16">
+          <div className="mb-12 text-center relative overflow-hidden h-48">
             {/* Photo Background Grid - 4 columns */}
             <div className="absolute inset-0 z-0 grid grid-cols-4">
               <div className="relative overflow-hidden">
                 <img src={activePhoto1} alt="" className="w-full h-full object-cover opacity-40" />
               </div>
-            <div className="relative overflow-hidden">
-              <img src={activePhoto2} alt="" className="w-full h-full object-cover object-top opacity-40" />
-            </div>
-            <div className="relative overflow-hidden">
-              <img src={activePhoto4} alt="" className="w-full h-full object-cover object-top opacity-40" />
-            </div>
-            <div className="relative overflow-hidden">
-              <img src={activePhoto3} alt="" className="w-full h-full object-cover opacity-40" />
-            </div>
+              <div className="relative overflow-hidden">
+                <img src={activePhoto2} alt="" className="w-full h-full object-cover opacity-40" />
+              </div>
+              <div className="relative overflow-hidden">
+                <img src={activePhoto4} alt="" className="w-full h-full object-cover opacity-40" />
+              </div>
+              <div className="relative overflow-hidden">
+                <img src={activePhoto3} alt="" className="w-full h-full object-cover opacity-40" />
+              </div>
               {/* Gradient overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-background/40 to-background/80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 via-background/30 to-transparent" />
             </div>
             
-            {/* Header text - positioned above photos */}
-            <div className="relative z-10">
+            {/* Header text - positioned at bottom */}
+            <div className="absolute bottom-4 left-0 right-0 z-10">
               <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
                 Active Portfolio
               </h3>
