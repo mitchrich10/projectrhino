@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 const Logo: FC<{ className?: string }> = ({ className }) => (
   <Link to="/" className={cn("flex items-center", className)}>
-    <span className="text-xl font-black tracking-tighter uppercase text-white">RHINO</span>
+    <span className="text-xl font-black tracking-wide uppercase text-white">RHINO</span>
   </Link>
 );
 
