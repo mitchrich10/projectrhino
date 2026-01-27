@@ -1,6 +1,12 @@
 import { FC } from "react";
 import { PortfolioCard, PortfolioCardEmpty } from "./PortfolioCard";
 
+// Active Portfolio header photos
+import activePhoto1 from "@/assets/active-portfolio-1.jpg";
+import activePhoto2 from "@/assets/active-portfolio-2.jpg";
+import activePhoto3 from "@/assets/active-portfolio-3.jpg";
+import activePhoto4 from "@/assets/active-portfolio-4.jpg";
+
 // Logo imports
 import logoMarz from "@/assets/logo-marz.png";
 import logoQuinnAI from "@/assets/logo-quinn-ai.png";
@@ -209,11 +215,32 @@ const PortfolioSection: FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Active Portfolio */}
         <div className="mb-24">
-          <div className="mb-12 text-center">
-            <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
-              Active Portfolio
-            </h3>
-            <p className="text-lg md:text-xl text-muted-foreground mt-3 italic">The Crash — a herd of Rhinos</p>
+          <div className="mb-12 text-center relative overflow-hidden py-16">
+            {/* Photo Background Grid - 4 columns */}
+            <div className="absolute inset-0 z-0 grid grid-cols-4">
+              <div className="relative overflow-hidden">
+                <img src={activePhoto1} alt="" className="w-full h-full object-cover opacity-40" />
+              </div>
+              <div className="relative overflow-hidden">
+                <img src={activePhoto2} alt="" className="w-full h-full object-cover opacity-40" />
+              </div>
+              <div className="relative overflow-hidden">
+                <img src={activePhoto3} alt="" className="w-full h-full object-cover opacity-40" />
+              </div>
+              <div className="relative overflow-hidden">
+                <img src={activePhoto4} alt="" className="w-full h-full object-cover opacity-40" />
+              </div>
+              {/* Gradient overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-background/40 to-background/80" />
+            </div>
+            
+            {/* Header text - positioned above photos */}
+            <div className="relative z-10">
+              <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
+                Active Portfolio
+              </h3>
+              <p className="text-lg md:text-xl text-muted-foreground mt-3 italic">The Crash — a herd of Rhinos</p>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
