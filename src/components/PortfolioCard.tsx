@@ -64,7 +64,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
 
   const variantStyles = variant === "exited" 
     ? "bg-white border-border hover:bg-amber-50/50 hover:border-amber-400 hover:shadow-lg hover:shadow-amber-200/40 relative overflow-hidden border-t-2 border-t-amber-100"
-    : "bg-white border-border hover:bg-primary/10 hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 border-t-2 border-t-primary/20";
+    : "bg-white border-border hover:bg-sky-50/70 hover:border-sky-400 hover:shadow-lg hover:shadow-sky-200/40 transition-all duration-300 border-t-2 border-t-primary/20";
 
   const contentArea = (
     <div className="flex-1 flex items-center justify-center">
@@ -103,7 +103,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
       ) : (
         contentArea
       )}
-      <div className="text-center mt-auto pt-3 border-t border-border/50 group-hover:border-primary/50 transition-colors">
+      <div className="text-center mt-auto pt-3 border-t border-border/50 group-hover:border-sky-400/50 transition-colors">
         <p className="text-[11px] text-muted-foreground leading-relaxed">
           {description}
         </p>
