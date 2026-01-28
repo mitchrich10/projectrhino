@@ -55,7 +55,8 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const isLightVariant = variant === "light";
-  const isDark = isLightVariant || scrolled;
+  // For light variant (contact page), text should be dark. For dark variant (homepage), text stays white always.
+  const isDarkText = isLightVariant;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -75,19 +76,19 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
       )}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <Logo dark={isDark} />
+        <Logo dark={isDarkText} />
         
         <div className="hidden md:flex gap-10 items-center">
-          <NavLink href="#strategy" dark={isDark}>How We Invest</NavLink>
-          <NavLink href="#portfolio" dark={isDark}>Portfolio</NavLink>
-          <NavLink href="#team" dark={isDark}>The Team</NavLink>
+          <NavLink href="#strategy" dark={isDarkText}>How We Invest</NavLink>
+          <NavLink href="#portfolio" dark={isDarkText}>Portfolio</NavLink>
+          <NavLink href="#team" dark={isDarkText}>The Team</NavLink>
           <Link to="/contact">
             <RhinoButton size="sm">Contact</RhinoButton>
           </Link>
         </div>
 
         <button 
-          className={cn("md:hidden", isDark ? "text-foreground" : "text-white")}
+          className={cn("md:hidden", isDarkText ? "text-foreground" : "text-white")}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
