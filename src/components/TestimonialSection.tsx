@@ -65,7 +65,7 @@ const TestimonialSection: FC = () => {
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                     Partnered in {company.year}
                   </p>
-                  <p className="text-xl font-black text-primary leading-none">
+                  <p className="text-xl font-black text-primary leading-tight min-h-[3rem] flex items-center justify-center">
                     {company.kpi}
                   </p>
                   <div className="h-1 w-8 bg-primary/30 mx-auto mt-3 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
