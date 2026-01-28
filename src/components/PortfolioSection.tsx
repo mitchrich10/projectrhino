@@ -7,6 +7,12 @@ import activePhoto2 from "@/assets/active-portfolio-2.jpg";
 import activePhoto3 from "@/assets/active-portfolio-3.jpg";
 import activePhoto4 from "@/assets/active-portfolio-4.jpg";
 
+// Exit Portfolio header photos
+import exitPhoto1 from "@/assets/exit-portfolio-1.jpg";
+import exitPhoto2 from "@/assets/exit-portfolio-2.png";
+import exitPhoto3 from "@/assets/exit-portfolio-3.jpg";
+import exitPhoto4 from "@/assets/exit-portfolio-4.jpg";
+
 // Logo imports
 import logoMarz from "@/assets/logo-marz.png";
 import logoQuinnAI from "@/assets/logo-quinn-ai.png";
@@ -265,22 +271,22 @@ const PortfolioSection: FC = () => {
         {/* Exited Investments */}
         <div>
           <div className="mb-12 text-center relative overflow-hidden py-16">
-            {/* Placeholder Photo Background Grid - 4 columns */}
+            {/* Exit Photo Background Grid - 4 columns */}
             <div className="absolute inset-0 z-0 grid grid-cols-4">
-              <div className="relative overflow-hidden bg-amber-100/30">
-                <div className="w-full h-full flex items-center justify-center text-amber-300/50 text-xs uppercase tracking-wider">Photo 1</div>
+              <div className="relative overflow-hidden">
+                <img src={exitPhoto1} alt="" className="w-full h-full object-cover object-top opacity-40" />
               </div>
-              <div className="relative overflow-hidden bg-amber-100/30">
-                <div className="w-full h-full flex items-center justify-center text-amber-300/50 text-xs uppercase tracking-wider">Photo 2</div>
+              <div className="relative overflow-hidden">
+                <img src={exitPhoto2} alt="" className="w-full h-full object-cover opacity-40" />
               </div>
-              <div className="relative overflow-hidden bg-amber-100/30">
-                <div className="w-full h-full flex items-center justify-center text-amber-300/50 text-xs uppercase tracking-wider">Photo 3</div>
+              <div className="relative overflow-hidden">
+                <img src={exitPhoto3} alt="" className="w-full h-full object-cover opacity-40" />
               </div>
-              <div className="relative overflow-hidden bg-amber-100/30">
-                <div className="w-full h-full flex items-center justify-center text-amber-300/50 text-xs uppercase tracking-wider">Photo 4</div>
+              <div className="relative overflow-hidden">
+                <img src={exitPhoto4} alt="" className="w-full h-full object-cover object-top opacity-40" />
               </div>
               {/* Gradient overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background/60" />
+              <div className="absolute inset-0 bg-gradient-to-b from-secondary/40 via-background/20 to-background/60" />
             </div>
             
             {/* Header text - positioned above photos */}
