@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { Logo } from "./Navigation";
 import foundersHike from "@/assets/founders-hike.jpg";
 import foundersPickleball from "@/assets/founders-pickleball.jpg";
 import foundersKlue from "@/assets/founders-klue.jpg";
@@ -61,10 +60,9 @@ const ContactSection: FC = () => {
 const Footer: FC = () => {
   return (
     <footer className="py-12 px-6 bg-background border-t border-border/50">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-        <Logo dark />
+      <div className="max-w-7xl mx-auto flex justify-end">
         <p className="text-[10px] text-text-tertiary font-black uppercase tracking-widest">
-          © 2025 Rhino GP Inc.
+          2026 Rhino
         </p>
       </div>
     </footer>
