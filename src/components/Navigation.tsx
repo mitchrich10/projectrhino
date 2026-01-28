@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 import { RhinoButton } from "./RhinoButton";
 import { Link } from "react-router-dom";
 
-const Logo: FC<{ className?: string }> = ({ className }) => (
+const Logo: FC<{ className?: string; dark?: boolean }> = ({ className, dark = false }) => (
   <Link to="/" className={cn("flex items-center", className)}>
-    <span className="text-xl font-black tracking-wide uppercase text-white">RHINO</span>
+    <span className={cn("text-xl font-black tracking-wide uppercase", dark ? "text-foreground" : "text-white")}>RHINO</span>
   </Link>
 );
 
@@ -14,9 +14,10 @@ interface NavLinkProps {
   href: string;
   children: React.ReactNode;
   onClick?: () => void;
+  dark?: boolean;
 }
 
-const NavLink: FC<NavLinkProps> = ({ href, children, onClick }) => {
+const NavLink: FC<NavLinkProps> = ({ href, children, onClick, dark = false }) => {
   const handleClick = (e: React.MouseEvent) => {
     if (href.startsWith('#')) {
       e.preventDefault();
@@ -36,16 +37,24 @@ const NavLink: FC<NavLinkProps> = ({ href, children, onClick }) => {
     <a 
       href={href} 
       onClick={handleClick}
-      className="text-xs font-bold text-white/80 hover:text-white transition-colors duration-200 uppercase tracking-widest"
+      className={cn(
+        "text-xs font-bold transition-colors duration-200 uppercase tracking-widest",
+        dark ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white"
+      )}
     >
       {children}
     </a>
   );
 };
 
-const Navigation: FC = () => {
+interface NavigationProps {
+  variant?: "dark" | "light";
+}
+
+const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const isDark = variant === "light" || scrolled;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -58,24 +67,24 @@ const Navigation: FC = () => {
       className={cn(
         "fixed w-full z-50 transition-all duration-300",
         scrolled 
-          ? "bg-black/95 backdrop-blur-md py-4 border-b border-white/10" 
+          ? "bg-background/95 backdrop-blur-md py-4 border-b border-border" 
           : "bg-transparent py-8"
       )}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <Logo />
+        <Logo dark={isDark} />
         
         <div className="hidden md:flex gap-10 items-center">
-          <NavLink href="#strategy">How We Invest</NavLink>
-          <NavLink href="#portfolio">Portfolio</NavLink>
-          <NavLink href="#team">The Team</NavLink>
+          <NavLink href="#strategy" dark={isDark}>How We Invest</NavLink>
+          <NavLink href="#portfolio" dark={isDark}>Portfolio</NavLink>
+          <NavLink href="#team" dark={isDark}>The Team</NavLink>
           <Link to="/contact">
             <RhinoButton size="sm">Contact</RhinoButton>
           </Link>
         </div>
 
         <button 
-          className="md:hidden text-white" 
+          className={cn("md:hidden", isDark ? "text-foreground" : "text-white")}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >

@@ -25,7 +25,7 @@ const Contact: FC = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navigation />
+      <Navigation variant="light" />
       
       <main className="pt-32 pb-20 px-6">
         <div className="max-w-5xl mx-auto">
@@ -48,7 +48,7 @@ const Contact: FC = () => {
                     <Input 
                       id="name" 
                       type="text" 
-                      className="bg-background border-border focus:border-primary"
+                      className="bg-white border-border focus:border-primary"
                       required
                     />
                   </div>
@@ -59,7 +59,7 @@ const Contact: FC = () => {
                     <Input 
                       id="email" 
                       type="email" 
-                      className="bg-background border-border focus:border-primary"
+                      className="bg-white border-border focus:border-primary"
                       required
                     />
                   </div>
@@ -72,7 +72,7 @@ const Contact: FC = () => {
                   <Input 
                     id="phone" 
                     type="tel" 
-                    className="bg-background border-border focus:border-primary max-w-sm"
+                    className="bg-white border-border focus:border-primary max-w-sm"
                   />
                 </div>
 
@@ -83,7 +83,7 @@ const Contact: FC = () => {
                   <Textarea 
                     id="message"
                     placeholder="Example Text"
-                    className="bg-background border-border focus:border-primary min-h-[160px] resize-none"
+                    className="bg-white border-border focus:border-primary min-h-[160px] resize-none"
                     required
                   />
                 </div>
@@ -92,10 +92,10 @@ const Contact: FC = () => {
                   <div className="flex items-center gap-4">
                     <label 
                       htmlFor="file-upload" 
-                      className="flex items-center gap-2 px-4 py-2 border border-border rounded cursor-pointer hover:bg-secondary transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 transition-colors font-bold text-xs uppercase tracking-widest"
                     >
                       <Upload className="w-4 h-4" />
-                      <span className="text-sm font-medium">Upload File</span>
+                      <span>Upload File</span>
                     </label>
                     <input 
                       id="file-upload" 
