@@ -17,8 +17,9 @@ const HeroSection: FC = () => {
 
       <div className="max-w-7xl mx-auto w-full z-10 relative">
         <div className="max-w-3xl">
-          <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-8 text-white">SCALING
-PRODUCER BUSINESSES<span className="text-primary">Producer</span> Businesses<img src={mapleLeaf} alt="Canadian maple leaf" className="inline-block h-[0.5em] ml-2 align-baseline" />
+          <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-8 text-white">
+            Scaling Canadian <span className="text-primary">Producer</span> Businesses
+            <img src={mapleLeaf} alt="Canadian maple leaf" className="inline-block h-[0.5em] ml-2 align-baseline" />
           </h1>
           <p className="text-lg md:text-xl mb-10 max-w-2xl leading-relaxed text-white/80 font-medium">You deserve a capital partner who <span className="text-primary font-bold">amplifies your success</span>.
           </p>
