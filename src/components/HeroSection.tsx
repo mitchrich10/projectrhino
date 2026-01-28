@@ -20,7 +20,7 @@ const HeroSection: FC = () => {
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-8 text-white">SCALING
 PRODUCER BUSINESSES<span className="text-primary">Producer</span> Businesses<img src={mapleLeaf} alt="Canadian maple leaf" className="inline-block h-[0.5em] ml-2 align-baseline" />
           </h1>
-          <p className="text-lg md:text-xl mb-10 max-w-2xl leading-relaxed text-primary font-extrabold">You deserve a capital partner who amplifies your success<span className="text-primary font-semibold">amplifies your success</span>.
+          <p className="text-lg md:text-xl mb-10 max-w-2xl leading-relaxed text-muted-foreground">You deserve a capital partner who <span className="text-primary font-bold">amplifies your success</span>.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <Link to="/contact">
