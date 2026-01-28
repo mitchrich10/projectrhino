@@ -237,7 +237,7 @@ const PortfolioSection: FC = () => {
               <img src={activePhoto3} alt="" className="w-full h-full object-cover opacity-40" />
             </div>
               {/* Gradient overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-background/10 to-background/40" />
+              {/* <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-background/10 to-background/40" /> */}
             </div>
             
             {/* Header text - positioned above photos */}
@@ -286,7 +286,7 @@ const PortfolioSection: FC = () => {
                 <img src={foundersOntopical} alt="" className="w-full h-full object-cover opacity-40" />
               </div>
               {/* Gradient overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-background/10 to-background/40" />
+              {/* <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-background/10 to-background/40" /> */}
             </div>
             
             {/* Header text - positioned above photos */}
