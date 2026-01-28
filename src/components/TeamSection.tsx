@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { Linkedin } from "lucide-react";
 import teamGroup from "@/assets/team-group.png";
 import fraserPhoto from "@/assets/team-fraser.png";
 import jayPhoto from "@/assets/team-jay.png";
@@ -9,67 +10,68 @@ import mitchPhoto from "@/assets/team-mitch.png";
 interface TeamMember {
   name: string;
   role: string;
-  bio: string;
   photo: string;
-  portfolio?: string[];
+  linkedin: string;
 }
 
 const team: TeamMember[] = [
   {
     name: "Fraser Hall",
     role: "Investor",
-    bio: "Co-founder and former Chairman of Recon Instruments. After a successful exit to Intel in 2015, Fraser co-founded Rhino to support entrepreneurs underserved in Western Canada.",
     photo: fraserPhoto,
-    portfolio: ["Article", "Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
+    linkedin: "https://www.linkedin.com/in/fraser-h-b9a65b1b7/"
   },
   {
     name: "Jay Rhind",
     role: "Investor",
-    bio: "Co-founded Rhino in 2015. Intensely focused on finding companies not well served by the traditional venture model. Former Adjunct Professor at UBC.",
     photo: jayPhoto,
-    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow", "Klue", "MARZ", "Peerboard", "Quinn AI", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
+    linkedin: "https://www.linkedin.com/in/jayrhind/"
   },
   {
     name: "Mitch Richardson",
     role: "Investor",
-    bio: "Deeply driven to support founders in reaching ambitious goals. Previously spent five years with a Canadian financial services company across North America and Asia.",
     photo: mitchPhoto,
-    portfolio: ["Elective", "MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"]
+    linkedin: "https://www.linkedin.com/in/mitchell-j-richardson/"
   },
   {
     name: "Nicholas Hyldelund",
     role: "Investor",
-    bio: "Originally from Denmark, passionate about technologies with global impact. Responsible for deal sourcing, due diligence, and supporting portfolio companies.",
     photo: nicholasPhoto,
-    portfolio: ["Curatio", "Ontopical", "Peerboard", "Showbie"]
+    linkedin: "https://www.linkedin.com/in/nicholas-hyldelund/"
   },
   {
     name: "Candace Hobin",
     role: "Operations",
-    bio: "Responsible for organizing events, LP communications, marketing, and fund management. Background in traditional finance and client relations.",
-    photo: candacePhoto
+    photo: candacePhoto,
+    linkedin: "https://www.linkedin.com/in/candacehobin/"
   }
 ];
 
-const TeamMemberCard: FC<TeamMember> = ({ name, role, bio, photo, portfolio }) => (
-  <div className="group p-8 border border-border bg-card hover:shadow-md transition-all duration-300 flex flex-col">
-    <div className="w-48 h-48 mb-6 overflow-hidden border-2 border-border group-hover:border-primary transition-colors">
-      <img 
-        src={photo} 
-        alt={name} 
-        className="w-full h-full object-cover"
-        style={{ imageRendering: 'auto' }}
-      />
-    </div>
-    <h4 className="text-lg font-black uppercase tracking-tight mb-1 text-foreground group-hover:text-primary transition-colors">{name}</h4>
-    <p className="text-[10px] font-bold uppercase tracking-ultra text-primary mb-4">{role}</p>
-    <p className="text-xs text-muted-foreground leading-relaxed flex-grow">{bio}</p>
-    {portfolio && portfolio.length > 0 && (
-      <div className="mt-4 pt-4 border-t border-border">
-        <p className="text-[9px] font-bold uppercase tracking-ultra text-muted-foreground mb-2">Portfolio</p>
-        <p className="text-[11px] text-foreground">{portfolio.join(" · ")}</p>
+const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin }) => (
+  <div className="relative group overflow-hidden aspect-[3/4]">
+    <img 
+      src={photo} 
+      alt={name} 
+      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+    <div className="absolute bottom-0 left-0 right-0 p-4">
+      <div className="flex justify-between items-end">
+        <div>
+          <h4 className="text-base font-black uppercase tracking-tight text-white">{name}</h4>
+          <p className="text-xs font-medium uppercase tracking-wider text-white/80">{role}</p>
+        </div>
+        <a 
+          href={linkedin} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-white/80 hover:text-primary transition-colors"
+          aria-label={`${name}'s LinkedIn profile`}
+        >
+          <Linkedin size={20} />
+        </a>
       </div>
-    )}
+    </div>
   </div>
 );
 
