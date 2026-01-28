@@ -49,7 +49,7 @@ const ContactSection: FC = () => {
           >
             hello@rhinovc.com
           </a>
-          <p className="text-sm font-medium text-muted-foreground mt-4">
+          <p className="text-sm font-medium text-foreground/80 mt-4 drop-shadow-sm">
             Investing out of Vancouver in exceptional companies across Canada
           </p>
         </div>
