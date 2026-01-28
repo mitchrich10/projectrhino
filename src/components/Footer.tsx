@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Logo } from "./Navigation";
 import foundersHike from "@/assets/founders-hike.jpg";
 import foundersPickleball from "@/assets/founders-pickleball.jpg";
-import foundersOntopical from "@/assets/founders-ontopical.jpg";
+import exitPhoto4 from "@/assets/exit-portfolio-4.jpg";
 import rhinoIconBlack from "@/assets/rhino-icon-black.png";
 
 const ContactSection: FC = () => {
@@ -27,9 +27,9 @@ const ContactSection: FC = () => {
         </div>
         <div className="relative overflow-hidden">
           <img 
-            src={foundersOntopical} 
-            alt="Ontopical and Rhino team" 
-            className="w-full h-full object-cover opacity-40"
+            src={exitPhoto4} 
+            alt="Exit celebration" 
+            className="w-full h-full object-cover object-[30%_40%] opacity-40"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-background/40 to-background/80" />

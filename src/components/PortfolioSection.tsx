@@ -11,7 +11,7 @@ import activePhoto4 from "@/assets/active-portfolio-4.jpg";
 import exitPhoto1 from "@/assets/exit-portfolio-1.jpg";
 import exitPhoto2 from "@/assets/exit-portfolio-2.png";
 import exitPhoto3 from "@/assets/exit-portfolio-3.jpg";
-import exitPhoto4 from "@/assets/exit-portfolio-4.jpg";
+import foundersOntopical from "@/assets/founders-ontopical.jpg";
 
 // Logo imports
 import logoMarz from "@/assets/logo-marz.png";
@@ -283,7 +283,7 @@ const PortfolioSection: FC = () => {
                 <img src={exitPhoto2} alt="" className="w-full h-full object-cover opacity-40" />
               </div>
               <div className="relative overflow-hidden">
-                <img src={exitPhoto4} alt="" className="w-full h-full object-cover object-[30%_40%] opacity-40" />
+                <img src={foundersOntopical} alt="" className="w-full h-full object-cover opacity-40" />
               </div>
               {/* Gradient overlay for text readability */}
               <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-background/10 to-background/40" />
