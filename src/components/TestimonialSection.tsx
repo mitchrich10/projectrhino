@@ -38,7 +38,7 @@ const TestimonialSection: FC = () => {
 
           {/* Featured Company Highlights */}
           <div className="mt-16">
-            <p className="text-sm uppercase tracking-widest text-muted-foreground text-center mb-10">
+            <p className="text-sm uppercase tracking-widest text-muted-foreground text-center mb-10 font-bold">
               A few of our investments
             </p>
             
