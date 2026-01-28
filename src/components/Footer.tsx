@@ -62,9 +62,7 @@ const Footer: FC = () => {
   return (
     <footer className="py-12 px-6 bg-background border-t border-border/50">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-        <div className="opacity-40 hover:opacity-100 transition-opacity">
-          <Logo dark />
-        </div>
+        <Logo dark />
         <p className="text-[10px] text-text-tertiary font-black uppercase tracking-widest">
           © 2025 Rhino GP Inc.
         </p>
