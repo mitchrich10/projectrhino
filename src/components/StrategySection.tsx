@@ -104,7 +104,7 @@ const StrategySection: FC = () => {
 
           {/* Producer Examples Label */}
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6">
-            Producer Examples
+            Examples
           </p>
 
           {/* Three Column Grid */}
