@@ -59,7 +59,7 @@ const TestimonialSection: FC = () => {
                     <img 
                       src={company.logo} 
                       alt={company.name} 
-                      className="max-h-10 w-auto object-contain mix-blend-multiply"
+                      className="max-h-12 w-auto object-contain mix-blend-multiply"
                     />
                   </a>
                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
