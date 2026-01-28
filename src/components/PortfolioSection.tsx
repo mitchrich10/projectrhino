@@ -225,16 +225,16 @@ const PortfolioSection: FC = () => {
             {/* Photo Background Grid - 4 columns */}
             <div className="absolute inset-0 z-0 grid grid-cols-4">
               <div className="relative overflow-hidden">
-                <img src={activePhoto2} alt="" className="w-full h-full object-cover object-top opacity-55" />
+                <img src={activePhoto2} alt="" className="w-full h-full object-cover object-top opacity-45" />
               </div>
             <div className="relative overflow-hidden">
-              <img src={activePhoto1} alt="" className="w-full h-full object-cover opacity-55" />
+              <img src={activePhoto1} alt="" className="w-full h-full object-cover opacity-45" />
             </div>
             <div className="relative overflow-hidden">
-              <img src={activePhoto4} alt="" className="w-full h-full object-cover object-bottom opacity-55" />
+              <img src={activePhoto4} alt="" className="w-full h-full object-cover object-bottom opacity-45" />
             </div>
             <div className="relative overflow-hidden">
-              <img src={activePhoto3} alt="" className="w-full h-full object-cover opacity-55" />
+              <img src={activePhoto3} alt="" className="w-full h-full object-cover opacity-45" />
             </div>
               {/* Gradient overlay for text readability */}
               {/* <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-background/10 to-background/40" /> */}
@@ -274,16 +274,16 @@ const PortfolioSection: FC = () => {
             {/* Exit Photo Background Grid - 4 columns */}
             <div className="absolute inset-0 z-0 grid grid-cols-4">
               <div className="relative overflow-hidden">
-                <img src={exitPhoto1} alt="" className="w-full h-full object-cover object-top opacity-55" />
+                <img src={exitPhoto1} alt="" className="w-full h-full object-cover object-top opacity-45" />
               </div>
               <div className="relative overflow-hidden">
-                <img src={exitPhoto3} alt="" className="w-full h-full object-cover opacity-55" />
+                <img src={exitPhoto3} alt="" className="w-full h-full object-cover opacity-45" />
               </div>
               <div className="relative overflow-hidden">
-                <img src={exitPhoto2} alt="" className="w-full h-full object-cover opacity-55" />
+                <img src={exitPhoto2} alt="" className="w-full h-full object-cover opacity-45" />
               </div>
               <div className="relative overflow-hidden">
-                <img src={foundersOntopical} alt="" className="w-full h-full object-cover opacity-55" />
+                <img src={foundersOntopical} alt="" className="w-full h-full object-cover opacity-45" />
               </div>
               {/* Gradient overlay for text readability */}
               {/* <div className="absolute inset-0 bg-gradient-to-b from-secondary/20 via-background/10 to-background/40" /> */}
