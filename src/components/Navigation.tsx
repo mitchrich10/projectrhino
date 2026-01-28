@@ -54,7 +54,8 @@ interface NavigationProps {
 const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const isDark = variant === "light" || scrolled;
+  const isLightVariant = variant === "light";
+  const isDark = isLightVariant || scrolled;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -67,7 +68,9 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
       className={cn(
         "fixed w-full z-50 transition-all duration-300",
         scrolled 
-          ? "bg-background/95 backdrop-blur-md py-4 border-b border-border" 
+          ? isLightVariant 
+            ? "bg-background/95 backdrop-blur-md py-4 border-b border-border"
+            : "bg-black/95 backdrop-blur-md py-4 border-b border-white/10"
           : "bg-transparent py-8"
       )}
     >
