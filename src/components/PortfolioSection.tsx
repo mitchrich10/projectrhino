@@ -277,13 +277,13 @@ const PortfolioSection: FC = () => {
                 <img src={exitPhoto1} alt="" className="w-full h-full object-cover object-top opacity-40" />
               </div>
               <div className="relative overflow-hidden">
-                <img src={exitPhoto2} alt="" className="w-full h-full object-cover opacity-40" />
-              </div>
-              <div className="relative overflow-hidden">
                 <img src={exitPhoto3} alt="" className="w-full h-full object-cover opacity-40" />
               </div>
               <div className="relative overflow-hidden">
-                <img src={exitPhoto4} alt="" className="w-full h-full object-cover object-top opacity-40" />
+                <img src={exitPhoto2} alt="" className="w-full h-full object-cover opacity-40" />
+              </div>
+              <div className="relative overflow-hidden">
+                <img src={exitPhoto4} alt="" className="w-full h-full object-cover object-left opacity-40" />
               </div>
               {/* Gradient overlay for text readability */}
               <div className="absolute inset-0 bg-gradient-to-b from-secondary/40 via-background/20 to-background/60" />
