@@ -245,7 +245,7 @@ const PortfolioSection: FC = () => {
               <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
                 Active Portfolio
               </h3>
-              <p className="text-lg md:text-xl text-muted-foreground mt-3 italic"><span className="font-bold">The Crash</span> (noun): a herd of rhinos — moving with force.</p>
+              <p className="text-lg md:text-xl text-foreground/80 mt-3 italic drop-shadow-sm"><span className="font-bold">The Crash</span> (noun): a herd of rhinos — moving with force.</p>
             </div>
           </div>
 
@@ -294,7 +294,7 @@ const PortfolioSection: FC = () => {
               <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-foreground">
                 Exits
               </h3>
-              <p className="text-lg md:text-xl text-muted-foreground mt-3 italic">The Golden Crash</p>
+              <p className="text-lg md:text-xl text-foreground/80 mt-3 italic drop-shadow-sm">The Golden Crash</p>
             </div>
           </div>
 
