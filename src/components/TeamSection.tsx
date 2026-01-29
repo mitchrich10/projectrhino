@@ -4,7 +4,7 @@ import fraserPhoto from "@/assets/team-fraser.png";
 import jayPhoto from "@/assets/team-jay.png";
 import candacePhoto from "@/assets/team-candace.png";
 import nicholasPhoto from "@/assets/team-nicholas.png";
-import mitchPhoto from "@/assets/team-mitch-cropped.png";
+import mitchPhoto from "@/assets/team-mitch-tight.png";
 
 interface TeamMember {
   name: string;
@@ -13,6 +13,8 @@ interface TeamMember {
   linkedin: string;
   portfolio?: string[];
   objectPosition?: string;
+  /** Optional transform to force a tighter crop inside the fixed 3:4 card */
+  photoTransform?: string;
 }
 
 const team: TeamMember[] = [
@@ -53,17 +55,23 @@ const team: TeamMember[] = [
   }
 ];
 
-const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio, objectPosition }) => {
+const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio, objectPosition, photoTransform }) => {
+  const effectivePhotoTransform =
+    photoTransform ?? (name === "Mitch Richardson" ? "translateY(-10%) scale(1.18)" : undefined);
+  const photoWrapperStyle = effectivePhotoTransform ? { transform: effectivePhotoTransform } : undefined;
+
   // Static card for members without portfolio (Candace)
   if (!portfolio) {
     return (
       <div className="relative group overflow-hidden aspect-[3/4]">
-        <img 
-          src={photo} 
-          alt={name} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          style={objectPosition ? { objectPosition } : undefined}
-        />
+        <div className="w-full h-full" style={photoWrapperStyle}>
+          <img 
+            src={photo} 
+            alt={name} 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            style={objectPosition ? { objectPosition } : undefined}
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <div className="flex justify-between items-end">
@@ -92,12 +100,14 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
       <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
         {/* Front Face */}
         <div className="absolute inset-0 [backface-visibility:hidden] overflow-hidden">
-          <img 
-            src={photo} 
-            alt={name} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            style={objectPosition ? { objectPosition } : undefined}
-          />
+          <div className="w-full h-full" style={photoWrapperStyle}>
+            <img 
+              src={photo} 
+              alt={name} 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              style={objectPosition ? { objectPosition } : undefined}
+            />
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <div>
