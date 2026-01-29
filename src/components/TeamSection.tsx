@@ -104,7 +104,7 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
         </div>
 
         {/* Back Face */}
-        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4 flex flex-col">
+        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4">
           <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-2">Portfolio</h4>
           <div className="grid grid-cols-2 gap-x-2 gap-y-1 content-start">
             {portfolio.map((company, index) => (
@@ -115,7 +115,7 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
             href={linkedin} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="self-end text-white/80 hover:text-white transition-colors mt-2"
+            className="absolute bottom-4 right-4 text-white/80 hover:text-white transition-colors"
             aria-label={`${name}'s LinkedIn profile`}
           >
             <Linkedin size={16} />
