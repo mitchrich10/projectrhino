@@ -4,7 +4,7 @@ import fraserPhoto from "@/assets/team-fraser.png";
 import jayPhoto from "@/assets/team-jay.png";
 import candacePhoto from "@/assets/team-candace.png";
 import nicholasPhoto from "@/assets/team-nicholas.png";
-import mitchPhoto from "@/assets/team-mitch-tight.png";
+import mitchPhoto from "@/assets/team-mitch.png";
 
 interface TeamMember {
   name: string;
