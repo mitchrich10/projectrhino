@@ -1,93 +1,70 @@
 
 
-# Team Section: Card Flip Animation (Refined)
+# Move LinkedIn Icon to Back of Flipping Cards
 
-## Overview
-Remove the team group photo and add an interactive card flip animation. The front shows the headshot with name/role/LinkedIn, and the back reveals portfolio companies in a 2-column layout. Candace's card will not flip since she's in Operations.
+## The Problem
+The LinkedIn icon on the front face of team member cards becomes unclickable because hovering triggers the card flip animation before the click can register.
 
-## Design Details
+## Solution
+Move the LinkedIn icon to the back face of the card, positioning it in the bottom-right corner. This allows users to:
+1. Hover to flip the card
+2. See the portfolio companies
+3. Click LinkedIn while viewing the portfolio
 
-### Card Behavior
-- **Fraser, Jay, Mitch, Nicholas**: Flip on hover to reveal portfolio
-- **Candace**: No flip animation (Operations role, no portfolio)
+## Design
 
-### Back Face Design
-- **Background**: Primary blue (`bg-primary`)
-- **Text**: White for contrast against the blue
-- **Layout**: 2-column grid for company names
-- **Header**: "Portfolio" in uppercase at top
-- **No scrolling**: All companies fit within the card
-
-### Visual Layout
-
+### Back Face Layout (Updated)
 ```text
-FRONT (default)                    BACK (on hover)
-+---------------------------+      +---------------------------+
-|                           |      |     PORTFOLIO             |
-|       [HEADSHOT]          |      |                           |
-|                           |      |  Company 1  |  Company 2  |
-|                           |      |  Company 3  |  Company 4  |
-+---------------------------+      |  Company 5  |  Company 6  |
-| Name                  [in]|      |  ...        |  ...        |
-| Role                      |      |                           |
-+---------------------------+      +---------------------------+
++---------------------------+
+|     PORTFOLIO             |
+|                           |
+|  Company 1  |  Company 2  |
+|  Company 3  |  Company 4  |
+|  Company 5  |  Company 6  |
+|  ...        |  ...        |
+|                       [in]|
++---------------------------+
 ```
 
 ## Implementation Details
 
 ### TeamSection.tsx Changes
 
-1. **Remove team group photo** - Delete import and JSX for `team-group.png`
+1. **Remove LinkedIn from front face** (lines 104-113)
+   - Delete the LinkedIn anchor tag from the front face
+   - Simplify the bottom overlay to just show name and role
 
-2. **Update TeamMember interface** - Add optional `portfolio` field back
+2. **Add LinkedIn to back face** (around line 119-126)
+   - Position the icon at the bottom-right of the back face
+   - Use the same styling: white icon with primary hover color
+   - Keep the portfolio grid above it
 
-3. **Add portfolio data** (alphabetically sorted per memory):
-   - Fraser Hall: Article, Aspect Biosystems, Curatio, FansUnite, Fatigue Science, Klue, Pressboard, ShopVision, Sokanu, ThinkCX, Thinkific, Tutela
-   - Jay Rhind: Arlo, Beanworks, Edvisor, Elective, FISPAN, Flint, Grow Technologies, Klue, MARZ, Peerboard, Quinn AI, Showbie, Thinkific, Tutela, Twig, Upper Village
-   - Mitch Richardson: Elective, MyFO, NetNow, Stem Health, Super Advisor, Twig Fertility
-   - Nicholas Hyldelund: Curatio, Ontopical, Peerboard, Showbie
-   - Candace Hobin: No portfolio (Operations)
-
-4. **Redesign TeamMemberCard component**:
-   - Check if `portfolio` exists to determine if card should flip
-   - If no portfolio (Candace): render current static design
-   - If portfolio exists: wrap in 3D flip container
-
-5. **3D Flip Structure** (for cards with portfolio):
+3. **Updated back face structure**:
    ```tsx
-   <div className="[perspective:1000px] aspect-[3/4]">
-     <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-       {/* Front Face */}
-       <div className="absolute inset-0 [backface-visibility:hidden]">
-         {/* Current headshot design */}
-       </div>
-       {/* Back Face */}
-       <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-6 flex flex-col">
-         <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">Portfolio</h4>
-         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-           {portfolio.map(company => (
-             <span className="text-xs text-white">{company}</span>
-           ))}
-         </div>
-       </div>
+   <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4 flex flex-col">
+     <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-2">Portfolio</h4>
+     <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 flex-1">
+       {portfolio.map((company, index) => (
+         <span key={index} className="text-[10px] leading-tight text-white">{company}</span>
+       ))}
      </div>
+     <a 
+       href={linkedin} 
+       target="_blank" 
+       rel="noopener noreferrer"
+       className="self-end text-white/80 hover:text-white transition-colors mt-2"
+       aria-label={`${name}'s LinkedIn profile`}
+     >
+       <Linkedin size={16} />
+     </a>
    </div>
    ```
 
-6. **Candace's static card** (no flip):
-   ```tsx
-   <div className="relative overflow-hidden aspect-[3/4]">
-     {/* Current headshot with name/role/LinkedIn overlay */}
-   </div>
-   ```
-
-### Styling Notes
-- Back face uses `bg-primary` (the brand blue)
-- White text (`text-white`) for all content on back
-- 2-column grid with small gap for readability
-- Company names in small text (`text-xs`) to fit all entries
-- Consistent padding (`p-6`) for visual balance
+## Notes
+- Candace's static card keeps LinkedIn on the front (no flip animation)
+- Icon size reduced slightly to `16` to fit the compact back layout
+- Icon uses `self-end` to align to the right within the flex column
 
 ## Files to Modify
-- `src/components/TeamSection.tsx` - Add flip animation, portfolio data, conditional rendering
+- `src/components/TeamSection.tsx` - Move LinkedIn from front to back face
 
