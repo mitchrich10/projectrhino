@@ -116,11 +116,11 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
         </div>
 
         {/* Back Face */}
-        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-6 flex flex-col">
-          <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">Portfolio</h4>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-2 flex-1">
+        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4 flex flex-col">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-2">Portfolio</h4>
+          <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 flex-1">
             {portfolio.map((company, index) => (
-              <span key={index} className="text-xs text-white">{company}</span>
+              <span key={index} className="text-[10px] leading-tight text-white">{company}</span>
             ))}
           </div>
         </div>
@@ -139,7 +139,7 @@ const TeamSection: FC = () => {
           </h3>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {team.map((member, i) => (
             <TeamMemberCard key={i} {...member} />
           ))}
