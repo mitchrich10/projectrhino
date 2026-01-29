@@ -96,21 +96,9 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4">
-            <div className="flex justify-between items-end">
-              <div>
-                <h4 className="text-base font-black uppercase tracking-tight text-white">{name}</h4>
-                <p className="text-xs font-medium uppercase tracking-wider text-white/80">{role}</p>
-              </div>
-              <a 
-                href={linkedin} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-white/80 hover:text-primary transition-colors"
-                aria-label={`${name}'s LinkedIn profile`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Linkedin size={20} />
-              </a>
+            <div>
+              <h4 className="text-base font-black uppercase tracking-tight text-white">{name}</h4>
+              <p className="text-xs font-medium uppercase tracking-wider text-white/80">{role}</p>
             </div>
           </div>
         </div>
@@ -123,6 +111,15 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
               <span key={index} className="text-[10px] leading-tight text-white">{company}</span>
             ))}
           </div>
+          <a 
+            href={linkedin} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="self-end text-white/80 hover:text-white transition-colors mt-2"
+            aria-label={`${name}'s LinkedIn profile`}
+          >
+            <Linkedin size={16} />
+          </a>
         </div>
       </div>
     </div>
