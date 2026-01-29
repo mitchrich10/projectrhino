@@ -93,11 +93,11 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ name, description, acquiredBy, 
         contentArea
       )}
       <div className="text-center mt-auto pt-3 border-t border-border/50 group-hover:border-sky-400/50 transition-colors">
-        <p className="text-[11px] text-muted-foreground leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           {description}
         </p>
         {acquiredBy && (
-          <p className="text-[9px] font-bold uppercase tracking-wider text-primary mt-2">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-primary mt-2">
             {acquiredBy.startsWith("IPO") ? acquiredBy : `Acquired by ${acquiredBy}`}
           </p>
         )}
