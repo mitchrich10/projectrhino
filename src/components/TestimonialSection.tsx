@@ -13,8 +13,31 @@ const TestimonialSection: FC = () => {
         <div className="mb-20">
           <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-8 whitespace-nowrap">We partner with ambitious builders to change trajectories.</p>
           
+          <div className="flex justify-center items-start gap-8 md:gap-16 mb-16">
+            {/* Companies */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">35</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Companies</p>
+            </div>
+            
+            {/* Portfolio Annual Revenue */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">$700M+</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Annual Revenue</p>
+            </div>
+            
+            {/* Exits */}
+            <div className="text-center group">
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">12</p>
+              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
+            </div>
+          </div>
+
           {/* Featured Company Highlights */}
-          <div className="mb-16">
+          <div>
             <p className="text-sm uppercase tracking-widest text-muted-foreground text-center mb-10 font-bold">
               A few of our investments
             </p>
@@ -48,29 +71,6 @@ const TestimonialSection: FC = () => {
                   <div className="h-1 w-8 bg-primary/30 mx-auto mt-3 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className="flex justify-center items-start gap-8 md:gap-16">
-            {/* Companies */}
-            <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">35</p>
-              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Companies</p>
-            </div>
-            
-            {/* Portfolio Annual Revenue */}
-            <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">$700M+</p>
-              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Annual Revenue</p>
-            </div>
-            
-            {/* Exits */}
-            <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">12</p>
-              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
             </div>
           </div>
         </div>
