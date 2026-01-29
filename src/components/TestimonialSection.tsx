@@ -30,7 +30,7 @@ const TestimonialSection: FC = () => {
             
             {/* Exits */}
             <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">11</p>
+              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">12</p>
               <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
             </div>
