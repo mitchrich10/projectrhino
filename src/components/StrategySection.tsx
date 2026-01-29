@@ -11,7 +11,7 @@ const strategyItems = [
   },
   { 
     title: "FLEXIBLE INVESTMENTS", 
-    desc: "$2M-$10M first cheques. Backing founders from inception through growth—organic expansion or acquisition-led strategies.", 
+    desc: "$2M - $20M first cheques. Backing founders from inception through growth—organic expansion or acquisition-led strategies.", 
     icon: <DollarSign className="w-5 h-5" /> 
   },
   { 
