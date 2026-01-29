@@ -7,10 +7,10 @@ import mapleLeaf from "@/assets/maple-leaf.png";
 
 const rotatingWords = [
   "Producer",
-  "Wealth Management", 
-  "Health Services",
-  "Insurance Broker",
-  "Mortgage Broker",
+  "Wealth",
+  "Health",
+  "Insurance",
+  "Mortgage",
 ];
 
 const HeroSection: FC = () => {
