@@ -44,7 +44,7 @@ const team: TeamMember[] = [
     photo: mitchPhoto,
     linkedin: "https://www.linkedin.com/in/mitchell-j-richardson/",
     portfolio: ["Elective", "MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"],
-    objectPosition: "center 15%"
+    objectPosition: "center top"
   },
   {
     name: "Nicholas Hyldelund",
