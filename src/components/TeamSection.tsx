@@ -14,15 +14,6 @@ interface TeamMember {
   portfolio?: string[];
 }
 
-interface TeamMember {
-  name: string;
-  role: string;
-  photo: string;
-  linkedin: string;
-  portfolio?: string[];
-  objectPosition?: string;
-}
-
 const team: TeamMember[] = [
   {
     name: "Fraser Hall",
@@ -43,8 +34,7 @@ const team: TeamMember[] = [
     role: "Investor",
     photo: mitchPhoto,
     linkedin: "https://www.linkedin.com/in/mitchell-j-richardson/",
-    portfolio: ["Elective", "MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"],
-    objectPosition: "center 15%"
+    portfolio: ["Elective", "MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"]
   },
   {
     name: "Nicholas Hyldelund",
@@ -61,7 +51,7 @@ const team: TeamMember[] = [
   }
 ];
 
-const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio, objectPosition }) => {
+const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio }) => {
   // Static card for members without portfolio (Candace)
   if (!portfolio) {
     return (
@@ -70,7 +60,6 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
           src={photo} 
           alt={name} 
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          style={objectPosition ? { objectPosition } : undefined}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -104,7 +93,6 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
             src={photo} 
             alt={name} 
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            style={objectPosition ? { objectPosition } : undefined}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4">
