@@ -106,7 +106,7 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
         {/* Back Face */}
         <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4 flex flex-col">
           <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-2">Portfolio</h4>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 flex-1">
+          <div className="grid grid-cols-2 gap-x-2 gap-y-1 content-start">
             {portfolio.map((company, index) => (
               <span key={index} className="text-[10px] leading-tight text-white">{company}</span>
             ))}
