@@ -18,16 +18,18 @@ const HeroSection: FC = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const duration = currentIndex === 0 ? 6000 : 3000; // Producer stays twice as long
+    
+    const timeout = setTimeout(() => {
       setIsAnimating(true);
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % rotatingWords.length);
         setIsAnimating(false);
       }, 300);
-    }, 3000);
+    }, duration);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearTimeout(timeout);
+  }, [currentIndex]);
 
   return <section className="relative min-h-screen flex items-center px-6 overflow-hidden bg-black">
       {/* Background Image - Rhino Breaking Through */}
