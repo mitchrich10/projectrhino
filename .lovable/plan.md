@@ -1,64 +1,93 @@
 
 
-# Team Section Redesign
+# Team Section: Card Flip Animation (Refined)
 
 ## Overview
-Transform the team section from detailed cards to a clean, image-focused layout with headshots and bottom-aligned overlaid names/titles with LinkedIn profile links.
+Remove the team group photo and add an interactive card flip animation. The front shows the headshot with name/role/LinkedIn, and the back reveals portfolio companies in a 2-column layout. Candace's card will not flip since she's in Operations.
 
-## Design Approach
+## Design Details
+
+### Card Behavior
+- **Fraser, Jay, Mitch, Nicholas**: Flip on hover to reveal portfolio
+- **Candace**: No flip animation (Operations role, no portfolio)
+
+### Back Face Design
+- **Background**: Primary blue (`bg-primary`)
+- **Text**: White for contrast against the blue
+- **Layout**: 2-column grid for company names
+- **Header**: "Portfolio" in uppercase at top
+- **No scrolling**: All companies fit within the card
 
 ### Visual Layout
-```text
-+---------------------------+
-|                           |
-|                           |
-|       [HEADSHOT]          |
-|                           |
-|                           |
-+---------------------------+
-| Name                  [in]|
-| Role                      |
-+---------------------------+
-         ↑
-   Bottom-aligned with 
-   ~16px padding from edge
-```
 
-- Name, role, and LinkedIn icon aligned to bottom edge with consistent padding
-- Subtle gradient overlay from transparent to dark at the bottom for text readability
-- LinkedIn icon positioned at bottom-right corner
-- Hover effect: slight image zoom and LinkedIn icon highlight
+```text
+FRONT (default)                    BACK (on hover)
++---------------------------+      +---------------------------+
+|                           |      |     PORTFOLIO             |
+|       [HEADSHOT]          |      |                           |
+|                           |      |  Company 1  |  Company 2  |
+|                           |      |  Company 3  |  Company 4  |
++---------------------------+      |  Company 5  |  Company 6  |
+| Name                  [in]|      |  ...        |  ...        |
+| Role                      |      |                           |
++---------------------------+      +---------------------------+
+```
 
 ## Implementation Details
 
 ### TeamSection.tsx Changes
 
-1. **Simplify team data structure**:
-   - Remove `bio` and `portfolio` fields
-   - Add `linkedin` field with provided URLs
+1. **Remove team group photo** - Delete import and JSX for `team-group.png`
 
-2. **LinkedIn URLs**:
-   - Fraser Hall: `https://www.linkedin.com/in/fraser-h-b9a65b1b7/`
-   - Jay Rhind: `https://www.linkedin.com/in/jayrhind/`
-   - Mitch Richardson: `https://www.linkedin.com/in/mitchell-j-richardson/`
-   - Nicholas Hyldelund: `https://www.linkedin.com/in/nicholas-hyldelund/`
-   - Candace Hobin: `https://www.linkedin.com/in/candacehobin/`
+2. **Update TeamMember interface** - Add optional `portfolio` field back
 
-3. **Redesign TeamMemberCard component**:
-   - Container: `relative`, `overflow-hidden`, `group` for hover states
-   - Image: `aspect-[3/4]` ratio for portrait orientation, `object-cover`
-   - Gradient overlay: `bg-gradient-to-t from-black/70 via-black/20 to-transparent` covering bottom third
-   - Text container: Absolutely positioned at `bottom-0`, `left-0`, `right-0` with `p-4` padding
-   - Name: White text, bold, uppercase tracking
-   - Role: Smaller white text with slight opacity
-   - LinkedIn icon: Positioned bottom-right, white, with hover highlight effect
-   - Hover: Subtle image scale (`group-hover:scale-105`) with transition
+3. **Add portfolio data** (alphabetically sorted per memory):
+   - Fraser Hall: Article, Aspect Biosystems, Curatio, FansUnite, Fatigue Science, Klue, Pressboard, ShopVision, Sokanu, ThinkCX, Thinkific, Tutela
+   - Jay Rhind: Arlo, Beanworks, Edvisor, Elective, FISPAN, Flint, Grow Technologies, Klue, MARZ, Peerboard, Quinn AI, Showbie, Thinkific, Tutela, Twig, Upper Village
+   - Mitch Richardson: Elective, MyFO, NetNow, Stem Health, Super Advisor, Twig Fertility
+   - Nicholas Hyldelund: Curatio, Ontopical, Peerboard, Showbie
+   - Candace Hobin: No portfolio (Operations)
 
-4. **Keep existing elements**:
-   - Team group photo at top
-   - Section header "Meet The Team"
-   - 3-column responsive grid (5 members)
+4. **Redesign TeamMemberCard component**:
+   - Check if `portfolio` exists to determine if card should flip
+   - If no portfolio (Candace): render current static design
+   - If portfolio exists: wrap in 3D flip container
+
+5. **3D Flip Structure** (for cards with portfolio):
+   ```tsx
+   <div className="[perspective:1000px] aspect-[3/4]">
+     <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+       {/* Front Face */}
+       <div className="absolute inset-0 [backface-visibility:hidden]">
+         {/* Current headshot design */}
+       </div>
+       {/* Back Face */}
+       <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-6 flex flex-col">
+         <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">Portfolio</h4>
+         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+           {portfolio.map(company => (
+             <span className="text-xs text-white">{company}</span>
+           ))}
+         </div>
+       </div>
+     </div>
+   </div>
+   ```
+
+6. **Candace's static card** (no flip):
+   ```tsx
+   <div className="relative overflow-hidden aspect-[3/4]">
+     {/* Current headshot with name/role/LinkedIn overlay */}
+   </div>
+   ```
+
+### Styling Notes
+- Back face uses `bg-primary` (the brand blue)
+- White text (`text-white`) for all content on back
+- 2-column grid with small gap for readability
+- Company names in small text (`text-xs`) to fit all entries
+- Consistent padding (`p-6`) for visual balance
 
 ## Files to Modify
-- `src/components/TeamSection.tsx` - Complete redesign of the card component and data structure
+- `src/components/TeamSection.tsx` - Add flip animation, portfolio data, conditional rendering
 
