@@ -108,7 +108,7 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
           <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-2">Portfolio</h4>
           <div className="grid grid-cols-2 gap-x-2 gap-y-1 content-start">
             {portfolio.map((company, index) => (
-              <span key={index} className="text-[10px] leading-tight text-white">{company}</span>
+              <span key={index} className="text-[11px] leading-tight text-white">{company}</span>
             ))}
           </div>
           <a 
