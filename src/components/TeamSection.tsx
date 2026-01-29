@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { Linkedin } from "lucide-react";
-import teamGroup from "@/assets/team-group.png";
 import fraserPhoto from "@/assets/team-fraser.png";
 import jayPhoto from "@/assets/team-jay.png";
 import candacePhoto from "@/assets/team-candace.png";
@@ -12,6 +11,7 @@ interface TeamMember {
   role: string;
   photo: string;
   linkedin: string;
+  portfolio?: string[];
 }
 
 const team: TeamMember[] = [
@@ -19,25 +19,29 @@ const team: TeamMember[] = [
     name: "Fraser Hall",
     role: "Investor",
     photo: fraserPhoto,
-    linkedin: "https://www.linkedin.com/in/fraser-h-b9a65b1b7/"
+    linkedin: "https://www.linkedin.com/in/fraser-h-b9a65b1b7/",
+    portfolio: ["Article", "Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
   },
   {
     name: "Jay Rhind",
     role: "Investor",
     photo: jayPhoto,
-    linkedin: "https://www.linkedin.com/in/jayrhind/"
+    linkedin: "https://www.linkedin.com/in/jayrhind/",
+    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow Technologies", "Klue", "MARZ", "Peerboard", "Quinn AI", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
   },
   {
     name: "Mitch Richardson",
     role: "Investor",
     photo: mitchPhoto,
-    linkedin: "https://www.linkedin.com/in/mitchell-j-richardson/"
+    linkedin: "https://www.linkedin.com/in/mitchell-j-richardson/",
+    portfolio: ["Elective", "MyFO", "NetNow", "Stem Health", "Super Advisor", "Twig Fertility"]
   },
   {
     name: "Nicholas Hyldelund",
     role: "Investor",
     photo: nicholasPhoto,
-    linkedin: "https://www.linkedin.com/in/nicholas-hyldelund/"
+    linkedin: "https://www.linkedin.com/in/nicholas-hyldelund/",
+    portfolio: ["Curatio", "Ontopical", "Peerboard", "Showbie"]
   },
   {
     name: "Candace Hobin",
@@ -47,53 +51,92 @@ const team: TeamMember[] = [
   }
 ];
 
-const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin }) => (
-  <div className="relative group overflow-hidden aspect-[3/4]">
-    <img 
-      src={photo} 
-      alt={name} 
-      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-    />
-    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-    <div className="absolute bottom-0 left-0 right-0 p-4">
-      <div className="flex justify-between items-end">
-        <div>
-          <h4 className="text-base font-black uppercase tracking-tight text-white">{name}</h4>
-          <p className="text-xs font-medium uppercase tracking-wider text-white/80">{role}</p>
+const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio }) => {
+  // Static card for members without portfolio (Candace)
+  if (!portfolio) {
+    return (
+      <div className="relative group overflow-hidden aspect-[3/4]">
+        <img 
+          src={photo} 
+          alt={name} 
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <div className="flex justify-between items-end">
+            <div>
+              <h4 className="text-base font-black uppercase tracking-tight text-white">{name}</h4>
+              <p className="text-xs font-medium uppercase tracking-wider text-white/80">{role}</p>
+            </div>
+            <a 
+              href={linkedin} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-white/80 hover:text-primary transition-colors"
+              aria-label={`${name}'s LinkedIn profile`}
+            >
+              <Linkedin size={20} />
+            </a>
+          </div>
         </div>
-        <a 
-          href={linkedin} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="text-white/80 hover:text-primary transition-colors"
-          aria-label={`${name}'s LinkedIn profile`}
-        >
-          <Linkedin size={20} />
-        </a>
+      </div>
+    );
+  }
+
+  // Flipping card for members with portfolio
+  return (
+    <div className="[perspective:1000px] aspect-[3/4] group">
+      <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+        {/* Front Face */}
+        <div className="absolute inset-0 [backface-visibility:hidden] overflow-hidden">
+          <img 
+            src={photo} 
+            alt={name} 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <div className="flex justify-between items-end">
+              <div>
+                <h4 className="text-base font-black uppercase tracking-tight text-white">{name}</h4>
+                <p className="text-xs font-medium uppercase tracking-wider text-white/80">{role}</p>
+              </div>
+              <a 
+                href={linkedin} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-white/80 hover:text-primary transition-colors"
+                aria-label={`${name}'s LinkedIn profile`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Linkedin size={20} />
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Back Face */}
+        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-6 flex flex-col">
+          <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">Portfolio</h4>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 flex-1">
+            {portfolio.map((company, index) => (
+              <span key={index} className="text-xs text-white">{company}</span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const TeamSection: FC = () => {
   return (
     <section id="team" className="py-32 px-6 bg-gradient-to-b from-background via-secondary to-secondary">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8 text-center">
+        <div className="mb-12 text-center">
           <h3 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-foreground">
             Meet <span className="text-primary">The Team</span>
           </h3>
-        </div>
-
-        {/* Team photo */}
-        <div className="mb-12">
-          <div className="overflow-hidden rounded-sm">
-            <img 
-              src={teamGroup} 
-              alt="The Rhino team" 
-              className="w-full h-auto object-contain"
-            />
-          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
