@@ -57,7 +57,7 @@ const team: TeamMember[] = [
 
 const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio, objectPosition, photoTransform }) => {
   const effectivePhotoTransform =
-    photoTransform ?? (name === "Mitch Richardson" ? "translateY(-10%) scale(1.18)" : undefined);
+    photoTransform ?? (name === "Mitch Richardson" ? "translateY(-8%)" : undefined);
   const photoWrapperStyle = effectivePhotoTransform ? { transform: effectivePhotoTransform } : undefined;
 
   // Static card for members without portfolio (Candace)
