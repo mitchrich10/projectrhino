@@ -50,23 +50,23 @@ const TestimonialSection: FC = () => {
         <div className="mb-20">
           <h3 className="text-lg md:text-xl font-bold text-foreground text-center mb-8">A proven track record across durable businesses</h3>
           
-          <div className="grid grid-cols-3 gap-4 md:gap-6 max-w-3xl mx-auto">
+          <div className="grid grid-cols-3 gap-2 md:gap-6 max-w-3xl mx-auto">
             {/* Companies */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
-              <p className="text-4xl md:text-5xl font-black text-primary leading-none mb-2">35</p>
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Companies</p>
+            <div className="bg-white rounded-xl p-3 md:p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
+              <p className="text-2xl md:text-5xl font-black text-primary leading-none mb-1 md:mb-2">35</p>
+              <p className="text-[8px] md:text-xs uppercase tracking-widest text-muted-foreground">Companies</p>
             </div>
             
             {/* Portfolio Annual Revenue */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
-              <p className="text-4xl md:text-5xl font-black text-primary leading-none mb-2">$700M+</p>
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Revenue</p>
+            <div className="bg-white rounded-xl p-3 md:p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
+              <p className="text-2xl md:text-5xl font-black text-primary leading-none mb-1 md:mb-2">$700M+</p>
+              <p className="text-[8px] md:text-xs uppercase tracking-widest text-muted-foreground">Portfolio Revenue</p>
             </div>
             
             {/* Exits */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
-              <p className="text-4xl md:text-5xl font-black text-primary leading-none mb-2">12</p>
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
+            <div className="bg-white rounded-xl p-3 md:p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
+              <p className="text-2xl md:text-5xl font-black text-primary leading-none mb-1 md:mb-2">12</p>
+              <p className="text-[8px] md:text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
             </div>
           </div>
         </div>
