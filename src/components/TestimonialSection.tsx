@@ -9,68 +9,64 @@ const TestimonialSection: FC = () => {
   return (
     <section className="pt-24 pb-20 px-6 bg-secondary">
       <div className="max-w-6xl mx-auto">
-        {/* Highlights */}
-        <div className="mb-20">
-          <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-8 whitespace-nowrap">We partner with ambitious builders to change trajectories.</p>
+        {/* Tagline + Featured Companies */}
+        <div className="mb-16">
+          <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-12">We partner with ambitious builders to change trajectories.</p>
           
-          <div className="flex justify-center items-start gap-8 md:gap-16 mb-16">
+          {/* Featured Company Highlights */}
+          <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
+            {[
+              { logo: logoElective, name: "Elective", year: "2021", kpi: "TBD", url: "https://www.elective.com" },
+              { logo: logoFispan, name: "FISPAN", year: "2018", kpi: "TBD", url: "https://www.fispan.com" },
+              { logo: logoArticle, name: "Article", year: "2016", kpi: "TBD", url: "https://www.article.com" },
+              { logo: logoThinkific, name: "Thinkific", year: "2015", kpi: "TBD", url: "https://www.thinkific.com" },
+            ].map((company) => (
+              <div key={company.name} className="text-center group flex-1 max-w-[180px]">
+                <a 
+                  href={company.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="h-16 flex items-center justify-center mb-4 hover:opacity-70 transition-opacity"
+                >
+                  <img 
+                    src={company.logo} 
+                    alt={company.name} 
+                    className="max-h-12 w-auto object-contain mix-blend-multiply"
+                  />
+                </a>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                  Partnered in {company.year}
+                </p>
+                <p className="text-xl font-black text-primary leading-tight min-h-[3rem] flex items-center justify-center">
+                  {company.kpi}
+                </p>
+                <div className="h-1 w-8 bg-primary/30 mx-auto mt-3 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Track Record Stats */}
+        <div className="mb-20">
+          <h3 className="text-lg md:text-xl font-bold text-foreground text-center mb-8">A proven track record across durable businesses</h3>
+          
+          <div className="grid grid-cols-3 gap-4 md:gap-6 max-w-3xl mx-auto">
             {/* Companies */}
-            <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">35</p>
-              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
+              <p className="text-4xl md:text-5xl font-black text-primary leading-none mb-2">35</p>
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Companies</p>
             </div>
             
             {/* Portfolio Annual Revenue */}
-            <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">$700M+</p>
-              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-              <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Annual Revenue</p>
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
+              <p className="text-4xl md:text-5xl font-black text-primary leading-none mb-2">$700M+</p>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio Revenue</p>
             </div>
             
             {/* Exits */}
-            <div className="text-center group">
-              <p className="text-5xl md:text-7xl font-black text-primary leading-none h-16 md:h-20 flex items-center justify-center">12</p>
-              <div className="h-1 w-12 bg-primary/30 mx-auto mt-3 mb-2 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-border/50 text-center hover:shadow-md hover:border-primary/30 transition-all duration-300">
+              <p className="text-4xl md:text-5xl font-black text-primary leading-none mb-2">12</p>
               <p className="text-xs uppercase tracking-widest text-muted-foreground">Exits</p>
-            </div>
-          </div>
-
-          {/* Featured Company Highlights */}
-          <div>
-            <p className="text-sm uppercase tracking-widest text-muted-foreground text-center mb-10 font-bold">
-              A few of our investments
-            </p>
-            
-            <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
-              {[
-                { logo: logoElective, name: "Elective", year: "2021", kpi: "TBD", url: "https://www.elective.com" },
-                { logo: logoFispan, name: "FISPAN", year: "2018", kpi: "TBD", url: "https://www.fispan.com" },
-                { logo: logoArticle, name: "Article", year: "2016", kpi: "TBD", url: "https://www.article.com" },
-                { logo: logoThinkific, name: "Thinkific", year: "2015", kpi: "TBD", url: "https://www.thinkific.com" },
-              ].map((company) => (
-                <div key={company.name} className="text-center group flex-1 max-w-[180px]">
-                  <a 
-                    href={company.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="h-16 flex items-center justify-center mb-4 hover:opacity-70 transition-opacity"
-                  >
-                    <img 
-                      src={company.logo} 
-                      alt={company.name} 
-                      className="max-h-12 w-auto object-contain mix-blend-multiply"
-                    />
-                  </a>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-                    Partnered in {company.year}
-                  </p>
-                  <p className="text-xl font-black text-primary leading-tight min-h-[3rem] flex items-center justify-center">
-                    {company.kpi}
-                  </p>
-                  <div className="h-1 w-8 bg-primary/30 mx-auto mt-3 group-hover:w-full group-hover:bg-primary transition-all duration-300" />
-                </div>
-              ))}
             </div>
           </div>
         </div>
