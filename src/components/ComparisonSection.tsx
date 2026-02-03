@@ -28,19 +28,19 @@ const ComparisonSection: FC = () => {
     <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-slate-800 to-slate-900">
       <div className="max-w-6xl mx-auto">
         {/* Header Row */}
-        <div className="grid grid-cols-[1fr_auto_2fr_auto_1fr] gap-2 md:gap-4 mb-2">
+        <div className="grid grid-cols-[2fr_auto_3fr_auto_2fr] gap-2 md:gap-4 mb-2">
           <div className="flex items-end justify-center pb-4">
             <h3 className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400">
               Traditional Private Equity
             </h3>
           </div>
-          <div className="w-8 md:w-12" />
+          <div className="w-6 md:w-10" />
           <div className="bg-primary rounded-t-xl py-5 px-4 shadow-lg shadow-primary/40">
             <h3 className="text-lg md:text-2xl font-black uppercase tracking-wider text-white text-center">
               Rhino
             </h3>
           </div>
-          <div className="w-8 md:w-12" />
+          <div className="w-6 md:w-10" />
           <div className="flex items-end justify-center pb-4">
             <h3 className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400">
               Venture Capital
@@ -49,7 +49,7 @@ const ComparisonSection: FC = () => {
         </div>
 
         {/* Comparison Rows */}
-        <div className="grid grid-cols-[1fr_auto_2fr_auto_1fr] gap-2 md:gap-4">
+        <div className="grid grid-cols-[2fr_auto_3fr_auto_2fr] gap-2 md:gap-4">
           {comparisons.map((row, idx) => (
             <div key={idx} className="contents">
               {/* PE */}
@@ -60,7 +60,7 @@ const ComparisonSection: FC = () => {
               </div>
 
               {/* VS Left */}
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center w-6 md:w-10">
                 <span className="text-[10px] md:text-xs font-black text-slate-400">VS</span>
               </div>
 
@@ -73,7 +73,7 @@ const ComparisonSection: FC = () => {
               </div>
 
               {/* VS Right */}
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center w-6 md:w-10">
                 <span className="text-[10px] md:text-xs font-black text-slate-400">VS</span>
               </div>
 
@@ -88,11 +88,11 @@ const ComparisonSection: FC = () => {
         </div>
 
         {/* Rhino card bottom cap */}
-        <div className="grid grid-cols-[1fr_auto_2fr_auto_1fr] gap-2 md:gap-4">
+        <div className="grid grid-cols-[2fr_auto_3fr_auto_2fr] gap-2 md:gap-4">
           <div />
-          <div className="w-8 md:w-12" />
+          <div className="w-6 md:w-10" />
           <div className="bg-primary h-4 rounded-b-xl shadow-[0_10px_30px_rgba(59,130,246,0.4)]" />
-          <div className="w-8 md:w-12" />
+          <div className="w-6 md:w-10" />
           <div />
         </div>
 
