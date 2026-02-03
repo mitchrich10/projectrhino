@@ -20,54 +20,52 @@ const comparisons = [
 ];
 
 const ComparisonSection: FC = () => {
+  const midIndex = Math.floor(comparisons.length / 2);
+
   return (
     <section className="py-20 px-6 bg-slate-900">
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-4 md:gap-8 mb-8 px-4">
-          <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-slate-500 text-right">
+        {/* Header Row */}
+        <div className="grid grid-cols-[1fr_4rem_1fr] md:grid-cols-[1fr_6rem_1fr] items-center mb-8">
+          <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight text-slate-500 text-right pr-4">
             Traditional PE
           </h2>
-          <div className="w-16 md:w-24" />
-          <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-primary text-left">
+          <div />
+          <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight text-primary text-left pl-4">
             Rhino
           </h2>
         </div>
 
-        {/* Comparison Content with VS in middle */}
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-4 md:gap-8 px-4">
-          {/* PE Column */}
-          <div className="flex flex-col justify-center space-y-6">
-            {comparisons.map((row, idx) => (
-              <p
-                key={idx}
-                className="text-sm md:text-lg text-slate-500 line-through decoration-slate-600 text-right"
-              >
+        {/* Comparison Rows */}
+        <div className="relative">
+          {/* Vertical line through center */}
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-700 -translate-x-1/2" />
+
+          {comparisons.map((row, idx) => (
+            <div
+              key={idx}
+              className="grid grid-cols-[1fr_4rem_1fr] md:grid-cols-[1fr_6rem_1fr] items-center py-4 md:py-5"
+            >
+              {/* PE Side */}
+              <p className="text-sm md:text-lg text-slate-500 line-through decoration-slate-600 text-right pr-4">
                 {row.pe}
               </p>
-            ))}
-          </div>
 
-          {/* VS Divider */}
-          <div className="flex flex-col items-center justify-center">
-            <div className="h-full w-px bg-slate-700 relative">
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 px-2 py-4 text-xl md:text-2xl font-black text-white">
-                VS
-              </span>
-            </div>
-          </div>
+              {/* VS in middle row only */}
+              <div className="flex items-center justify-center">
+                {idx === midIndex && (
+                  <span className="bg-slate-900 px-2 py-1 text-lg md:text-xl font-black text-white z-10">
+                    VS
+                  </span>
+                )}
+              </div>
 
-          {/* Rhino Column */}
-          <div className="flex flex-col justify-center space-y-6">
-            {comparisons.map((row, idx) => (
-              <p
-                key={idx}
-                className="text-sm md:text-lg text-white font-semibold text-left"
-              >
+              {/* Rhino Side */}
+              <p className="text-sm md:text-lg text-white font-semibold text-left pl-4">
                 {row.rhino}
               </p>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
         {/* Closing Statement */}
