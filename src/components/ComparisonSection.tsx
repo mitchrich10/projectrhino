@@ -46,22 +46,19 @@ const ComparisonSection: FC = () => {
 
         {/* Comparison Rows */}
         <div className="relative">
-          {/* Vertical lines at VS dividers */}
-          <div className="absolute left-[20%] top-0 bottom-0 w-px bg-slate-700" />
-          <div className="absolute right-[20%] top-0 bottom-0 w-px bg-slate-700" />
-
           {comparisons.map((row, idx) => (
             <div
               key={idx}
               className="grid grid-cols-[1fr_3rem_1fr_3rem_1fr] md:grid-cols-[1fr_4rem_1fr_4rem_1fr] items-center py-4 md:py-5"
             >
               {/* PE Side */}
-              <p className="text-xs md:text-base text-slate-500 line-through decoration-slate-600 text-right pr-4">
+              <p className="text-xs md:text-base text-slate-500 text-right pr-4">
                 {row.pe}
               </p>
 
-              {/* VS left */}
-              <div className="flex items-center justify-center">
+              {/* VS left with line */}
+              <div className="flex items-center justify-center relative h-full">
+                <div className="absolute inset-y-0 left-1/2 w-px bg-slate-700 -translate-x-1/2" />
                 {idx === midIndex && (
                   <span className="bg-slate-900 px-1 py-1 text-sm md:text-lg font-black text-white z-10">
                     VS
@@ -70,12 +67,13 @@ const ComparisonSection: FC = () => {
               </div>
 
               {/* Rhino Side */}
-              <p className="text-xs md:text-base text-primary font-semibold text-center px-2">
+              <p className="text-xs md:text-base text-primary font-bold text-center px-2">
                 {row.rhino}
               </p>
 
-              {/* VS right */}
-              <div className="flex items-center justify-center">
+              {/* VS right with line */}
+              <div className="flex items-center justify-center relative h-full">
+                <div className="absolute inset-y-0 left-1/2 w-px bg-slate-700 -translate-x-1/2" />
                 {idx === midIndex && (
                   <span className="bg-slate-900 px-1 py-1 text-sm md:text-lg font-black text-white z-10">
                     VS
@@ -84,7 +82,7 @@ const ComparisonSection: FC = () => {
               </div>
 
               {/* VC Side */}
-              <p className="text-xs md:text-base text-slate-500 line-through decoration-slate-600 text-left pl-4">
+              <p className="text-xs md:text-base text-slate-500 text-left pl-4">
                 {row.vc}
               </p>
             </div>
