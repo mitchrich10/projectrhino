@@ -17,9 +17,9 @@ const comparisons = [
     vc: "Built for winner-take-all markets",
   },
   {
-    pe: "Limited tolerance for experimentation",
+    pe: "Limited tolerance for experimentation; profitability required",
     rhino: "Encourage experimentation; comfortable investing pre-profitability",
-    vc: "Focused on venture-stage conversion and scale",
+    vc: "Prioritizes venture-stage conversion",
   },
 ];
 
