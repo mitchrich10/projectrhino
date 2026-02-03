@@ -3,22 +3,22 @@ import { FC } from "react";
 const comparisons = [
   {
     pe: "Focused on financial optimization",
-    rhino: "We're exclusively focused on scaling Producer businesses",
+    rhino: "Focused exclusively on efficiently scaling Producer businesses",
     vc: "Growth prioritized above all else",
   },
   {
     pe: "Leverage and operating cost reductions drive returns",
-    rhino: "We're interested in businesses with clear organic growth levers, with selective inorganic expansion opportunities",
+    rhino: "Target organic growth drivers, with selective inorganic expansion opportunities",
     vc: "Binary outcomes: unicorn or bust",
   },
   {
     pe: "Short holding periods",
-    rhino: "We're long-term partners, not exit manufacturers",
+    rhino: "Long-term partners, not exit manufacturers",
     vc: "Built for winner-take-all markets",
   },
   {
     pe: "Limited tolerance for experimentation",
-    rhino: "We encourage experimentation and are comfortable investing pre-profitability",
+    rhino: "Encourage experimentation; comfortable investing pre-profitability",
     vc: "Focused on venture-stage conversion and scale",
   },
 ];
@@ -47,7 +47,7 @@ const ComparisonSection: FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-slate-700/50 rounded-lg p-4">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 text-center mb-3">
-                Traditional PE
+                Private Equity
               </h4>
               <div className="space-y-2">
                 {comparisons.map((row, idx) => (
@@ -78,7 +78,7 @@ const ComparisonSection: FC = () => {
           <div className="grid grid-cols-[2fr_auto_3fr_auto_2fr] gap-4 mb-2">
             <div className="flex items-end justify-center pb-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Traditional Private Equity
+                Private Equity
               </h3>
             </div>
             <div className="w-10" />
