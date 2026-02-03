@@ -169,12 +169,12 @@ const StrategySection: FC = () => {
 
           {/* Bottom Statement */}
           <p className="text-foreground text-base md:text-lg font-medium leading-relaxed mt-10 text-center italic">
-            If you're exploring capital partners to take your producer business to the next level,{" "}
+            Exploring a capital partner for your producer business?{" "}
             <Link 
               to="/contact" 
               className="text-primary font-semibold hover:underline transition-all"
             >
-              let's chat.
+              Let's talk.
             </Link>
           </p>
         </div>
