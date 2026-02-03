@@ -25,24 +25,29 @@ const comparisons = [
 
 const ComparisonSection: FC = () => {
   return (
-    <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-slate-800 to-slate-900">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900 relative overflow-hidden">
+      {/* Background depth layers */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-600/20 via-transparent to-transparent" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-slate-500/10 rounded-full blur-3xl" />
+      
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Header Row */}
         <div className="grid grid-cols-[1fr_auto_2fr_auto_1fr] gap-2 md:gap-4 mb-2">
           <div className="flex items-end justify-center pb-4">
-            <h3 className="text-xs md:text-sm font-bold uppercase tracking-wider text-slate-400">
-              Traditional PE
+            <h3 className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400">
+              Private Equity
             </h3>
           </div>
           <div className="w-8 md:w-12" />
-          <div className="bg-primary rounded-t-xl py-4 px-4">
-            <h3 className="text-lg md:text-2xl font-black uppercase tracking-wider text-white text-center">
+          <div className="bg-gradient-to-r from-primary via-primary to-sky-500 rounded-t-xl py-4 px-4 shadow-lg shadow-primary/40">
+            <h3 className="text-lg md:text-2xl font-black uppercase tracking-wider text-white text-center drop-shadow-md">
               Rhino
             </h3>
           </div>
           <div className="w-8 md:w-12" />
           <div className="flex items-end justify-center pb-4">
-            <h3 className="text-xs md:text-sm font-bold uppercase tracking-wider text-slate-400">
+            <h3 className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-slate-400">
               Venture Capital
             </h3>
           </div>
@@ -53,7 +58,7 @@ const ComparisonSection: FC = () => {
           {comparisons.map((row, idx) => (
             <div key={idx} className="contents">
               {/* PE */}
-              <div className={`flex items-center justify-center p-3 md:p-4 bg-slate-700/30 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
+              <div className={`flex items-center justify-center p-3 md:p-4 bg-slate-800/60 backdrop-blur-sm border border-slate-600/30 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
                 <p className="text-[10px] md:text-sm text-slate-400 text-center leading-tight">
                   {row.pe}
                 </p>
@@ -61,23 +66,24 @@ const ComparisonSection: FC = () => {
 
               {/* VS Left */}
               <div className="flex items-center justify-center">
-                <span className="text-[10px] md:text-xs font-black text-slate-500">VS</span>
+                <span className="text-[10px] md:text-xs font-black text-slate-500/70">VS</span>
               </div>
 
               {/* Rhino - Elevated */}
-              <div className="bg-white p-4 md:p-6 border-x-4 border-primary shadow-xl shadow-primary/20">
-                <p className="text-xs md:text-base text-slate-900 font-bold text-center leading-snug">
+              <div className="bg-white p-4 md:p-6 border-x-4 border-primary shadow-2xl shadow-primary/30 relative">
+                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+                <p className="text-xs md:text-base text-slate-900 font-bold text-center leading-snug relative z-10">
                   {row.rhino}
                 </p>
               </div>
 
               {/* VS Right */}
               <div className="flex items-center justify-center">
-                <span className="text-[10px] md:text-xs font-black text-slate-500">VS</span>
+                <span className="text-[10px] md:text-xs font-black text-slate-500/70">VS</span>
               </div>
 
               {/* VC */}
-              <div className={`flex items-center justify-center p-3 md:p-4 bg-slate-700/30 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
+              <div className={`flex items-center justify-center p-3 md:p-4 bg-slate-800/60 backdrop-blur-sm border border-slate-600/30 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
                 <p className="text-[10px] md:text-sm text-slate-400 text-center leading-tight">
                   {row.vc}
                 </p>
@@ -90,7 +96,7 @@ const ComparisonSection: FC = () => {
         <div className="grid grid-cols-[1fr_auto_2fr_auto_1fr] gap-2 md:gap-4">
           <div />
           <div className="w-8 md:w-12" />
-          <div className="bg-primary h-3 rounded-b-xl shadow-lg shadow-primary/30" />
+          <div className="bg-gradient-to-r from-primary via-primary to-sky-500 h-3 rounded-b-xl shadow-xl shadow-primary/40" />
           <div className="w-8 md:w-12" />
           <div />
         </div>
