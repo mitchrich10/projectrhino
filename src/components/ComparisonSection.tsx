@@ -23,24 +23,17 @@ const ComparisonSection: FC = () => {
   return (
     <section className="py-20 px-6 bg-slate-900">
       <div className="max-w-5xl mx-auto">
-        {/* Heading */}
-        <div className="flex items-center justify-center gap-4 mb-16">
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-white text-center">
-            Private Equity <span className="text-primary">vs.</span> Rhino
-          </h2>
-        </div>
-
-        {/* Column Headers */}
-        <div className="grid grid-cols-2 gap-4 md:gap-12 mb-8 px-4">
+        {/* Header */}
+        <div className="grid grid-cols-2 gap-4 md:gap-12 mb-12 px-4">
           <div className="text-right">
-            <span className="text-sm md:text-base font-bold uppercase tracking-wider text-slate-500">
+            <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-slate-500">
               Traditional PE
-            </span>
+            </h2>
           </div>
           <div className="text-left">
-            <span className="text-sm md:text-base font-bold uppercase tracking-wider text-primary">
+            <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-primary">
               Rhino
-            </span>
+            </h2>
           </div>
         </div>
 
