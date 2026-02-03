@@ -27,6 +27,11 @@ const ComparisonSection: FC = () => {
   return (
     <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-slate-800 to-slate-900">
       <div className="max-w-6xl mx-auto">
+        {/* Section Title */}
+        <h2 className="text-3xl md:text-5xl font-black text-white text-center mb-12 md:mb-16 uppercase tracking-wide">
+          How We're Different
+        </h2>
+
         {/* Mobile Layout - Stacked Cards */}
         <div className="md:hidden space-y-6">
           {/* Rhino Card - Hero */}
