@@ -15,7 +15,7 @@ const comparisons = [
   },
   {
     pe: "Low tolerance for experimentation",
-    rhino: "Comfortable investing through uncertainty",
+    rhino: "Support founders experiment and iterate, then optimize",
   },
 ];
 
