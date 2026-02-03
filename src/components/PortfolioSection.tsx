@@ -78,6 +78,14 @@ const activePortfolio = [
     website: "https://www.withflint.com"
   },
   { 
+    name: "Stem Health", 
+    category: "Healthcare Services", 
+    description: "Private-pay primary health.",
+    isRepresentative: true,
+    logo: logoStemHealth,
+    website: "http://www.stemhealth.ca"
+  },
+  { 
     name: "Article", 
     category: "Ecommerce", 
     description: "Direct-to-consumer modern furniture.",
@@ -114,14 +122,6 @@ const activePortfolio = [
     logo: logoAspectBiosystems,
     logoSize: "xlarge",
     website: "http://www.aspectbiosystems.com"
-  },
-  { 
-    name: "Stem Health", 
-    category: "Healthcare Services", 
-    description: "Private-pay primary health.",
-    isRepresentative: true,
-    logo: logoStemHealth,
-    website: "http://www.stemhealth.ca"
   },
   { 
     name: "Quinn AI", 
