@@ -46,9 +46,9 @@ const ComparisonSection: FC = () => {
 
         {/* Comparison Rows */}
         <div className="relative">
-          {/* Vertical lines through center */}
-          <div className="absolute left-[calc(20%+1.5rem)] md:left-[calc(20%+2rem)] top-0 bottom-0 w-px bg-slate-700" />
-          <div className="absolute right-[calc(20%+1.5rem)] md:right-[calc(20%+2rem)] top-0 bottom-0 w-px bg-slate-700" />
+          {/* Vertical lines at VS dividers */}
+          <div className="absolute left-[20%] top-0 bottom-0 w-px bg-slate-700" />
+          <div className="absolute right-[20%] top-0 bottom-0 w-px bg-slate-700" />
 
           {comparisons.map((row, idx) => (
             <div
@@ -70,7 +70,7 @@ const ComparisonSection: FC = () => {
               </div>
 
               {/* Rhino Side */}
-              <p className="text-xs md:text-base text-white font-semibold text-center px-2">
+              <p className="text-xs md:text-base text-primary font-semibold text-center px-2">
                 {row.rhino}
               </p>
 
