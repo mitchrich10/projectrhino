@@ -15,7 +15,7 @@ const comparisons = [
   },
   {
     pe: "Low tolerance for experimentation",
-    rhino: "Support founders experiment and iterate, then optimize",
+    rhino: "Encourage experimentation and iteration, followed by disciplined optimization",
   },
 ];
 
@@ -24,17 +24,16 @@ const ComparisonSection: FC = () => {
     <section className="py-20 px-6 bg-slate-900">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="grid grid-cols-2 gap-4 md:gap-12 mb-12 px-4">
-          <div className="text-right">
-            <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-slate-500">
-              Traditional PE
-            </h2>
-          </div>
-          <div className="text-left">
-            <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-primary">
-              Rhino
-            </h2>
-          </div>
+        <div className="flex items-center justify-center gap-6 md:gap-12 mb-12 px-4">
+          <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-slate-500 text-right flex-1">
+            Traditional PE
+          </h2>
+          <span className="text-xl md:text-3xl font-black text-white">
+            VS
+          </span>
+          <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tight text-primary text-left flex-1">
+            Rhino
+          </h2>
         </div>
 
         {/* Comparison Rows */}
