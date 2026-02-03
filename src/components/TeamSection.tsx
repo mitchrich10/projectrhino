@@ -12,6 +12,7 @@ interface TeamMember {
   photo: string;
   linkedin: string;
   portfolio?: string[];
+  backDescription?: string;
   objectPosition?: string;
   /** Optional transform to force a tighter crop inside the fixed 3:4 card */
   photoTransform?: string;
@@ -51,17 +52,20 @@ const team: TeamMember[] = [
     name: "Candace Hobin",
     role: "Operations",
     photo: candacePhoto,
-    linkedin: "https://www.linkedin.com/in/candacehobin/"
+    linkedin: "https://www.linkedin.com/in/candacehobin/",
+    backDescription: "Portfolio-wide initiatives including founder events, resources, and partnerships"
   }
 ];
 
-const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio, objectPosition, photoTransform }) => {
+const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio, backDescription, objectPosition, photoTransform }) => {
   const effectivePhotoTransform =
     photoTransform ?? (name === "Mitch Richardson" ? "translateY(-10%) scale(1.18)" : undefined);
   const photoWrapperStyle = effectivePhotoTransform ? { transform: effectivePhotoTransform } : undefined;
 
-  // Static card for members without portfolio (Candace)
-  if (!portfolio) {
+  const hasFlipContent = portfolio || backDescription;
+
+  // Static card for members without any back content
+  if (!hasFlipContent) {
     return (
       <div className="relative group overflow-hidden aspect-[3/4]">
         <div className="w-full h-full" style={photoWrapperStyle}>
@@ -94,7 +98,7 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
     );
   }
 
-  // Flipping card for members with portfolio
+  // Flipping card for members with portfolio or back description
   return (
     <div className="[perspective:1000px] aspect-[3/4] group">
       <div className="relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
@@ -120,11 +124,15 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
         {/* Back Face */}
         <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4">
           <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-2">Portfolio</h4>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-1 content-start">
-            {portfolio.map((company, index) => (
-              <span key={index} className="text-[11px] leading-tight text-white">{company}</span>
-            ))}
-          </div>
+          {portfolio ? (
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1 content-start">
+              {portfolio.map((company, index) => (
+                <span key={index} className="text-[11px] leading-tight text-white">{company}</span>
+              ))}
+            </div>
+          ) : backDescription ? (
+            <p className="text-[11px] leading-relaxed text-white">{backDescription}</p>
+          ) : null}
           <a 
             href={linkedin} 
             target="_blank" 
