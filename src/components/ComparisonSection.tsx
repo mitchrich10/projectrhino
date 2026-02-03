@@ -25,74 +25,72 @@ const comparisons = [
 
 const ComparisonSection: FC = () => {
   return (
-    <section className="py-20 px-4 md:px-6 bg-gradient-to-b from-slate-800 to-slate-900">
+    <section className="py-20 px-6 bg-slate-900">
       <div className="max-w-6xl mx-auto">
-        {/* Header Row */}
-        <div className="grid grid-cols-[1fr_auto_2fr_auto_1fr] gap-2 md:gap-4 mb-2">
-          <div className="flex items-end justify-center pb-4">
-            <h3 className="text-xs md:text-sm font-bold uppercase tracking-wider text-slate-400">
+        {/* Three Card Layout */}
+        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-4 lg:gap-0">
+          {/* PE Card - Left */}
+          <div className="lg:w-1/4 bg-slate-950/60 rounded-lg p-6 order-2 lg:order-1">
+            <h3 className="text-sm md:text-base font-bold uppercase tracking-wide text-slate-500 mb-6 text-center">
               Traditional PE
             </h3>
+            <ul className="space-y-4">
+              {comparisons.map((row, idx) => (
+                <li key={idx} className="text-xs md:text-sm text-slate-500 text-center">
+                  {row.pe}
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="w-8 md:w-12" />
-          <div className="bg-primary rounded-t-xl py-4 px-4">
-            <h3 className="text-lg md:text-2xl font-black uppercase tracking-wider text-white text-center">
+
+          {/* VS Badge - Left */}
+          <div className="hidden lg:flex items-center justify-center -mx-3 z-10 order-2">
+            <span className="bg-slate-900 border border-slate-700 px-3 py-2 text-sm font-black text-slate-400 rounded-full">
+              VS
+            </span>
+          </div>
+
+          {/* Rhino Card - Center (Hero) */}
+          <div className="lg:w-2/4 bg-slate-800 border-t-4 border-primary shadow-lg shadow-primary/10 rounded-lg p-8 order-1 lg:order-3">
+            <h3 className="text-lg md:text-xl font-black uppercase tracking-wide text-primary mb-8 text-center">
               Rhino
             </h3>
+            <ul className="space-y-5">
+              {comparisons.map((row, idx) => (
+                <li key={idx} className="text-sm md:text-base text-primary font-bold text-center">
+                  {row.rhino}
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="w-8 md:w-12" />
-          <div className="flex items-end justify-center pb-4">
-            <h3 className="text-xs md:text-sm font-bold uppercase tracking-wider text-slate-400">
+
+          {/* VS Badge - Right */}
+          <div className="hidden lg:flex items-center justify-center -mx-3 z-10 order-4">
+            <span className="bg-slate-900 border border-slate-700 px-3 py-2 text-sm font-black text-slate-400 rounded-full">
+              VS
+            </span>
+          </div>
+
+          {/* VC Card - Right */}
+          <div className="lg:w-1/4 bg-slate-950/60 rounded-lg p-6 order-3 lg:order-5">
+            <h3 className="text-sm md:text-base font-bold uppercase tracking-wide text-slate-500 mb-6 text-center">
               Venture Capital
             </h3>
+            <ul className="space-y-4">
+              {comparisons.map((row, idx) => (
+                <li key={idx} className="text-xs md:text-sm text-slate-500 text-center">
+                  {row.vc}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        {/* Comparison Rows */}
-        <div className="grid grid-cols-[1fr_auto_2fr_auto_1fr] gap-2 md:gap-4">
-          {comparisons.map((row, idx) => (
-            <div key={idx} className="contents">
-              {/* PE */}
-              <div className={`flex items-center justify-center p-3 md:p-4 bg-slate-700/30 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
-                <p className="text-[10px] md:text-sm text-slate-400 text-center leading-tight">
-                  {row.pe}
-                </p>
-              </div>
-
-              {/* VS Left */}
-              <div className="flex items-center justify-center">
-                <span className="text-[10px] md:text-xs font-black text-slate-500">VS</span>
-              </div>
-
-              {/* Rhino - Elevated */}
-              <div className="bg-white p-4 md:p-6 border-x-4 border-primary shadow-xl shadow-primary/20">
-                <p className="text-xs md:text-base text-slate-900 font-bold text-center leading-snug">
-                  {row.rhino}
-                </p>
-              </div>
-
-              {/* VS Right */}
-              <div className="flex items-center justify-center">
-                <span className="text-[10px] md:text-xs font-black text-slate-500">VS</span>
-              </div>
-
-              {/* VC */}
-              <div className={`flex items-center justify-center p-3 md:p-4 bg-slate-700/30 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
-                <p className="text-[10px] md:text-sm text-slate-400 text-center leading-tight">
-                  {row.vc}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Rhino card bottom cap */}
-        <div className="grid grid-cols-[1fr_auto_2fr_auto_1fr] gap-2 md:gap-4">
-          <div />
-          <div className="w-8 md:w-12" />
-          <div className="bg-primary h-3 rounded-b-xl shadow-lg shadow-primary/30" />
-          <div className="w-8 md:w-12" />
-          <div />
+        {/* Mobile VS indicators */}
+        <div className="flex lg:hidden justify-center gap-4 my-4 order-2">
+          <span className="bg-slate-900 border border-slate-700 px-3 py-1 text-xs font-black text-slate-400 rounded-full">
+            VS
+          </span>
         </div>
 
         {/* Closing Statement */}
