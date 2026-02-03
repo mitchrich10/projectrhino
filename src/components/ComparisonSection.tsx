@@ -53,8 +53,8 @@ const ComparisonSection: FC = () => {
           {comparisons.map((row, idx) => (
             <div key={idx} className="contents">
               {/* PE */}
-              <div className={`flex items-center justify-center p-3 md:p-4 bg-slate-600/40 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
-                <p className="text-[10px] md:text-sm text-slate-300 text-center leading-tight">
+              <div className={`flex items-stretch p-3 md:p-4 bg-slate-600/40 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
+                <p className="text-[10px] md:text-sm text-slate-300 text-center leading-tight flex items-center justify-center w-full">
                   {row.pe}
                 </p>
               </div>
@@ -65,7 +65,7 @@ const ComparisonSection: FC = () => {
               </div>
 
               {/* Rhino - Elevated with depth */}
-              <div className="bg-white p-4 md:p-6 border-x-4 border-primary shadow-[0_0_30px_rgba(59,130,246,0.3)] relative">
+              <div className="bg-white p-4 md:p-6 border-x-4 border-primary shadow-[0_0_30px_rgba(59,130,246,0.3)] relative flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
                 <p className="text-xs md:text-base text-slate-900 font-bold text-center leading-snug relative z-10">
                   {row.rhino}
@@ -78,8 +78,8 @@ const ComparisonSection: FC = () => {
               </div>
 
               {/* VC */}
-              <div className={`flex items-center justify-center p-3 md:p-4 bg-slate-600/40 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
-                <p className="text-[10px] md:text-sm text-slate-300 text-center leading-tight">
+              <div className={`flex items-stretch p-3 md:p-4 bg-slate-600/40 ${idx === 0 ? 'rounded-t-lg' : ''} ${idx === comparisons.length - 1 ? 'rounded-b-lg' : ''}`}>
+                <p className="text-[10px] md:text-sm text-slate-300 text-center leading-tight flex items-center justify-center w-full">
                   {row.vc}
                 </p>
               </div>
