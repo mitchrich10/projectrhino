@@ -1,9 +1,9 @@
 import { FC } from "react";
 import zachPhoto from "@/assets/zach-shapiro.png";
-import logoTwig from "@/assets/logo-twig.png";
+import logoElective from "@/assets/logo-elective.png";
 import logoArticle from "@/assets/logo-article.png";
 import logoFispan from "@/assets/logo-fispan.png";
-import logoFlint from "@/assets/logo-flint.png";
+import logoThinkific from "@/assets/logo-thinkific.png";
 
 const TestimonialSection: FC = () => {
   return (
@@ -44,10 +44,10 @@ const TestimonialSection: FC = () => {
             
             <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
               {[
-                { logo: logoTwig, name: "Twig", year: "2022", kpi: ">7x revenue", url: "https://twigfertility.com" },
-                { logo: logoFispan, name: "FISPAN", year: "2018", kpi: ">70x revenue", url: "https://www.fispan.com" },
-                { logo: logoArticle, name: "Article", year: "2016", kpi: ">20x revenue", url: "https://www.article.com" },
-                { logo: logoFlint, name: "Flint", year: "2025", kpi: ">3x revenue", url: "https://www.withflint.com" },
+                { logo: logoElective, name: "Elective", year: "2021", kpi: "TBD", url: "https://www.elective.com" },
+                { logo: logoFispan, name: "FISPAN", year: "2018", kpi: "TBD", url: "https://www.fispan.com" },
+                { logo: logoArticle, name: "Article", year: "2016", kpi: "TBD", url: "https://www.article.com" },
+                { logo: logoThinkific, name: "Thinkific", year: "2015", kpi: "TBD", url: "https://www.thinkific.com" },
               ].map((company) => (
                 <div key={company.name} className="text-center group flex-1 max-w-[180px]">
                   <a 
