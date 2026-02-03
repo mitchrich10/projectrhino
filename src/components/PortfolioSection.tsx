@@ -53,6 +53,14 @@ const activePortfolio = [
     isRepresentative: true
   },
   { 
+    name: "Twig Fertility", 
+    category: "Healthcare Services", 
+    description: "Reproductive healthcare.",
+    isRepresentative: true,
+    logo: logoTwig,
+    website: "https://twigfertility.com"
+  },
+  { 
     name: "Upper Village", 
     category: "Healthcare Services", 
     description: "Animal health.",
@@ -68,6 +76,44 @@ const activePortfolio = [
     isRepresentative: true,
     logo: logoFlint,
     website: "https://www.withflint.com"
+  },
+  { 
+    name: "Article", 
+    category: "Ecommerce", 
+    description: "Direct-to-consumer modern furniture.",
+    logo: logoArticle,
+    website: "http://www.article.com"
+  },
+  { 
+    name: "FISPAN", 
+    category: "FinTech", 
+    description: "Embedded banking infrastructure.",
+    logo: logoFispan,
+    logoSize: "large",
+    website: "http://www.fispan.com"
+  },
+  { 
+    name: "Elective", 
+    category: "Lending", 
+    description: "BNPL for digital entrepreneurs.",
+    logo: logoElective,
+    logoSize: "small",
+    website: "http://www.elective.com"
+  },
+  { 
+    name: "Klue", 
+    category: "Enterprise SaaS", 
+    description: "AI-powered competitive enablement.",
+    logo: logoKlue,
+    website: "http://www.klue.com"
+  },
+  { 
+    name: "Aspect Biosystems", 
+    category: "Biotech", 
+    description: "3D bioprinting technology platform.",
+    logo: logoAspectBiosystems,
+    logoSize: "xlarge",
+    website: "http://www.aspectbiosystems.com"
   },
   { 
     name: "Stem Health", 
@@ -100,22 +146,6 @@ const activePortfolio = [
     website: "http://www.netnow.io"
   },
   { 
-    name: "Pluto", 
-    category: "FinTech", 
-    description: "Spend management and payments.",
-    logo: logoPluto,
-    logoSize: "small",
-    website: "https://www.getpluto.com"
-  },
-  { 
-    name: "Elective", 
-    category: "Lending", 
-    description: "BNPL for digital entrepreneurs.",
-    logo: logoElective,
-    logoSize: "small",
-    website: "http://www.elective.com"
-  },
-  { 
     name: "MYFO", 
     category: "FinTech", 
     description: "Family office technology.",
@@ -124,27 +154,11 @@ const activePortfolio = [
     website: "https://www.myfotech.com"
   },
   { 
-    name: "Twig Fertility", 
-    category: "Healthcare Services", 
-    description: "Reproductive healthcare.",
-    isRepresentative: true,
-    logo: logoTwig,
-    website: "https://twigfertility.com"
-  },
-  { 
     name: "SuperAdvisor", 
     category: "FinTech", 
     description: "Wealth management technology.",
     logo: logoSuperadvisor,
     website: "http://www.superadvisor.ai"
-  },
-  { 
-    name: "FISPAN", 
-    category: "FinTech", 
-    description: "Embedded banking infrastructure.",
-    logo: logoFispan,
-    logoSize: "large",
-    website: "http://www.fispan.com"
   },
   { 
     name: "Marz", 
@@ -171,14 +185,6 @@ const activePortfolio = [
     website: "http://www.edvisor.io"
   },
   { 
-    name: "Aspect Biosystems", 
-    category: "Biotech", 
-    description: "3D bioprinting technology platform.",
-    logo: logoAspectBiosystems,
-    logoSize: "xlarge",
-    website: "http://www.aspectbiosystems.com"
-  },
-  { 
     name: "Fatigue Science", 
     category: "Enterprise SaaS", 
     description: "Predictive fatigue analytics.",
@@ -186,18 +192,12 @@ const activePortfolio = [
     website: "http://www.fatiguescience.com"
   },
   { 
-    name: "Klue", 
-    category: "Enterprise SaaS", 
-    description: "AI-powered competitive enablement.",
-    logo: logoKlue,
-    website: "http://www.klue.com"
-  },
-  { 
-    name: "Article", 
-    category: "Ecommerce", 
-    description: "Direct-to-consumer modern furniture.",
-    logo: logoArticle,
-    website: "http://www.article.com"
+    name: "Pluto", 
+    category: "FinTech", 
+    description: "Spend management and payments.",
+    logo: logoPluto,
+    logoSize: "small",
+    website: "https://www.getpluto.com"
   }
 ];
 
