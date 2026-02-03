@@ -2,24 +2,24 @@ import { FC } from "react";
 
 const comparisons = [
   {
-    pe: "Financial optimization first",
-    rhino: "Business fundamentals first",
-    vc: "Growth and expansion prioritized early",
+    pe: "Focused on financial optimization",
+    rhino: "We're exclusively focused on scaling Producer businesses",
+    vc: "Growth prioritized above all else",
   },
   {
-    pe: "Leverage and cost-cutting drive returns",
-    rhino: "Organic growth before financial engineering",
-    vc: "Rewards speed and ambition over efficiency",
+    pe: "Leverage and operating cost reductions drive returns",
+    rhino: "We're interested in businesses with clear organic growth levers, with selective inorganic expansion opportunities",
+    vc: "Binary outcomes: unicorn or bust",
   },
   {
-    pe: "Shorter time horizons",
-    rhino: "Long-term partners, not exit timers",
-    vc: "Fund-cycle driven timelines tied to venture outcomes",
+    pe: "Short holding periods",
+    rhino: "We're long-term partners, not exit manufacturers",
+    vc: "Built for winner-take-all markets",
   },
   {
-    pe: "Low tolerance for experimentation",
-    rhino: "Encourage experimentation and iteration, followed by disciplined optimization",
-    vc: "High tolerance for failure in pursuit of outsized wins",
+    pe: "Limited tolerance for experimentation",
+    rhino: "We encourage experimentation and are comfortable investing pre-profitability",
+    vc: "Focused on venture-stage conversion and scale",
   },
 ];
 
