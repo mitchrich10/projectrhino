@@ -8,7 +8,7 @@ const comparisons = [
   },
   {
     pe: "Leverage and operating cost reductions drive returns",
-    rhino: "Partner with businesses with clear organic growth levers, with selective inorganic expansion opportunities",
+    rhino: "Clear organic growth, with selective inorganic expansion",
     vc: "Binary outcomes: unicorn or bust",
   },
   {
@@ -29,7 +29,7 @@ const ComparisonSection: FC = () => {
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
         <h2 className="text-3xl md:text-4xl font-black text-white text-center mb-12 md:mb-16 uppercase tracking-tight">
-          How We're <span className="text-primary">Different</span>
+          A Different Kind of <span className="text-primary">Capital Partner</span>
         </h2>
 
         {/* Mobile Layout - Stacked Cards */}
@@ -148,13 +148,6 @@ const ComparisonSection: FC = () => {
             <div />
           </div>
         </div>
-
-        {/* Closing Statement */}
-        <p className="text-lg md:text-2xl text-white text-center font-medium mt-16 max-w-3xl mx-auto leading-relaxed">
-          "We're not here to optimize your business for a quick sale.
-          <br />
-          <span className="text-primary font-bold">We're here to help you build one that lasts.</span>"
-        </p>
       </div>
     </section>
   );
