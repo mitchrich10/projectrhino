@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import foundersHike from "@/assets/founders-hike.jpg";
+import madScientist from "@/assets/active-portfolio-4.jpg";
 import foundersPickleball from "@/assets/founders-pickleball.jpg";
 import foundersKlue from "@/assets/founders-klue.jpg";
 
@@ -12,7 +12,7 @@ const ContactSection: FC = () => {
       <div className="absolute inset-0 z-0 grid grid-cols-3">
         <div className="relative overflow-hidden">
           <img 
-            src={foundersHike} 
+            src={madScientist} 
             alt="ShopVision and Rhino team" 
             className="w-full h-full object-cover object-[center_70%] opacity-45"
           />
