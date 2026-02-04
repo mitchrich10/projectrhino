@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { Shield, DollarSign, Layers, TrendingUp, Calculator, Scale, Home, Users } from "lucide-react";
+import { Shield, DollarSign, Layers, Baby, Dog, Activity, TrendingUp, Calculator, Scale, Home, Users } from "lucide-react";
 import { StatCard } from "./StatCard";
 
 const strategyItems = [
@@ -21,7 +21,7 @@ const strategyItems = [
   }
 ];
 
-type Category = "Wealth & Planning" | "Advisory & Brokerage";
+type Category = "Healthcare" | "Wealth & Planning" | "Advisory & Brokerage";
 
 interface Producer {
   icon: typeof Shield;
@@ -39,6 +39,12 @@ const categoryColors: Record<Category, {
   border: string;
   leftBorder: string;
 }> = {
+  Healthcare: {
+    icon: "text-emerald-500",
+    badge: "text-emerald-600 bg-emerald-500/10",
+    border: "border-emerald-500/20",
+    leftBorder: "border-l-emerald-400",
+  },
   "Wealth & Planning": {
     icon: "text-blue-500",
     badge: "text-blue-600 bg-blue-500/10",
@@ -54,6 +60,14 @@ const categoryColors: Record<Category, {
 };
 
 const categories: CategoryData[] = [
+  {
+    category: "Healthcare",
+    producers: [
+      { icon: Baby, title: "Reproductive Endocrinologist" },
+      { icon: Activity, title: "Physiotherapist" },
+      { icon: Dog, title: "Doctor of Veterinary Medicine" },
+    ],
+  },
   {
     category: "Wealth & Planning",
     producers: [
@@ -94,7 +108,7 @@ const StrategySection: FC = () => {
           </p>
 
           {/* Three Column Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {categories.map((cat, idx) => {
               const colors = categoryColors[cat.category];
               return (
