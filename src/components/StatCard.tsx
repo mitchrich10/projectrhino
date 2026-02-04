@@ -21,7 +21,7 @@ const StatCard: FC<StatCardProps> = ({ title, description, icon, className }) =>
         <div className="text-primary [&>svg]:w-7 [&>svg]:h-7">{icon}</div>
       </div>
       
-      <h4 className="text-base font-black uppercase tracking-widest mb-4 text-foreground">{title}</h4>
+      <h4 className="text-base font-black uppercase tracking-widest mb-4 text-foreground pb-2 border-b-2 border-primary/30">{title}</h4>
       <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
     </div>
   );
