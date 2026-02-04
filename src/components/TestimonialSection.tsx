@@ -59,7 +59,7 @@ const TestimonialSection: FC = () => {
             
             {/* Portfolio Annual Revenue */}
             <div className="bg-white rounded-xl p-3 md:p-6 shadow-sm border border-border/50 hover:shadow-md hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center min-h-[80px] md:min-h-0">
-              <p className="text-2xl md:text-5xl font-black text-primary leading-none mb-1 md:mb-2">$700M+</p>
+              <p className="text-2xl md:text-5xl font-black text-primary leading-none mb-1 md:mb-2 mt-1 md:mt-0">$700M+</p>
               <p className="text-[8px] md:text-xs uppercase tracking-widest text-muted-foreground text-center">Portfolio Revenue</p>
             </div>
             
