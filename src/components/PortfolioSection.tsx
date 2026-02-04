@@ -231,7 +231,7 @@ const PortfolioSection: FC = () => {
               <img src={activePhoto1} alt="" className="w-full h-full object-cover opacity-45" />
             </div>
             <div className="relative overflow-hidden">
-              <img src={activePhoto4} alt="" className="w-full h-full object-cover object-bottom opacity-45" />
+              <img src={activePhoto4} alt="" className="w-full h-full object-cover object-top opacity-45" />
             </div>
             <div className="relative overflow-hidden">
               <img src={activePhoto3} alt="" className="w-full h-full object-cover opacity-45" />
