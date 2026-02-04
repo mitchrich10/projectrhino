@@ -12,7 +12,7 @@ const StatCard: FC<StatCardProps> = ({ title, description, icon, className }) =>
   return (
     <div 
       className={cn(
-        "relative p-10 border-l-4 border-l-primary border-2 border-slate-200 bg-white shadow-lg shadow-slate-200/50 hover:bg-sky-50 hover:border-sky-300 hover:border-l-sky-500 hover:shadow-xl hover:shadow-sky-200/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden",
+        "relative p-10 border-l-4 border-l-primary border-[3px] border-slate-300 bg-white shadow-lg shadow-slate-200/50 hover:bg-sky-50 hover:border-sky-300 hover:border-l-sky-500 hover:shadow-xl hover:shadow-sky-200/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden",
         className
       )}
     >
