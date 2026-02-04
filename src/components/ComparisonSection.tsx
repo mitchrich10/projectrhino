@@ -8,7 +8,7 @@ const comparisons = [
   },
   {
     pe: "Leverage and operating cost reductions drive returns",
-    rhino: "Clear organic growth, with selective inorganic expansion",
+    rhino: "Build organically, acquire opportunistically",
     vc: "Binary outcomes: unicorn or bust",
   },
   {
@@ -18,7 +18,7 @@ const comparisons = [
   },
   {
     pe: "Limited tolerance for experimentation; profitability required",
-    rhino: "Encourage experimentation; comfortable investing pre-profitability",
+    rhino: "Encourages experimentation and willing to fund growth before profitability",
     vc: "Prioritizes venture-stage conversion",
   },
 ];
