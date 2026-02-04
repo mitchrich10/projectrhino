@@ -48,32 +48,28 @@ const ComparisonSection: FC = () => {
             </div>
           </div>
 
-          {/* PE vs VC side by side on mobile */}
-          <div className="grid grid-cols-2 gap-3 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            <div className="bg-slate-700/50 rounded-lg p-4 hover:bg-slate-700/70 transition-colors duration-300">
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 text-center mb-3">
+          {/* PE vs VC side by side on mobile - row by row for alignment */}
+          <div className="bg-slate-700/50 rounded-lg p-4 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            {/* Headers */}
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 text-center">
                 Private Equity
               </h4>
-              <div className="space-y-2">
-                {comparisons.map((row, idx) => (
-                  <p key={idx} className="text-[10px] text-slate-300 text-center leading-tight py-2 border-b border-slate-600/50 last:border-b-0">
-                    {row.pe}
-                  </p>
-                ))}
-              </div>
-            </div>
-            <div className="bg-slate-700/50 rounded-lg p-4 hover:bg-slate-700/70 transition-colors duration-300">
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 text-center mb-3">
+              <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 text-center">
                 Venture Capital
               </h4>
-              <div className="space-y-2">
-                {comparisons.map((row, idx) => (
-                  <p key={idx} className="text-[10px] text-slate-300 text-center leading-tight py-2 border-b border-slate-600/50 last:border-b-0">
-                    {row.vc}
-                  </p>
-                ))}
-              </div>
             </div>
+            {/* Rows */}
+            {comparisons.map((row, idx) => (
+              <div key={idx} className="grid grid-cols-2 gap-3 py-2 border-b border-slate-600/50 last:border-b-0">
+                <p className="text-[10px] text-slate-300 text-center leading-tight flex items-center justify-center">
+                  {row.pe}
+                </p>
+                <p className="text-[10px] text-slate-300 text-center leading-tight flex items-center justify-center">
+                  {row.vc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
