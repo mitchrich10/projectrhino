@@ -12,13 +12,20 @@ const StatCard: FC<StatCardProps> = ({ title, description, icon, className }) =>
   return (
     <div 
       className={cn(
-        "p-10 border-l-4 border-l-primary border-2 border-slate-200 bg-slate-50/80 shadow-md hover:bg-sky-50 hover:border-sky-300 hover:border-l-sky-500 hover:shadow-lg hover:shadow-sky-200/40 transition-all duration-300",
+        "relative p-10 border-l-4 border-l-primary border-2 border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 shadow-lg shadow-slate-200/50 hover:bg-gradient-to-br hover:from-sky-50 hover:via-white hover:to-sky-100 hover:border-sky-300 hover:border-l-sky-500 hover:shadow-xl hover:shadow-sky-200/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden",
         className
       )}
     >
-      <div className="mb-8 text-primary">{icon}</div>
-      <h4 className="text-sm font-black uppercase tracking-widest mb-4">{title}</h4>
-      <p className="text-muted-foreground text-xs leading-relaxed">{description}</p>
+      {/* Subtle corner accent */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/5 to-transparent" />
+      
+      {/* Icon container with background */}
+      <div className="relative mb-6 w-14 h-14 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center shadow-inner">
+        <div className="text-primary [&>svg]:w-7 [&>svg]:h-7">{icon}</div>
+      </div>
+      
+      <h4 className="text-sm font-black uppercase tracking-widest mb-4 text-foreground">{title}</h4>
+      <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
     </div>
   );
 };
