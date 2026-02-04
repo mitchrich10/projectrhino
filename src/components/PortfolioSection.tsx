@@ -5,7 +5,7 @@ import { PortfolioCard, PortfolioCardEmpty } from "./PortfolioCard";
 import activePhoto1 from "@/assets/active-portfolio-1.jpg";
 import activePhoto2 from "@/assets/active-portfolio-2.jpg";
 import activePhoto3 from "@/assets/active-portfolio-3.jpg";
-import activePhoto4 from "@/assets/active-portfolio-4.jpg";
+import activePhoto4 from "@/assets/founders-hike.jpg";
 
 // Exit Portfolio header photos
 import exitPhoto1 from "@/assets/exit-portfolio-1.jpg";
