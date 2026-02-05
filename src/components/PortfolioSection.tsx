@@ -58,6 +58,7 @@ const activePortfolio = [
     description: "Reproductive healthcare.",
     isRepresentative: true,
     logo: logoTwig,
+    logoOffset: 2,
     website: "https://twigfertility.com"
   },
   { 
@@ -67,7 +68,7 @@ const activePortfolio = [
     isRepresentative: true,
     logo: logoUpperVillage,
     logoSize: "large",
-    logoOffset: -2,
+    logoOffset: 2,
     website: "https://www.uppervillagevet.com"
   },
   { 
