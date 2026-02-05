@@ -67,7 +67,8 @@ const activePortfolio = [
     isRepresentative: true,
     logo: logoUpperVillage,
     logoSize: "large",
-    logoOffset: -2
+    logoOffset: -2,
+    website: "https://www.uppervillagevet.com"
   },
   { 
     name: "Flint", 
