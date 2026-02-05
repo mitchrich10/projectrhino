@@ -18,7 +18,7 @@ const HeroSection: FC = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    const duration = currentIndex === 0 ? 6000 : 3000; // Producer stays twice as long
+    const duration = currentIndex === 0 ? 6000 : 2000; // Producer stays longer, others faster
     
     const timeout = setTimeout(() => {
       setIsAnimating(true);
