@@ -11,7 +11,6 @@ const rotatingWords = [
   "Health",
   "Insurance",
   "Mortgage",
-  "Professional Services",
 ];
 
 const HeroSection: FC = () => {
