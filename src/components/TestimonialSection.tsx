@@ -16,10 +16,10 @@ const TestimonialSection: FC = () => {
           {/* Featured Company Highlights */}
           <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
             {[
-              { logo: logoElective, name: "Elective", year: "2021", kpi: "TBD", url: "https://www.elective.com" },
-              { logo: logoFispan, name: "FISPAN", year: "2018", kpi: "TBD", url: "https://www.fispan.com" },
-              { logo: logoArticle, name: "Article", year: "2016", kpi: "TBD", url: "https://www.article.com" },
-              { logo: logoThinkific, name: "Thinkific", year: "2015", kpi: "TBD", url: "https://www.thinkific.com" },
+              { logo: logoElective, name: "Elective", year: "2021", kpi: "$0M to $10M in Annual Revenue", url: "https://www.elective.com" },
+              { logo: logoFispan, name: "FISPAN", year: "2018", kpi: "$0M to $35M in ARR", url: "https://www.fispan.com" },
+              { logo: logoArticle, name: "Article", year: "2016", kpi: "$0M to $68M in EBITDA", url: "https://www.article.com" },
+              { logo: logoThinkific, name: "Thinkific", year: "2015", kpi: "$0M to $83M in ARR", url: "https://www.thinkific.com" },
             ].map((company) => (
               <div key={company.name} className="text-center group flex-1 max-w-[180px]">
                 <a 
