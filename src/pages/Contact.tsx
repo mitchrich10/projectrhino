@@ -35,7 +35,6 @@ const Contact: FC = () => {
       const formData = new FormData(e.currentTarget);
       const name = formData.get("name") as string;
       const email = formData.get("email") as string;
-      const phone = formData.get("phone") as string;
       const message = formData.get("message") as string;
 
       // Upload file if present
@@ -58,7 +57,6 @@ const Contact: FC = () => {
         body: {
           name,
           email,
-          phone: phone || undefined,
           message,
           fileName: fileName || undefined,
         },
@@ -148,20 +146,6 @@ const Contact: FC = () => {
                     />
                   </div>
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-widest">
-                    Phone
-                  </Label>
-                  <Input 
-                    id="phone" 
-                    name="phone"
-                    type="tel" 
-                    className="bg-white border-border focus:border-primary max-w-sm"
-                    disabled={isSubmitting}
-                  />
-                </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="message" className="text-xs font-bold uppercase tracking-widest">
                     In a few sentences, tell us about your business, what stage you're at, your revenue model, and what traction you've achieved.
@@ -169,7 +153,6 @@ const Contact: FC = () => {
                   <Textarea 
                     id="message"
                     name="message"
-                    placeholder="Example Text"
                     className="bg-white border-border focus:border-primary min-h-[160px] resize-none"
                     required
                     disabled={isSubmitting}
