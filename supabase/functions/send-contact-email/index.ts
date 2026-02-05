@@ -11,7 +11,6 @@ const corsHeaders = {
 interface ContactRequest {
   name: string;
   email: string;
-  phone?: string;
   message: string;
   fileName?: string;
 }
@@ -26,7 +25,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const { name, email, phone, message, fileName }: ContactRequest = await req.json();
+    const { name, email, message, fileName }: ContactRequest = await req.json();
 
     if (!name || !email || !message) {
       throw new Error("Missing required fields: name, email, and message are required");
@@ -36,7 +35,6 @@ const handler = async (req: Request): Promise<Response> => {
       <h2>New Contact Form Submission</h2>
       <p><strong>Name:</strong> ${name}</p>
       <p><strong>Email:</strong> ${email}</p>
-      ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ""}
       <h3>Message:</h3>
       <p>${message.replace(/\n/g, "<br>")}</p>
       ${fileName ? `<p><strong>Attachment uploaded:</strong> ${fileName}</p>` : ""}
