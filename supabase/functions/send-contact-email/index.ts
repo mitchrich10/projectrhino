@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "Rhino Ventures <onboarding@resend.dev>",
-        to: ["nicholas@rhinovc.com"],
+        to: ["mitch@rhinovc.com"],
         reply_to: email,
         subject: `Contact Form: ${name}`,
         html: emailHtml,
