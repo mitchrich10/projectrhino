@@ -13,6 +13,8 @@ interface ContactRequest {
   email: string;
   message: string;
   fileName?: string;
+  fileContent?: string;
+  fileType?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -25,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const { name, email, message, fileName }: ContactRequest = await req.json();
+    const { name, email, message, fileName, fileContent, fileType }: ContactRequest = await req.json();
 
     if (!name || !email || !message) {
       throw new Error("Missing required fields: name, email, and message are required");
@@ -37,8 +39,25 @@ const handler = async (req: Request): Promise<Response> => {
       <p><strong>Email:</strong> ${email}</p>
       <h3>Message:</h3>
       <p>${message.replace(/\n/g, "<br>")}</p>
-      ${fileName ? `<p><strong>Attachment uploaded:</strong> ${fileName}</p>` : ""}
     `;
+
+    const emailPayload: Record<string, unknown> = {
+      from: "Rhino Ventures <onboarding@resend.dev>",
+      to: ["mitch@rhinovc.com"],
+      reply_to: email,
+      subject: `Contact Form: ${name}`,
+      html: emailHtml,
+    };
+
+    // Add attachment if file was provided
+    if (fileName && fileContent) {
+      emailPayload.attachments = [
+        {
+          filename: fileName,
+          content: fileContent,
+        },
+      ];
+    }
 
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -46,13 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
-      body: JSON.stringify({
-        from: "Rhino Ventures <onboarding@resend.dev>",
-        to: ["mitch@rhinovc.com"],
-        reply_to: email,
-        subject: `Contact Form: ${name}`,
-        html: emailHtml,
-      }),
+      body: JSON.stringify(emailPayload),
     });
 
     if (!res.ok) {

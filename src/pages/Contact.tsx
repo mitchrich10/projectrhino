@@ -37,19 +37,16 @@ const Contact: FC = () => {
       const email = formData.get("email") as string;
       const message = formData.get("message") as string;
 
-      // Upload file if present
+      // Convert file to base64 if present
+      let fileContent: string | undefined;
       if (file) {
-        const fileExt = file.name.split(".").pop();
-        const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from("contact-uploads")
-          .upload(uniqueFileName, file);
-
-        if (uploadError) {
-          console.error("File upload error:", uploadError);
-          // Continue without file - still send email
+        const arrayBuffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(arrayBuffer);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+          binary += String.fromCharCode(bytes[i]);
         }
+        fileContent = btoa(binary);
       }
 
       // Send email via edge function
@@ -59,6 +56,8 @@ const Contact: FC = () => {
           email,
           message,
           fileName: fileName || undefined,
+          fileContent,
+          fileType: file?.type,
         },
       });
 
