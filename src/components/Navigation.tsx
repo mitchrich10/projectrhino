@@ -4,11 +4,17 @@ import { cn } from "@/lib/utils";
 import { RhinoButton } from "./RhinoButton";
 import { Link } from "react-router-dom";
 
-const Logo: FC<{ className?: string; dark?: boolean }> = ({ className, dark = false }) => (
-  <Link to="/" className={cn("flex items-center", className)}>
-    <span className={cn("text-xl font-black tracking-wide uppercase", dark ? "text-foreground" : "text-white")}>RHINO</span>
-  </Link>
-);
+const Logo: FC<{ className?: string; dark?: boolean }> = ({ className, dark = false }) => {
+  const handleClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <Link to="/" onClick={handleClick} className={cn("flex items-center", className)}>
+      <span className={cn("text-xl font-black tracking-wide uppercase", dark ? "text-foreground" : "text-white")}>RHINO</span>
+    </Link>
+  );
+};
 
 interface NavLinkProps {
   href: string;
