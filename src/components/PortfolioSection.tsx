@@ -204,16 +204,16 @@ const activePortfolio = [
 ];
 
 const exitedPortfolio = [
-  { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "iGaming and eSports.", logo: logoAskott, logoOffset: 2, website: "http://www.askottentertainment.com" },
-  { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation.", logo: logoBeanworks, logoOffset: 2, website: "http://www.beanworks.com" },
-  { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform.", logo: logoCuratio, website: "http://www.curatio.me" },
-  { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform.", logo: logoGrow, website: "http://www.poweredbygrow.com" },
-  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform.", logo: logoOntopical, logoSize: "xlarge", logoOffset: 2, website: "https://www.ontopical.com" },
+  { name: "Askott Entertainment", acquiredBy: "FansUnite", category: "Gaming", description: "iGaming and eSports.", logo: logoAskott, logoOffset: 2 },
+  { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation.", logo: logoBeanworks, logoOffset: 2 },
+  { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform.", logo: logoCuratio },
+  { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform.", logo: logoGrow },
+  { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform.", logo: logoOntopical, logoSize: "xlarge", logoOffset: 2 },
   { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform.", logo: logoPeerboard },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics.", logo: logoPressboard },
-  { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform.", logo: logoSokanu, invertLogo: false, bgColor: "#5b3d8c", website: "http://www.sokanu.com" },
+  { name: "Sokanu", acquiredBy: "Penn Foster", category: "EdTech", description: "Career matching platform.", logo: logoSokanu, invertLogo: false, bgColor: "#5b3d8c" },
   { name: "ThinkCX", acquiredBy: "OpenSignal", category: "Analytics", description: "Market intelligence for telecommunications.", logo: logoThinkCX },
-  { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform.", logo: logoThinkific, logoOffset: 2, website: "http://www.thinkific.com" },
+  { name: "Thinkific", acquiredBy: "IPO: TSX", category: "EdTech", description: "Online course platform.", logo: logoThinkific, logoOffset: 2 },
   { name: "Tutela", acquiredBy: "Comlinkdata", category: "Telecom", description: "Mobile network analytics.", logo: logoTutela }
 ];
 
