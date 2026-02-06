@@ -3,6 +3,8 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RhinoButton } from "./RhinoButton";
 import { Link } from "react-router-dom";
+import logoBlack from "@/assets/rhino-logo-black.png";
+import logoWhite from "@/assets/rhino-logo-white.png";
 
 const Logo: FC<{ className?: string; dark?: boolean }> = ({ className, dark = false }) => {
   const handleClick = () => {
@@ -11,7 +13,11 @@ const Logo: FC<{ className?: string; dark?: boolean }> = ({ className, dark = fa
 
   return (
     <Link to="/" onClick={handleClick} className={cn("flex items-center", className)}>
-      <span className={cn("text-xl font-black tracking-wide uppercase", dark ? "text-foreground" : "text-white")}>RHINO</span>
+      <img 
+        src={dark ? logoBlack : logoWhite} 
+        alt="Rhino" 
+        className="h-8 w-auto"
+      />
     </Link>
   );
 };
