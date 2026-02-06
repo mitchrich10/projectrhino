@@ -16,7 +16,7 @@ const Logo: FC<{ className?: string; dark?: boolean }> = ({ className, dark = fa
         src={logo} 
         alt="Rhino" 
         className={cn(
-          "h-16 w-auto object-contain",
+          "h-12 w-auto object-contain",
           !dark && "invert"
         )}
       />
