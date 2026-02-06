@@ -24,14 +24,14 @@ const team: TeamMember[] = [
     role: "Investor",
     photo: fraserPhoto,
     linkedin: "https://www.linkedin.com/in/fraser-h-b9a65b1b7/",
-    portfolio: ["Article", "Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
+    portfolio: ["Article", "Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "Rare Days", "Recon Instruments", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
   },
   {
     name: "Jay Rhind",
     role: "Investor",
     photo: jayPhoto,
     linkedin: "https://www.linkedin.com/in/jayrhind/",
-    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow Technologies", "Klue", "MARZ", "Peerboard", "Quinn AI", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
+    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow Technologies", "Klue", "MARZ", "Peerboard", "Quinn AI", "Rare Days", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
   },
   {
     name: "Mitch Richardson",
