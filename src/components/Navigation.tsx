@@ -16,7 +16,10 @@ const Logo: FC<{ className?: string; dark?: boolean }> = ({ className, dark = fa
       <img 
         src={dark ? logoBlack : logoWhite} 
         alt="Rhino" 
-        className="h-8 w-auto"
+        className={cn(
+          "h-16 w-auto object-contain",
+          dark ? "mix-blend-multiply" : "mix-blend-screen"
+        )}
       />
     </Link>
   );
