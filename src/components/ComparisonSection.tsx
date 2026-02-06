@@ -1,4 +1,5 @@
 import { FC } from "react";
+import logo from "@/assets/rhino-logo-black.png";
 
 const comparisons = [
   {
@@ -36,9 +37,9 @@ const ComparisonSection: FC = () => {
         <div className="md:hidden space-y-4">
           {/* Rhino Card - Hero */}
           <div className="bg-white rounded-xl p-5 border-4 border-primary shadow-[0_0_30px_rgba(59,130,246,0.3)] animate-fade-in">
-            <h3 className="text-2xl font-black uppercase tracking-wider text-primary text-center mb-4">
-              Rhino
-            </h3>
+            <div className="flex justify-center mb-4">
+              <img src={logo} alt="Rhino" className="h-10 w-auto object-contain" />
+            </div>
             <div className="space-y-3">
               {comparisons.map((row, idx) => (
                 <p key={idx} className="text-sm text-slate-900 font-medium text-center leading-snug py-2 border-b border-slate-200 last:border-b-0">
@@ -83,10 +84,8 @@ const ComparisonSection: FC = () => {
               </h3>
             </div>
             <div className="w-8" />
-            <div className="bg-primary rounded-t-xl py-4 px-4 shadow-lg shadow-primary/40">
-              <h3 className="text-xl font-black uppercase tracking-wider text-white text-center">
-                Rhino
-              </h3>
+            <div className="bg-primary rounded-t-xl py-4 px-4 shadow-lg shadow-primary/40 flex justify-center">
+              <img src={logo} alt="Rhino" className="h-8 w-auto object-contain invert" />
             </div>
             <div className="w-8" />
             <div className="flex items-end justify-center pb-3">
