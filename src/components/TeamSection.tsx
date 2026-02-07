@@ -12,6 +12,7 @@ interface TeamMember {
   photo: string;
   linkedin: string;
   portfolio?: string[];
+  coFounder?: string[];
   backDescription?: string;
   objectPosition?: string;
   /** Optional transform to force a tighter crop inside the fixed 3:4 card */
@@ -24,6 +25,7 @@ const team: TeamMember[] = [
     role: "Investor",
     photo: fraserPhoto,
     linkedin: "https://www.linkedin.com/in/fraser-h-b9a65b1b7/",
+    coFounder: ["Article", "Rare Days", "Recon Instruments"],
     portfolio: ["Article", "Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "Rare Days", "Recon Instruments", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
   },
   {
@@ -31,6 +33,7 @@ const team: TeamMember[] = [
     role: "Investor",
     photo: jayPhoto,
     linkedin: "https://www.linkedin.com/in/jayrhind/",
+    coFounder: ["Rare Days"],
     portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow Technologies", "Klue", "MARZ", "Peerboard", "Quinn AI", "Rare Days", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
   },
   {
@@ -57,12 +60,12 @@ const team: TeamMember[] = [
   }
 ];
 
-const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio, backDescription, objectPosition, photoTransform }) => {
+const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio, coFounder, backDescription, objectPosition, photoTransform }) => {
   const effectivePhotoTransform =
     photoTransform ?? (name === "Mitch Richardson" ? "translateY(-10%) scale(1.18)" : undefined);
   const photoWrapperStyle = effectivePhotoTransform ? { transform: effectivePhotoTransform } : undefined;
 
-  const hasFlipContent = portfolio || backDescription;
+  const hasFlipContent = portfolio || coFounder || backDescription;
 
   // Static card for members without any back content
   if (!hasFlipContent) {
@@ -122,17 +125,30 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
         </div>
 
         {/* Back Face */}
-        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-2">Portfolio</h4>
-          {portfolio ? (
-            <div className="columns-2 gap-x-3">
-              {portfolio.map((company, index) => (
-                <p key={index} className="text-[11px] leading-tight text-white mb-1 break-inside-avoid">{company}</p>
-              ))}
-            </div>
-          ) : backDescription ? (
+        <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4 overflow-hidden">
+          {coFounder && (
+            <>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">Co-Founder</h4>
+              <div className="columns-2 gap-x-3 mb-3">
+                {coFounder.map((company, index) => (
+                  <p key={index} className="text-[11px] leading-tight text-white mb-0.5 break-inside-avoid">{company}</p>
+                ))}
+              </div>
+            </>
+          )}
+          {portfolio && (
+            <>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">Portfolio</h4>
+              <div className="columns-2 gap-x-3">
+                {portfolio.map((company, index) => (
+                  <p key={index} className="text-[11px] leading-tight text-white mb-0.5 break-inside-avoid">{company}</p>
+                ))}
+              </div>
+            </>
+          )}
+          {backDescription && !portfolio && !coFounder && (
             <p className="text-[11px] leading-relaxed text-white">{backDescription}</p>
-          ) : null}
+          )}
           <a 
             href={linkedin} 
             target="_blank" 
