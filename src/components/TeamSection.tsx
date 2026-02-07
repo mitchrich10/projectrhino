@@ -26,7 +26,7 @@ const team: TeamMember[] = [
     photo: fraserPhoto,
     linkedin: "https://www.linkedin.com/in/fraser-h-b9a65b1b7/",
     coFounder: ["Article", "Rare Days", "Recon Instruments"],
-    portfolio: ["Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "Rare Days", "Recon Instruments", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
+    portfolio: ["Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
   },
   {
     name: "Jay Rhind",
@@ -34,7 +34,7 @@ const team: TeamMember[] = [
     photo: jayPhoto,
     linkedin: "https://www.linkedin.com/in/jayrhind/",
     coFounder: ["Rare Days"],
-    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow Technologies", "Klue", "MARZ", "Peerboard", "Quinn AI", "Rare Days", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
+    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow Technologies", "Klue", "MARZ", "Peerboard", "Quinn AI", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
   },
   {
     name: "Mitch Richardson",
