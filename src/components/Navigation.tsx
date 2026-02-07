@@ -66,12 +66,12 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
   return (
     <nav 
       className={cn(
-        "fixed w-full z-50 transition-all duration-300",
+        "fixed top-0 w-full z-50 transition-all duration-300",
         scrolled 
           ? isLightVariant 
-            ? "bg-background/95 backdrop-blur-md py-4 border-b border-border"
-            : "bg-black/95 backdrop-blur-md py-4 border-b border-white/10"
-          : "bg-transparent py-8"
+            ? "bg-background/95 backdrop-blur-md pt-[max(1rem,env(safe-area-inset-top))] pb-4 border-b border-border"
+            : "bg-black/95 backdrop-blur-md pt-[max(1rem,env(safe-area-inset-top))] pb-4 border-b border-white/10"
+          : "bg-transparent pt-[max(2rem,env(safe-area-inset-top))] pb-8"
       )}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
