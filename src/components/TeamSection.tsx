@@ -26,7 +26,7 @@ const team: TeamMember[] = [
     photo: fraserPhoto,
     linkedin: "https://www.linkedin.com/in/fraser-h-b9a65b1b7/",
     coFounder: ["Article", "Rare Days", "Recon Instruments"],
-    portfolio: ["Article", "Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "Rare Days", "Recon Instruments", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
+    portfolio: ["Aspect Biosystems", "Curatio", "FansUnite", "Fatigue Science", "Klue", "Pressboard", "Rare Days", "Recon Instruments", "ShopVision", "Sokanu", "ThinkCX", "Thinkific", "Tutela"]
   },
   {
     name: "Jay Rhind",
@@ -126,21 +126,21 @@ const TeamMemberCard: FC<TeamMember> = ({ name, role, photo, linkedin, portfolio
 
         {/* Back Face */}
         <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-primary p-4 overflow-hidden">
-          {coFounder && (
+          {portfolio && (
             <>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">Co-Founder</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">Portfolio</h4>
               <div className="columns-2 gap-x-3 mb-3">
-                {coFounder.map((company, index) => (
+                {portfolio.map((company, index) => (
                   <p key={index} className="text-[11px] leading-tight text-white mb-0.5 break-inside-avoid">{company}</p>
                 ))}
               </div>
             </>
           )}
-          {portfolio && (
+          {coFounder && (
             <>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">Portfolio</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-1">Co-Founder</h4>
               <div className="columns-2 gap-x-3">
-                {portfolio.map((company, index) => (
+                {coFounder.map((company, index) => (
                   <p key={index} className="text-[11px] leading-tight text-white mb-0.5 break-inside-avoid">{company}</p>
                 ))}
               </div>
