@@ -4,6 +4,7 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const ALLOWED_ORIGINS = [
   "https://id-preview--72c16985-1511-4d97-92c8-0576381fef3a.lovable.app",
+  "https://72c16985-1511-4d97-92c8-0576381fef3a.lovableproject.com",
   "https://rhinovc.com",
   "https://www.rhinovc.com",
 ];
