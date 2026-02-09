@@ -2,11 +2,21 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+const ALLOWED_ORIGINS = [
+  "https://id-preview--72c16985-1511-4d97-92c8-0576381fef3a.lovable.app",
+  "https://rhinovc.com",
+  "https://www.rhinovc.com",
+];
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  };
+}
 
 // Simple in-memory rate limiting (resets on cold start, but sufficient for basic protection)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -58,8 +68,19 @@ interface ContactRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  const cors = getCorsHeaders(req);
+
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
+  }
+
+  // Reject requests from disallowed origins
+  const origin = req.headers.get("origin") || "";
+  if (!ALLOWED_ORIGINS.includes(origin)) {
+    return new Response(
+      JSON.stringify({ error: "Forbidden" }),
+      { status: 403, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   try {
@@ -70,7 +91,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (isRateLimited(ip)) {
       return new Response(
         JSON.stringify({ error: "Too many requests. Please try again later." }),
-        { status: 429, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 429, headers: { "Content-Type": "application/json", ...cors } }
       );
     }
 
@@ -84,7 +105,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (!name || !email || !message) {
       return new Response(
         JSON.stringify({ error: "Missing required fields: name, email, and message are required" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 400, headers: { "Content-Type": "application/json", ...cors } }
       );
     }
 
@@ -92,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (name.length > 200 || email.length > 320 || message.length > 10000) {
       return new Response(
         JSON.stringify({ error: "Input exceeds maximum length" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 400, headers: { "Content-Type": "application/json", ...cors } }
       );
     }
 
@@ -100,7 +121,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (!EMAIL_REGEX.test(email)) {
       return new Response(
         JSON.stringify({ error: "Invalid email format" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 400, headers: { "Content-Type": "application/json", ...cors } }
       );
     }
 
@@ -109,7 +130,7 @@ const handler = async (req: Request): Promise<Response> => {
       if (fileType && !ALLOWED_FILE_TYPES.includes(fileType)) {
         return new Response(
           JSON.stringify({ error: "File type not allowed" }),
-          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+          { status: 400, headers: { "Content-Type": "application/json", ...cors } }
         );
       }
       // Check base64 size (base64 is ~4/3 of original)
@@ -117,7 +138,7 @@ const handler = async (req: Request): Promise<Response> => {
       if (estimatedSize > MAX_FILE_SIZE_BYTES) {
         return new Response(
           JSON.stringify({ error: "File size exceeds 10MB limit" }),
-          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+          { status: 400, headers: { "Content-Type": "application/json", ...cors } }
         );
       }
     }
@@ -162,7 +183,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.error("Resend API error:", errorText);
       return new Response(
         JSON.stringify({ error: "Failed to send email. Please try again." }),
-        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        { status: 500, headers: { "Content-Type": "application/json", ...cors } }
       );
     }
 
@@ -171,7 +192,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
+      headers: { "Content-Type": "application/json", ...cors },
     });
   } catch (error: unknown) {
     console.error("Error in send-contact-email function:", error);
@@ -179,7 +200,7 @@ const handler = async (req: Request): Promise<Response> => {
       JSON.stringify({ error: "An unexpected error occurred. Please try again." }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
+        headers: { "Content-Type": "application/json", ...cors },
       }
     );
   }
