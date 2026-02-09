@@ -53,7 +53,7 @@ const TestimonialSection: FC = () => {
 
         {/* Track Record Stats */}
         <div className="mb-20">
-          <h3 className="text-xl md:text-2xl font-bold text-foreground text-center mb-8">10 years, 3 funds, proven success</h3>
+          <h3 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-8">10 years, 3 funds, proven success</h3>
           
           <div className="grid grid-cols-3 gap-2 md:gap-6 max-w-3xl mx-auto">
             {/* Companies */}
