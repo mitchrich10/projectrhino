@@ -42,13 +42,7 @@ const ContactSection: FC = () => {
           </Link>
         </div>
         <div className="text-left mt-12">
-          <a 
-            href="mailto:hello@rhinovc.com" 
-            className="text-[1.28rem] md:text-[1.9rem] font-light tracking-tight hover:text-primary transition-colors border-b border-border pb-2 text-foreground"
-          >
-            hello@rhinovc.com
-          </a>
-          <p className="text-sm font-medium text-foreground/80 mt-4 drop-shadow-sm">
+          <p className="text-sm font-medium text-foreground/80 drop-shadow-sm">
             Investing out of Vancouver in exceptional companies across Canada
           </p>
         </div>
