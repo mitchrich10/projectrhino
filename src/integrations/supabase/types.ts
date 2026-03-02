@@ -193,42 +193,51 @@ export type Database = {
       onboarding_submissions: {
         Row: {
           additional_notes: string | null
+          announcing_raise: boolean | null
           company_name: string
           created_at: string
           id: string
           logo_path: string | null
+          logo_permission: boolean | null
           needs: string[]
           needs_other: string | null
           team_members: Json
           updated_at: string
           user_email: string
           user_id: string
+          wants_rhino_support: boolean | null
         }
         Insert: {
           additional_notes?: string | null
+          announcing_raise?: boolean | null
           company_name: string
           created_at?: string
           id?: string
           logo_path?: string | null
+          logo_permission?: boolean | null
           needs?: string[]
           needs_other?: string | null
           team_members?: Json
           updated_at?: string
           user_email: string
           user_id: string
+          wants_rhino_support?: boolean | null
         }
         Update: {
           additional_notes?: string | null
+          announcing_raise?: boolean | null
           company_name?: string
           created_at?: string
           id?: string
           logo_path?: string | null
+          logo_permission?: boolean | null
           needs?: string[]
           needs_other?: string | null
           team_members?: Json
           updated_at?: string
           user_email?: string
           user_id?: string
+          wants_rhino_support?: boolean | null
         }
         Relationships: []
       }

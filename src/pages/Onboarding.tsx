@@ -193,6 +193,9 @@ const OnboardingPage: FC = () => {
   const [needs, setNeeds] = useState<string[]>([]);
   const [needsOther, setNeedsOther] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
+  const [logoPermission, setLogoPermission] = useState<boolean | null>(null);
+  const [announcingRaise, setAnnouncingRaise] = useState<boolean | null>(null);
+  const [wantsRhinoSupport, setWantsRhinoSupport] = useState<boolean | null>(null);
 
   // UI state
   const [submitting, setSubmitting] = useState(false);
@@ -294,7 +297,7 @@ const OnboardingPage: FC = () => {
         needs: finalNeeds,
         needs_other: needsOther.trim() || null,
         additional_notes: additionalNotes.trim() || null,
-      });
+      } as never);
 
       if (insertError) throw new Error(insertError.message);
 
@@ -306,6 +309,9 @@ const OnboardingPage: FC = () => {
           teamMembers: validMembers,
           needs: finalNeeds,
           additionalNotes: additionalNotes.trim() || null,
+          logoPermission,
+          announcingRaise,
+          wantsRhinoSupport,
         },
       }).catch(() => { /* best-effort — don't block on email failure */ });
 
@@ -486,6 +492,76 @@ const OnboardingPage: FC = () => {
                       placeholder="Please describe…"
                       className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary mt-2"
                     />
+                  )}
+                </div>
+
+                {/* Logo Permission */}
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-1">
+                    Can we feature your logo on the Rhino site?
+                  </label>
+                  <p className="text-xs text-muted-foreground mb-4">We'd love to showcase our portfolio companies on rhinovc.com.</p>
+                  <div className="flex gap-3">
+                    {[{ label: "Yes, go for it", value: true }, { label: "Not yet", value: false }].map(({ label, value }) => (
+                      <button
+                        key={String(value)}
+                        type="button"
+                        onClick={() => setLogoPermission(value)}
+                        className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-colors ${
+                          logoPermission === value
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-secondary/30 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Announcing Raise */}
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-1">
+                    Are you planning to announce your raise?
+                  </label>
+                  <p className="text-xs text-muted-foreground mb-4">Let us know if a public announcement is on the horizon.</p>
+                  <div className="flex gap-3 mb-4">
+                    {[{ label: "Yes", value: true }, { label: "No / Not sure", value: false }].map(({ label, value }) => (
+                      <button
+                        key={String(value)}
+                        type="button"
+                        onClick={() => { setAnnouncingRaise(value); if (!value) setWantsRhinoSupport(null); }}
+                        className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-colors ${
+                          announcingRaise === value
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-secondary/30 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  {announcingRaise === true && (
+                    <div className="pl-4 border-l-2 border-primary/30">
+                      <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">Would you like Rhino's support with the announcement?</p>
+                      <p className="text-xs text-muted-foreground mb-3">We can help with amplification, intros to press contacts, and more.</p>
+                      <div className="flex gap-3">
+                        {[{ label: "Yes please", value: true }, { label: "We've got it covered", value: false }].map(({ label, value }) => (
+                          <button
+                            key={String(value)}
+                            type="button"
+                            onClick={() => setWantsRhinoSupport(value)}
+                            className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-colors ${
+                              wantsRhinoSupport === value
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-secondary/30 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
+                            }`}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
 
