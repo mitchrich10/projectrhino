@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, LogOut, Menu, X } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
@@ -15,20 +15,10 @@ interface CompanyInfo {
   logo_key: string | null;
 }
 
-const NAV_ITEMS = [
-  { label: "Onboarding", hash: "onboarding" },
-  { label: "Partnerships", hash: "partnerships" },
-  { label: "Resources", hash: "resources" },
-  { label: "Events", hash: "events" },
-  { label: "Requests", hash: "requests" },
-];
-
 const Portal: FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<CompanyInfo | null>(null);
-  const [activeSection, setActiveSection] = useState("onboarding");
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
@@ -76,14 +66,6 @@ const Portal: FC = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  // Sync active section from hash
-  useEffect(() => {
-    const hash = location.hash.replace("#", "");
-    if (hash && NAV_ITEMS.find((n) => n.hash === hash)) {
-      setActiveSection(hash);
-    }
-  }, [location.hash]);
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate("/partner-login");
@@ -107,23 +89,6 @@ const Portal: FC = () => {
           <Link to="/" className="flex-shrink-0">
             <img src={rhinoLogo} alt="Rhino Ventures" className="h-7 w-auto" />
           </Link>
-
-          <nav className="hidden md:flex gap-8">
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.hash}
-                href={`#${item.hash}`}
-                onClick={() => setActiveSection(item.hash)}
-                className={`text-xs font-bold uppercase tracking-widest transition-colors ${
-                  activeSection === item.hash
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
 
           <div className="hidden md:flex items-center gap-4">
             {logoSrc ? (
@@ -168,18 +133,6 @@ const Portal: FC = () => {
                 <span className="text-xs font-bold uppercase tracking-widest">{company?.company_name}</span>
               )}
             </div>
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.hash}
-                href={`#${item.hash}`}
-                onClick={() => { setActiveSection(item.hash); setMenuOpen(false); }}
-                className={`text-xs font-bold uppercase tracking-widest transition-colors ${
-                  activeSection === item.hash ? "text-primary" : "text-muted-foreground"
-                }`}
-              >
-                {item.label}
-              </a>
-            ))}
             <button
               onClick={handleSignOut}
               className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
