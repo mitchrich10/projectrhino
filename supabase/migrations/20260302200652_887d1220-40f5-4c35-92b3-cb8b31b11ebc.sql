@@ -1,0 +1,1 @@
+ALTER TABLE public.approved_domains ADD COLUMN logo_key TEXT;
