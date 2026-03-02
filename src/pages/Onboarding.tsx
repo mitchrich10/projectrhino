@@ -375,7 +375,7 @@ const OnboardingPage: FC = () => {
                   <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-3">
                     Brand Assets
                   </label>
-                  <p className="text-xs text-muted-foreground mb-4">Upload your logo, brand kit, or any other brand assets (PNG, SVG, JPG, PDF — up to 50 MB each).</p>
+                  <p className="text-xs text-muted-foreground mb-4">Upload your logo, brand kit, or any other brand assets (PNG, SVG, JPG, PDF, ZIP — up to 50 MB each).</p>
                   {brandAssets.length > 0 && (
                     <div className="mb-3 space-y-2">
                       {brandAssets.map((file) => (
@@ -417,7 +417,7 @@ const OnboardingPage: FC = () => {
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/png,image/jpeg,image/svg+xml,image/webp,application/pdf"
+                    accept="image/png,image/jpeg,image/svg+xml,image/webp,application/pdf,application/zip,application/x-zip-compressed,.zip"
                     multiple
                     onChange={handleBrandAssetsChange}
                     className="hidden"
