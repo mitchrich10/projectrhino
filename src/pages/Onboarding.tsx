@@ -187,8 +187,7 @@ const OnboardingPage: FC = () => {
   const [companyName, setCompanyName] = useState("");
 
   // Form state
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [brandAssets, setBrandAssets] = useState<File[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([emptyMember()]);
   const [needs, setNeeds] = useState<string[]>([]);
   const [needsOther, setNeedsOther] = useState("");
@@ -230,12 +229,19 @@ const OnboardingPage: FC = () => {
     init();
   }, [navigate]);
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setLogoFile(file);
-    setLogoPreview(URL.createObjectURL(file));
+  const handleBrandAssetsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    setBrandAssets((prev) => {
+      const names = new Set(prev.map((f) => f.name));
+      return [...prev, ...files.filter((f) => !names.has(f.name))];
+    });
+    // reset input so re-selecting same file works
+    e.target.value = "";
   };
+
+  const removeBrandAsset = (name: string) =>
+    setBrandAssets((prev) => prev.filter((f) => f.name !== name));
 
   const updateMember = (idx: number, field: keyof TeamMember, value: string) => {
     setTeamMembers((prev) => prev.map((m, i) => i === idx ? { ...m, [field]: value } : m));
@@ -268,16 +274,16 @@ const OnboardingPage: FC = () => {
     setSubmitting(true);
 
     try {
-      // Upload logo if provided
+      // Upload brand assets if provided (store first file path in logo_path for compatibility)
       let logoPath: string | null = null;
-      if (logoFile) {
-        const ext = logoFile.name.split(".").pop();
-        const path = `${userId}-${Date.now()}.${ext}`;
+      for (const asset of brandAssets) {
+        const ext = asset.name.split(".").pop();
+        const path = `${userId}-${Date.now()}-${asset.name.replace(/[^a-zA-Z0-9._-]/g, "_")}.${ext}`;
         const { error: uploadError } = await supabase.storage
           .from("company-logos")
-          .upload(path, logoFile, { upsert: true });
-        if (uploadError) throw new Error(`Logo upload failed: ${uploadError.message}`);
-        logoPath = path;
+          .upload(path, asset, { upsert: true });
+        if (uploadError) throw new Error(`Asset upload failed: ${uploadError.message}`);
+        if (!logoPath) logoPath = path;
       }
 
       // Build final needs array (replace "Other" placeholder with actual text if provided)
@@ -364,36 +370,56 @@ const OnboardingPage: FC = () => {
               </div>
 
               <div className="space-y-10">
-                {/* Company Logo */}
+                {/* Brand Assets */}
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-3">
-                    Company Logo
+                    Brand Assets
                   </label>
-                  <p className="text-xs text-muted-foreground mb-4">Upload your company logo so we can feature you properly across our materials.</p>
-                  {logoPreview ? (
-                    <div className="flex items-center gap-4">
-                      <img src={logoPreview} alt="Logo preview" className="h-16 w-auto object-contain border border-border rounded-lg p-2 bg-white" />
-                      <button
-                        onClick={() => { setLogoFile(null); setLogoPreview(null); }}
-                        className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors"
-                      >
-                        <X className="w-3.5 h-3.5" /> Remove
-                      </button>
+                  <p className="text-xs text-muted-foreground mb-4">Upload your logo, brand kit, or any other brand assets (PNG, SVG, JPG, PDF — up to 50 MB each).</p>
+                  {brandAssets.length > 0 && (
+                    <div className="mb-3 space-y-2">
+                      {brandAssets.map((file) => (
+                        <div key={file.name} className="flex items-center gap-3 border border-border rounded-lg px-3 py-2 bg-secondary/10">
+                          {file.type.startsWith("image/") ? (
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              className="h-8 w-8 object-contain rounded bg-white flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="h-8 w-8 flex items-center justify-center bg-secondary rounded flex-shrink-0">
+                              <Upload className="w-3.5 h-3.5 text-muted-foreground" />
+                            </div>
+                          )}
+                          <span className="text-xs text-foreground flex-1 truncate">{file.name}</span>
+                          <span className="text-[10px] text-muted-foreground flex-shrink-0">
+                            {(file.size / 1024 / 1024).toFixed(1)} MB
+                          </span>
+                          <button
+                            onClick={() => removeBrandAsset(file.name)}
+                            className="text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ) : (
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center gap-3 border border-dashed border-border rounded-xl px-6 py-5 text-sm text-muted-foreground hover:text-foreground hover:border-primary transition-colors w-full sm:w-auto"
-                    >
-                      <Upload className="w-4 h-4 flex-shrink-0" />
-                      <span className="text-xs font-bold uppercase tracking-widest">Upload Logo (PNG, SVG, JPG)</span>
-                    </button>
                   )}
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-3 border border-dashed border-border rounded-xl px-6 py-5 text-sm text-muted-foreground hover:text-foreground hover:border-primary transition-colors w-full sm:w-auto"
+                  >
+                    <Upload className="w-4 h-4 flex-shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-widest">
+                      {brandAssets.length > 0 ? "Add More Files" : "Upload Brand Assets"}
+                    </span>
+                  </button>
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                    onChange={handleLogoChange}
+                    accept="image/png,image/jpeg,image/svg+xml,image/webp,application/pdf"
+                    multiple
+                    onChange={handleBrandAssetsChange}
                     className="hidden"
                   />
                 </div>
