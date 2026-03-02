@@ -20,18 +20,21 @@ export type Database = {
           created_at: string
           domain: string
           id: string
+          logo_key: string | null
         }
         Insert: {
           company_name: string
           created_at?: string
           domain: string
           id?: string
+          logo_key?: string | null
         }
         Update: {
           company_name?: string
           created_at?: string
           domain?: string
           id?: string
+          logo_key?: string | null
         }
         Relationships: []
       }
