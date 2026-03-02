@@ -109,34 +109,45 @@ interface OnboardingSectionProps {
 const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isInvited }) => {
   const [steps, setSteps] = useState<Step[]>([]);
   const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+  const [batchId, setBatchId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
 
-  const domain = userEmail.split("@")[1]?.toLowerCase() ?? "";
-
   useEffect(() => {
-    if (!domain) return;
     const init = async () => {
-      const [{ data: stepsData }, { data: progressData }] = await Promise.all([
+      // Look up the user's invite to find their shared batch_id
+      const [{ data: stepsData }, { data: inviteData }] = await Promise.all([
         supabase.from("onboarding_steps").select("*").order("order"),
-        supabase.from("onboarding_progress").select("step_id").eq("domain", domain),
+        supabase.from("onboarding_invites").select("batch_id").eq("email", userEmail.toLowerCase()).maybeSingle(),
       ]);
       setSteps(stepsData ?? []);
-      setCompletedIds(new Set((progressData ?? []).map((p: { step_id: string }) => p.step_id)));
+
+      const bid = (inviteData as { batch_id: string } | null)?.batch_id ?? null;
+      setBatchId(bid);
+
+      if (bid) {
+        const { data: progressData } = await supabase
+          .from("onboarding_progress")
+          .select("step_id")
+          .eq("batch_id", bid);
+        setCompletedIds(new Set((progressData ?? []).map((p: { step_id: string }) => p.step_id)));
+      }
+
       setLoading(false);
     };
     init();
-  }, [domain]);
+  }, [userEmail]);
 
   const toggleStep = async (stepId: string) => {
+    if (!batchId) return;
     setToggling(stepId);
     const isCompleted = completedIds.has(stepId);
 
     if (isCompleted) {
-      await supabase.from("onboarding_progress").delete().eq("domain", domain).eq("step_id", stepId);
+      await supabase.from("onboarding_progress").delete().eq("batch_id", batchId).eq("step_id", stepId);
       setCompletedIds((prev) => { const n = new Set(prev); n.delete(stepId); return n; });
     } else {
-      await supabase.from("onboarding_progress").insert({ user_id: userId, domain, step_id: stepId });
+      await supabase.from("onboarding_progress").insert({ user_id: userId, batch_id: batchId, step_id: stepId });
       setCompletedIds((prev) => new Set([...prev, stepId]));
     }
     setToggling(null);
