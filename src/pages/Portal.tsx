@@ -52,6 +52,12 @@ const Portal: FC = () => {
         .maybeSingle();
 
       setCompany(data ?? { company_name: "Partner", logo_key: null });
+      // Block access if domain is not approved (catches unapproved Google sign-ins)
+      if (!data && !session.user.email.endsWith("@rhinovc.com")) {
+        await supabase.auth.signOut();
+        navigate("/partner-login");
+        return;
+      }
       setIsAdmin(session.user.email.endsWith("@rhinovc.com"));
       setLoading(false);
     };
