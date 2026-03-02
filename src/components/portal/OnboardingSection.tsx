@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, CheckCircle2, Circle, ExternalLink, Bell, BellOff, ArrowRight, ClipboardList } from "lucide-react";
+import { Loader2, CheckCircle2, Circle, ExternalLink, Bell, BellOff, ArrowRight, ClipboardList, ChevronDown } from "lucide-react";
 
 interface Step {
   id: string;
@@ -100,6 +100,60 @@ const NotificationOptIn: FC<{ userId: string; email: string }> = ({ userId, emai
   );
 };
 
+// ── Intake Form CTA ────────────────────────────────────────────────────────────
+const IntakeCTA: FC<{ hasSubmitted: boolean; expanded: boolean; onToggle: () => void }> = ({
+  hasSubmitted, expanded, onToggle,
+}) => {
+  if (hasSubmitted) {
+    return (
+      <div className={`mb-6 border rounded-xl overflow-hidden transition-colors ${expanded ? "border-border" : "border-border"}`}>
+        <button
+          onClick={onToggle}
+          className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-secondary/20 transition-colors"
+        >
+          <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-black uppercase tracking-widest text-foreground">Intake Form</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">Completed</p>
+          </div>
+          <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${expanded ? "rotate-180" : ""}`} />
+        </button>
+        {expanded && (
+          <div className="border-t border-border px-5 py-4">
+            <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+              Your intake form has been submitted. You can revisit or update it at any time.
+            </p>
+            <Link
+              to="/onboarding"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
+            >
+              View / Edit Intake Form <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-6 border border-primary/30 rounded-xl p-5 bg-primary/5 flex items-start gap-4">
+      <ClipboardList className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-black uppercase tracking-widest text-foreground mb-1">Complete Your Intake Form</p>
+        <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+          Tell us about your company, key team members, and short-term needs so Rhino can hit the ground running with you.
+        </p>
+        <Link
+          to="/onboarding"
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:opacity-90 transition-opacity"
+        >
+          Start Intake Form <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
+    </div>
+  );
+};
+
 // ── Main Section ───────────────────────────────────────────────────────────────
 interface OnboardingSectionProps {
   userId: string;
@@ -113,15 +167,18 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
   const [batchId, setBatchId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [intakeExpanded, setIntakeExpanded] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      // Look up the user's invite to find their shared batch_id
-      const [{ data: stepsData }, { data: inviteData }] = await Promise.all([
+      const [{ data: stepsData }, { data: inviteData }, { data: submissionData }] = await Promise.all([
         supabase.from("onboarding_steps").select("*").order("order"),
         supabase.from("onboarding_invites").select("batch_id").eq("email", userEmail.toLowerCase()).maybeSingle(),
+        supabase.from("onboarding_submissions").select("id").eq("user_id", userId).maybeSingle(),
       ]);
       setSteps(stepsData ?? []);
+      setHasSubmitted(!!submissionData);
 
       const bid = (inviteData as { batch_id: string } | null)?.batch_id ?? null;
       setBatchId(bid);
@@ -137,7 +194,7 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
       setLoading(false);
     };
     init();
-  }, [userEmail]);
+  }, [userEmail, userId]);
 
   const toggleStep = async (stepId: string) => {
     if (!batchId) return;
@@ -166,21 +223,7 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
         <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
           Onboarding
         </h2>
-        <div className="mb-6 border border-primary/30 rounded-xl p-5 bg-primary/5 flex items-start gap-4">
-          <ClipboardList className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-black uppercase tracking-widest text-foreground mb-1">Complete Your Intake Form</p>
-            <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-              Tell us about your company, key team members, and short-term needs so Rhino can hit the ground running with you.
-            </p>
-            <Link
-              to="/onboarding"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:opacity-90 transition-opacity"
-            >
-              Start Intake Form <ArrowRight className="w-3 h-3" />
-            </Link>
-          </div>
-        </div>
+        <IntakeCTA hasSubmitted={hasSubmitted} expanded={intakeExpanded} onToggle={() => setIntakeExpanded((v) => !v)} />
         <NotificationOptIn userId={userId} email={userEmail} />
       </section>
     );
@@ -193,20 +236,8 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
       </h2>
 
       {/* Intake Form CTA */}
-      <div className="mb-8 border border-primary/30 rounded-xl p-5 bg-primary/5 flex items-start gap-4">
-        <ClipboardList className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-black uppercase tracking-widest text-foreground mb-1">Complete Your Intake Form</p>
-          <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-            Tell us about your company, key team members, and short-term needs so Rhino can hit the ground running with you.
-          </p>
-          <Link
-            to="/onboarding"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:opacity-90 transition-opacity"
-          >
-            Start Intake Form <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
+      <div className="mb-8">
+        <IntakeCTA hasSubmitted={hasSubmitted} expanded={intakeExpanded} onToggle={() => setIntakeExpanded((v) => !v)} />
       </div>
 
       {loading ? (
