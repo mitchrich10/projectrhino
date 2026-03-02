@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ExternalLink, FileText, Loader2, Lock } from "lucide-react";
+import { Download, ExternalLink, FileText, Loader2, Lock } from "lucide-react";
 
 interface Resource {
   id: string;
@@ -175,18 +175,16 @@ const ResourcesSection: FC = () => {
                   }
 
                   const href = r.file_path ? getFileUrl(r.file_path) : r.url;
+                  const isFile = !!r.file_path;
                   return (
-                    <a
+                    <div
                       key={r.id}
-                      href={href ?? undefined}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors ${href ? "hover:border-primary/50 hover:bg-secondary/40 cursor-pointer" : "cursor-default"}`}
+                      className={`group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors ${href ? "hover:border-primary/50 hover:bg-secondary/40" : ""}`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <h4 className="font-bold text-sm text-foreground leading-tight">{r.title}</h4>
                         {href && (
-                          r.file_path
+                          isFile
                             ? <FileText className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
                             : <ExternalLink className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary flex-shrink-0 mt-0.5 transition-colors" />
                         )}
@@ -194,12 +192,41 @@ const ResourcesSection: FC = () => {
                       {r.description && (
                         <p className="text-xs text-muted-foreground leading-relaxed">{r.description}</p>
                       )}
-                      {r.file_path && (
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-primary self-start">
-                          PDF ↗
-                        </span>
+                      {href && (
+                        <div className="flex items-center gap-2 mt-auto pt-1">
+                          {isFile ? (
+                            <>
+                              <a
+                                href={href}
+                                download
+                                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Download className="w-3 h-3" /> Download
+                              </a>
+                              <a
+                                href={href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <ExternalLink className="w-3 h-3" /> View
+                              </a>
+                            </>
+                          ) : (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
+                            >
+                              <ExternalLink className="w-3 h-3" /> Open Link
+                            </a>
+                          )}
+                        </div>
                       )}
-                    </a>
+                    </div>
                   );
                 })}
               </div>
