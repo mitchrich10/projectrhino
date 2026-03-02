@@ -74,6 +74,51 @@ export type Database = {
         }
         Relationships: []
       }
+      partnerships: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          logo_key: string | null
+          logo_url: string | null
+          name: string
+          promo_code: string | null
+          redemption_url: string | null
+          tagline: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          logo_key?: string | null
+          logo_url?: string | null
+          name: string
+          promo_code?: string | null
+          redemption_url?: string | null
+          tagline?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          logo_key?: string | null
+          logo_url?: string | null
+          name?: string
+          promo_code?: string | null
+          redemption_url?: string | null
+          tagline?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       resources: {
         Row: {
           category: string
