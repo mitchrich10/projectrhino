@@ -74,8 +74,51 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_requests: {
+        Row: {
+          company_name: string
+          created_at: string
+          id: string
+          item_id: string
+          item_name: string
+          item_type: string
+          notes: string | null
+          status: string
+          updated_at: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          company_name: string
+          created_at?: string
+          id?: string
+          item_id: string
+          item_name: string
+          item_type: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          user_email: string
+          user_id: string
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_name?: string
+          item_type?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       partnerships: {
         Row: {
+          approval_required: boolean
           category: string
           created_at: string
           description: string | null
@@ -90,6 +133,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          approval_required?: boolean
           category?: string
           created_at?: string
           description?: string | null
@@ -104,6 +148,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          approval_required?: boolean
           category?: string
           created_at?: string
           description?: string | null
@@ -121,6 +166,7 @@ export type Database = {
       }
       resources: {
         Row: {
+          approval_required: boolean
           category: string
           created_at: string
           description: string | null
@@ -131,6 +177,7 @@ export type Database = {
           url: string | null
         }
         Insert: {
+          approval_required?: boolean
           category?: string
           created_at?: string
           description?: string | null
@@ -141,6 +188,7 @@ export type Database = {
           url?: string | null
         }
         Update: {
+          approval_required?: boolean
           category?: string
           created_at?: string
           description?: string | null

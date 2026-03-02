@@ -1,8 +1,9 @@
 import { FC, useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Plus, Pencil, Trash2, X, Upload, ExternalLink, ArrowLeft } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, X, Upload, ExternalLink, ArrowLeft, Lock } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
+import { Switch } from "@/components/ui/switch";
 
 interface Resource {
   id: string;
@@ -11,6 +12,7 @@ interface Resource {
   url: string | null;
   file_path: string | null;
   category: string;
+  approval_required: boolean;
   created_at: string;
 }
 
@@ -22,6 +24,7 @@ const empty = (): Omit<Resource, "id" | "created_at"> => ({
   url: "",
   file_path: null,
   category: "Legal",
+  approval_required: false,
 });
 
 const ResourcesAdmin: FC = () => {
@@ -74,6 +77,7 @@ const ResourcesAdmin: FC = () => {
       url: r.url ?? "",
       file_path: r.file_path,
       category: r.category,
+      approval_required: r.approval_required,
     });
     setError(null);
     setModalOpen(true);
@@ -84,7 +88,6 @@ const ResourcesAdmin: FC = () => {
     if (!file) return;
     setUploading(true);
     setError(null);
-    const ext = file.name.split(".").pop();
     const path = `${Date.now()}-${file.name.replace(/[^a-z0-9.\-_]/gi, "_")}`;
     const { error: uploadError } = await supabase.storage
       .from("resources")
@@ -109,6 +112,7 @@ const ResourcesAdmin: FC = () => {
       url: form.url?.trim() || null,
       file_path: form.file_path || null,
       category: form.category,
+      approval_required: form.approval_required,
     };
 
     if (editingId) {
@@ -155,7 +159,6 @@ const ResourcesAdmin: FC = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -194,7 +197,7 @@ const ResourcesAdmin: FC = () => {
                   {items.map((r) => (
                     <div key={r.id} className="flex items-start gap-4 border border-border rounded-lg p-4 bg-secondary/10 group">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span className="font-bold text-sm text-foreground">{r.title}</span>
                           {(r.url || r.file_path) && (
                             <a
@@ -208,6 +211,11 @@ const ResourcesAdmin: FC = () => {
                           )}
                           {r.file_path && (
                             <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-1.5 py-0.5 rounded">PDF</span>
+                          )}
+                          {r.approval_required && (
+                            <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-1.5 py-0.5 rounded flex items-center gap-1">
+                              <Lock className="w-2.5 h-2.5" /> Approval Required
+                            </span>
                           )}
                         </div>
                         {r.description && (
@@ -241,8 +249,8 @@ const ResourcesAdmin: FC = () => {
       {/* Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border sticky top-0 bg-background">
               <h3 className="text-sm font-black uppercase tracking-widest text-foreground">
                 {editingId ? "Edit Resource" : "Add Resource"}
               </h3>
@@ -252,7 +260,6 @@ const ResourcesAdmin: FC = () => {
             </div>
 
             <div className="px-6 py-5 space-y-4">
-              {/* Title */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Title *</label>
                 <input
@@ -264,7 +271,6 @@ const ResourcesAdmin: FC = () => {
                 />
               </div>
 
-              {/* Description */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Description</label>
                 <textarea
@@ -276,7 +282,6 @@ const ResourcesAdmin: FC = () => {
                 />
               </div>
 
-              {/* Category */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Category *</label>
                 <select
@@ -288,7 +293,6 @@ const ResourcesAdmin: FC = () => {
                 </select>
               </div>
 
-              {/* URL or File */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Link or File *</label>
                 {form.file_path ? (
@@ -335,10 +339,22 @@ const ResourcesAdmin: FC = () => {
                 )}
               </div>
 
+              {/* Approval Required toggle */}
+              <div className="flex items-center justify-between border border-border rounded-lg px-4 py-3 bg-secondary/10">
+                <div>
+                  <p className="text-xs font-bold text-foreground">Require Approval</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Partners must request access before viewing this resource</p>
+                </div>
+                <Switch
+                  checked={form.approval_required}
+                  onCheckedChange={(v) => setForm((f) => ({ ...f, approval_required: v }))}
+                />
+              </div>
+
               {error && <p className="text-xs text-destructive font-medium">{error}</p>}
             </div>
 
-            <div className="flex justify-end gap-3 px-6 py-4 border-t border-border">
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-border sticky bottom-0 bg-background">
               <button
                 onClick={() => setModalOpen(false)}
                 className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 py-2"

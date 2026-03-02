@@ -1,7 +1,8 @@
 import { FC, useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Plus, Pencil, Trash2, X, Upload, ExternalLink } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, X, Upload, ExternalLink, Lock } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
+import { Switch } from "@/components/ui/switch";
 
 interface Partnership {
   id: string;
@@ -14,6 +15,7 @@ interface Partnership {
   redemption_url: string | null;
   promo_code: string | null;
   display_order: number;
+  approval_required: boolean;
   created_at: string;
 }
 
@@ -29,6 +31,7 @@ const emptyForm = () => ({
   redemption_url: "",
   promo_code: "",
   display_order: 0,
+  approval_required: false,
 });
 
 const PartnershipsAdmin: FC = () => {
@@ -72,6 +75,7 @@ const PartnershipsAdmin: FC = () => {
       redemption_url: p.redemption_url ?? "",
       promo_code: p.promo_code ?? "",
       display_order: p.display_order,
+      approval_required: p.approval_required,
     });
     setError(null);
     setModalOpen(true);
@@ -92,6 +96,7 @@ const PartnershipsAdmin: FC = () => {
       redemption_url: form.redemption_url?.trim() || null,
       promo_code: form.promo_code?.trim() || null,
       display_order: form.display_order,
+      approval_required: form.approval_required,
     };
 
     if (editingId) {
@@ -169,6 +174,11 @@ const PartnershipsAdmin: FC = () => {
                           <span className="font-bold text-sm text-foreground">{p.name}</span>
                           {p.promo_code && (
                             <span className="text-[10px] font-bold uppercase tracking-widest bg-secondary text-muted-foreground px-1.5 py-0.5 rounded font-mono">{p.promo_code}</span>
+                          )}
+                          {p.approval_required && (
+                            <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-1.5 py-0.5 rounded flex items-center gap-1">
+                              <Lock className="w-2.5 h-2.5" /> Approval Required
+                            </span>
                           )}
                           {p.redemption_url && (
                             <a href={p.redemption_url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
@@ -307,6 +317,18 @@ const PartnershipsAdmin: FC = () => {
                   onChange={(e) => setForm((f) => ({ ...f, display_order: parseInt(e.target.value) || 0 }))}
                   className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                   min={0}
+                />
+              </div>
+
+              {/* Approval Required toggle */}
+              <div className="flex items-center justify-between border border-border rounded-lg px-4 py-3 bg-secondary/10">
+                <div>
+                  <p className="text-xs font-bold text-foreground">Require Approval</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">Partners must request access before viewing details</p>
+                </div>
+                <Switch
+                  checked={form.approval_required}
+                  onCheckedChange={(v) => setForm((f) => ({ ...f, approval_required: v }))}
                 />
               </div>
 

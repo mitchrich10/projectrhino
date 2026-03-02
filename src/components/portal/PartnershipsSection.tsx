@@ -1,7 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ExternalLink, Copy, Check, FileText, X } from "lucide-react";
+import { Loader2, ExternalLink, Copy, Check, Lock } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
+import { X } from "lucide-react";
 
 interface Partnership {
   id: string;
@@ -14,9 +15,78 @@ interface Partnership {
   redemption_url: string | null;
   promo_code: string | null;
   display_order: number;
+  approval_required: boolean;
 }
 
-const PartnershipModal: FC<{ partnership: Partnership; onClose: () => void }> = ({ partnership, onClose }) => {
+// ── Request Access Button ──────────────────────────────────────────────────────
+const RequestAccessButton: FC<{
+  itemId: string;
+  itemName: string;
+  itemType: "partnership" | "resource";
+  companyName: string;
+}> = ({ itemId, itemName, itemType, companyName }) => {
+  const [status, setStatus] = useState<"idle" | "loading" | "requested" | "error">("idle");
+
+  useEffect(() => {
+    // Check if already requested
+    const check = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      const { data } = await supabase
+        .from("partner_requests")
+        .select("id")
+        .eq("user_id", session.user.id)
+        .eq("item_id", itemId)
+        .maybeSingle();
+      if (data) setStatus("requested");
+    };
+    check();
+  }, [itemId]);
+
+  const handleRequest = async () => {
+    setStatus("loading");
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { setStatus("error"); return; }
+
+    const res = await supabase.functions.invoke("request-access", {
+      body: { item_type: itemType, item_id: itemId, item_name: itemName, company_name: companyName },
+    });
+
+    if (res.error || res.data?.error === "already_requested") {
+      setStatus("requested");
+    } else if (res.data?.success) {
+      setStatus("requested");
+    } else {
+      setStatus("error");
+    }
+  };
+
+  if (status === "requested") {
+    return (
+      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground border border-border rounded px-2 py-1">
+        Requested ✓
+      </span>
+    );
+  }
+
+  return (
+    <button
+      onClick={handleRequest}
+      disabled={status === "loading"}
+      className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+    >
+      {status === "loading" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Lock className="w-3 h-3" />}
+      Request Access
+    </button>
+  );
+};
+
+// ── Partnership Modal ──────────────────────────────────────────────────────────
+const PartnershipModal: FC<{
+  partnership: Partnership;
+  companyName: string;
+  onClose: () => void;
+}> = ({ partnership, companyName, onClose }) => {
   const [copied, setCopied] = useState(false);
 
   const logoSrc = partnership.logo_key
@@ -30,7 +100,6 @@ const PartnershipModal: FC<{ partnership: Partnership; onClose: () => void }> = 
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Close on backdrop click
   const handleBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -68,30 +137,43 @@ const PartnershipModal: FC<{ partnership: Partnership; onClose: () => void }> = 
 
         {/* Body */}
         <div className="px-6 py-5 space-y-5">
-          {partnership.description && (
-            <p className="text-sm text-foreground/80 leading-relaxed">{partnership.description}</p>
-          )}
-
-          {/* Promo Code */}
-          {partnership.promo_code && (
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Promo Code</p>
-              <div className="flex items-center gap-2 border border-border rounded-lg px-4 py-3 bg-secondary/20">
-                <code className="text-sm font-bold text-primary tracking-wider flex-1">{partnership.promo_code}</code>
-                <button
-                  onClick={copyCode}
-                  className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
-                  title="Copy code"
-                >
-                  {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
+          {partnership.approval_required ? (
+            <div className="border border-border rounded-lg p-4 bg-secondary/20 text-center space-y-3">
+              <Lock className="w-5 h-5 text-muted-foreground mx-auto" />
+              <p className="text-sm text-muted-foreground">Access to this partnership requires approval from the Rhino Ventures team.</p>
+              <RequestAccessButton
+                itemId={partnership.id}
+                itemName={partnership.name}
+                itemType="partnership"
+                companyName={companyName}
+              />
             </div>
+          ) : (
+            <>
+              {partnership.description && (
+                <p className="text-sm text-foreground/80 leading-relaxed">{partnership.description}</p>
+              )}
+              {partnership.promo_code && (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Promo Code</p>
+                  <div className="flex items-center gap-2 border border-border rounded-lg px-4 py-3 bg-secondary/20">
+                    <code className="text-sm font-bold text-primary tracking-wider flex-1">{partnership.promo_code}</code>
+                    <button
+                      onClick={copyCode}
+                      className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
+                      title="Copy code"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
 
         {/* Footer */}
-        {partnership.redemption_url && (
+        {!partnership.approval_required && partnership.redemption_url && (
           <div className="px-6 py-4 border-t border-border">
             <a
               href={partnership.redemption_url}
@@ -109,6 +191,7 @@ const PartnershipModal: FC<{ partnership: Partnership; onClose: () => void }> = 
   );
 };
 
+// ── Partnership Tile ───────────────────────────────────────────────────────────
 const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = ({ partnership, onClick }) => {
   const logoSrc = partnership.logo_key
     ? companyLogos[partnership.logo_key]
@@ -117,8 +200,13 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
   return (
     <button
       onClick={onClick}
-      className="group flex flex-col items-center justify-center gap-3 p-4 border border-border rounded-lg bg-card hover:border-primary hover:shadow-md hover:shadow-primary/10 transition-all duration-200 h-[120px] text-center w-full"
+      className="group relative flex flex-col items-center justify-center gap-3 p-4 border border-border rounded-lg bg-card hover:border-primary hover:shadow-md hover:shadow-primary/10 transition-all duration-200 h-[120px] text-center w-full"
     >
+      {partnership.approval_required && (
+        <div className="absolute top-2 right-2">
+          <Lock className="w-3 h-3 text-muted-foreground/50" />
+        </div>
+      )}
       <div className="flex-1 flex items-center justify-center w-full">
         {logoSrc ? (
           <img
@@ -139,25 +227,40 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
   );
 };
 
+// ── Main Section ───────────────────────────────────────────────────────────────
 const PartnershipsSection: FC = () => {
   const [partnerships, setPartnerships] = useState<Partnership[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Partnership | null>(null);
+  const [companyName, setCompanyName] = useState("");
 
   useEffect(() => {
-    const fetch = async () => {
-      const { data } = await supabase
-        .from("partnerships")
-        .select("*")
-        .order("display_order", { ascending: true })
-        .order("name", { ascending: true });
-      setPartnerships((data as Partnership[]) ?? []);
+    const init = async () => {
+      const [{ data: partnerData }, { data: { session } }] = await Promise.all([
+        supabase
+          .from("partnerships")
+          .select("*")
+          .order("display_order", { ascending: true })
+          .order("name", { ascending: true }),
+        supabase.auth.getSession(),
+      ]);
+      setPartnerships((partnerData as Partnership[]) ?? []);
+
+      if (session?.user?.email) {
+        const domain = session.user.email.split("@")[1];
+        const { data: domainData } = await supabase
+          .from("approved_domains")
+          .select("company_name")
+          .eq("domain", domain)
+          .maybeSingle();
+        setCompanyName(domainData?.company_name ?? domain);
+      }
+
       setLoading(false);
     };
-    fetch();
+    init();
   }, []);
 
-  // Group by category
   const grouped = partnerships.reduce<Record<string, Partnership[]>>((acc, p) => {
     (acc[p.category] = acc[p.category] ?? []).push(p);
     return acc;
@@ -196,7 +299,11 @@ const PartnershipsSection: FC = () => {
       )}
 
       {selected && (
-        <PartnershipModal partnership={selected} onClose={() => setSelected(null)} />
+        <PartnershipModal
+          partnership={selected}
+          companyName={companyName}
+          onClose={() => setSelected(null)}
+        />
       )}
     </section>
   );
