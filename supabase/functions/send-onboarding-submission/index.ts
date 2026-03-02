@@ -9,7 +9,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { companyName, userEmail, teamMembers, needs, additionalNotes } = await req.json();
+    const { companyName, userEmail, teamMembers, needs, additionalNotes, logoPermission, announcingRaise, wantsRhinoSupport } = await req.json();
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not set");
@@ -31,6 +31,10 @@ serve(async (req) => {
       <h3>Short-term Needs</h3>
       <ul>${needsHtml}</ul>
       ${additionalNotes ? `<h3>Additional Notes</h3><p>${additionalNotes}</p>` : ""}
+      <h3>Logo on Rhino Site</h3>
+      <p>${logoPermission === true ? "✅ Yes — permission granted" : logoPermission === false ? "❌ Not yet" : "Not answered"}</p>
+      <h3>Announcing Raise</h3>
+      <p>${announcingRaise === true ? "✅ Yes" : announcingRaise === false ? "No / Not sure" : "Not answered"}${announcingRaise === true ? ` — Rhino support: ${wantsRhinoSupport === true ? "Yes please" : wantsRhinoSupport === false ? "We've got it covered" : "Not answered"}` : ""}</p>
     `;
 
     const res = await fetch("https://api.resend.com/emails", {
