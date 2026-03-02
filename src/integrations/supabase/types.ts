@@ -190,6 +190,48 @@ export type Database = {
         }
         Relationships: []
       }
+      onboarding_submissions: {
+        Row: {
+          additional_notes: string | null
+          company_name: string
+          created_at: string
+          id: string
+          logo_path: string | null
+          needs: string[]
+          needs_other: string | null
+          team_members: Json
+          updated_at: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          company_name: string
+          created_at?: string
+          id?: string
+          logo_path?: string | null
+          needs?: string[]
+          needs_other?: string | null
+          team_members?: Json
+          updated_at?: string
+          user_email: string
+          user_id: string
+        }
+        Update: {
+          additional_notes?: string | null
+          company_name?: string
+          created_at?: string
+          id?: string
+          logo_path?: string | null
+          needs?: string[]
+          needs_other?: string | null
+          team_members?: Json
+          updated_at?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       partner_requests: {
         Row: {
           company_name: string

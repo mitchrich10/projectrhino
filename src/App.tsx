@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Contact from "./pages/Contact";
 import PartnerLogin from "./pages/PartnerLogin";
 import Portal from "./pages/Portal";
+import Onboarding from "./pages/Onboarding";
 import AdminHub from "./pages/admin/AdminHub";
 import NotFound from "./pages/NotFound";
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/partner-login" element={<PartnerLogin />} />
           <Route path="/portal" element={<Portal />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/admin/resources" element={<AdminHub />} />
           <Route path="/admin" element={<AdminHub />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

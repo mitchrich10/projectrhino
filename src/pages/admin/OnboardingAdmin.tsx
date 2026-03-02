@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Plus, Pencil, Trash2, X, Send, CheckCircle2, AlertCircle, GripVertical, Bell } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, X, Send, CheckCircle2, AlertCircle, Bell, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 
 interface Step {
   id: string;
@@ -320,16 +320,148 @@ const SubscribersPanel: FC = () => {
   );
 };
 
+// ── Submissions Panel ──────────────────────────────────────────────────────────
+interface Submission {
+  id: string;
+  user_email: string;
+  company_name: string;
+  logo_path: string | null;
+  team_members: { name: string; title: string; email: string }[];
+  needs: string[];
+  needs_other: string | null;
+  additional_notes: string | null;
+  created_at: string;
+}
+
+const SubmissionsPanel: FC = () => {
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { data } = await supabase
+        .from("onboarding_submissions")
+        .select("*")
+        .order("created_at", { ascending: false });
+      setSubmissions((data as unknown as Submission[]) ?? []);
+      setLoading(false);
+    };
+    fetch();
+  }, []);
+
+  if (loading) return <div className="flex items-center gap-2 text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin" /><span className="text-xs">Loading…</span></div>;
+
+  if (submissions.length === 0) return (
+    <div className="text-center py-16 text-muted-foreground">
+      <p className="text-sm font-bold uppercase tracking-widest mb-2">No submissions yet</p>
+      <p className="text-xs">Submissions will appear here when portfolio companies complete their intake form.</p>
+    </div>
+  );
+
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground mb-6">{submissions.length} submission{submissions.length !== 1 ? "s" : ""}</p>
+      <div className="space-y-3">
+        {submissions.map((s) => {
+          const logoUrl = s.logo_path
+            ? supabase.storage.from("company-logos").getPublicUrl(s.logo_path).data.publicUrl
+            : null;
+          const isOpen = expanded === s.id;
+          const members = Array.isArray(s.team_members) ? s.team_members : [];
+
+          return (
+            <div key={s.id} className="border border-border rounded-xl overflow-hidden bg-secondary/10">
+              {/* Card header */}
+              <button
+                onClick={() => setExpanded(isOpen ? null : s.id)}
+                className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-secondary/20 transition-colors"
+              >
+                {logoUrl ? (
+                  <img src={logoUrl} alt={s.company_name} className="h-8 w-auto max-w-[80px] object-contain bg-white rounded p-1 border border-border flex-shrink-0" />
+                ) : (
+                  <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-black text-primary">{s.company_name.charAt(0)}</span>
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-black text-foreground">{s.company_name}</p>
+                  <p className="text-xs text-muted-foreground font-mono">{s.user_email}</p>
+                </div>
+                <div className="flex items-center gap-4 flex-shrink-0">
+                  <p className="text-[10px] text-muted-foreground hidden sm:block">
+                    {new Date(s.created_at).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                  {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                </div>
+              </button>
+
+              {/* Expanded detail */}
+              {isOpen && (
+                <div className="border-t border-border px-5 py-5 space-y-5">
+                  {/* Team members */}
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Team Members</p>
+                    {members.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">None provided.</p>
+                    ) : (
+                      <div className="space-y-1.5">
+                        {members.map((m, i) => (
+                          <div key={i} className="flex items-center gap-3 text-xs">
+                            <span className="font-bold text-foreground">{m.name}</span>
+                            {m.title && <span className="text-muted-foreground">{m.title}</span>}
+                            {m.email && (
+                              <a href={`mailto:${m.email}`} className="text-primary hover:underline flex items-center gap-1">
+                                {m.email} <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Needs */}
+                  {s.needs.length > 0 && (
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Short-term Needs</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {s.needs.map((n) => (
+                          <span key={n} className="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary border border-primary/20 px-2 py-1 rounded">
+                            {n}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Additional notes */}
+                  {s.additional_notes && (
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Additional Notes</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{s.additional_notes}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 // ── Main ───────────────────────────────────────────────────────────────────────
-type OnboardingTab = "steps" | "invites" | "subscribers";
+type OnboardingTab = "submissions" | "steps" | "invites" | "subscribers";
 
 const OnboardingAdmin: FC = () => {
-  const [tab, setTab] = useState<OnboardingTab>("steps");
+  const [tab, setTab] = useState<OnboardingTab>("submissions");
 
   return (
     <div>
       <div className="flex gap-1 mb-8 border-b border-border">
-        {(["steps", "invites", "subscribers"] as OnboardingTab[]).map((t) => (
+        {(["submissions", "steps", "invites", "subscribers"] as OnboardingTab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -341,6 +473,7 @@ const OnboardingAdmin: FC = () => {
           </button>
         ))}
       </div>
+      {tab === "submissions" && <SubmissionsPanel />}
       {tab === "steps" && <StepsPanel />}
       {tab === "invites" && <InvitePanel />}
       {tab === "subscribers" && <SubscribersPanel />}
