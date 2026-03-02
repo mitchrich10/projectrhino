@@ -85,8 +85,9 @@ const RequestAccessButton: FC<{
 const PartnershipModal: FC<{
   partnership: Partnership;
   companyName: string;
+  isApproved: boolean;
   onClose: () => void;
-}> = ({ partnership, companyName, onClose }) => {
+}> = ({ partnership, companyName, isApproved, onClose }) => {
   const [copied, setCopied] = useState(false);
 
   const logoSrc = partnership.logo_key
@@ -103,6 +104,8 @@ const PartnershipModal: FC<{
   const handleBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
+
+  const locked = partnership.approval_required && !isApproved;
 
   return (
     <div
@@ -137,7 +140,7 @@ const PartnershipModal: FC<{
 
         {/* Body */}
         <div className="px-6 py-5 space-y-5">
-          {partnership.approval_required ? (
+          {locked ? (
             <div className="border border-border rounded-lg p-4 bg-secondary/20 text-center space-y-3">
               <Lock className="w-5 h-5 text-muted-foreground mx-auto" />
               <p className="text-sm text-muted-foreground">Access to this partnership requires approval from the Rhino Ventures team.</p>
@@ -173,7 +176,7 @@ const PartnershipModal: FC<{
         </div>
 
         {/* Footer */}
-        {!partnership.approval_required && partnership.redemption_url && (
+        {!locked && partnership.redemption_url && (
           <div className="px-6 py-4 border-t border-border">
             <a
               href={partnership.redemption_url}
@@ -233,18 +236,30 @@ const PartnershipsSection: FC = () => {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Partnership | null>(null);
   const [companyName, setCompanyName] = useState("");
+  const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const init = async () => {
-      const [{ data: partnerData }, { data: { session } }] = await Promise.all([
+      const { data: { session } } = await supabase.auth.getSession();
+
+      const [{ data: partnerData }, { data: approvedData }] = await Promise.all([
         supabase
           .from("partnerships")
           .select("*")
           .order("display_order", { ascending: true })
           .order("name", { ascending: true }),
-        supabase.auth.getSession(),
+        session
+          ? supabase
+              .from("partner_requests")
+              .select("item_id")
+              .eq("user_id", session.user.id)
+              .eq("item_type", "partnership")
+              .eq("status", "approved")
+          : Promise.resolve({ data: [] }),
       ]);
+
       setPartnerships((partnerData as Partnership[]) ?? []);
+      setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
 
       if (session?.user?.email) {
         const domain = session.user.email.split("@")[1];
@@ -302,6 +317,7 @@ const PartnershipsSection: FC = () => {
         <PartnershipModal
           partnership={selected}
           companyName={companyName}
+          isApproved={approvedIds.has(selected.id)}
           onClose={() => setSelected(null)}
         />
       )}

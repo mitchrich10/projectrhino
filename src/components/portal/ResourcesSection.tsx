@@ -78,18 +78,30 @@ const ResourcesSection: FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [companyName, setCompanyName] = useState("");
+  const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const init = async () => {
-      const [{ data }, { data: { session } }] = await Promise.all([
+      const { data: { session } } = await supabase.auth.getSession();
+
+      const [{ data }, { data: approvedData }] = await Promise.all([
         supabase
           .from("resources")
           .select("id, title, description, url, file_path, category, approval_required")
           .order("category")
           .order("title"),
-        supabase.auth.getSession(),
+        session
+          ? supabase
+              .from("partner_requests")
+              .select("item_id")
+              .eq("user_id", session.user.id)
+              .eq("item_type", "resource")
+              .eq("status", "approved")
+          : Promise.resolve({ data: [] }),
       ]);
+
       setResources(data ?? []);
+      setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
 
       if (session?.user?.email) {
         const domain = session.user.email.split("@")[1];
@@ -138,7 +150,9 @@ const ResourcesSection: FC = () => {
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {items.map((r) => {
-                  if (r.approval_required) {
+                  const isApproved = approvedIds.has(r.id);
+
+                  if (r.approval_required && !isApproved) {
                     return (
                       <div
                         key={r.id}
