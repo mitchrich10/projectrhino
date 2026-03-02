@@ -5,6 +5,7 @@ import { Loader2, ArrowLeft, Plus, Pencil, Trash2, X, Upload, ExternalLink } fro
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import EventsAdmin from "./EventsAdmin";
 import PartnershipsAdmin from "./PartnershipsAdmin";
+import RequestsAdmin from "./RequestsAdmin";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Resource {
@@ -23,7 +24,7 @@ const emptyResource = (): Omit<Resource, "id" | "created_at"> => ({
   title: "", description: "", url: "", file_path: null, category: "Legal",
 });
 
-type Tab = "resources" | "events" | "partnerships";
+type Tab = "resources" | "events" | "partnerships" | "requests";
 
 // ── Resources panel ───────────────────────────────────────────────────────────
 const ResourcesPanel: FC = () => {
@@ -228,7 +229,7 @@ const AdminHub: FC = () => {
           <p className="text-xs font-bold uppercase tracking-widest text-primary">Admin</p>
         </div>
         <div className="max-w-5xl mx-auto px-6 flex gap-0 border-t border-border">
-          {(["resources", "events", "partnerships"] as Tab[]).map((t) => (
+          {(["resources", "events", "partnerships", "requests"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -246,6 +247,7 @@ const AdminHub: FC = () => {
         {tab === "resources" && <ResourcesPanel />}
         {tab === "events" && <EventsAdmin />}
         {tab === "partnerships" && <PartnershipsAdmin />}
+        {tab === "requests" && <RequestsAdmin />}
       </main>
     </div>
   );
