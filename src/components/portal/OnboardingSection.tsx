@@ -112,28 +112,31 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
 
+  const domain = userEmail.split("@")[1]?.toLowerCase() ?? "";
+
   useEffect(() => {
+    if (!domain) return;
     const init = async () => {
       const [{ data: stepsData }, { data: progressData }] = await Promise.all([
         supabase.from("onboarding_steps").select("*").order("order"),
-        supabase.from("onboarding_progress").select("step_id").eq("user_id", userId),
+        supabase.from("onboarding_progress").select("step_id").eq("domain", domain),
       ]);
       setSteps(stepsData ?? []);
       setCompletedIds(new Set((progressData ?? []).map((p: { step_id: string }) => p.step_id)));
       setLoading(false);
     };
     init();
-  }, [userId]);
+  }, [domain]);
 
   const toggleStep = async (stepId: string) => {
     setToggling(stepId);
     const isCompleted = completedIds.has(stepId);
 
     if (isCompleted) {
-      await supabase.from("onboarding_progress").delete().eq("user_id", userId).eq("step_id", stepId);
+      await supabase.from("onboarding_progress").delete().eq("domain", domain).eq("step_id", stepId);
       setCompletedIds((prev) => { const n = new Set(prev); n.delete(stepId); return n; });
     } else {
-      await supabase.from("onboarding_progress").insert({ user_id: userId, step_id: stepId });
+      await supabase.from("onboarding_progress").insert({ user_id: userId, domain, step_id: stepId });
       setCompletedIds((prev) => new Set([...prev, stepId]));
     }
     setToggling(null);
