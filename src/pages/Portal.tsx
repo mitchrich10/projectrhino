@@ -6,6 +6,7 @@ import rhinoLogo from "@/assets/rhino-logo-black.png";
 import { companyLogos } from "@/lib/companyLogos";
 import { RhinoButton } from "@/components/RhinoButton";
 import ResourcesSection from "@/components/portal/ResourcesSection";
+import EventsSection from "@/components/portal/EventsSection";
 
 interface CompanyInfo {
   company_name: string;
@@ -126,7 +127,7 @@ const Portal: FC = () => {
             </button>
             {isAdmin && (
               <Link
-                to="/admin/resources"
+                to="/admin"
                 className="text-xs font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
               >
                 Admin
@@ -219,19 +220,7 @@ const Portal: FC = () => {
 
           <ResourcesSection />
 
-          <section id="events">
-            <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
-              Events
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {["Portfolio Summit 2026", "Founder Dinners", "Demo Days"].map((title) => (
-                <div key={title} className="border border-border rounded-lg p-5 bg-secondary/20">
-                  <h3 className="font-bold text-sm text-foreground mb-2">{title}</h3>
-                  <p className="text-xs text-muted-foreground">Content coming soon.</p>
-                </div>
-              ))}
-            </div>
-          </section>
+          <EventsSection />
 
         </div>
       </main>

@@ -7,7 +7,7 @@ import Index from "./pages/Index";
 import Contact from "./pages/Contact";
 import PartnerLogin from "./pages/PartnerLogin";
 import Portal from "./pages/Portal";
-import ResourcesAdmin from "./pages/admin/ResourcesAdmin";
+import AdminHub from "./pages/admin/AdminHub";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,7 +23,8 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/partner-login" element={<PartnerLogin />} />
           <Route path="/portal" element={<Portal />} />
-          <Route path="/admin/resources" element={<ResourcesAdmin />} />
+          <Route path="/admin/resources" element={<AdminHub />} />
+          <Route path="/admin" element={<AdminHub />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
