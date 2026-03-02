@@ -199,6 +199,7 @@ export type Database = {
           item_name: string
           item_type: string
           notes: string | null
+          response: string | null
           status: string
           updated_at: string
           user_email: string
@@ -212,6 +213,7 @@ export type Database = {
           item_name: string
           item_type: string
           notes?: string | null
+          response?: string | null
           status?: string
           updated_at?: string
           user_email: string
@@ -225,6 +227,7 @@ export type Database = {
           item_name?: string
           item_type?: string
           notes?: string | null
+          response?: string | null
           status?: string
           updated_at?: string
           user_email?: string

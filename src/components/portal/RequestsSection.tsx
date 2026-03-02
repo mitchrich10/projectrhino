@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Send, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 
 interface PartnerRequest {
   id: string;
@@ -8,7 +8,7 @@ interface PartnerRequest {
   item_type: string;
   item_name: string;
   notes: string | null;
-  status: string;
+  response: string | null;
 }
 
 const REQUEST_TYPES = [
@@ -17,12 +17,6 @@ const REQUEST_TYPES = [
   { value: "event", label: "Event" },
   { value: "other", label: "Other" },
 ];
-
-const STATUS_CONFIG: Record<string, { icon: FC<{ className?: string }>; label: string; className: string }> = {
-  pending: { icon: Clock, label: "Pending", className: "text-yellow-600 bg-yellow-500/10 border-yellow-500/20" },
-  approved: { icon: CheckCircle2, label: "Approved", className: "text-green-600 bg-green-500/10 border-green-500/20" },
-  denied: { icon: XCircle, label: "Denied", className: "text-destructive bg-destructive/10 border-destructive/20" },
-};
 
 const RequestsSection: FC<{ userId: string; userEmail: string; companyName: string }> = ({
   userId,
@@ -41,7 +35,7 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
   const fetchRequests = async () => {
     const { data } = await supabase
       .from("partner_requests")
-      .select("id, created_at, item_type, item_name, notes, status")
+      .select("id, created_at, item_type, item_name, notes, response")
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
     setRequests((data as PartnerRequest[]) ?? []);
@@ -168,34 +162,31 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
             <p className="text-xs text-muted-foreground">No requests submitted yet.</p>
           ) : (
             <div className="space-y-2">
-              {requests.map((r) => {
-                const statusCfg = STATUS_CONFIG[r.status] ?? STATUS_CONFIG.pending;
-                const StatusIcon = statusCfg.icon;
-                return (
-                  <div key={r.id} className="border border-border rounded-lg p-4 bg-secondary/10">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap mb-1">
-                          <span className="text-[10px] font-bold uppercase tracking-widest bg-secondary text-muted-foreground px-1.5 py-0.5 rounded">
-                            {r.item_type}
-                          </span>
-                          <span className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest border px-1.5 py-0.5 rounded ${statusCfg.className}`}>
-                            <StatusIcon className="w-3 h-3" />
-                            {statusCfg.label}
-                          </span>
-                        </div>
-                        <p className="text-sm font-bold text-foreground leading-snug">{r.item_name}</p>
-                        {r.notes && (
-                          <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{r.notes}</p>
-                        )}
+              {requests.map((r) => (
+                <div key={r.id} className="border border-border rounded-lg p-4 bg-secondary/10">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="text-[10px] font-bold uppercase tracking-widest bg-secondary text-muted-foreground px-1.5 py-0.5 rounded">
+                          {r.item_type}
+                        </span>
                       </div>
-                      <p className="text-[10px] text-muted-foreground flex-shrink-0 mt-0.5">
-                        {new Date(r.created_at).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}
-                      </p>
+                      <p className="text-sm font-bold text-foreground leading-snug">{r.item_name}</p>
+                      {r.notes && (
+                        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{r.notes}</p>
+                      )}
+                      {r.response && (
+                        <p className="text-xs text-primary mt-1.5 font-medium border-l-2 border-primary/30 pl-2">
+                          {r.response}
+                        </p>
+                      )}
                     </div>
+                    <p className="text-[10px] text-muted-foreground flex-shrink-0 mt-0.5">
+                      {new Date(r.created_at).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}
+                    </p>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           )}
         </div>

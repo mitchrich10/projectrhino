@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Check, X, ChevronDown } from "lucide-react";
+import { Loader2, Check, X, MessageSquare, Send } from "lucide-react";
 
 interface PartnerRequest {
   id: string;
@@ -11,6 +11,7 @@ interface PartnerRequest {
   item_name: string;
   status: "pending" | "approved" | "denied";
   notes: string | null;
+  response: string | null;
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -24,6 +25,9 @@ const RequestsAdmin: FC = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "pending" | "approved" | "denied">("pending");
+  const [respondingId, setRespondingId] = useState<string | null>(null);
+  const [responseText, setResponseText] = useState("");
+  const [savingResponse, setSavingResponse] = useState(false);
 
   useEffect(() => { fetchRequests(); }, []);
 
@@ -38,12 +42,25 @@ const RequestsAdmin: FC = () => {
 
   const updateStatus = async (id: string, status: "approved" | "denied") => {
     setUpdating(id);
-    // Edge function updates the DB and sends the partner a notification email
     await supabase.functions.invoke("notify-request-decision", {
       body: { request_id: id, status },
     });
     await fetchRequests();
     setUpdating(null);
+  };
+
+  const openRespond = (r: PartnerRequest) => {
+    setRespondingId(r.id);
+    setResponseText(r.response ?? "");
+  };
+
+  const saveResponse = async (id: string) => {
+    setSavingResponse(true);
+    await supabase.from("partner_requests").update({ response: responseText.trim() || null }).eq("id", id);
+    await fetchRequests();
+    setSavingResponse(false);
+    setRespondingId(null);
+    setResponseText("");
   };
 
   const filtered = filter === "all" ? requests : requests.filter((r) => r.status === filter);
@@ -60,16 +77,13 @@ const RequestsAdmin: FC = () => {
             </span>
           )}
         </div>
-        {/* Filter tabs */}
         <div className="flex items-center gap-1">
           {(["all", "pending", "approved", "denied"] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded transition-colors ${
-                filter === f
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                filter === f ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {f}
@@ -90,44 +104,79 @@ const RequestsAdmin: FC = () => {
       ) : (
         <div className="space-y-2">
           {filtered.map((r) => (
-            <div key={r.id} className="flex items-center gap-4 border border-border rounded-lg p-4 bg-secondary/10">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="font-bold text-sm text-foreground">{r.item_name}</span>
-                  <span className={`text-[10px] font-bold uppercase tracking-widest border px-1.5 py-0.5 rounded ${STATUS_STYLES[r.status]}`}>
-                    {r.status}
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest bg-secondary text-muted-foreground px-1.5 py-0.5 rounded">
-                    {r.item_type}
-                  </span>
+            <div key={r.id} className="border border-border rounded-lg p-4 bg-secondary/10">
+              <div className="flex items-start gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className="font-bold text-sm text-foreground">{r.item_name}</span>
+                    <span className={`text-[10px] font-bold uppercase tracking-widest border px-1.5 py-0.5 rounded ${STATUS_STYLES[r.status]}`}>
+                      {r.status}
+                    </span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest bg-secondary text-muted-foreground px-1.5 py-0.5 rounded">
+                      {r.item_type}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    <span className="font-medium text-foreground/70">{r.company_name}</span>
+                    {" · "}{r.user_email}
+                    {" · "}{new Date(r.created_at).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                  {r.notes && (
+                    <p className="text-xs text-muted-foreground mt-1.5 italic">"{r.notes}"</p>
+                  )}
+                  {r.response && respondingId !== r.id && (
+                    <p className="text-xs text-primary mt-1.5 font-medium">↩ {r.response}</p>
+                  )}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground/70">{r.company_name}</span>
-                  {" · "}
-                  {r.user_email}
-                  {" · "}
-                  {new Date(r.created_at).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" })}
-                </p>
-              </div>
-              {r.status === "pending" && (
                 <div className="flex items-center gap-2 flex-shrink-0">
+                  {r.status === "pending" && (
+                    <>
+                      <button
+                        onClick={() => updateStatus(r.id, "approved")}
+                        disabled={updating === r.id}
+                        className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest bg-green-500/10 text-green-600 border border-green-500/20 px-2.5 py-1.5 rounded hover:bg-green-500/20 transition-colors disabled:opacity-50"
+                      >
+                        {updating === r.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => updateStatus(r.id, "denied")}
+                        disabled={updating === r.id}
+                        className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest bg-destructive/10 text-destructive border border-destructive/20 px-2.5 py-1.5 rounded hover:bg-destructive/20 transition-colors disabled:opacity-50"
+                      >
+                        <X className="w-3 h-3" />
+                        Deny
+                      </button>
+                    </>
+                  )}
                   <button
-                    onClick={() => updateStatus(r.id, "approved")}
-                    disabled={updating === r.id}
-                    title="Approve"
-                    className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest bg-green-500/10 text-green-600 border border-green-500/20 px-2.5 py-1.5 rounded hover:bg-green-500/20 transition-colors disabled:opacity-50"
+                    onClick={() => respondingId === r.id ? setRespondingId(null) : openRespond(r)}
+                    className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground border border-border px-2.5 py-1.5 rounded transition-colors"
                   >
-                    {updating === r.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
-                    Approve
+                    <MessageSquare className="w-3 h-3" />
+                    {r.response ? "Edit Response" : "Respond"}
                   </button>
+                </div>
+              </div>
+
+              {/* Inline response editor */}
+              {respondingId === r.id && (
+                <div className="mt-3 pt-3 border-t border-border flex gap-2">
+                  <textarea
+                    value={responseText}
+                    onChange={(e) => setResponseText(e.target.value)}
+                    rows={2}
+                    placeholder="Write a response visible to the partner…"
+                    className="flex-1 bg-secondary/30 border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+                    autoFocus
+                  />
                   <button
-                    onClick={() => updateStatus(r.id, "denied")}
-                    disabled={updating === r.id}
-                    title="Deny"
-                    className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest bg-destructive/10 text-destructive border border-destructive/20 px-2.5 py-1.5 rounded hover:bg-destructive/20 transition-colors disabled:opacity-50"
+                    onClick={() => saveResponse(r.id)}
+                    disabled={savingResponse}
+                    className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-3 py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50 flex-shrink-0 self-end"
                   >
-                    <X className="w-3 h-3" />
-                    Deny
+                    {savingResponse ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+                    Save
                   </button>
                 </div>
               )}
