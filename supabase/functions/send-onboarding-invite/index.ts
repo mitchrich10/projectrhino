@@ -46,14 +46,17 @@ serve(async (req: Request) => {
     const portalUrl = "https://projectrhino.lovable.app/partner-login";
     const results: { email: string; success: boolean; error?: string }[] = [];
 
+    // All emails in this batch share the same batch_id so progress is shared between them
+    const batchId: string = crypto.randomUUID();
+
     for (const email of emails) {
       const trimmed = email.trim().toLowerCase();
       if (!trimmed) continue;
 
       try {
-        // Record the invite (upsert so re-sending is fine)
+        // Record the invite — upsert keyed on email but always use the same batchId for this send
         await supabase.from("onboarding_invites").upsert(
-          { email: trimmed, invited_by: user.email!, note: note ?? null },
+          { email: trimmed, invited_by: user.email!, note: note ?? null, batch_id: batchId },
           { onConflict: "email" }
         );
 

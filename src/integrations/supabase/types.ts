@@ -100,6 +100,7 @@ export type Database = {
       }
       onboarding_invites: {
         Row: {
+          batch_id: string
           created_at: string
           email: string
           id: string
@@ -107,6 +108,7 @@ export type Database = {
           note: string | null
         }
         Insert: {
+          batch_id?: string
           created_at?: string
           email: string
           id?: string
@@ -114,6 +116,7 @@ export type Database = {
           note?: string | null
         }
         Update: {
+          batch_id?: string
           created_at?: string
           email?: string
           id?: string
@@ -124,25 +127,25 @@ export type Database = {
       }
       onboarding_progress: {
         Row: {
+          batch_id: string | null
           completed_at: string
           created_at: string
-          domain: string
           id: string
           step_id: string
           user_id: string
         }
         Insert: {
+          batch_id?: string | null
           completed_at?: string
           created_at?: string
-          domain: string
           id?: string
           step_id: string
           user_id: string
         }
         Update: {
+          batch_id?: string | null
           completed_at?: string
           created_at?: string
-          domain?: string
           id?: string
           step_id?: string
           user_id?: string
