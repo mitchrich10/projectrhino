@@ -18,7 +18,7 @@ interface NotificationState {
 }
 
 // ── Notification opt-in ────────────────────────────────────────────────────────
-const NotificationOptIn: FC<{ userId: string; email: string }> = ({ userId, email }) => {
+export const NotificationOptIn: FC<{ userId: string; email: string }> = ({ userId, email }) => {
   const [state, setState] = useState<NotificationState>({ loading: true, subscribed: null, saving: false });
 
   useEffect(() => {
@@ -216,7 +216,7 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
   const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
   const allDone = totalCount > 0 && completedCount === totalCount;
 
-  // If not invited, show intake CTA + notification opt-in
+  // If not invited, show intake CTA only
   if (!isInvited) {
     return (
       <section id="onboarding">
@@ -224,7 +224,6 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
           Onboarding
         </h2>
         <IntakeCTA hasSubmitted={hasSubmitted} expanded={intakeExpanded} onToggle={() => setIntakeExpanded((v) => !v)} />
-        <NotificationOptIn userId={userId} email={userEmail} />
       </section>
     );
   }
@@ -314,8 +313,6 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
             })}
           </div>
 
-          {/* Notification opt-in below checklist */}
-          <NotificationOptIn userId={userId} email={userEmail} />
         </>
       )}
     </section>

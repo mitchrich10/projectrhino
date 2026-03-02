@@ -8,6 +8,7 @@ import ResourcesSection from "@/components/portal/ResourcesSection";
 import EventsSection from "@/components/portal/EventsSection";
 import PartnershipsSection from "@/components/portal/PartnershipsSection";
 import OnboardingSection from "@/components/portal/OnboardingSection";
+import { NotificationOptIn } from "@/components/portal/OnboardingSection";
 import RequestsSection from "@/components/portal/RequestsSection";
 
 interface CompanyInfo {
@@ -187,6 +188,16 @@ const Portal: FC = () => {
               userEmail={userEmail}
               companyName={company?.company_name ?? ""}
             />
+          )}
+
+          {/* Notifications */}
+          {userId && (
+            <section id="notifications">
+              <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
+                Notifications
+              </h2>
+              <NotificationOptIn userId={userId} email={userEmail} />
+            </section>
           )}
         </div>
       </main>
