@@ -7,6 +7,7 @@ import { companyLogos } from "@/lib/companyLogos";
 import { RhinoButton } from "@/components/RhinoButton";
 import ResourcesSection from "@/components/portal/ResourcesSection";
 import EventsSection from "@/components/portal/EventsSection";
+import PartnershipsSection from "@/components/portal/PartnershipsSection";
 
 interface CompanyInfo {
   company_name: string;
@@ -15,6 +16,7 @@ interface CompanyInfo {
 
 const NAV_ITEMS = [
   { label: "Onboarding", hash: "onboarding" },
+  { label: "Partnerships", hash: "partnerships" },
   { label: "Resources", hash: "resources" },
   { label: "Events", hash: "events" },
 ];
@@ -217,6 +219,8 @@ const Portal: FC = () => {
               ))}
             </div>
           </section>
+
+          <PartnershipsSection />
 
           <ResourcesSection />
 
