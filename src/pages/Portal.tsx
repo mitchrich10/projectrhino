@@ -8,6 +8,7 @@ import ResourcesSection from "@/components/portal/ResourcesSection";
 import EventsSection from "@/components/portal/EventsSection";
 import PartnershipsSection from "@/components/portal/PartnershipsSection";
 import OnboardingSection from "@/components/portal/OnboardingSection";
+import RequestsSection from "@/components/portal/RequestsSection";
 
 interface CompanyInfo {
   company_name: string;
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
   { label: "Partnerships", hash: "partnerships" },
   { label: "Resources", hash: "resources" },
   { label: "Events", hash: "events" },
+  { label: "Requests", hash: "requests" },
 ];
 
 const Portal: FC = () => {
@@ -226,6 +228,13 @@ const Portal: FC = () => {
           <PartnershipsSection />
           <ResourcesSection />
           <EventsSection />
+          {userId && (
+            <RequestsSection
+              userId={userId}
+              userEmail={userEmail}
+              companyName={company?.company_name ?? ""}
+            />
+          )}
         </div>
       </main>
     </div>
