@@ -6,6 +6,7 @@ import rhinoLogo from "@/assets/rhino-logo-black.png";
 import EventsAdmin from "./EventsAdmin";
 import PartnershipsAdmin from "./PartnershipsAdmin";
 import RequestsAdmin from "./RequestsAdmin";
+import OnboardingAdmin from "./OnboardingAdmin";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Resource {
@@ -24,7 +25,7 @@ const emptyResource = (): Omit<Resource, "id" | "created_at"> => ({
   title: "", description: "", url: "", file_path: null, category: "Legal",
 });
 
-type Tab = "resources" | "events" | "partnerships" | "requests";
+type Tab = "resources" | "events" | "partnerships" | "requests" | "onboarding";
 
 // ── Resources panel ───────────────────────────────────────────────────────────
 const ResourcesPanel: FC = () => {
@@ -229,7 +230,7 @@ const AdminHub: FC = () => {
           <p className="text-xs font-bold uppercase tracking-widest text-primary">Admin</p>
         </div>
         <div className="max-w-5xl mx-auto px-6 flex gap-0 border-t border-border">
-          {(["resources", "events", "partnerships", "requests"] as Tab[]).map((t) => (
+          {(["resources", "events", "partnerships", "requests", "onboarding"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -248,6 +249,7 @@ const AdminHub: FC = () => {
         {tab === "events" && <EventsAdmin />}
         {tab === "partnerships" && <PartnershipsAdmin />}
         {tab === "requests" && <RequestsAdmin />}
+        {tab === "onboarding" && <OnboardingAdmin />}
       </main>
     </div>
   );

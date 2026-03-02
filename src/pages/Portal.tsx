@@ -4,10 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, LogOut, Menu, X } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import { companyLogos } from "@/lib/companyLogos";
-import { RhinoButton } from "@/components/RhinoButton";
 import ResourcesSection from "@/components/portal/ResourcesSection";
 import EventsSection from "@/components/portal/EventsSection";
 import PartnershipsSection from "@/components/portal/PartnershipsSection";
+import OnboardingSection from "@/components/portal/OnboardingSection";
 
 interface CompanyInfo {
   company_name: string;
@@ -29,6 +29,9 @@ const Portal: FC = () => {
   const [activeSection, setActiveSection] = useState("onboarding");
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string>("");
+  const [isInvited, setIsInvited] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -44,21 +47,26 @@ const Portal: FC = () => {
         return;
       }
 
-      const domain = session.user.email.split("@")[1]?.toLowerCase();
-      const { data } = await supabase
-        .from("approved_domains")
-        .select("company_name, logo_key")
-        .eq("domain", domain)
-        .maybeSingle();
+      const email = session.user.email;
+      const domain = email.split("@")[1]?.toLowerCase();
 
-      setCompany(data ?? { company_name: "Partner", logo_key: null });
-      // Block access if domain is not approved (catches unapproved Google sign-ins)
-      if (!data && !session.user.email.endsWith("@rhinovc.com")) {
+      const [{ data: domainData }, { data: inviteData }] = await Promise.all([
+        supabase.from("approved_domains").select("company_name, logo_key").eq("domain", domain).maybeSingle(),
+        supabase.from("onboarding_invites").select("id").eq("email", email.toLowerCase()).maybeSingle(),
+      ]);
+
+      setCompany(domainData ?? { company_name: "Partner", logo_key: null });
+
+      if (!domainData && !email.endsWith("@rhinovc.com")) {
         await supabase.auth.signOut();
         navigate("/partner-login");
         return;
       }
-      setIsAdmin(session.user.email.endsWith("@rhinovc.com"));
+
+      setIsAdmin(email.endsWith("@rhinovc.com"));
+      setUserId(session.user.id);
+      setUserEmail(email);
+      setIsInvited(!!inviteData || email.endsWith("@rhinovc.com"));
       setLoading(false);
     };
 
@@ -94,12 +102,10 @@ const Portal: FC = () => {
       {/* Top Nav */}
       <header className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          {/* Left: Rhino logo */}
           <Link to="/" className="flex-shrink-0">
             <img src={rhinoLogo} alt="Rhino Ventures" className="h-7 w-auto" />
           </Link>
 
-          {/* Center: Nav (desktop) */}
           <nav className="hidden md:flex gap-8">
             {NAV_ITEMS.map((item) => (
               <a
@@ -117,7 +123,6 @@ const Portal: FC = () => {
             ))}
           </nav>
 
-          {/* Right: Company info + sign out */}
           <div className="hidden md:flex items-center gap-4">
             {logoSrc ? (
               <img src={logoSrc} alt={company?.company_name} className="h-6 w-auto object-contain" />
@@ -143,7 +148,6 @@ const Portal: FC = () => {
             )}
           </div>
 
-          {/* Mobile: hamburger */}
           <button
             className="md:hidden text-foreground"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -153,7 +157,6 @@ const Portal: FC = () => {
           </button>
         </div>
 
-        {/* Mobile menu */}
         {menuOpen && (
           <div className="md:hidden border-t border-border bg-background px-6 py-4 flex flex-col gap-4">
             <div className="flex items-center gap-3 pb-3 border-b border-border">
@@ -182,13 +185,15 @@ const Portal: FC = () => {
               <LogOut className="w-3.5 h-3.5" />
               Sign Out
             </button>
+            {isAdmin && (
+              <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-primary">Admin</Link>
+            )}
           </div>
         )}
       </header>
 
       {/* Main content */}
       <main className="flex-1 pt-16">
-        {/* Welcome banner */}
         <div className="border-b border-border bg-secondary/30 px-6 py-8">
           <div className="max-w-6xl mx-auto flex items-center gap-5">
             {logoSrc && (
@@ -209,29 +214,18 @@ const Portal: FC = () => {
           </div>
         </div>
 
-        {/* Sections */}
         <div className="max-w-6xl mx-auto px-6 py-12 space-y-20">
-
-          <section id="onboarding">
-            <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
-              Onboarding
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {["Getting Started with Rhino", "Meet the Team", "Portfolio Network"].map((title) => (
-                <div key={title} className="border border-border rounded-lg p-5 bg-secondary/20">
-                  <h3 className="font-bold text-sm text-foreground mb-2">{title}</h3>
-                  <p className="text-xs text-muted-foreground">Content coming soon.</p>
-                </div>
-              ))}
-            </div>
-          </section>
+          {userId && (
+            <OnboardingSection
+              userId={userId}
+              userEmail={userEmail}
+              isInvited={isInvited}
+            />
+          )}
 
           <PartnershipsSection />
-
           <ResourcesSection />
-
           <EventsSection />
-
         </div>
       </main>
     </div>
