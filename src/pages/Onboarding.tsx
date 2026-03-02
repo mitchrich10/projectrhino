@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Loader2, CheckCircle2, Plus, Trash2, Upload, X,
-  BookOpen, Calendar, Users, Mail, ArrowRight
+  BookOpen, Calendar, Users, Mail, ArrowRight, Copy, Check, Send, Link2
 } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 
@@ -55,22 +55,126 @@ const WelcomeOverview: FC = () => (
   </div>
 );
 
+// ── Share Portal Access ────────────────────────────────────────────────────────
+const SharePortalAccess: FC<{ companyName: string; userEmail: string }> = ({ companyName, userEmail }) => {
+  const portalUrl = `${window.location.origin}/partner-login`;
+  const [copied, setCopied] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sendResults, setSendResults] = useState<{ email: string; success: boolean }[] | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(portalUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSendInvites = async () => {
+    const emails = emailInput.split(/[\n,;]+/).map((e) => e.trim()).filter(Boolean);
+    if (!emails.length) return;
+    setSending(true); setSendError(null); setSendResults(null);
+
+    const { data, error } = await supabase.functions.invoke("send-portal-invite", {
+      body: {
+        emails,
+        senderName: userEmail,
+        companyName,
+        portalUrl,
+      },
+    });
+
+    if (error) {
+      setSendError("Failed to send invites. Please try again.");
+    } else {
+      setSendResults(data.results);
+      setEmailInput("");
+    }
+    setSending(false);
+  };
+
+  return (
+    <div className="mt-10 border border-border rounded-xl p-6 bg-secondary/10">
+      <div className="flex items-center gap-2 mb-1">
+        <Link2 className="w-4 h-4 text-primary" />
+        <p className="text-xs font-black uppercase tracking-widest text-foreground">Share Portal Access</p>
+      </div>
+      <p className="text-xs text-muted-foreground mb-5 leading-relaxed">
+        Your team can access the portal using their <strong>{userEmail.split("@")[1]}</strong> work email. Share the link directly or send invites below.
+      </p>
+
+      {/* Copyable link */}
+      <div className="flex items-center gap-2 mb-6">
+        <div className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-xs font-mono text-muted-foreground truncate">
+          {portalUrl}
+        </div>
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-1.5 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-3 py-2 rounded hover:opacity-90 transition-opacity flex-shrink-0"
+        >
+          {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+          {copied ? "Copied!" : "Copy"}
+        </button>
+      </div>
+
+      {/* Email invite */}
+      <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">
+          Or send an email invite
+        </label>
+        <textarea
+          value={emailInput}
+          onChange={(e) => setEmailInput(e.target.value)}
+          rows={3}
+          placeholder={"colleague@yourcompany.com\nanother@yourcompany.com"}
+          className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none font-mono mb-3"
+        />
+        <p className="text-[10px] text-muted-foreground mb-3">Separate multiple emails by new line, comma, or semicolon.</p>
+        <button
+          onClick={handleSendInvites}
+          disabled={sending || !emailInput.trim()}
+          className="flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
+          {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+          {sending ? "Sending…" : "Send Invites"}
+        </button>
+
+        {sendError && <p className="text-xs text-destructive mt-2">{sendError}</p>}
+        {sendResults && (
+          <div className="mt-3 space-y-1">
+            {sendResults.map((r) => (
+              <div key={r.email} className={`flex items-center gap-2 text-xs ${r.success ? "text-green-600" : "text-destructive"}`}>
+                {r.success ? <Check className="w-3.5 h-3.5 flex-shrink-0" /> : <X className="w-3.5 h-3.5 flex-shrink-0" />}
+                <span className="font-mono">{r.email}</span>
+                {r.success && <span className="text-muted-foreground">— invite sent</span>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ── Thank You Screen ───────────────────────────────────────────────────────────
-const ThankYou: FC = () => (
-  <div className="text-center py-16">
-    <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-6" />
-    <h2 className="text-2xl font-black uppercase tracking-tighter text-foreground mb-3">
-      You're all set!
-    </h2>
-    <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
-      Thanks for completing your intake form. The Rhino team will review your submission and reach out shortly. In the meantime, explore the portal.
-    </p>
-    <Link
-      to="/portal"
-      className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-6 py-3 rounded hover:opacity-90 transition-opacity"
-    >
-      Go to Portal <ArrowRight className="w-3.5 h-3.5" />
-    </Link>
+const ThankYou: FC<{ companyName: string; userEmail: string }> = ({ companyName, userEmail }) => (
+  <div className="py-12">
+    <div className="text-center mb-10">
+      <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-6" />
+      <h2 className="text-2xl font-black uppercase tracking-tighter text-foreground mb-3">
+        You're all set!
+      </h2>
+      <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
+        Thanks for completing your intake form. The Rhino team will review your submission and reach out shortly. In the meantime, explore the portal.
+      </p>
+      <Link
+        to="/portal"
+        className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-6 py-3 rounded hover:opacity-90 transition-opacity"
+      >
+        Go to Portal <ArrowRight className="w-3.5 h-3.5" />
+      </Link>
+    </div>
+    <SharePortalAccess companyName={companyName} userEmail={userEmail} />
   </div>
 );
 
@@ -243,7 +347,7 @@ const OnboardingPage: FC = () => {
           <WelcomeOverview />
 
           {submitted || alreadySubmitted ? (
-            <ThankYou />
+            <ThankYou companyName={companyName} userEmail={userEmail} />
           ) : (
             <>
               <div className="mb-8">
@@ -414,6 +518,9 @@ const OnboardingPage: FC = () => {
                   {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
                   {submitting ? "Submitting…" : "Submit Intake Form"}
                 </button>
+
+                {/* Share portal access — available before submission too */}
+                <SharePortalAccess companyName={companyName} userEmail={userEmail} />
               </div>
             </>
           )}
