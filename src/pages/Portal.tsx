@@ -5,6 +5,7 @@ import { Loader2, LogOut, Menu, X } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import { companyLogos } from "@/lib/companyLogos";
 import { RhinoButton } from "@/components/RhinoButton";
+import ResourcesSection from "@/components/portal/ResourcesSection";
 
 interface CompanyInfo {
   company_name: string;
@@ -24,6 +25,7 @@ const Portal: FC = () => {
   const [company, setCompany] = useState<CompanyInfo | null>(null);
   const [activeSection, setActiveSection] = useState("onboarding");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -47,6 +49,7 @@ const Portal: FC = () => {
         .maybeSingle();
 
       setCompany(data ?? { company_name: "Partner", logo_key: null });
+      setIsAdmin(session.user.email.endsWith("@rhinovc.com"));
       setLoading(false);
     };
 
@@ -121,6 +124,14 @@ const Portal: FC = () => {
               <LogOut className="w-3.5 h-3.5" />
               Sign Out
             </button>
+            {isAdmin && (
+              <Link
+                to="/admin/resources"
+                className="text-xs font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
+              >
+                Admin
+              </Link>
+            )}
           </div>
 
           {/* Mobile: hamburger */}
@@ -206,19 +217,7 @@ const Portal: FC = () => {
             </div>
           </section>
 
-          <section id="resources">
-            <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
-              Resources
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {["Fundraising Templates", "Hiring Playbook", "Legal Resources"].map((title) => (
-                <div key={title} className="border border-border rounded-lg p-5 bg-secondary/20">
-                  <h3 className="font-bold text-sm text-foreground mb-2">{title}</h3>
-                  <p className="text-xs text-muted-foreground">Content coming soon.</p>
-                </div>
-              ))}
-            </div>
-          </section>
+          <ResourcesSection />
 
           <section id="events">
             <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
