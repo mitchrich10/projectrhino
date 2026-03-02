@@ -38,7 +38,10 @@ const RequestsAdmin: FC = () => {
 
   const updateStatus = async (id: string, status: "approved" | "denied") => {
     setUpdating(id);
-    await supabase.from("partner_requests").update({ status }).eq("id", id);
+    // Edge function updates the DB and sends the partner a notification email
+    await supabase.functions.invoke("notify-request-decision", {
+      body: { request_id: id, status },
+    });
     await fetchRequests();
     setUpdating(null);
   };
