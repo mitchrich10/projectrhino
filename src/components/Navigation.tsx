@@ -24,28 +24,6 @@ const Logo: FC<{ className?: string; dark?: boolean }> = ({ className, dark = fa
   );
 };
 
-interface NavLinkProps {
-  href: string;
-  children: React.ReactNode;
-  onClick?: () => void;
-  dark?: boolean;
-}
-
-const NavLink: FC<NavLinkProps> = ({ href, children, onClick, dark = false }) => {
-  return (
-    <a 
-      href={href} 
-      onClick={onClick}
-      className={cn(
-        "text-xs font-bold transition-colors duration-200 uppercase tracking-widest",
-        dark ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white"
-      )}
-    >
-      {children}
-    </a>
-  );
-};
-
 interface NavigationProps {
   variant?: "dark" | "light";
 }
@@ -54,7 +32,6 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const isLightVariant = variant === "light";
-  // For light variant (contact page), text should be dark. For dark variant (homepage), text stays white always.
   const isDarkText = isLightVariant;
 
   useEffect(() => {
@@ -62,6 +39,13 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const close = () => setIsMenuOpen(false);
+
+  const linkClass = cn(
+    "text-xs font-bold transition-colors duration-200 uppercase tracking-widest",
+    isDarkText ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white"
+  );
 
   return (
     <nav 
@@ -76,29 +60,29 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <Logo dark={isDarkText} />
-        
-        <div className="hidden md:flex gap-10 items-center">
-          <NavLink href="/#strategy" dark={isDarkText}>How We Invest</NavLink>
-          <NavLink href="/#portfolio" dark={isDarkText}>Portfolio</NavLink>
-          <NavLink href="/#team" dark={isDarkText}>The Team</NavLink>
+
+        {/* Desktop nav — hidden when menu is open */}
+        <div className="hidden lg:flex gap-8 items-center">
+          <a href="/#strategy" className={linkClass}>How We Invest</a>
+          <a href="/#portfolio" className={linkClass}>Portfolio</a>
+          <a href="/#team" className={linkClass}>The Team</a>
           <a
             href="https://platformeleven.io/rhino-ventures"
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(
-              "text-xs font-bold transition-colors duration-200 uppercase tracking-widest",
-              isDarkText ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white"
-            )}
+            className={linkClass}
           >
             LP Portal
           </a>
+          <Link to="/partner-login" className={linkClass}>Rhino Community Portal</Link>
           <Link to="/contact">
             <RhinoButton size="sm">Contact</RhinoButton>
           </Link>
         </div>
 
+        {/* Hamburger — visible on mobile and tablet */}
         <button 
-          className={cn("md:hidden", isDarkText ? "text-foreground" : "text-white")}
+          className={cn("lg:hidden", isDarkText ? "text-foreground" : "text-white")}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -107,20 +91,23 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
       </div>
 
       {isMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-background border-b border-border p-6 flex flex-col gap-6 md:hidden">
-          <NavLink href="/#strategy" onClick={() => setIsMenuOpen(false)}>How We Invest</NavLink>
-          <NavLink href="/#portfolio" onClick={() => setIsMenuOpen(false)}>Portfolio</NavLink>
-          <NavLink href="/#team" onClick={() => setIsMenuOpen(false)}>The Team</NavLink>
+        <div className="absolute top-full left-0 w-full bg-background border-b border-border p-6 flex flex-col gap-6 lg:hidden">
+          <a href="/#strategy" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">How We Invest</a>
+          <a href="/#portfolio" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Portfolio</a>
+          <a href="/#team" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">The Team</a>
           <a
             href="https://platformeleven.io/rhino-ventures"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setIsMenuOpen(false)}
-            className="text-xs font-bold text-white/80 hover:text-white transition-colors duration-200 uppercase tracking-widest"
+            onClick={close}
+            className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest"
           >
             LP Portal
           </a>
-          <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Contact</Link>
+          <Link to="/partner-login" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">
+            Rhino Community Portal
+          </Link>
+          <Link to="/contact" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Contact</Link>
         </div>
       )}
     </nav>
