@@ -14,6 +14,7 @@ import exitPhoto3 from "@/assets/exit-portfolio-3.jpg";
 import foundersOntopical from "@/assets/founders-ontopical.jpg";
 
 // Logo imports
+import logoArlo from "@/assets/logo-arlo.png";
 import logoMarz from "@/assets/logo-marz.png";
 import logoQuinnAI from "@/assets/logo-quinn-ai.png";
 import logoUpperVillage from "@/assets/logo-upper-village.png";
@@ -50,7 +51,10 @@ const activePortfolio = [
     name: "Arlo", 
     category: "Healthcare Services", 
     description: "Consolidation of MSK clinics.",
-    isRepresentative: true
+    isRepresentative: true,
+    logo: logoArlo,
+    logoSize: "large",
+    website: "https://arlo.health"
   },
   { 
     name: "Twig Fertility", 

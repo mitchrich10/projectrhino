@@ -1,3 +1,4 @@
+import logoArlo from "@/assets/logo-arlo.png";
 import logoArticle from "@/assets/logo-article.png";
 import logoAskott from "@/assets/logo-askott.png";
 import logoAspectBiosystems from "@/assets/logo-aspect-biosystems.png";
@@ -29,6 +30,7 @@ import logoTwig from "@/assets/logo-twig.png";
 import logoUpperVillage from "@/assets/logo-upper-village.png";
 
 export const companyLogos: Record<string, string> = {
+  arlo: logoArlo,
   article: logoArticle,
   askott: logoAskott,
   "aspect-biosystems": logoAspectBiosystems,
