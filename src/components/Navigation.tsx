@@ -81,6 +81,17 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
           <NavLink href="/#strategy" dark={isDarkText}>How We Invest</NavLink>
           <NavLink href="/#portfolio" dark={isDarkText}>Portfolio</NavLink>
           <NavLink href="/#team" dark={isDarkText}>The Team</NavLink>
+          <a
+            href="https://platformeleven.io/rhino-ventures"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "text-xs font-bold transition-colors duration-200 uppercase tracking-widest",
+              isDarkText ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white"
+            )}
+          >
+            LP Portal
+          </a>
           <Link to="/contact">
             <RhinoButton size="sm">Contact</RhinoButton>
           </Link>
@@ -100,6 +111,15 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
           <NavLink href="/#strategy" onClick={() => setIsMenuOpen(false)}>How We Invest</NavLink>
           <NavLink href="/#portfolio" onClick={() => setIsMenuOpen(false)}>Portfolio</NavLink>
           <NavLink href="/#team" onClick={() => setIsMenuOpen(false)}>The Team</NavLink>
+          <a
+            href="https://platformeleven.io/rhino-ventures"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsMenuOpen(false)}
+            className="text-xs font-bold text-white/80 hover:text-white transition-colors duration-200 uppercase tracking-widest"
+          >
+            LP Portal
+          </a>
           <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Contact</Link>
         </div>
       )}
