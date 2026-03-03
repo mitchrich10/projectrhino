@@ -54,10 +54,8 @@ const ContactSection: FC = () => {
 const Footer: FC = () => {
   return (
     <footer className="py-12 px-6 bg-background border-t border-border/50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link to="/partner-login" className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest hover:text-foreground transition-colors">
-          Partner Login
-        </Link>
+      <div className="max-w-7xl mx-auto flex justify-end items-center">
+
         <p className="text-[10px] text-text-tertiary font-black uppercase tracking-widest">
           2026 Rhino
         </p>
