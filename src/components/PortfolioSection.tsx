@@ -54,7 +54,7 @@ const activePortfolio = [
     isRepresentative: true,
     logo: logoArlo,
     logoSize: "xlarge",
-    logoOffset: 4,
+    logoOffset: 2,
     website: "https://arlo-health.ca/"
   },
   { 
