@@ -53,7 +53,8 @@ const activePortfolio = [
     description: "Consolidation of MSK clinics.",
     isRepresentative: true,
     logo: logoArlo,
-    logoSize: "large",
+    logoSize: "xlarge",
+    logoOffset: 4,
     website: "https://arlo-health.ca/"
   },
   { 
