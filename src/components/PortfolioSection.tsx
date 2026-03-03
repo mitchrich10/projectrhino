@@ -54,7 +54,7 @@ const activePortfolio = [
     isRepresentative: true,
     logo: logoArlo,
     logoSize: "large",
-    website: "https://arlo.health"
+    website: "https://arlo-health.ca/"
   },
   { 
     name: "Twig Fertility", 
