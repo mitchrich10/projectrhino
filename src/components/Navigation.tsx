@@ -62,27 +62,9 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
         <Logo dark={isDarkText} />
 
         {/* Desktop nav — hidden when menu is open */}
-        <div className="hidden lg:flex gap-8 items-center">
-          <a href="/#strategy" className={linkClass}>How We Invest</a>
-          <a href="/#portfolio" className={linkClass}>Portfolio</a>
-          <a href="/#team" className={linkClass}>The Team</a>
-          <a
-            href="https://platformeleven.io/rhino-ventures"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkClass}
-          >
-            LP Portal
-          </a>
-          <Link to="/partner-login" className={linkClass}>Rhino Community Portal</Link>
-          <Link to="/contact">
-            <RhinoButton size="sm">Contact</RhinoButton>
-          </Link>
-        </div>
-
-        {/* Hamburger — visible on mobile and tablet */}
+        {/* Always-visible hamburger button */}
         <button 
-          className={cn("lg:hidden", isDarkText ? "text-foreground" : "text-white")}
+          className={cn(isDarkText ? "text-foreground" : "text-white")}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -91,7 +73,7 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
       </div>
 
       {isMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-background border-b border-border p-6 flex flex-col gap-6 lg:hidden">
+        <div className="absolute top-full left-0 w-full bg-background border-b border-border p-6 flex flex-col gap-6">
           <a href="/#strategy" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">How We Invest</a>
           <a href="/#portfolio" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Portfolio</a>
           <a href="/#team" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">The Team</a>
