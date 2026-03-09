@@ -1,7 +1,8 @@
 import { FC, useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ArrowLeft, Plus, Pencil, Trash2, X, Upload, ExternalLink } from "lucide-react";
+import { Loader2, ArrowLeft, Plus, Pencil, Trash2, X, Upload, ExternalLink, Download } from "lucide-react";
+import { exportActivePortfolioToCSV } from "@/lib/exportPortfolio";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import EventsAdmin from "./EventsAdmin";
 import PartnershipsAdmin from "./PartnershipsAdmin";
