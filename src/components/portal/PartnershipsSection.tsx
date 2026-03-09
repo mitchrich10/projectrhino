@@ -154,7 +154,7 @@ const PartnershipModal: FC<{
           ) : (
             <>
               {partnership.description && (
-                <p className="text-sm text-foreground/80 leading-relaxed">{partnership.description}</p>
+                <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{partnership.description}</p>
               )}
               {partnership.promo_code && (
                 <div>
