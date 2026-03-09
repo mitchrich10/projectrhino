@@ -1,7 +1,8 @@
 import { FC, useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ArrowLeft, Plus, Pencil, Trash2, X, Upload, ExternalLink } from "lucide-react";
+import { Loader2, ArrowLeft, Plus, Pencil, Trash2, X, Upload, ExternalLink, Download } from "lucide-react";
+import { exportActivePortfolioToCSV } from "@/lib/exportPortfolio";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import EventsAdmin from "./EventsAdmin";
 import PartnershipsAdmin from "./PartnershipsAdmin";
@@ -227,6 +228,13 @@ const AdminHub: FC = () => {
           <span className="text-muted-foreground/40">|</span>
           <img src={rhinoLogo} alt="Rhino Ventures" className="h-6 w-auto" />
           <div className="flex-1" />
+          <button
+            onClick={exportActivePortfolioToCSV}
+            className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Export Portfolio
+          </button>
           <p className="text-xs font-bold uppercase tracking-widest text-primary">Admin</p>
         </div>
         <div className="max-w-5xl mx-auto px-6 flex gap-0 border-t border-border">
