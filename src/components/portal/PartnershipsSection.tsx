@@ -282,13 +282,6 @@ const PartnershipsSection: FC = () => {
     init();
   }, []);
 
-  const grouped = partnerships.reduce<Record<string, Partnership[]>>((acc, p) => {
-    (acc[p.category] = acc[p.category] ?? []).push(p);
-    return acc;
-  }, {});
-
-  const categories = Object.keys(grouped).sort();
-
   return (
     <section id="partnerships">
       <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
@@ -303,18 +296,9 @@ const PartnershipsSection: FC = () => {
       ) : partnerships.length === 0 ? (
         <p className="text-xs text-muted-foreground">Partnership deals coming soon.</p>
       ) : (
-        <div className="space-y-10">
-          {categories.map((category) => (
-            <div key={category}>
-              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">
-                {category}
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {grouped[category].map((p) => (
-                  <PartnershipTile key={p.id} partnership={p} onClick={() => setSelected(p)} />
-                ))}
-              </div>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {partnerships.map((p) => (
+            <PartnershipTile key={p.id} partnership={p} onClick={() => setSelected(p)} />
           ))}
         </div>
       )}
