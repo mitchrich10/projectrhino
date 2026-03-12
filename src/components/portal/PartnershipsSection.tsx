@@ -203,29 +203,35 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
   return (
     <button
       onClick={onClick}
-      className="group relative flex flex-col items-center justify-center gap-3 p-4 border border-border rounded-lg bg-card hover:border-primary hover:shadow-md hover:shadow-primary/10 transition-all duration-200 h-[120px] text-center w-full"
+      className="group relative flex flex-col items-start gap-2.5 p-4 border border-border rounded-lg bg-card hover:border-primary hover:shadow-md hover:shadow-primary/10 transition-all duration-200 text-left w-full"
     >
-      {partnership.approval_required && (
-        <div className="absolute top-2 right-2">
-          <Lock className="w-3 h-3 text-muted-foreground/50" />
-        </div>
-      )}
-      <div className="flex-1 flex items-center justify-center w-full">
-        {logoSrc ? (
-          <img
-            src={logoSrc}
-            alt={partnership.name}
-            className="max-h-10 max-w-[120px] w-auto h-auto object-contain group-hover:opacity-80 transition-opacity"
-          />
-        ) : (
-          <span className="text-sm font-black uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors">
-            {partnership.name}
-          </span>
+      <div className="flex items-center justify-between w-full">
+        <span className="text-[9px] font-bold uppercase tracking-widest text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded">
+          {partnership.category}
+        </span>
+        {partnership.approval_required && (
+          <Lock className="w-3 h-3 text-muted-foreground/50 flex-shrink-0" />
         )}
       </div>
-      {partnership.tagline && (
-        <p className="text-[10px] text-muted-foreground leading-tight line-clamp-2 w-full">{partnership.tagline}</p>
-      )}
+      <div className="flex items-center gap-3 w-full">
+        {logoSrc ? (
+          <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+            <img
+              src={logoSrc}
+              alt={partnership.name}
+              className="max-h-8 max-w-[64px] w-auto h-auto object-contain group-hover:opacity-80 transition-opacity"
+            />
+          </div>
+        ) : null}
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-black uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors leading-tight">
+            {partnership.name}
+          </p>
+          {partnership.tagline && (
+            <p className="text-[10px] text-muted-foreground leading-tight line-clamp-2 mt-0.5">{partnership.tagline}</p>
+          )}
+        </div>
+      </div>
     </button>
   );
 };
@@ -276,13 +282,6 @@ const PartnershipsSection: FC = () => {
     init();
   }, []);
 
-  const grouped = partnerships.reduce<Record<string, Partnership[]>>((acc, p) => {
-    (acc[p.category] = acc[p.category] ?? []).push(p);
-    return acc;
-  }, {});
-
-  const categories = Object.keys(grouped).sort();
-
   return (
     <section id="partnerships">
       <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
@@ -297,18 +296,9 @@ const PartnershipsSection: FC = () => {
       ) : partnerships.length === 0 ? (
         <p className="text-xs text-muted-foreground">Partnership deals coming soon.</p>
       ) : (
-        <div className="space-y-10">
-          {categories.map((category) => (
-            <div key={category}>
-              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">
-                {category}
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {grouped[category].map((p) => (
-                  <PartnershipTile key={p.id} partnership={p} onClick={() => setSelected(p)} />
-                ))}
-              </div>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {partnerships.map((p) => (
+            <PartnershipTile key={p.id} partnership={p} onClick={() => setSelected(p)} />
           ))}
         </div>
       )}
