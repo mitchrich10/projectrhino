@@ -196,14 +196,7 @@ const ResourcesSection: FC = () => {
                         <div className="flex items-center gap-2 mt-auto pt-1">
                           {isFile ? (
                             <>
-                              <a
-                                href={href}
-                                download
-                                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <Download className="w-3 h-3" /> Download
-                              </a>
+                              <DownloadButton href={href} filename={r.file_path!.split("/").pop()!} />
                               <a
                                 href={href}
                                 target="_blank"
