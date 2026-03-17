@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Download, ExternalLink, FileText, Loader2, Lock } from "lucide-react";
 
@@ -11,6 +11,39 @@ interface Resource {
   category: string;
   approval_required: boolean;
 }
+
+// ── Download Button (blob fetch to force download cross-origin) ────────────────
+const DownloadButton: FC<{ href: string; filename: string }> = ({ href, filename }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleDownload = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLoading(true);
+    try {
+      const res = await fetch(href);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setLoading(false);
+    }
+  }, [href, filename]);
+
+  return (
+    <button
+      onClick={handleDownload}
+      disabled={loading}
+      className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+    >
+      {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
+      Download
+    </button>
+  );
+};
 
 // ── Request Access Button ──────────────────────────────────────────────────────
 const RequestAccessButton: FC<{
@@ -196,14 +229,7 @@ const ResourcesSection: FC = () => {
                         <div className="flex items-center gap-2 mt-auto pt-1">
                           {isFile ? (
                             <>
-                              <a
-                                href={href}
-                                download
-                                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <Download className="w-3 h-3" /> Download
-                              </a>
+                              <DownloadButton href={href} filename={r.file_path!.split("/").pop()!} />
                               <a
                                 href={href}
                                 target="_blank"
