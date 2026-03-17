@@ -12,6 +12,39 @@ interface Resource {
   approval_required: boolean;
 }
 
+// ── Download Button (blob fetch to force download cross-origin) ────────────────
+const DownloadButton: FC<{ href: string; filename: string }> = ({ href, filename }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleDownload = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLoading(true);
+    try {
+      const res = await fetch(href);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setLoading(false);
+    }
+  }, [href, filename]);
+
+  return (
+    <button
+      onClick={handleDownload}
+      disabled={loading}
+      className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+    >
+      {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
+      Download
+    </button>
+  );
+};
+
 // ── Request Access Button ──────────────────────────────────────────────────────
 const RequestAccessButton: FC<{
   itemId: string;
