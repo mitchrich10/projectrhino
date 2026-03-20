@@ -54,7 +54,13 @@ const ContactSection: FC = () => {
 const Footer: FC = () => {
   return (
     <footer className="py-12 px-6 bg-background border-t border-border/50">
-      <div className="max-w-7xl mx-auto flex justify-end items-center">
+      {/* Three-bar accent strip */}
+      <div className="h-[3px] w-full flex mb-0 -mt-12 relative">
+        <div className="flex-1" style={{ backgroundColor: 'var(--color-blue)' }} />
+        <div className="flex-1" style={{ backgroundColor: 'var(--color-mint)', opacity: 0.7 }} />
+        <div className="flex-1" style={{ backgroundColor: 'white', opacity: 0.15 }} />
+      </div>
+      <div className="max-w-7xl mx-auto flex justify-end items-center pt-12">
         <p className="text-[10px] text-text-tertiary font-black uppercase tracking-widest">
           2026 Rhino
         </p>
