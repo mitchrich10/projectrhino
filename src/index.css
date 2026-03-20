@@ -41,6 +41,14 @@
     --surface-hover: 210 12% 88%;
     --text-tertiary: 210 15% 40%;
     --border-subtle: 210 12% 82%;
+
+    /* Brand system — Option C */
+    --color-hero-bg: #173660;
+    --color-navy: #173660;
+    --color-blue: #1A7EC8;
+    --color-mint: #a3d7c2;
+    --color-slate: #CDD8E3;
+    --color-offwhite: #F4F7FA;
   }
 }
 
