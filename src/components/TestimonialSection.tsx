@@ -38,7 +38,7 @@ const TestimonialSection: FC = () => {
                   Partnered in {company.year}
                 </p>
                 <div className="min-h-[3.5rem] flex flex-col items-center justify-center">
-                  <p className="text-xl font-black leading-tight" style={{ color: 'var(--color-mint)' }}>
+                  <p className="text-xl font-black leading-tight" style={{ color: 'var(--color-blue)' }}>
                     {company.kpiValue}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -58,19 +58,19 @@ const TestimonialSection: FC = () => {
           <div className="grid grid-cols-3 gap-2 md:gap-6 max-w-3xl mx-auto">
             {/* Companies */}
             <div className="bg-white rounded-xl p-3 md:p-6 shadow-sm border border-border/50 hover:shadow-md hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center min-h-[80px] md:min-h-0">
-              <p className="text-2xl md:text-5xl font-black leading-none mb-1 md:mb-2" style={{ color: 'var(--color-mint)' }}>35</p>
+              <p className="text-2xl md:text-5xl font-black leading-none mb-1 md:mb-2" style={{ color: 'var(--color-blue)' }}>35</p>
               <p className="text-[8px] md:text-xs uppercase tracking-widest text-muted-foreground text-center">Companies</p>
             </div>
             
             {/* Portfolio Annual Revenue */}
             <div className="bg-white rounded-xl p-3 md:p-6 shadow-sm border border-border/50 hover:shadow-md hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center min-h-[80px] md:min-h-0">
-              <p className="text-2xl md:text-5xl font-black leading-none mb-1 md:mb-2 mt-1 md:mt-0" style={{ color: 'var(--color-mint)' }}>$700M+</p>
+              <p className="text-2xl md:text-5xl font-black leading-none mb-1 md:mb-2 mt-1 md:mt-0" style={{ color: 'var(--color-blue)' }}>$700M+</p>
               <p className="text-[8px] md:text-xs uppercase tracking-widest text-muted-foreground text-center">Portfolio Revenue</p>
             </div>
             
             {/* Exits */}
             <div className="bg-white rounded-xl p-3 md:p-6 shadow-sm border border-border/50 hover:shadow-md hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center min-h-[80px] md:min-h-0">
-              <p className="text-2xl md:text-5xl font-black leading-none mb-1 md:mb-2 -ml-1" style={{ color: 'var(--color-mint)' }}>12</p>
+              <p className="text-2xl md:text-5xl font-black leading-none mb-1 md:mb-2 -ml-1" style={{ color: 'var(--color-blue)' }}>12</p>
               <p className="text-[8px] md:text-xs uppercase tracking-widest text-muted-foreground text-center">Exits</p>
             </div>
           </div>
