@@ -38,7 +38,7 @@ const TestimonialSection: FC = () => {
                   Partnered in {company.year}
                 </p>
                 <div className="min-h-[3.5rem] flex flex-col items-center justify-center">
-                  <p className="text-xl font-black text-primary leading-tight">
+                  <p className="text-xl font-black leading-tight" style={{ color: 'var(--color-mint)' }}>
                     {company.kpiValue}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">

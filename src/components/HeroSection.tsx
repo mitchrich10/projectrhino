@@ -31,7 +31,7 @@ const HeroSection: FC = () => {
     return () => clearTimeout(timeout);
   }, [currentIndex]);
 
-  return <section className="relative min-h-screen flex items-center px-6 overflow-hidden bg-black">
+  return <section className="relative min-h-screen flex items-center px-6 overflow-hidden" style={{ backgroundColor: 'var(--color-navy)' }}>
       {/* Background Image - Rhino Breaking Through */}
       <div className="absolute inset-0 z-0">
         <img src={rhinoDetail} alt="Rhino breaking through" className="w-full h-full object-cover opacity-70" />
