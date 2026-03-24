@@ -460,10 +460,10 @@ const CommissionCalculator: FC = () => {
                 </div>
                 {weightsOk && (
                   <div className="grid grid-cols-2 gap-2">
-                    <MetricTile label="Monthly target" value={fmtCAD(targetBonus * mw / 100 / 12)} small />
-                    <MetricTile label="Quarterly target" value={fmtCAD(targetBonus * qw / 100 / 4)} small />
-                    <MetricTile label="Annual bonus" value={fmtCAD(targetBonus * aw / 100)} small />
-                    <MetricTile label="Total annual bonus" value={fmtCAD(targetBonus)} small />
+                  <MetricTile label="Monthly bonus (per mo.)" value={fmtCAD(targetBonus * mw / 100 / 12)} small />
+                  <MetricTile label="Quarterly bonus (per qtr)" value={fmtCAD(targetBonus * qw / 100 / 4)} small />
+                  <MetricTile label="Annual tranche" value={fmtCAD(targetBonus * aw / 100)} small />
+                  <MetricTile label="Total annual bonus" value={fmtCAD(targetBonus)} small />
                   </div>
                 )}
               </div>
