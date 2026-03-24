@@ -1,6 +1,7 @@
 import { FC, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Info } from "lucide-react";
+import { ArrowLeft, Download, Info } from "lucide-react";
+import { downloadOptionModellerXLSX } from "@/lib/exportOptionModeller";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -170,6 +171,7 @@ const OptionModeller: FC = () => {
     exceptional:  "300000000",
     custom:       "",
   });
+  const [exporting, setExporting] = useState(false);
 
   const setCustomVal = (id: string, v: string) =>
     setCustomVals((prev) => ({ ...prev, [id]: v }));
@@ -226,20 +228,51 @@ const OptionModeller: FC = () => {
             </span>
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <span
               className="hidden sm:block text-[11px] font-semibold uppercase tracking-widest"
               style={{ color: MUTED }}
             >
               Option Modeller
             </span>
+            {/* Download Excel button */}
+            <button
+              onClick={async () => {
+                setExporting(true);
+                try {
+                  await downloadOptionModellerXLSX({
+                    inputs: {
+                      totalOptions,
+                      strikePrice,
+                      fullyDiluted,
+                      grantDate,
+                      todayDate,
+                      ownershipPct,
+                      vestedOptions,
+                      monthsVested,
+                    },
+                    scenarios,
+                    diluted,
+                    strike,
+                  });
+                } finally {
+                  setExporting(false);
+                }
+              }}
+              disabled={exporting}
+              className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest rounded px-3 py-2 transition-opacity hover:opacity-85 disabled:opacity-50"
+              style={{ background: BLUE, color: "#fff" }}
+            >
+              <Download className="w-3.5 h-3.5" />
+              {exporting ? "Generating…" : "Download Excel"}
+            </button>
             <Link
               to="/portal"
               className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest transition-opacity hover:opacity-70"
               style={{ color: BLUE }}
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              Back to Portal
+              Back
             </Link>
           </div>
         </div>
