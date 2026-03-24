@@ -54,9 +54,15 @@ function calcMonthsVested(grantDateStr: string, todayStr: string): number {
 
 function fmtValuation(n: number): string {
   if (!n || n <= 0) return "$0";
-  if (n >= 1_000_000_000) return `$${(n / 1_000_000_000).toFixed(1)}B`;
-  if (n >= 1_000_000)     return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000)         return `$${(n / 1_000).toFixed(0)}K`;
+  if (n >= 1_000_000_000) {
+    const v = n / 1_000_000_000;
+    return `$${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}B`;
+  }
+  if (n >= 1_000_000) {
+    const v = n / 1_000_000;
+    return `$${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}M`;
+  }
+  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
   return `$${n.toFixed(0)}`;
 }
 
@@ -197,19 +203,27 @@ const StatCard: FC<{
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
+// Compute a date N months ago from today
+function monthsAgo(n: number): string {
+  const d = new Date();
+  d.setMonth(d.getMonth() - n);
+  return d.toISOString().slice(0, 10);
+}
+
 const OptionModeller: FC = () => {
-  const [totalOptions, setTotalOptions] = useState("");
-  const [strikePrice,  setStrikePrice]  = useState("");
-  const [fullyDiluted, setFullyDiluted] = useState("");
-  const [grantDate,    setGrantDate]    = useState("");
+  const [totalOptions, setTotalOptions] = useState("1000");
+  const [strikePrice,  setStrikePrice]  = useState("10");
+  const [fullyDiluted, setFullyDiluted] = useState("10000000");
+  const [grantDate,    setGrantDate]    = useState(() => monthsAgo(18));
   const [todayDate,    setTodayDate]    = useState(today());
   const [exporting,    setExporting]    = useState(false);
 
+  // Default valuations sized to feel meaningful at $10 strike / 10M diluted (base = $100M)
   const [customVals, setCustomVals] = useState<Record<string, string>>({
-    conservative: "25000000",
-    moderate:     "75000000",
-    strong:       "150000000",
-    exceptional:  "300000000",
+    conservative: "50000000",    // $50M  — underwater vs $100M base
+    moderate:     "150000000",   // $150M — $5/share gain
+    strong:       "500000000",   // $500M — $40/share gain
+    exceptional:  "1000000000",  // $1B
     custom:       "",
   });
 
