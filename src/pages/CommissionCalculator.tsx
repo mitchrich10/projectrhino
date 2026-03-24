@@ -2,8 +2,15 @@ import { FC, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, Minus } from "lucide-react";
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Brand tokens ──────────────────────────────────────────────────────────────
+const NAVY     = "#173660";
+const BLUE     = "#1A7EC8";
+const MINT     = "#A3D7C2";
+const SLATE    = "#CDD8E3";
+const OFFWHITE = "#F4F7FA";
+const GREY_MID = "#5C6B7A";
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function fmtCAD(value: number): string {
   const abs = Math.abs(value);
   const sign = value < 0 ? "-" : "";
@@ -28,7 +35,6 @@ function parseNum(s: string): number {
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-
 interface PlanInputs {
   role: string;
   territory: string;
@@ -73,13 +79,12 @@ interface RepCalc {
 }
 
 // ── Calculation helpers ───────────────────────────────────────────────────────
-
 function calcBonusPart(
   targetBonus: number,
-  weight: number, // 0–1
-  attainmentPct: number, // e.g. 0.90 = 90%
-  cliff: number, // 0–1
-  accelThresh: number, // 0–1
+  weight: number,
+  attainmentPct: number,
+  cliff: number,
+  accelThresh: number,
   accelMult: number
 ): number {
   if (attainmentPct < cliff) return 0;
@@ -87,16 +92,21 @@ function calcBonusPart(
   return targetBonus * weight * attainmentPct;
 }
 
-// ── Section components ────────────────────────────────────────────────────────
+// ── Shared UI primitives ──────────────────────────────────────────────────────
 
-const SectionHeader: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <h2 className="text-[10px] font-black uppercase tracking-ultra text-muted-foreground mb-4 border-b border-border pb-2">
-    {children}
-  </h2>
+/** Navy bar card header */
+const CardHeader: FC<{ children: React.ReactNode; right?: React.ReactNode }> = ({ children, right }) => (
+  <div
+    className="flex items-center justify-between px-5 py-3"
+    style={{ background: NAVY }}
+  >
+    <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white">{children}</span>
+    {right && <span className="text-[10px] text-white/60">{right}</span>}
+  </div>
 );
 
 const FieldLabel: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <label className="text-[10px] font-black uppercase tracking-ultra text-muted-foreground block mb-1">
+  <label className="block text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: GREY_MID }}>
     {children}
   </label>
 );
@@ -109,9 +119,15 @@ const TextInput: FC<{
   suffix?: string;
   type?: string;
 }> = ({ value, onChange, placeholder, prefix, suffix, type = "text" }) => (
-  <div className="flex items-center border border-border bg-card h-9 text-sm">
+  <div
+    className="flex items-center h-9 text-sm border"
+    style={{ borderColor: SLATE, background: "#fff" }}
+  >
     {prefix && (
-      <span className="px-2 text-muted-foreground text-xs font-bold border-r border-border h-full flex items-center">
+      <span
+        className="px-2.5 text-xs font-semibold h-full flex items-center border-r flex-shrink-0"
+        style={{ color: GREY_MID, borderColor: SLATE, background: OFFWHITE }}
+      >
         {prefix}
       </span>
     )}
@@ -120,36 +136,46 @@ const TextInput: FC<{
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="flex-1 px-2 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
+      className="flex-1 px-2.5 bg-transparent outline-none text-sm"
+      style={{ color: NAVY }}
     />
     {suffix && (
-      <span className="px-2 text-muted-foreground text-xs border-l border-border h-full flex items-center">
+      <span
+        className="px-2.5 text-xs font-semibold h-full flex items-center border-l flex-shrink-0"
+        style={{ color: GREY_MID, borderColor: SLATE, background: OFFWHITE }}
+      >
         {suffix}
       </span>
     )}
   </div>
 );
 
-const ReadOnlyField: FC<{ label: string; value: string; large?: boolean; highlight?: boolean }> = ({
-  label,
-  value,
-  large,
-  highlight,
-}) => (
-  <div className={`border border-border ${highlight ? "bg-primary" : "bg-card"} px-3 py-2`}>
-    <div className={`text-[9px] font-black uppercase tracking-ultra ${highlight ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-      {label}
+const MetricTile: FC<{
+  label: string;
+  value: string;
+  accent?: boolean;
+  navy?: boolean;
+  small?: boolean;
+}> = ({ label, value, accent, navy, small }) => {
+  const bg = navy ? NAVY : accent ? OFFWHITE : "#fff";
+  const valColor = navy ? "#fff" : accent ? BLUE : NAVY;
+  const lblColor = navy ? "rgba(255,255,255,0.55)" : GREY_MID;
+  return (
+    <div className="border px-3 py-2.5" style={{ borderColor: SLATE, background: bg }}>
+      <div className="text-[9px] font-semibold uppercase tracking-widest mb-1" style={{ color: lblColor }}>
+        {label}
+      </div>
+      <div
+        className={`font-semibold ${small ? "text-sm" : "text-base"}`}
+        style={{ color: valColor }}
+      >
+        {value}
+      </div>
     </div>
-    <div
-      className={`font-black ${highlight ? "text-primary-foreground" : "text-foreground"} ${large ? "text-xl mt-0.5" : "text-sm"}`}
-    >
-      {value}
-    </div>
-  </div>
-);
+  );
+};
 
-// ── ATTAINMENT TABLE ──────────────────────────────────────────────────────────
-
+// ── Attainment logic ──────────────────────────────────────────────────────────
 const ATTAINMENT_LEVELS = [70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130];
 
 interface AttainmentRow {
@@ -162,149 +188,143 @@ interface AttainmentRow {
   vsOTE: number;
 }
 
-function useAttainmentTable(plan: PlanInputs, ote: number) {
-  return useMemo<AttainmentRow[]>(() => {
+function useAttainmentTable(plan: PlanInputs, ote: number): AttainmentRow[] {
+  return useMemo(() => {
     const target = parseNum(plan.targetBonus);
-    const base = parseNum(plan.baseSalary);
-    const mw = parseNum(plan.monthlyWeight) / 100;
-    const qw = parseNum(plan.quarterlyWeight) / 100;
-    const aw = parseNum(plan.annualWeight) / 100;
-    const cliff = parseNum(plan.cliffThreshold) / 100;
-    const accel = parseNum(plan.acceleratorThreshold) / 100;
-    const mult = parseNum(plan.acceleratorMultiplier);
+    const base   = parseNum(plan.baseSalary);
+    const mw     = parseNum(plan.monthlyWeight) / 100;
+    const qw     = parseNum(plan.quarterlyWeight) / 100;
+    const aw     = parseNum(plan.annualWeight) / 100;
+    const cliff  = parseNum(plan.cliffThreshold) / 100;
+    const accel  = parseNum(plan.acceleratorThreshold) / 100;
+    const mult   = parseNum(plan.acceleratorMultiplier);
 
     return ATTAINMENT_LEVELS.map((pct) => {
-      const a = pct / 100;
-      const monthly = calcBonusPart(target, mw, a, cliff, accel, mult);
+      const a         = pct / 100;
+      const monthly   = calcBonusPart(target, mw, a, cliff, accel, mult);
       const quarterly = calcBonusPart(target, qw, a, cliff, accel, mult);
-      const annual = calcBonusPart(target, aw, a, cliff, accel, mult);
-      const total = monthly * 12 + quarterly * 4 + annual;
+      const annual    = calcBonusPart(target, aw, a, cliff, accel, mult);
+      const total     = monthly * 12 + quarterly * 4 + annual;
       const baseBonus = base + total;
-      const vsOTE = ote > 0 ? (baseBonus / ote) * 100 : 0;
+      const vsOTE     = ote > 0 ? (baseBonus / ote) * 100 : 0;
       return { attainment: pct, monthlyBonus: monthly, quarterlyBonus: quarterly, annualBonus: annual, totalBonus: total, baseBonus, vsOTE };
     });
   }, [plan, ote]);
 }
 
-// ── Row colour ────────────────────────────────────────────────────────────────
+type RowTier = "below-cliff" | "partial" | "at-target" | "accel";
 
-function rowStyle(pct: number, cliff: number, accel: number): { bg: string; text: string } {
-  if (pct / 100 < cliff) return { bg: "#FBEAE8", text: "#A33222" };
-  if (pct / 100 >= accel) return { bg: "#D6F0E0", text: "#1A6B3C" };
-  if (pct === 100) return { bg: "#F4F7FA", text: "#1A6B3C" };
-  return { bg: "transparent", text: "#1A6B3C" };
+function getRowTier(pct: number, cliff: number, accel: number): RowTier {
+  const a = pct / 100;
+  if (a < cliff) return "below-cliff";
+  if (a >= accel) return "accel";
+  if (a >= 1) return "at-target";
+  return "partial";
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+const ROW_STYLES: Record<RowTier, { bg: string; bonusColor: string; isZero: boolean }> = {
+  "below-cliff": { bg: "#F4F4F4",  bonusColor: GREY_MID,  isZero: true  },
+  "partial":     { bg: "#fff",     bonusColor: NAVY,       isZero: false },
+  "at-target":   { bg: "#fff",     bonusColor: BLUE,       isZero: false },
+  "accel":       { bg: MINT,       bonusColor: NAVY,       isZero: false },
+};
 
+// ── Page ──────────────────────────────────────────────────────────────────────
 const CommissionCalculator: FC = () => {
   const [plan, setPlan] = useState<PlanInputs>(DEFAULT_PLAN);
-  const [rep, setRep] = useState<RepCalc>({
-    periodType: "monthly",
-    periodQuota: "",
-    actualOrders: "",
-    psCollected: "",
-  });
+  const [rep,  setRep]  = useState<RepCalc>({ periodType: "monthly", periodQuota: "", actualOrders: "", psCollected: "" });
 
-  const updatePlan = (field: keyof PlanInputs, value: string) =>
-    setPlan((p) => ({ ...p, [field]: value }));
+  const updatePlan = (field: keyof PlanInputs, value: string) => setPlan((p) => ({ ...p, [field]: value }));
+  const updateRep  = (field: keyof RepCalc,  value: string | PeriodType) => setRep((r) => ({ ...r, [field]: value }));
 
-  const updateRep = (field: keyof RepCalc, value: string | PeriodType) =>
-    setRep((r) => ({ ...r, [field]: value }));
-
-  // Derived
-  const base = parseNum(plan.baseSalary);
+  // Derived plan values
+  const base        = parseNum(plan.baseSalary);
   const targetBonus = parseNum(plan.targetBonus);
-  const equity = parseNum(plan.equity);
+  const equity      = parseNum(plan.equity);
   const annualQuota = parseNum(plan.annualQuota);
-  const ote = base + targetBonus;
-  const totalPkg = ote + equity;
-
-  const mw = parseNum(plan.monthlyWeight);
-  const qw = parseNum(plan.quarterlyWeight);
-  const aw = parseNum(plan.annualWeight);
-  const weightsSum = mw + qw + aw;
-  const weightsOk = Math.abs(weightsSum - 100) < 0.01;
-
-  const cliff = parseNum(plan.cliffThreshold) / 100;
-  const accel = parseNum(plan.acceleratorThreshold) / 100;
-  const mult = parseNum(plan.acceleratorMultiplier);
-  const psRate = parseNum(plan.psRate) / 100;
+  const ote         = base + targetBonus;
+  const totalPkg    = ote + equity;
+  const mw          = parseNum(plan.monthlyWeight);
+  const qw          = parseNum(plan.quarterlyWeight);
+  const aw          = parseNum(plan.annualWeight);
+  const weightsSum  = mw + qw + aw;
+  const weightsOk   = Math.abs(weightsSum - 100) < 0.01;
+  const cliff       = parseNum(plan.cliffThreshold) / 100;
+  const accel       = parseNum(plan.acceleratorThreshold) / 100;
+  const mult        = parseNum(plan.acceleratorMultiplier);
+  const psRate      = parseNum(plan.psRate) / 100;
 
   const rows = useAttainmentTable(plan, ote);
 
-  // Rep calculator
+  // Rep calc
   const periodQuota = useMemo(() => {
     if (rep.periodQuota) return parseNum(rep.periodQuota);
-    if (rep.periodType === "monthly") return annualQuota / 12;
+    if (rep.periodType === "monthly")   return annualQuota / 12;
     if (rep.periodType === "quarterly") return annualQuota / 4;
     return annualQuota;
   }, [rep.periodQuota, rep.periodType, annualQuota]);
 
-  const actual = parseNum(rep.actualOrders);
+  const actual        = parseNum(rep.actualOrders);
   const attainmentPct = periodQuota > 0 ? actual / periodQuota : 0;
 
-  const bonusWeight = useMemo(() => {
-    if (rep.periodType === "monthly") return (mw / 100) * (targetBonus / 12);
-    if (rep.periodType === "quarterly") return (qw / 100) * (targetBonus / 4);
-    return aw / 100 * targetBonus;
-  }, [rep.periodType, mw, qw, aw, targetBonus]);
-
   const periodBonus = useMemo(() => {
-    if (rep.periodType === "monthly") {
-      return calcBonusPart(targetBonus, mw / 100, attainmentPct, cliff, accel, mult);
-    }
-    if (rep.periodType === "quarterly") {
-      return calcBonusPart(targetBonus, qw / 100, attainmentPct, cliff, accel, mult);
-    }
+    if (rep.periodType === "monthly")   return calcBonusPart(targetBonus, mw / 100, attainmentPct, cliff, accel, mult);
+    if (rep.periodType === "quarterly") return calcBonusPart(targetBonus, qw / 100, attainmentPct, cliff, accel, mult);
     return calcBonusPart(targetBonus, aw / 100, attainmentPct, cliff, accel, mult);
   }, [rep.periodType, targetBonus, mw, qw, aw, attainmentPct, cliff, accel, mult]);
 
-  const psEarned = parseNum(rep.psCollected) * psRate;
-
-  const proRatedBase = useMemo(() => {
-    if (rep.periodType === "monthly") return base / 12;
-    if (rep.periodType === "quarterly") return base / 4;
-    return base;
-  }, [rep.periodType, base]);
-
+  const psEarned          = parseNum(rep.psCollected) * psRate;
+  const proRatedBase      = rep.periodType === "monthly" ? base / 12 : rep.periodType === "quarterly" ? base / 4 : base;
   const totalPeriodEarnings = proRatedBase + periodBonus + psEarned;
+  const aboveBelow        = actual - periodQuota;
 
-  const repStatus = useMemo<{ label: string; icon: React.ReactNode; color: string }>(() => {
-    if (attainmentPct < cliff)
-      return { label: "Below cliff — no bonus", icon: <TrendingDown className="w-4 h-4" />, color: "#A33222" };
-    if (attainmentPct >= accel)
-      return { label: `Above accelerator threshold — ${mult}x rate`, icon: <TrendingUp className="w-4 h-4" />, color: "#1A6B3C" };
-    if (attainmentPct >= 1)
-      return { label: "At or above target", icon: <TrendingUp className="w-4 h-4" />, color: "#1A6B3C" };
-    return { label: "Below target — partial bonus", icon: <Minus className="w-4 h-4" />, color: "#5C6B7A" };
-  }, [attainmentPct, cliff, accel, mult]);
+  type StatusKey = "cliff" | "partial" | "target" | "accel";
+  const statusKey: StatusKey = attainmentPct < cliff ? "cliff"
+    : attainmentPct >= accel ? "accel"
+    : attainmentPct >= 1 ? "target"
+    : "partial";
 
-  const aboveBelow = actual - periodQuota;
+  const STATUS_CONFIG: Record<StatusKey, { label: string; icon: React.ReactNode; bg: string; fg: string }> = {
+    cliff:   { label: "Below cliff — no bonus",                          icon: <TrendingDown className="w-4 h-4" />, bg: "#A33222", fg: "#fff" },
+    partial: { label: "Below target — partial bonus",                    icon: <Minus        className="w-4 h-4" />, bg: "#F5A623", fg: "#fff" },
+    target:  { label: "At or above target",                              icon: <TrendingUp   className="w-4 h-4" />, bg: BLUE,      fg: "#fff" },
+    accel:   { label: `Above accelerator threshold — ${mult}x rate`,     icon: <TrendingUp   className="w-4 h-4" />, bg: MINT,      fg: NAVY   },
+  };
+  const status = STATUS_CONFIG[statusKey];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <header className="border-b border-border bg-card px-6 py-4 flex items-center gap-4">
-        <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-        </Link>
-        <div className="h-4 w-px bg-border" />
-        <div>
-          <h1 className="text-sm font-black uppercase tracking-ultra text-foreground">
+    <div className="min-h-screen" style={{ background: OFFWHITE, fontFamily: "'DM Sans', 'Inter', sans-serif" }}>
+
+      {/* Top header bar */}
+      <header className="border-b" style={{ background: "#fff", borderColor: SLATE }}>
+        <div className="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="transition-opacity hover:opacity-70" style={{ color: NAVY }}>
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div className="h-5 w-px" style={{ background: SLATE }} />
+            <span
+              className="text-sm font-semibold uppercase tracking-[0.22em]"
+              style={{ color: NAVY }}
+            >
+              Rhino Ventures
+            </span>
+          </div>
+          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: GREY_MID }}>
             Commission Calculator
-          </h1>
-          <p className="text-[10px] text-muted-foreground mt-0.5">Rhino Ventures · Sales Compensation</p>
+          </span>
         </div>
       </header>
 
       <div className="max-w-[1400px] mx-auto p-6 space-y-6">
-        {/* ── SECTION 1 — PLAN INPUTS ─────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left: Rep details */}
-          <div className="bg-card border border-border p-5 space-y-4">
-            <SectionHeader>Rep Details</SectionHeader>
-            <div className="space-y-3">
+
+        {/* ── SECTION 1 — PLAN INPUTS ────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+          {/* Card 1 — Rep Details */}
+          <div className="border" style={{ borderColor: SLATE, background: "#fff" }}>
+            <CardHeader>Plan Inputs — Rep Details</CardHeader>
+            <div className="p-5 space-y-3">
               <div>
                 <FieldLabel>Role / Title</FieldLabel>
                 <TextInput value={plan.role} onChange={(v) => updatePlan("role", v)} placeholder="e.g. Account Executive" />
@@ -330,135 +350,153 @@ const CommissionCalculator: FC = () => {
                 <TextInput value={plan.targetBonus} onChange={(v) => updatePlan("targetBonus", v)} prefix="CAD $" type="number" />
               </div>
               <div>
-                <FieldLabel>Equity Value (optional)</FieldLabel>
+                <FieldLabel>Equity Value <span className="normal-case font-normal tracking-normal text-[9px]">(optional)</span></FieldLabel>
                 <TextInput value={plan.equity} onChange={(v) => updatePlan("equity", v)} prefix="CAD $" type="number" placeholder="0" />
               </div>
+
+              {/* OTE prominent block */}
+              <div
+                className="mt-4 px-4 py-4 border-t-2"
+                style={{ background: NAVY, borderColor: BLUE }}
+              >
+                <div className="text-[9px] font-semibold uppercase tracking-widest text-white/50 mb-1">
+                  OTE at 100% — Base + Target Bonus
+                </div>
+                <div className="text-3xl font-semibold" style={{ color: BLUE }}>
+                  {fmtCAD(ote)}
+                </div>
+                {equity > 0 && (
+                  <div className="mt-2 text-[10px] text-white/60">
+                    Total package incl. equity:{" "}
+                    <span className="text-white font-semibold">{fmtCAD(totalPkg)}</span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Middle: Package summary + Bonus weights */}
-          <div className="space-y-4">
-            {/* Package summary */}
-            <div className="bg-card border border-border p-5 space-y-3">
-              <SectionHeader>Package Summary</SectionHeader>
-              <ReadOnlyField label="OTE at 100% (Base + Target Bonus)" value={fmtCAD(ote)} large highlight />
-              <div className="grid grid-cols-2 gap-3">
-                <ReadOnlyField label="Base Salary" value={fmtCAD(base)} />
-                <ReadOnlyField label="Target Bonus" value={fmtCAD(targetBonus)} />
+          {/* Card 2 — Bonus Structure */}
+          <div className="border" style={{ borderColor: SLATE, background: "#fff" }}>
+            <CardHeader>Plan Inputs — Bonus Structure</CardHeader>
+            <div className="p-5 space-y-4">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-widest mb-3" style={{ color: GREY_MID }}>
+                  Bonus weights — must sum to 100%
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <FieldLabel>Monthly</FieldLabel>
+                    <TextInput value={plan.monthlyWeight} onChange={(v) => updatePlan("monthlyWeight", v)} suffix="%" type="number" />
+                  </div>
+                  <div>
+                    <FieldLabel>Quarterly</FieldLabel>
+                    <TextInput value={plan.quarterlyWeight} onChange={(v) => updatePlan("quarterlyWeight", v)} suffix="%" type="number" />
+                  </div>
+                  <div>
+                    <FieldLabel>Annual</FieldLabel>
+                    <TextInput value={plan.annualWeight} onChange={(v) => updatePlan("annualWeight", v)} suffix="%" type="number" />
+                  </div>
+                </div>
+                {!weightsOk && (
+                  <div
+                    className="mt-2 flex items-center gap-2 text-xs font-semibold px-3 py-2 border"
+                    style={{ background: "#FFF3CD", borderColor: "#F5A623", color: "#7A4A00" }}
+                  >
+                    <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+                    Weights sum to {weightsSum.toFixed(0)}% — must equal 100%
+                  </div>
+                )}
               </div>
-              {equity > 0 && (
-                <ReadOnlyField label="Total Annual Package (OTE + Equity)" value={fmtCAD(totalPkg)} />
-              )}
-            </div>
 
-            {/* Bonus structure */}
-            <div className="bg-card border border-border p-5 space-y-3">
-              <SectionHeader>Bonus Structure</SectionHeader>
-              <p className="text-[10px] text-muted-foreground -mt-2 mb-1">Weights must sum to 100%</p>
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <FieldLabel>Monthly</FieldLabel>
-                  <TextInput value={plan.monthlyWeight} onChange={(v) => updatePlan("monthlyWeight", v)} suffix="%" type="number" />
-                </div>
-                <div>
-                  <FieldLabel>Quarterly</FieldLabel>
-                  <TextInput value={plan.quarterlyWeight} onChange={(v) => updatePlan("quarterlyWeight", v)} suffix="%" type="number" />
-                </div>
-                <div>
-                  <FieldLabel>Annual</FieldLabel>
-                  <TextInput value={plan.annualWeight} onChange={(v) => updatePlan("annualWeight", v)} suffix="%" type="number" />
-                </div>
-              </div>
-              {!weightsOk && (
-                <div className="flex items-center gap-2 text-[11px] font-semibold border border-destructive/40 bg-destructive/10 text-destructive px-3 py-2">
-                  <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
-                  Weights sum to {weightsSum.toFixed(0)}% — must equal 100%
-                </div>
-              )}
               {weightsOk && (
-                <div className="text-[10px] text-muted-foreground">
-                  Monthly target: {fmtCAD(targetBonus * mw / 100 / 12)}/mo · Quarterly target: {fmtCAD(targetBonus * qw / 100 / 4)}/qtr · Annual: {fmtCAD(targetBonus * aw / 100)}/yr
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t" style={{ borderColor: SLATE }}>
+                  <MetricTile label="Monthly target" value={fmtCAD(targetBonus * mw / 100 / 12)} small />
+                  <MetricTile label="Quarterly target" value={fmtCAD(targetBonus * qw / 100 / 4)} small />
+                  <MetricTile label="Annual bonus" value={fmtCAD(targetBonus * aw / 100)} small />
+                  <MetricTile label="Total annual bonus" value={fmtCAD(targetBonus)} small />
                 </div>
               )}
+
+              <div className="pt-3 border-t space-y-2" style={{ borderColor: SLATE }}>
+                <div className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: GREY_MID }}>
+                  Package breakdown
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <MetricTile label="Base salary" value={fmtCAD(base)} small />
+                  <MetricTile label="Target bonus" value={fmtCAD(targetBonus)} small />
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Right: Cliff & accelerator */}
-          <div className="bg-card border border-border p-5 space-y-3">
-            <SectionHeader>Cliff & Accelerator Settings</SectionHeader>
-            <div>
-              <FieldLabel>Cliff Threshold — no bonus below this %</FieldLabel>
-              <TextInput value={plan.cliffThreshold} onChange={(v) => updatePlan("cliffThreshold", v)} suffix="%" type="number" />
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Reps at &lt;{plan.cliffThreshold || "85"}% attainment receive $0 bonus
-              </p>
-            </div>
-            <div>
-              <FieldLabel>Accelerator Threshold</FieldLabel>
-              <TextInput value={plan.acceleratorThreshold} onChange={(v) => updatePlan("acceleratorThreshold", v)} suffix="%" type="number" />
-            </div>
-            <div>
-              <FieldLabel>Accelerator Multiplier</FieldLabel>
-              <TextInput value={plan.acceleratorMultiplier} onChange={(v) => updatePlan("acceleratorMultiplier", v)} suffix="x" type="number" />
-              <p className="text-[10px] text-muted-foreground mt-1">
-                At ≥{plan.acceleratorThreshold || "110"}% attainment, bonus rate multiplied by {plan.acceleratorMultiplier || "2"}x
-              </p>
-            </div>
-            <div className="pt-2 border-t border-border">
-              <FieldLabel>Professional Services Commission Rate</FieldLabel>
-              <TextInput value={plan.psRate} onChange={(v) => updatePlan("psRate", v)} suffix="%" type="number" />
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Applied to PS revenue collected in the Rep Calculator
-              </p>
-            </div>
+          {/* Card 3 — Cliff & Accelerator */}
+          <div className="border" style={{ borderColor: SLATE, background: "#fff" }}>
+            <CardHeader>Plan Inputs — Cliff & Accelerator</CardHeader>
+            <div className="p-5 space-y-4">
+              <div>
+                <FieldLabel>Cliff Threshold — no bonus below this attainment</FieldLabel>
+                <TextInput value={plan.cliffThreshold} onChange={(v) => updatePlan("cliffThreshold", v)} suffix="%" type="number" />
+                <p className="text-[10px] mt-1" style={{ color: GREY_MID }}>
+                  Reps below {plan.cliffThreshold || "85"}% attainment earn $0 bonus
+                </p>
+              </div>
+              <div>
+                <FieldLabel>Accelerator Threshold</FieldLabel>
+                <TextInput value={plan.acceleratorThreshold} onChange={(v) => updatePlan("acceleratorThreshold", v)} suffix="%" type="number" />
+              </div>
+              <div>
+                <FieldLabel>Accelerator Multiplier</FieldLabel>
+                <TextInput value={plan.acceleratorMultiplier} onChange={(v) => updatePlan("acceleratorMultiplier", v)} suffix="x" type="number" />
+                <p className="text-[10px] mt-1" style={{ color: GREY_MID }}>
+                  At ≥{plan.acceleratorThreshold || "110"}% attainment, bonus rate is {plan.acceleratorMultiplier || "2"}×
+                </p>
+              </div>
+              <div className="pt-3 border-t" style={{ borderColor: SLATE }}>
+                <FieldLabel>Professional Services Commission Rate</FieldLabel>
+                <TextInput value={plan.psRate} onChange={(v) => updatePlan("psRate", v)} suffix="%" type="number" />
+                <p className="text-[10px] mt-1" style={{ color: GREY_MID }}>
+                  Applied to PS revenue in the Rep Calculator
+                </p>
+              </div>
 
-            {/* Visual guide */}
-            <div className="pt-2 border-t border-border space-y-1.5">
-              <p className="text-[10px] font-black uppercase tracking-ultra text-muted-foreground">At 100% Quota</p>
-              <div className="grid grid-cols-2 gap-2">
-                <ReadOnlyField label="Monthly bonus" value={fmtCAD(targetBonus * mw / 100)} />
-                <ReadOnlyField label="Quarterly bonus" value={fmtCAD(targetBonus * qw / 100)} />
-                <ReadOnlyField label="Annual bonus" value={fmtCAD(targetBonus * aw / 100)} />
-                <ReadOnlyField label="Total annual bonus" value={fmtCAD(targetBonus)} />
+              {/* Legend chips */}
+              <div className="pt-3 border-t space-y-2" style={{ borderColor: SLATE }}>
+                <div className="text-[10px] font-semibold uppercase tracking-widest mb-2" style={{ color: GREY_MID }}>Row colour key</div>
+                <div className="space-y-1.5 text-[10px]">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-4 h-3 border flex-shrink-0" style={{ background: "#F4F4F4", borderColor: SLATE }} />
+                    <span style={{ color: GREY_MID }}>Below cliff — no bonus</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-4 h-3 border flex-shrink-0" style={{ background: "#fff", borderColor: SLATE }} />
+                    <span style={{ color: GREY_MID }}>Partial / at-target (bonus in <span style={{ color: BLUE }}>blue</span>)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-4 h-3 border flex-shrink-0" style={{ background: MINT, borderColor: SLATE }} />
+                    <span style={{ color: GREY_MID }}>Above accelerator — exceptional</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── SECTION 2 — ATTAINMENT TABLE ────────────────────────────────────── */}
-        <div className="bg-card border border-border">
-          <div className="px-5 pt-5 pb-3 border-b border-border flex items-baseline justify-between">
-            <div>
-              <h2 className="text-[10px] font-black uppercase tracking-ultra text-muted-foreground">
-                Section 2 — Attainment Table
-              </h2>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Updates live as inputs change · Rows 70–130% in 5% increments
-                {plan.planPeriod && <span className="ml-2 text-foreground font-semibold">{plan.planPeriod}</span>}
-              </p>
-            </div>
-            {plan.role && (
-              <span className="text-[10px] text-muted-foreground uppercase tracking-ultra">
-                {plan.role}{plan.territory && ` · ${plan.territory}`}
-              </span>
-            )}
-          </div>
+        {/* ── SECTION 2 — ATTAINMENT TABLE ───────────────────────────────────── */}
+        <div className="border" style={{ borderColor: SLATE, background: "#fff" }}>
+          <CardHeader
+            right={plan.role ? `${plan.role}${plan.territory ? ` · ${plan.territory}` : ""}${plan.planPeriod ? ` · ${plan.planPeriod}` : ""}` : plan.planPeriod || undefined}
+          >
+            Attainment Table — 70% to 130%
+          </CardHeader>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border">
-                  {[
-                    "Attainment",
-                    "Monthly bonus",
-                    "Quarterly bonus",
-                    "Annual bonus",
-                    "Total bonus",
-                    "Base + bonus",
-                    "vs. OTE",
-                  ].map((h) => (
+                <tr style={{ background: NAVY }}>
+                  {["Attainment", "Monthly bonus", "Quarterly bonus", "Annual bonus", "Total bonus (ann.)", "Base + bonus", "vs. OTE"].map((h) => (
                     <th
                       key={h}
-                      className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-ultra text-muted-foreground whitespace-nowrap"
+                      className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap"
+                      style={{ color: "rgba(255,255,255,0.75)" }}
                     >
                       {h}
                     </th>
@@ -466,51 +504,60 @@ const CommissionCalculator: FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {rows.map((r) => {
-                  const { bg, text } = rowStyle(r.attainment, cliff, accel);
-                  const isZero = r.totalBonus === 0;
+                {rows.map((r, i) => {
+                  const tier    = getRowTier(r.attainment, cliff, accel);
+                  const style   = ROW_STYLES[tier];
+                  const rowBg   = style.bg === "#fff" && i % 2 === 1 ? OFFWHITE : style.bg;
                   return (
                     <tr
                       key={r.attainment}
-                      style={{ backgroundColor: bg }}
-                      className="border-b border-border/50 last:border-0"
+                      style={{ background: rowBg }}
+                      className="border-b last:border-0"
                     >
-                      <td className="px-4 py-2.5 font-bold text-foreground whitespace-nowrap">
+                      <td className="px-4 py-2.5 font-semibold whitespace-nowrap" style={{ color: NAVY }}>
                         {r.attainment}%
                         {r.attainment === 100 && (
-                          <span className="ml-1.5 text-[9px] bg-primary text-primary-foreground px-1.5 py-0.5 font-black uppercase tracking-wide">
+                          <span
+                            className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold uppercase tracking-wide"
+                            style={{ background: BLUE, color: "#fff" }}
+                          >
                             Target
                           </span>
                         )}
-                        {r.attainment / 100 >= accel && (
-                          <span className="ml-1.5 text-[9px] px-1.5 py-0.5 font-black uppercase tracking-wide" style={{ background: "#D6F0E0", color: "#1A6B3C" }}>
+                        {tier === "accel" && (
+                          <span
+                            className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold uppercase tracking-wide"
+                            style={{ background: NAVY, color: MINT }}
+                          >
                             Accel
                           </span>
                         )}
-                        {r.attainment / 100 < cliff && (
-                          <span className="ml-1.5 text-[9px] px-1.5 py-0.5 font-black uppercase tracking-wide" style={{ background: "#FBEAE8", color: "#A33222" }}>
+                        {tier === "below-cliff" && (
+                          <span
+                            className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold uppercase tracking-wide"
+                            style={{ background: "#A33222", color: "#fff" }}
+                          >
                             Cliff
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-2.5 font-semibold whitespace-nowrap" style={{ color: isZero ? "#5C6B7A" : text }}>
-                        {isZero ? "$0" : fmtCAD(r.monthlyBonus)}
-                      </td>
-                      <td className="px-4 py-2.5 font-semibold whitespace-nowrap" style={{ color: isZero ? "#5C6B7A" : text }}>
-                        {isZero ? "$0" : fmtCAD(r.quarterlyBonus)}
-                      </td>
-                      <td className="px-4 py-2.5 font-semibold whitespace-nowrap" style={{ color: isZero ? "#5C6B7A" : text }}>
-                        {isZero ? "$0" : fmtCAD(r.annualBonus)}
-                      </td>
-                      <td className="px-4 py-2.5 font-semibold whitespace-nowrap" style={{ color: isZero ? "#5C6B7A" : text }}>
-                        {isZero ? "$0" : fmtCAD(r.totalBonus)}
-                      </td>
-                      <td className="px-4 py-2.5 font-bold text-foreground whitespace-nowrap">
+                      {[r.monthlyBonus, r.quarterlyBonus, r.annualBonus, r.totalBonus].map((v, idx) => (
+                        <td
+                          key={idx}
+                          className="px-4 py-2.5 font-semibold whitespace-nowrap"
+                          style={{ color: style.isZero ? GREY_MID : style.bonusColor }}
+                        >
+                          {style.isZero ? "$0" : fmtCAD(v)}
+                        </td>
+                      ))}
+                      <td className="px-4 py-2.5 font-semibold whitespace-nowrap" style={{ color: NAVY }}>
                         {fmtCAD(r.baseBonus)}
                       </td>
                       <td
-                        className="px-4 py-2.5 font-bold whitespace-nowrap"
-                        style={{ color: r.vsOTE >= 100 ? "#1A6B3C" : r.vsOTE === 0 ? "#A33222" : "#5C6B7A" }}
+                        className="px-4 py-2.5 font-semibold whitespace-nowrap"
+                        style={{
+                          color: tier === "accel" ? NAVY : tier === "at-target" ? BLUE : tier === "below-cliff" ? GREY_MID : GREY_MID,
+                        }}
                       >
                         {r.vsOTE.toFixed(0)}%
                       </td>
@@ -520,156 +567,158 @@ const CommissionCalculator: FC = () => {
               </tbody>
             </table>
           </div>
-          <div className="px-5 py-3 border-t border-border flex flex-wrap gap-4 text-[10px] text-muted-foreground">
-            <span>
-              <span className="inline-block w-3 h-3 mr-1 align-middle" style={{ background: "#FBEAE8" }} />
-              Below cliff ({plan.cliffThreshold || 85}%) — no bonus
-            </span>
-            <span>
-              <span className="inline-block w-3 h-3 mr-1 align-middle" style={{ background: "#F4F7FA" }} />
-              Between cliff and target
-            </span>
-            <span>
-              <span className="inline-block w-3 h-3 mr-1 align-middle" style={{ background: "#D6F0E0" }} />
-              At/above accelerator ({plan.acceleratorThreshold || 110}%) — {plan.acceleratorMultiplier || 2}x rate
-            </span>
+          <div
+            className="px-5 py-2.5 border-t flex flex-wrap gap-5 text-[10px]"
+            style={{ borderColor: SLATE, color: GREY_MID, background: OFFWHITE }}
+          >
+            <span>Updates live as plan inputs change</span>
+            <span>·</span>
+            <span>Cliff at {plan.cliffThreshold || 85}% · Accelerator at {plan.acceleratorThreshold || 110}% ({plan.acceleratorMultiplier || 2}× rate)</span>
+            <span>·</span>
+            <span>All figures CAD</span>
           </div>
         </div>
 
-        {/* ── SECTION 3 — REP CALCULATOR ──────────────────────────────────────── */}
-        <div className="bg-card border border-border p-5">
-          <SectionHeader>Section 3 — Rep Calculator: What did I earn this period?</SectionHeader>
+        {/* ── SECTION 3 — REP CALCULATOR ─────────────────────────────────────── */}
+        <div className="border" style={{ borderColor: SLATE, background: "#fff" }}>
+          <CardHeader>Rep Calculator — What did I earn this period?</CardHeader>
+          <div className="p-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Inputs */}
-            <div className="space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-ultra text-muted-foreground">Inputs</h3>
+              {/* Inputs */}
+              <div className="space-y-4">
+                <div
+                  className="text-[10px] font-semibold uppercase tracking-widest pb-2 border-b"
+                  style={{ color: NAVY, borderColor: SLATE }}
+                >
+                  Inputs
+                </div>
 
-              {/* Period type toggle */}
-              <div>
-                <FieldLabel>Period Type</FieldLabel>
-                <div className="flex border border-border">
-                  {(["monthly", "quarterly", "annual"] as PeriodType[]).map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => {
-                        updateRep("periodType", t);
-                        updateRep("periodQuota", "");
-                      }}
-                      className={`flex-1 py-2 text-[10px] font-black uppercase tracking-ultra transition-colors ${
-                        rep.periodType === t
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-transparent text-muted-foreground hover:text-foreground hover:bg-surface-hover"
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
+                {/* Period type toggle */}
+                <div>
+                  <FieldLabel>Period Type</FieldLabel>
+                  <div className="flex border" style={{ borderColor: SLATE }}>
+                    {(["monthly", "quarterly", "annual"] as PeriodType[]).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => { updateRep("periodType", t); updateRep("periodQuota", ""); }}
+                        className="flex-1 py-2 text-[10px] font-semibold uppercase tracking-widest transition-colors"
+                        style={
+                          rep.periodType === t
+                            ? { background: NAVY, color: "#fff" }
+                            : { background: "#fff", color: GREY_MID }
+                        }
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <FieldLabel>
+                    Period Quota{" "}
+                    <span className="normal-case font-normal tracking-normal text-[9px]" style={{ color: GREY_MID }}>
+                      (default {fmtCAD(rep.periodType === "monthly" ? annualQuota / 12 : rep.periodType === "quarterly" ? annualQuota / 4 : annualQuota)})
+                    </span>
+                  </FieldLabel>
+                  <TextInput
+                    value={rep.periodQuota}
+                    onChange={(v) => updateRep("periodQuota", v)}
+                    prefix="CAD $"
+                    type="number"
+                    placeholder={String(Math.round(rep.periodType === "monthly" ? annualQuota / 12 : rep.periodType === "quarterly" ? annualQuota / 4 : annualQuota))}
+                  />
+                </div>
+
+                <div>
+                  <FieldLabel>Actual Orders / Revenue</FieldLabel>
+                  <TextInput value={rep.actualOrders} onChange={(v) => updateRep("actualOrders", v)} prefix="CAD $" type="number" placeholder="0" />
+                </div>
+
+                <div>
+                  <FieldLabel>Professional Services Collected <span className="normal-case font-normal tracking-normal text-[9px]">(optional)</span></FieldLabel>
+                  <TextInput value={rep.psCollected} onChange={(v) => updateRep("psCollected", v)} prefix="CAD $" type="number" placeholder="0" />
+                  {parseNum(rep.psCollected) > 0 && (
+                    <p className="text-[10px] mt-1" style={{ color: GREY_MID }}>
+                      PS commission at {plan.psRate || 4}%:{" "}
+                      <span className="font-semibold" style={{ color: BLUE }}>{fmtCAD(psEarned)}</span>
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <div>
-                <FieldLabel>
-                  Period Quota{" "}
-                  <span className="text-[9px] font-normal normal-case tracking-normal text-muted-foreground">
-                    (default: {fmtCAD(
-                      rep.periodType === "monthly" ? annualQuota / 12 :
-                      rep.periodType === "quarterly" ? annualQuota / 4 :
-                      annualQuota
-                    )})
-                  </span>
-                </FieldLabel>
-                <TextInput
-                  value={rep.periodQuota}
-                  onChange={(v) => updateRep("periodQuota", v)}
-                  prefix="CAD $"
-                  type="number"
-                  placeholder={String(
-                    rep.periodType === "monthly" ? Math.round(annualQuota / 12) :
-                    rep.periodType === "quarterly" ? Math.round(annualQuota / 4) :
-                    annualQuota
+              {/* Outputs */}
+              <div className="space-y-4">
+                <div
+                  className="text-[10px] font-semibold uppercase tracking-widest pb-2 border-b"
+                  style={{ color: NAVY, borderColor: SLATE }}
+                >
+                  Earnings Breakdown
+                </div>
+
+                {/* Status badge */}
+                <div
+                  className="flex items-center gap-2.5 px-4 py-3 text-sm font-semibold"
+                  style={{ background: status.bg, color: status.fg }}
+                >
+                  {status.icon}
+                  {status.label}
+                </div>
+
+                {/* Attainment + delta */}
+                <div className="grid grid-cols-2 gap-3">
+                  <MetricTile
+                    label={`Attainment (${rep.periodType})`}
+                    value={`${(attainmentPct * 100).toFixed(1)}%`}
+                    accent
+                  />
+                  <MetricTile
+                    label={aboveBelow >= 0 ? "Above target" : "Below target"}
+                    value={(aboveBelow >= 0 ? "+" : "") + fmtCAD(aboveBelow)}
+                    accent
+                  />
+                </div>
+
+                {/* Earnings grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <MetricTile label={`Pro-rated base (${rep.periodType})`} value={fmtCAD(proRatedBase)} small />
+                  <MetricTile label="Bonus earned this period" value={fmtCAD(periodBonus)} small />
+                  {parseNum(rep.psCollected) > 0 && (
+                    <MetricTile label="PS commission" value={fmtCAD(psEarned)} small />
                   )}
-                />
-              </div>
+                </div>
 
-              <div>
-                <FieldLabel>Actual Orders / Revenue</FieldLabel>
-                <TextInput value={rep.actualOrders} onChange={(v) => updateRep("actualOrders", v)} prefix="CAD $" type="number" placeholder="0" />
-              </div>
+                {/* Total earnings hero */}
+                <div className="border-2 px-4 py-4" style={{ borderColor: BLUE, background: NAVY }}>
+                  <div className="text-[9px] font-semibold uppercase tracking-widest text-white/50 mb-1">
+                    Total period earnings — base + bonus + PS
+                  </div>
+                  <div className="text-3xl font-semibold" style={{ color: BLUE }}>
+                    {fmtCAD(totalPeriodEarnings)}
+                  </div>
+                </div>
 
-              <div>
-                <FieldLabel>Professional Services Collected (optional)</FieldLabel>
-                <TextInput value={rep.psCollected} onChange={(v) => updateRep("psCollected", v)} prefix="CAD $" type="number" placeholder="0" />
-                {parseNum(rep.psCollected) > 0 && (
-                  <p className="text-[10px] text-muted-foreground mt-1">
-                    PS commission at {plan.psRate || 4}%: {fmtCAD(psEarned)}
+                {rep.periodType !== "annual" && (
+                  <p className="text-[10px] pt-1" style={{ color: GREY_MID }}>
+                    Annualised run-rate:{" "}
+                    <strong style={{ color: NAVY }}>
+                      {fmtCAD(totalPeriodEarnings * (rep.periodType === "monthly" ? 12 : 4))}
+                    </strong>{" "}
+                    if this attainment is maintained all year
                   </p>
                 )}
               </div>
-            </div>
-
-            {/* Outputs */}
-            <div className="space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-ultra text-muted-foreground">Earnings Breakdown</h3>
-
-              {/* Status badge */}
-              <div
-                className="flex items-center gap-2 px-3 py-3 border font-semibold text-sm"
-                style={{
-                  borderColor: repStatus.color,
-                  color: repStatus.color,
-                  background: repStatus.color === "#A33222" ? "#FBEAE8" : repStatus.color === "#1A6B3C" ? "#D6F0E0" : "#F4F7FA",
-                }}
-              >
-                {repStatus.icon}
-                {repStatus.label}
-              </div>
-
-              {/* Attainment + delta */}
-              <div className="grid grid-cols-2 gap-3">
-                <ReadOnlyField
-                  label={`Attainment (${rep.periodType})`}
-                  value={`${(attainmentPct * 100).toFixed(1)}%`}
-                />
-                <ReadOnlyField
-                  label={aboveBelow >= 0 ? "Above target" : "Below target"}
-                  value={(aboveBelow >= 0 ? "+" : "") + fmtCAD(aboveBelow)}
-                />
-              </div>
-
-              {/* Earnings */}
-              <div className="grid grid-cols-2 gap-3">
-                <ReadOnlyField label={`Pro-rated base (${rep.periodType})`} value={fmtCAD(proRatedBase)} />
-                <ReadOnlyField label="Bonus earned this period" value={fmtCAD(periodBonus)} />
-                {parseNum(rep.psCollected) > 0 && (
-                  <ReadOnlyField label="PS commission" value={fmtCAD(psEarned)} />
-                )}
-              </div>
-
-              <ReadOnlyField
-                label="Total period earnings (base + bonus + PS)"
-                value={fmtCAD(totalPeriodEarnings)}
-                large
-                highlight
-              />
-
-              {/* Annualised projection note */}
-              {rep.periodType !== "annual" && (
-                <p className="text-[10px] text-muted-foreground border-t border-border pt-2">
-                  Annualised run-rate:{" "}
-                  <strong className="text-foreground">
-                    {fmtCAD(totalPeriodEarnings * (rep.periodType === "monthly" ? 12 : 4))}
-                  </strong>{" "}
-                  if this attainment is maintained all year
-                </p>
-              )}
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="text-center text-[10px] text-muted-foreground pb-4">
-          Rhino Ventures · Commission Calculator · All figures in CAD
+        <div
+          className="text-center py-4 text-[10px]"
+          style={{ color: GREY_MID, borderTop: `1px solid ${SLATE}` }}
+        >
+          Rhino Ventures · rhinovc.com · For informational purposes only. All figures in CAD.
         </div>
       </div>
     </div>
