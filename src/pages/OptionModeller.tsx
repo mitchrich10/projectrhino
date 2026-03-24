@@ -239,11 +239,12 @@ const OptionModeller: FC = () => {
   const [todayDate,    setTodayDate]    = useState(today());
   const [exporting,    setExporting]    = useState(false);
 
-  // Default valuations sized to feel meaningful at $10 strike / 10M diluted (base = $100M)
+  // Default valuations: base = $100M (10M shares × $10 strike)
   const [customVals, setCustomVals] = useState<Record<string, string>>({
-    conservative: "50000000",    // $50M  — underwater vs $100M base
-    moderate:     "150000000",   // $150M — $5/share gain
-    strong:       "500000000",   // $500M — $40/share gain
+    down_round:   "50000000",    // $50M  — below base, underwater
+    conservative: "150000000",   // $150M — modest positive exit
+    moderate:     "300000000",   // $300M — solid outcome
+    strong:       "500000000",   // $500M — strong exit
     exceptional:  "1000000000",  // $1B
     custom:       "",
   });
