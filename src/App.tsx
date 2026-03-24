@@ -28,6 +28,7 @@ const App = () => (
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/admin/resources" element={<AdminHub />} />
           <Route path="/admin" element={<AdminHub />} />
+          <Route path="/option-modeller" element={<OptionModeller />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
