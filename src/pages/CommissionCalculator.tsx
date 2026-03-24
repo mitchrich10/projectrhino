@@ -356,7 +356,7 @@ const CommissionCalculator: FC = () => {
             >
 
               {/* Col 1 — Rep Details */}
-              <div className="p-5 space-y-3">
+              <div className="p-5 space-y-3 border-b lg:border-b-0 lg:border-r" style={{ borderColor: SLATE }}>
                 <div className="text-[10px] font-semibold uppercase tracking-widest pb-2 border-b" style={{ color: NAVY, borderColor: SLATE }}>
                   Rep Details
                 </div>
