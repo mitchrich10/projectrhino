@@ -1,6 +1,6 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Download, Info, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Download, Info, Plus, Trash2, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import { downloadOptionModellerXLSX } from "@/lib/exportOptionModeller";
 import { Calendar } from "@/components/ui/calendar";
@@ -13,10 +13,10 @@ interface Grant {
   label: string;
   totalOptions: string;
   strikePrice: string;
-  fullyDiluted: string; // at time of grant (for display / historical ownership)
+  fullyDiluted: string;
   grantDate: string;
-  vestYears: number;   // 2 | 3 | 4 | 5
-  cliffMonths: number; // 0 | 6 | 12 | 18 | 24
+  vestYears: number;
+  cliffMonths: number;
 }
 
 interface VestedResult {
@@ -27,11 +27,14 @@ interface VestedResult {
   fullyVestedDate: string;
 }
 
+// Scenario row — all rows are fully editable
 interface ScenarioRow {
   id: string;
   label: string;
-  editable: boolean;
-  derived?: (baseVal: number) => number;
+  /** Raw numeric valuation (user-entered or auto-calculated) */
+  rawValue: number;
+  /** If true, this row was manually pinned by the user and won't auto-update */
+  pinned: boolean;
 }
 
 interface PerGrantScenario {
@@ -46,7 +49,6 @@ interface PerGrantScenario {
 }
 
 interface ComputedScenario extends ScenarioRow {
-  valuation: number;
   impliedSharePrice: number;
   perGrant: PerGrantScenario[];
   totalVestedValue: number;
@@ -54,19 +56,6 @@ interface ComputedScenario extends ScenarioRow {
   weightedGainPerOption: number;
   multiple: number;
 }
-
-// ── Scenarios ─────────────────────────────────────────────────────────────────
-
-const SCENARIOS: ScenarioRow[] = [
-  { id: "down_round",   label: "Down Round",           editable: true },
-  { id: "base",         label: "Base — Last Round",    editable: false },
-  { id: "conservative", label: "Conservative Exit",    editable: true },
-  { id: "moderate",     label: "Moderate Exit",        editable: true },
-  { id: "two_x",        label: "2× Last Round",        editable: false, derived: (b) => b * 2 },
-  { id: "strong",       label: "Strong Exit",          editable: true },
-  { id: "exceptional",  label: "Exceptional Exit",     editable: true },
-  { id: "custom",       label: "Custom — Enter Below", editable: true },
-];
 
 // ── Brand colours ─────────────────────────────────────────────────────────────
 
@@ -121,7 +110,6 @@ function calcVestedForGrant(
     return { count: totalOptions, pct: 100, status: "fully-vested", cliffDate, fullyVestedDate };
 
   if (cliffMonths === 0) {
-    // Linear from day 1
     const count = Math.floor(Math.min(diff / vestMonths, 1) * totalOptions);
     return { count, pct: (count / totalOptions) * 100, status: "vesting", cliffDate, fullyVestedDate };
   }
@@ -137,6 +125,8 @@ function calcVestedForGrant(
   return { count, pct: (count / totalOptions) * 100, status: "vesting", cliffDate, fullyVestedDate };
 }
 
+// ── Formatting ────────────────────────────────────────────────────────────────
+
 function fmtValuation(n: number): string {
   if (!n || n <= 0) return "$0";
   if (n >= 1_000_000_000) {
@@ -145,7 +135,7 @@ function fmtValuation(n: number): string {
   }
   if (n >= 1_000_000) {
     const v = n / 1_000_000;
-    return `$${(v < 100 && v % 1 !== 0) ? v.toFixed(1) : v.toFixed(0)}M`;
+    return `$${v < 100 && v % 1 !== 0 ? v.toFixed(1) : v.toFixed(0)}M`;
   }
   if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
   return `$${n.toFixed(0)}`;
@@ -159,7 +149,7 @@ function fmtLargeCAD(n: number): string {
   }
   if (n >= 1_000_000) {
     const v = n / 1_000_000;
-    return `$${(v < 100 && v % 1 !== 0) ? v.toFixed(1) : v.toFixed(0)}M`;
+    return `$${v < 100 && v % 1 !== 0 ? v.toFixed(1) : v.toFixed(0)}M`;
   }
   return new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 2 }).format(n);
 }
@@ -172,6 +162,16 @@ function fmtCAD(n: number): string {
 function fmtMultiple(n: number): string {
   if (!isFinite(n) || n <= 0) return "—";
   return `${n.toFixed(2)}x`;
+}
+
+// ── Scenario defaults factory ─────────────────────────────────────────────────
+
+function makeDefaultScenarios(baseVal: number): ScenarioRow[] {
+  return [
+    { id: `s_${Date.now()}_1`, label: "Down Round",   rawValue: Math.round(baseVal * 0.5), pinned: false },
+    { id: `s_${Date.now()}_2`, label: "Base Case",    rawValue: Math.round(baseVal),        pinned: false },
+    { id: `s_${Date.now()}_3`, label: "Strong Exit",  rawValue: Math.round(baseVal * 5),    pinned: false },
+  ];
 }
 
 let _grantCounter = 1;
@@ -267,7 +267,7 @@ const DatePickerField: FC<{ value: string; onChange: (v: string) => void }> = ({
   );
 };
 
-const Tooltip: FC<{ text: string }> = ({ text }) => (
+const TooltipComp: FC<{ text: string }> = ({ text }) => (
   <span className="group relative ml-1 inline-flex align-middle">
     <Info className="w-3 h-3 inline cursor-help" style={{ color: MUTED }} />
     <span
@@ -279,26 +279,124 @@ const Tooltip: FC<{ text: string }> = ({ text }) => (
   </span>
 );
 
-const ValuationInput: FC<{
+// ── ValuationCell — editable with M/B display on blur ─────────────────────────
+
+const ValuationCell: FC<{
+  rawValue: number;
+  pinned: boolean;
+  onChange: (v: number, pin: boolean) => void;
+}> = ({ rawValue, pinned, onChange }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFocus = () => {
+    setDraft(rawValue > 0 ? String(rawValue) : "");
+    setEditing(true);
+    setTimeout(() => inputRef.current?.select(), 0);
+  };
+
+  const handleBlur = () => {
+    setEditing(false);
+    const n = parseFloat(draft.replace(/[^0-9.]/g, ""));
+    if (isFinite(n) && n > 0 && n !== rawValue) {
+      onChange(n, true); // pin on manual edit
+    } else if (!isFinite(n) || n <= 0) {
+      // leave unchanged
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") { (e.target as HTMLInputElement).blur(); }
+    if (e.key === "Escape") { setEditing(false); setDraft(""); }
+  };
+
+  return (
+    <div
+      className="relative flex items-center rounded px-2 py-1.5 cursor-text transition-all"
+      style={{
+        background: pinned ? "#FFFACD" : "#fff",
+        border: `1px solid ${pinned ? "#E8C43A" : SLATE}`,
+        minWidth: 100,
+      }}
+      onClick={() => { if (!editing) { setEditing(true); setTimeout(() => inputRef.current?.focus(), 0); } }}
+    >
+      {editing ? (
+        <input
+          ref={inputRef}
+          type="number"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          autoFocus
+          className="w-full bg-transparent outline-none text-sm font-mono"
+          style={{ color: NAVY }}
+          placeholder="Enter amount"
+        />
+      ) : (
+        <span
+          className="text-sm font-mono select-none w-full"
+          style={{ color: NAVY }}
+          onFocus={handleFocus}
+          tabIndex={0}
+        >
+          {rawValue > 0 ? fmtValuation(rawValue) : <span style={{ color: MUTED, fontStyle: "italic" }}>Enter $</span>}
+        </span>
+      )}
+      {pinned && (
+        <span
+          className="absolute -top-1.5 -right-1 text-[7px] font-bold uppercase tracking-widest px-0.5 rounded"
+          style={{ background: "#E8C43A", color: "#7A5800" }}
+          title="Manually set — won't auto-update"
+        >
+          ✎
+        </span>
+      )}
+    </div>
+  );
+};
+
+// ── InlineLabel — click to edit ───────────────────────────────────────────────
+
+const InlineLabel: FC<{
   value: string;
   onChange: (v: string) => void;
-  isCustom?: boolean;
-}> = ({ value, onChange, isCustom }) => (
-  <input
-    type="number"
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    placeholder={isCustom ? "$250,000,000" : "Enter $"}
-    className="w-full rounded px-2 py-1.5 text-sm outline-none border transition-colors focus:ring-1"
-    style={{
-      backgroundColor: isCustom ? "#FFF3CD" : "#FFFACD",
-      borderColor: isCustom ? "#D4900A" : "#E8C43A",
-      borderWidth: isCustom ? "2px" : "1px",
-      color: NAVY,
-      fontWeight: isCustom ? 600 : 400,
-    }}
-  />
-);
+}> = ({ value, onChange }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const commit = () => {
+    setEditing(false);
+    const trimmed = draft.trim();
+    if (trimmed) onChange(trimmed);
+    else setDraft(value);
+  };
+
+  return editing ? (
+    <input
+      ref={inputRef}
+      value={draft}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => { if (e.key === "Enter") commit(); if (e.key === "Escape") { setEditing(false); setDraft(value); } }}
+      autoFocus
+      className="bg-transparent outline-none border-b text-sm font-semibold w-32"
+      style={{ color: NAVY, borderColor: BLUE }}
+    />
+  ) : (
+    <span
+      className="text-sm font-semibold cursor-pointer hover:underline decoration-dotted underline-offset-2"
+      style={{ color: NAVY }}
+      title="Click to rename"
+      onClick={() => { setDraft(value); setEditing(true); setTimeout(() => inputRef.current?.select(), 0); }}
+    >
+      {value}
+    </span>
+  );
+};
 
 // ── Grant Card ────────────────────────────────────────────────────────────────
 
@@ -331,7 +429,6 @@ const GrantCard: FC<{
 
   return (
     <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${SLATE}`, boxShadow: isExpanded ? `0 0 0 2px ${BLUE}30` : "none" }}>
-      {/* Header */}
       <div
         className="flex items-center justify-between px-4 py-3 cursor-pointer select-none"
         style={{ background: isExpanded ? NAVY : "#fff" }}
@@ -373,7 +470,6 @@ const GrantCard: FC<{
         </div>
       </div>
 
-      {/* Expanded body */}
       {isExpanded && (
         <div className="p-4 sm:p-5" style={{ background: "#fff", borderTop: `1px solid ${SLATE}` }}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -406,7 +502,7 @@ const GrantCard: FC<{
             <div>
               <FieldLabel>
                 Diluted Shares at Grant
-                <Tooltip text="Fully diluted shares when this grant was issued — used to show your ownership % at time of grant." />
+                <TooltipComp text="Fully diluted shares when this grant was issued — used to show your ownership % at time of grant." />
               </FieldLabel>
               <FieldInput value={grant.fullyDiluted} onChange={(v) => onChange({ fullyDiluted: v })} placeholder="e.g. 10,000,000" />
             </div>
@@ -443,7 +539,6 @@ const GrantCard: FC<{
             </div>
           </div>
 
-          {/* Vesting status strip */}
           <div className="mt-4 rounded p-3 flex flex-wrap gap-x-6 gap-y-1 text-xs" style={{ background: OFFWHITE, border: `1px solid ${SLATE}` }}>
             {vestedInfo.status === "pre-cliff" ? (
               <span style={{ color: "#92400E", fontWeight: 500 }}>
@@ -478,10 +573,11 @@ const GrantCard: FC<{
   );
 };
 
-// Add cliffMonths to vestedInfo for display — we tag it on since it's needed in the card
 type VestedResultExt = VestedResult & { cliffMonths: number };
 
 // ── Main Component ────────────────────────────────────────────────────────────
+
+const INITIAL_BASE_VAL = 10 * 10_000_000; // default strike × default diluted
 
 const OptionModeller: FC = () => {
   const [grants, setGrants] = useState<Grant[]>([makeDefaultGrant({ id: "g_initial" })]);
@@ -490,15 +586,12 @@ const OptionModeller: FC = () => {
   const [todayDate] = useState(today());
   const [exporting, setExporting] = useState(false);
   const [showBreakdown, setShowBreakdown] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
-  const [customVals, setCustomVals] = useState<Record<string, string>>({
-    down_round:   "50000000",
-    conservative: "150000000",
-    moderate:     "300000000",
-    strong:       "500000000",
-    exceptional:  "1000000000",
-    custom:       "",
-  });
+  // Scenarios — dynamic, all editable
+  const [scenarios, setScenarios] = useState<ScenarioRow[]>(() =>
+    makeDefaultScenarios(INITIAL_BASE_VAL)
+  );
 
   // ── Grant mutations ──
   const addGrant = () => {
@@ -522,8 +615,30 @@ const OptionModeller: FC = () => {
       return s;
     });
 
-  const setCustomVal = (id: string, v: string) =>
-    setCustomVals((prev) => ({ ...prev, [id]: v }));
+  // ── Scenario mutations ──
+  const addScenario = () => {
+    if (scenarios.length >= 4) return;
+    setScenarios((prev) => [
+      ...prev,
+      { id: `s_${Date.now()}`, label: `Scenario ${prev.length + 1}`, rawValue: 0, pinned: false },
+    ]);
+  };
+
+  const deleteScenario = (id: string) => {
+    if (scenarios.length <= 1) return;
+    setScenarios((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const updateScenarioLabel = (id: string, label: string) =>
+    setScenarios((prev) => prev.map((s) => s.id === id ? { ...s, label } : s));
+
+  const updateScenarioValue = (id: string, rawValue: number, pinned: boolean) =>
+    setScenarios((prev) => prev.map((s) => s.id === id ? { ...s, rawValue, pinned } : s));
+
+  const resetToDefaults = useCallback((baseVal: number) => {
+    setScenarios(makeDefaultScenarios(baseVal));
+    setShowResetConfirm(false);
+  }, []);
 
   // ── Derived per-grant ──
   const grantCalcs = useMemo(() =>
@@ -556,18 +671,29 @@ const OptionModeller: FC = () => {
     : 0;
   const ownerBarFill     = Math.min((ownershipPct / 2) * 100, 100);
 
-  // ── Scenario computation ──
-  const scenarios = useMemo<ComputedScenario[]>(() => {
-    return SCENARIOS.map((row) => {
-      const valuation = (() => {
-        if (!row.editable) {
-          if (row.id === "base")   return baseValuation;
-          if (row.derived)         return row.derived(baseValuation);
-          return 0;
-        }
-        return parseFloat(customVals[row.id] ?? "0") || 0;
-      })();
+  // Auto-update unpinned scenario rows when baseValuation changes
+  const prevBaseVal = useRef(baseValuation);
+  useMemo(() => {
+    if (baseValuation <= 0) return;
+    // Only update if baseValuation actually changed
+    if (prevBaseVal.current === baseValuation) return;
+    prevBaseVal.current = baseValuation;
+    setScenarios((prev) =>
+      prev.map((s, idx) => {
+        if (s.pinned) return s;
+        // Re-apply the original multipliers based on position index
+        const multipliers = [0.5, 1, 5];
+        const mult = multipliers[idx] ?? (idx + 1);
+        return { ...s, rawValue: Math.round(baseValuation * mult) };
+      })
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseValuation]);
 
+  // ── Compute scenario results ──
+  const computedScenarios = useMemo<ComputedScenario[]>(() => {
+    return scenarios.map((row) => {
+      const valuation = row.rawValue;
       const impliedSharePrice = globalDilutedNum > 0 ? valuation / globalDilutedNum : 0;
 
       const perGrant: PerGrantScenario[] = grantCalcs.map((gc, i) => {
@@ -591,10 +717,9 @@ const OptionModeller: FC = () => {
         : 0;
       const multiple = weightedAvgStrike > 0 ? impliedSharePrice / weightedAvgStrike : 0;
 
-      return { ...row, valuation, impliedSharePrice, perGrant, totalVestedValue, totalFullGrantValue, weightedGainPerOption, multiple };
+      return { ...row, impliedSharePrice, perGrant, totalVestedValue, totalFullGrantValue, weightedGainPerOption, multiple };
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [grants, grantCalcs, globalDiluted, customVals, totalOptionsAll, weightedAvgStrike, baseValuation, globalDilutedNum]);
+  }, [scenarios, grantCalcs, globalDilutedNum, totalOptionsAll, weightedAvgStrike]);
 
   return (
     <div
@@ -635,9 +760,9 @@ const OptionModeller: FC = () => {
                     globalDiluted: globalDilutedNum,
                     todayDate,
                     weightedAvgStrike,
-                    scenarios: scenarios.map((s) => ({
-                      id: s.id, label: s.label, editable: s.editable,
-                      valuation: s.valuation, impliedSharePrice: s.impliedSharePrice,
+                    scenarios: computedScenarios.map((s) => ({
+                      id: s.id, label: s.label, editable: true,
+                      valuation: s.rawValue, impliedSharePrice: s.impliedSharePrice,
                       perGrant: s.perGrant, totalVestedValue: s.totalVestedValue,
                       totalFullGrantValue: s.totalFullGrantValue,
                       weightedGainPerOption: s.weightedGainPerOption, multiple: s.multiple,
@@ -711,16 +836,11 @@ const OptionModeller: FC = () => {
                     />
                   );
                 })}
-                {grants.length === 0 && (
-                  <div className="text-center py-8" style={{ color: MUTED }}>
-                    <p className="text-sm">No grants yet.</p>
-                  </div>
-                )}
               </div>
             </div>
           </section>
 
-          {/* ── Section 2 — Aggregated Summary ── */}
+          {/* ── Section 2 — Grant Summary ── */}
           <section className="mb-6">
             <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${SLATE}` }}>
               <div className="px-5 py-3" style={{ background: NAVY }}>
@@ -735,7 +855,7 @@ const OptionModeller: FC = () => {
                     { label: "Total Options", value: totalOptionsAll > 0 ? totalOptionsAll.toLocaleString() : "—" },
                     { label: "Total Vested Today", value: totalVestedAll > 0 ? totalVestedAll.toLocaleString() : "—" },
                     {
-                      label: <span className="flex items-center gap-0.5">Wtd. Avg Strike<Tooltip text="Weighted average strike price across all grants, weighted by number of options." /></span>,
+                      label: <span className="flex items-center gap-0.5">Wtd. Avg Strike<TooltipComp text="Weighted average strike price across all grants, weighted by number of options." /></span>,
                       value: weightedAvgStrike > 0 ? `$${weightedAvgStrike.toFixed(4)}` : "—",
                     },
                   ].map((card, i) => (
@@ -746,13 +866,13 @@ const OptionModeller: FC = () => {
                   ))}
                 </div>
 
-                {/* Ownership bar (global) */}
+                {/* Ownership bar */}
                 {ownershipPct > 0 && (
                   <div className="mb-5">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: MUTED }}>
                         Current Ownership
-                        <Tooltip text="Total options across all grants ÷ current fully diluted shares. Enter current diluted shares below." />
+                        <TooltipComp text="Total options across all grants ÷ current fully diluted shares." />
                       </span>
                       <span className="text-[11px] font-bold" style={{ color: BLUE }}>{ownershipPct.toFixed(4)}%</span>
                     </div>
@@ -794,12 +914,8 @@ const OptionModeller: FC = () => {
                               <td className="px-3 py-2.5 text-right" style={{ color: v.status === "pre-cliff" ? MUTED : v.pct >= 100 ? "#1A6B3C" : BLUE }}>
                                 {v.pct.toFixed(1)}%
                               </td>
-                              <td className="px-3 py-2.5 text-right" style={{ color: MUTED }}>
-                                {v.cliffDate || "—"}
-                              </td>
-                              <td className="px-3 py-2.5 text-right" style={{ color: MUTED }}>
-                                {v.fullyVestedDate || "—"}
-                              </td>
+                              <td className="px-3 py-2.5 text-right" style={{ color: MUTED }}>{v.cliffDate || "—"}</td>
+                              <td className="px-3 py-2.5 text-right" style={{ color: MUTED }}>{v.fullyVestedDate || "—"}</td>
                             </tr>
                           );
                         })}
@@ -838,7 +954,7 @@ const OptionModeller: FC = () => {
                   <div className="sm:w-72">
                     <FieldLabel>
                       Current Fully Diluted Shares Outstanding
-                      <Tooltip text="The current total number of shares, options, warrants, and convertibles. Used to calculate implied share price across all scenarios." />
+                      <TooltipComp text="The current total number of shares, options, warrants, and convertibles. Used to calculate implied share price across all scenarios." />
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
@@ -849,13 +965,13 @@ const OptionModeller: FC = () => {
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
-                    Value shown is the combined total across all grants.{" "}
+                    Combined total across all grants.{" "}
                     <span style={{ fontStyle: "italic" }}>Each grant's gain is calculated using its own strike price.</span>
                   </p>
                 </div>
               </div>
 
-              {/* Table with optional overlay */}
+              {/* Table */}
               <div className="relative">
                 {!tableReady && (
                   <div
@@ -873,17 +989,18 @@ const OptionModeller: FC = () => {
                     <thead>
                       <tr style={{ background: NAVY }}>
                         {[
-                          ["Scenario",                                     "left",  "w-44"],
-                          ["Company Valuation (CAD)",                      "left",  "w-40"],
-                          ["Implied Share Price",                           "right", ""],
-                          [grants.length > 1 ? "Wtd. Avg Gain / Option" : "Gain / Option", "right", ""],
-                          ["Total Value of Vested",                         "right", ""],
-                          ["Total Value of Full Grant",                     "right", ""],
-                          ["Multiple on Strike",                            "right", ""],
-                        ].map(([label, align, w]) => (
+                          { label: "Scenario",                                                       align: "left"  },
+                          { label: "Company Valuation (CAD)",                                        align: "left"  },
+                          { label: "Implied Share Price",                                             align: "right" },
+                          { label: grants.length > 1 ? "Wtd. Avg Gain / Option" : "Gain / Option",  align: "right" },
+                          { label: "Value of Vested Options",                                         align: "right" },
+                          { label: "Value of Full Grant",                                             align: "right" },
+                          { label: "Multiple on Strike",                                              align: "right" },
+                          { label: "",                                                                align: "right" },
+                        ].map(({ label, align }, i) => (
                           <th
-                            key={label}
-                            className={`px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-white ${w} ${align === "right" ? "text-right" : "text-left"}`}
+                            key={i}
+                            className={`px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-white ${align === "right" ? "text-right" : "text-left"}`}
                           >
                             {label}
                           </th>
@@ -891,74 +1008,78 @@ const OptionModeller: FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {scenarios.map((row) => {
-                        const isAuto      = row.id === "base" || row.id === "two_x";
-                        const isCustomRow = row.id === "custom";
-                        const hasBase     = globalDilutedNum > 0 && row.valuation > 0;
-                        const isInMoney   = hasBase && row.totalFullGrantValue > 0;
-                        const isUnderwater = hasBase && row.totalFullGrantValue === 0 && row.valuation < baseValuation;
+                      {computedScenarios.map((row) => {
+                        const hasBase      = globalDilutedNum > 0 && row.rawValue > 0;
+                        const isInMoney    = hasBase && row.totalFullGrantValue > 0;
+                        const isUnderwater = hasBase && row.totalFullGrantValue === 0 && row.rawValue < baseValuation;
 
-                        const rowBg = isCustomRow ? "#FEFDF5"
-                          : isInMoney     ? "#D6F0E0"
-                          : isUnderwater  ? "#FBEAE8"
-                          : "#ffffff";
-                        const valueColor = !hasBase ? MUTED
-                          : isInMoney    ? "#1A6B3C"
-                          : isUnderwater ? "#A33222"
-                          : MUTED;
+                        const rowBg = isInMoney ? "#D6F0E0" : isUnderwater ? "#FBEAE8" : "#ffffff";
+                        const valueColor = !hasBase ? MUTED : isInMoney ? "#1A6B3C" : isUnderwater ? "#A33222" : MUTED;
                         const valueBold = isInMoney;
                         const vStyle = { color: valueColor, fontWeight: valueBold ? 700 : 400 };
 
                         return (
                           <>
                             <tr key={row.id} style={{ background: rowBg, borderTop: `1px solid ${SLATE}` }}>
-                              {/* Scenario */}
-                              <td className="px-4 py-3 font-semibold whitespace-nowrap" style={{ color: NAVY }}>
-                                {row.label}
-                                {isAuto && (
-                                  <span className="ml-2 text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded" style={{ background: `${BLUE}18`, color: BLUE }}>
-                                    Auto
-                                  </span>
-                                )}
+                              {/* Scenario label — inline editable */}
+                              <td className="px-4 py-3 whitespace-nowrap" style={{ color: NAVY }}>
+                                <InlineLabel
+                                  value={row.label}
+                                  onChange={(v) => updateScenarioLabel(row.id, v)}
+                                />
                               </td>
-                              {/* Valuation */}
-                              <td className="px-4 py-3">
-                                {row.editable ? (
-                                  <ValuationInput
-                                    value={customVals[row.id] ?? ""}
-                                    onChange={(v) => setCustomVal(row.id, v)}
-                                    isCustom={isCustomRow}
-                                  />
-                                ) : (
-                                  <span className="font-mono text-xs" style={{ color: MUTED }}>
-                                    {fmtValuation(row.valuation)}
-                                  </span>
-                                )}
+
+                              {/* Valuation — fully editable, yellow tint if pinned */}
+                              <td className="px-4 py-2">
+                                <ValuationCell
+                                  rawValue={row.rawValue}
+                                  pinned={row.pinned}
+                                  onChange={(v, pin) => updateScenarioValue(row.id, v, pin)}
+                                />
                               </td>
+
                               {/* Implied share price */}
-                              <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
+                              <td className="px-4 py-3 text-right font-mono text-xs" style={{ color: MUTED }}>
                                 {hasBase ? fmtCAD(row.impliedSharePrice) : "—"}
                               </td>
-                              {/* Avg gain / option */}
+
+                              {/* Gain / option */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
                                 {hasBase ? (isInMoney ? fmtCAD(row.weightedGainPerOption) : "$0.00") : "—"}
                               </td>
+
                               {/* Vested value */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
                                 {hasBase ? (isInMoney ? fmtLargeCAD(row.totalVestedValue) : "$0.00") : "—"}
                               </td>
+
                               {/* Full grant value */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
                                 {hasBase ? (isInMoney ? fmtLargeCAD(row.totalFullGrantValue) : "$0.00") : "—"}
                               </td>
+
                               {/* Multiple */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
                                 {hasBase ? fmtMultiple(row.multiple) : "—"}
                               </td>
+
+                              {/* Delete */}
+                              <td className="px-2 py-3 text-right">
+                                {scenarios.length > 1 && (
+                                  <button
+                                    onClick={() => deleteScenario(row.id)}
+                                    className="p-1 rounded opacity-40 hover:opacity-80 transition-opacity"
+                                    style={{ color: RED_ERR }}
+                                    title="Remove row"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                              </td>
                             </tr>
 
                             {/* Per-grant breakdown rows */}
-                            {showBreakdown && grants.length > 1 && row.perGrant.map((pg, pgIdx) => {
+                            {showBreakdown && grants.length > 1 && row.perGrant.map((pg) => {
                               const pgInMoney = pg.gainPerOption > 0;
                               const pgColor   = pgInMoney ? "#1A6B3C" : MUTED;
                               return (
@@ -982,6 +1103,7 @@ const OptionModeller: FC = () => {
                                     {hasBase ? (pgInMoney ? fmtLargeCAD(pg.fullGrantValue) : "$0.00") : "—"}
                                   </td>
                                   <td className="px-4 py-2 text-right text-xs" style={{ color: MUTED }}>—</td>
+                                  <td />
                                 </tr>
                               );
                             })}
@@ -992,27 +1114,77 @@ const OptionModeller: FC = () => {
                   </table>
                 </div>
 
-                {/* Legend */}
+                {/* Footer actions */}
                 <div
-                  className="px-5 py-2.5 flex flex-wrap items-center gap-3 text-[10px] font-medium border-t"
-                  style={{ background: OFFWHITE, borderColor: SLATE, color: MUTED }}
+                  className="px-5 py-3 flex flex-wrap items-center justify-between gap-3"
+                  style={{ background: OFFWHITE, borderTop: `1px solid ${SLATE}` }}
                 >
-                  <span className="flex items-center gap-1.5">
-                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#D6F0E0" }} />
-                    <span style={{ color: "#1A6B3C" }}>In the money</span>
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#ffffff", border: `1px solid ${SLATE}` }} />
-                    At or near strike
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#FBEAE8" }} />
-                    <span style={{ color: "#A33222" }}>Underwater — $0 gain</span>
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#FFF3CD", border: "2px solid #D4900A" }} />
-                    Custom input
-                  </span>
+                  {/* Left: add + reset */}
+                  <div className="flex items-center gap-3">
+                    {scenarios.length < 4 && (
+                      <button
+                        onClick={addScenario}
+                        className="flex items-center gap-1 text-[11px] font-semibold rounded px-2.5 py-1.5 transition-colors hover:opacity-85"
+                        style={{ background: `${BLUE}18`, color: BLUE, border: `1px solid ${BLUE}40` }}
+                      >
+                        <Plus className="w-3 h-3" />
+                        Add scenario
+                      </button>
+                    )}
+                    {scenarios.length >= 4 && (
+                      <span className="text-[10px]" style={{ color: MUTED }}>Maximum 4 scenarios reached</span>
+                    )}
+
+                    {/* Reset confirmation */}
+                    {showResetConfirm ? (
+                      <span className="flex items-center gap-2 text-[11px]" style={{ color: MUTED }}>
+                        Reset all rows to defaults?
+                        <button
+                          onClick={() => resetToDefaults(baseValuation > 0 ? baseValuation : INITIAL_BASE_VAL)}
+                          className="font-bold px-2 py-0.5 rounded text-[10px]"
+                          style={{ background: "#A33222", color: "#fff" }}
+                        >
+                          Yes, reset
+                        </button>
+                        <button
+                          onClick={() => setShowResetConfirm(false)}
+                          className="font-medium text-[10px]"
+                          style={{ color: MUTED }}
+                        >
+                          Cancel
+                        </button>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => setShowResetConfirm(true)}
+                        className="flex items-center gap-1 text-[11px] transition-opacity hover:opacity-70"
+                        style={{ color: MUTED }}
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        Reset to defaults
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Right: legend */}
+                  <div className="flex flex-wrap items-center gap-3 text-[10px] font-medium" style={{ color: MUTED }}>
+                    <span className="flex items-center gap-1.5">
+                      <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#D6F0E0" }} />
+                      <span style={{ color: "#1A6B3C" }}>In the money</span>
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#ffffff", border: `1px solid ${SLATE}` }} />
+                      At strike
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#FBEAE8" }} />
+                      <span style={{ color: "#A33222" }}>Underwater</span>
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#FFFACD", border: "1px solid #E8C43A" }} />
+                      Manually set
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
