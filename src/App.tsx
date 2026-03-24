@@ -10,6 +10,7 @@ import Portal from "./pages/Portal";
 import Onboarding from "./pages/Onboarding";
 import AdminHub from "./pages/admin/AdminHub";
 import OptionModeller from "./pages/OptionModeller";
+import CommissionCalculator from "./pages/CommissionCalculator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/admin/resources" element={<AdminHub />} />
           <Route path="/admin" element={<AdminHub />} />
           <Route path="/option-modeller" element={<OptionModeller />} />
+          <Route path="/commission-calculator" element={<CommissionCalculator />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
