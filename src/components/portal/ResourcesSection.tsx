@@ -194,8 +194,6 @@ const ResourcesSection: FC = () => {
           <Loader2 className="w-4 h-4 animate-spin" />
           <span className="text-xs">Loading resources…</span>
         </div>
-      ) : resources.length === 0 ? (
-        <p className="text-xs text-muted-foreground">Resources coming soon.</p>
       ) : (
         <div className="space-y-10">
           {Object.entries(grouped).sort().map(([category, items]) => (
@@ -204,6 +202,8 @@ const ResourcesSection: FC = () => {
                 {category}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Inject Option Modeller tool card into Equity category */}
+                {category === "Equity" && <OptionModellerCard />}
                 {items.map((r) => {
                   const isApproved = approvedIds.has(r.id);
 
