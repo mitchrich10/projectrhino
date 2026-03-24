@@ -259,9 +259,11 @@ const CommissionCalculator: FC = () => {
   }, [attainmentPct, calcReady, actual]);
 
   const periodBonus = useMemo(() => {
-    if (rep.periodType === "monthly")   return calcBonusPart(targetBonus, mw / 100, attainmentPct, cliff, accel, mult);
-    if (rep.periodType === "quarterly") return calcBonusPart(targetBonus, qw / 100, attainmentPct, cliff, accel, mult);
-    return calcBonusPart(targetBonus, aw / 100, attainmentPct, cliff, accel, mult);
+    // Per-period bonus: annualise the tranche then divide by periods
+    const annualTranche = (w: number) => calcAnnualTranche(targetBonus, w, attainmentPct, cliff, accel, mult);
+    if (rep.periodType === "monthly")   return annualTranche(mw / 100) / 12;
+    if (rep.periodType === "quarterly") return annualTranche(qw / 100) / 4;
+    return annualTranche(aw / 100); // annual period — full year tranche
   }, [rep.periodType, targetBonus, mw, qw, aw, attainmentPct, cliff, accel, mult]);
 
   const psEarned           = parseNum(rep.psCollected) * psRate;
