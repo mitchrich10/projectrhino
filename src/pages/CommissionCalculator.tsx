@@ -428,7 +428,7 @@ const CommissionCalculator: FC = () => {
               </div>
 
               {/* Col 2 — Bonus Structure */}
-              <div className="p-5 space-y-4">
+              <div className="p-5 space-y-4 border-b lg:border-b-0 lg:border-r" style={{ borderColor: SLATE }}>
                 <div className="text-[10px] font-semibold uppercase tracking-widest pb-2 border-b" style={{ color: NAVY, borderColor: SLATE }}>
                   Bonus Structure
                 </div>
