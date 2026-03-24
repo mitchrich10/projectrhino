@@ -178,7 +178,7 @@ function buildAttainmentSheet(
   ws.getColumn(6).width = 18;
   ws.getColumn(7).width = 12;
 
-  const headers = ["Attainment", "Monthly Bonus", "Quarterly Bonus", "Annual Bonus", "Total Bonus (Ann.)", "Base + Bonus", "vs. OTE"];
+  const headers = ["Attainment", "Monthly Bonus (per mo.)", "Quarterly Bonus (per qtr)", "Annual Bonus (tranche)", "Total Bonus (Annualised)", "Base + Total Bonus", "vs. OTE"];
   const hRow = ws.addRow(headers);
   hRow.height = 22;
   hRow.eachCell((cell) => navyHeader(cell));
