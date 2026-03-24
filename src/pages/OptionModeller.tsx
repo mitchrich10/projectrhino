@@ -672,16 +672,16 @@ const OptionModeller: FC = () => {
                   style={{ background: OFFWHITE, borderColor: SLATE, color: MUTED }}
                 >
                   <span className="flex items-center gap-1.5">
-                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: BLUE }} />
-                    Above strike — positive value
+                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#D6F0E0" }} />
+                    <span style={{ color: "#1A6B3C" }}>In the money</span>
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: MUTED }} />
-                    Underwater — $0 gain
+                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#ffffff", border: `1px solid ${SLATE}` }} />
+                    At or near strike
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#FFFACD", border: "1px solid #E8C43A" }} />
-                    Editable input
+                    <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#FBEAE8" }} />
+                    <span style={{ color: "#A33222" }}>Underwater — $0 gain</span>
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#FFF3CD", border: "2px solid #D4900A" }} />
