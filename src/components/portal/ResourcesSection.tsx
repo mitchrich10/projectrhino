@@ -1,6 +1,7 @@
 import { FC, useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, ExternalLink, FileText, Loader2, Lock } from "lucide-react";
+import { Download, ExternalLink, FileText, Loader2, Lock, Calculator } from "lucide-react";
 
 interface Resource {
   id: string;
