@@ -279,6 +279,35 @@ const CommissionCalculator: FC = () => {
   const totalPeriodEarnings = proRatedBase + periodBonus + psEarned;
   const aboveBelow        = actual - periodQuota;
 
+  const handleDownload = () => {
+    const statusLabels: Record<string, string> = {
+      cliff:   "Below cliff — no bonus",
+      partial: "Below target — partial bonus",
+      target:  "At or above target",
+      accel:   `Above accelerator threshold — ${mult}x rate`,
+    };
+    const sk: string = attainmentPct < cliff ? "cliff"
+      : attainmentPct >= accel ? "accel"
+      : attainmentPct >= 1 ? "target"
+      : "partial";
+
+    downloadCommissionXLSX(plan, rows, {
+      periodType: rep.periodType,
+      periodQuota,
+      actual,
+      attainmentPct,
+      periodBonus,
+      psCollected: parseNum(rep.psCollected),
+      psEarned,
+      proRatedBase,
+      totalPeriodEarnings,
+      aboveBelow,
+      statusLabel: statusLabels[sk],
+      annualisedRunRate: totalPeriodEarnings * (rep.periodType === "monthly" ? 12 : rep.periodType === "quarterly" ? 4 : 1),
+      psRate: parseNum(plan.psRate),
+    });
+  };
+
   type StatusKey = "cliff" | "partial" | "target" | "accel";
   const statusKey: StatusKey = attainmentPct < cliff ? "cliff"
     : attainmentPct >= accel ? "accel"
