@@ -456,7 +456,7 @@ const GrantCard: FC<{
                 <span style={{ color: MUTED }}> / {total > 0 ? total.toLocaleString() : "—"} ({vestedInfo.pct.toFixed(1)}%)</span>
               </span>
             )}
-            {vestedInfo.cliffDate && vestedInfo.status !== "pre-cliff" && vestedInfo.cliffMonths !== 0 && (
+            {vestedInfo.cliffDate && vestedInfo.status !== "pre-cliff" && grant.cliffMonths !== 0 && (
               <span><span style={{ color: MUTED }}>Cliff: </span><span style={{ color: NAVY }}>{vestedInfo.cliffDate}</span></span>
             )}
             {vestedInfo.fullyVestedDate && vestedInfo.status !== "fully-vested" && (
