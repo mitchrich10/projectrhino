@@ -1,14 +1,19 @@
 import ExcelJS from "exceljs";
 
 // Brand colours
-const NAVY_HEX    = "173660";
-const BLUE_HEX    = "1A7EC8";
-const OFFWHITE    = "F4F7FA";
-const SLATE       = "CDD8E3";
-const MUTED       = "5C6B7A";
-const WHITE       = "FFFFFF";
-const YELLOW_BG   = "FFFACD";
+const NAVY_HEX      = "173660";
+const BLUE_HEX      = "1A7EC8";
+const OFFWHITE      = "F4F7FA";
+const SLATE         = "CDD8E3";
+const MUTED         = "5C6B7A";
+const WHITE         = "FFFFFF";
+const YELLOW_BG     = "FFFACD";
 const YELLOW_BORDER = "E8C43A";
+// Row tint colours
+const GREEN_BG  = "D6F0E0";
+const GREEN_TEXT = "1A6B3C";
+const RED_BG    = "FBEAE8";
+const RED_TEXT  = "A33222";
 
 function fmtValuationLabel(n: number): string {
   if (!n || n <= 0) return "$0";
@@ -18,10 +23,25 @@ function fmtValuationLabel(n: number): string {
   }
   if (n >= 1_000_000) {
     const v = n / 1_000_000;
-    return `$${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}M`;
+    return `$${(v < 100 && v % 1 !== 0) ? v.toFixed(1) : v.toFixed(0)}M`;
   }
   if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
   return `$${n.toFixed(0)}`;
+}
+
+function fmtLargeCADLabel(n: number): string {
+  if (!isFinite(n) || n <= 0) return "$0.00";
+  if (n >= 1_000_000_000) {
+    const v = n / 1_000_000_000;
+    return `$${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}B`;
+  }
+  if (n >= 1_000_000) {
+    const v = n / 1_000_000;
+    return `$${(v < 100 && v % 1 !== 0) ? v.toFixed(1) : v.toFixed(0)}M`;
+  }
+  return new Intl.NumberFormat("en-CA", {
+    style: "currency", currency: "CAD", maximumFractionDigits: 2,
+  }).format(n);
 }
 
 function fmtCAD(n: number): string {
@@ -38,20 +58,20 @@ function fmtMultiple(n: number): string {
   return `${n.toFixed(2)}x`;
 }
 
-// ── Shared helpers ────────────────────────────────────────────────────────────
+// ── Shared helpers ─────────────────────────────────────────────────────────────
 
 function navyFill(): ExcelJS.Fill {
   return { type: "pattern", pattern: "solid", fgColor: { argb: "FF" + NAVY_HEX } };
 }
-
 function offwhiteFill(): ExcelJS.Fill {
   return { type: "pattern", pattern: "solid", fgColor: { argb: "FF" + OFFWHITE } };
 }
-
 function whiteFill(): ExcelJS.Fill {
   return { type: "pattern", pattern: "solid", fgColor: { argb: "FF" + WHITE } };
 }
-
+function hexFill(hex: string): ExcelJS.Fill {
+  return { type: "pattern", pattern: "solid", fgColor: { argb: "FF" + hex } };
+}
 function slateBorder(): Partial<ExcelJS.Borders> {
   const s: ExcelJS.Border = { style: "thin", color: { argb: "FF" + SLATE } };
   return { top: s, left: s, bottom: s, right: s };
@@ -87,7 +107,6 @@ function buildGrantSheet(ws: ExcelJS.Worksheet, inputs: GrantInputs) {
     { key: "value", width: 24 },
   ];
 
-  // Title banner
   ws.mergeCells("A1:B1");
   const titleCell = ws.getCell("A1");
   titleCell.value = "MY GRANT";
@@ -107,7 +126,6 @@ function buildGrantSheet(ws: ExcelJS.Worksheet, inputs: GrantInputs) {
 
   let rowIdx = 2;
 
-  // Section label
   const secInput = ws.getRow(rowIdx++);
   secInput.getCell(1).value = "INPUTS";
   secInput.getCell(1).font = { name: "Arial", bold: true, size: 8, color: { argb: "FF" + MUTED } };
@@ -117,14 +135,12 @@ function buildGrantSheet(ws: ExcelJS.Worksheet, inputs: GrantInputs) {
   for (const [label, value] of inputRows) {
     const row = ws.getRow(rowIdx);
     row.height = 20;
-
     const lc = row.getCell(1);
     lc.value = label;
     lc.font = { name: "Arial", size: 9, color: { argb: "FF" + NAVY_HEX } };
     lc.fill = whiteFill();
     lc.alignment = { horizontal: "left", vertical: "middle" };
     lc.border = slateBorder();
-
     const vc = row.getCell(2);
     vc.value = value;
     vc.font = { name: "Arial", size: 9, color: { argb: "FF" + NAVY_HEX } };
@@ -137,10 +153,8 @@ function buildGrantSheet(ws: ExcelJS.Worksheet, inputs: GrantInputs) {
     rowIdx++;
   }
 
-  // Spacer
   ws.getRow(rowIdx++).height = 6;
 
-  // Derived section label
   const secDerived = ws.getRow(rowIdx++);
   secDerived.getCell(1).value = "DERIVED OUTPUTS";
   secDerived.getCell(1).font = { name: "Arial", bold: true, size: 8, color: { argb: "FF" + MUTED } };
@@ -149,8 +163,7 @@ function buildGrantSheet(ws: ExcelJS.Worksheet, inputs: GrantInputs) {
 
   const derivedRows: [string, string | number][] = [
     ["% Ownership (to 4 decimal places)", inputs.fullyDiluted && inputs.totalOptions
-      ? `${inputs.ownershipPct.toFixed(4)}%`
-      : "—"],
+      ? `${inputs.ownershipPct.toFixed(4)}%` : "—"],
     ["Vested Options Today",              inputs.vestedOptions > 0 ? inputs.vestedOptions : "—"],
     ["Months Vested",                     inputs.monthsVested > 0  ? inputs.monthsVested  : "—"],
   ];
@@ -158,14 +171,12 @@ function buildGrantSheet(ws: ExcelJS.Worksheet, inputs: GrantInputs) {
   for (const [label, value] of derivedRows) {
     const row = ws.getRow(rowIdx);
     row.height = 20;
-
     const lc = row.getCell(1);
     lc.value = label;
     lc.font = { name: "Arial", size: 9, color: { argb: "FF" + NAVY_HEX } };
     lc.fill = whiteFill();
     lc.alignment = { horizontal: "left", vertical: "middle" };
     lc.border = slateBorder();
-
     const vc = row.getCell(2);
     vc.value = value;
     vc.font = { name: "Arial", bold: true, size: 9, color: { argb: "FF" + BLUE_HEX } };
@@ -176,11 +187,9 @@ function buildGrantSheet(ws: ExcelJS.Worksheet, inputs: GrantInputs) {
     rowIdx++;
   }
 
-  // Footer note
   rowIdx++;
-  const noteRow = ws.getRow(rowIdx);
   ws.mergeCells(`A${rowIdx}:B${rowIdx}`);
-  const nc = noteRow.getCell(1);
+  const nc = ws.getRow(rowIdx).getCell(1);
   nc.value = "For informational purposes only. Not financial or legal advice.  |  Rhino Ventures · rhinovc.com";
   nc.font = { name: "Arial", italic: true, size: 8, color: { argb: "FF" + MUTED } };
   nc.alignment = { horizontal: "left" };
@@ -200,15 +209,20 @@ interface ScenarioResult {
   multiple: number;
 }
 
-function buildScenarioSheet(ws: ExcelJS.Worksheet, scenarios: ScenarioResult[], diluted: number, strike: number) {
+function buildScenarioSheet(
+  ws: ExcelJS.Worksheet,
+  scenarios: ScenarioResult[],
+  diluted: number,
+  strike: number,
+) {
   ws.columns = [
-    { key: "scenario",     width: 26 },
-    { key: "valuation",    width: 22 },
-    { key: "sharePrice",   width: 20 },
-    { key: "gain",         width: 18 },
-    { key: "vestedVal",    width: 22 },
-    { key: "fullGrant",    width: 22 },
-    { key: "multiple",     width: 18 },
+    { key: "scenario",   width: 26 },
+    { key: "valuation",  width: 22 },
+    { key: "sharePrice", width: 20 },
+    { key: "gain",       width: 18 },
+    { key: "vestedVal",  width: 22 },
+    { key: "fullGrant",  width: 22 },
+    { key: "multiple",   width: 18 },
   ];
 
   const headers = [
@@ -221,7 +235,6 @@ function buildScenarioSheet(ws: ExcelJS.Worksheet, scenarios: ScenarioResult[], 
     "Multiple on Strike",
   ];
 
-  // Title banner
   ws.mergeCells("A1:G1");
   const titleCell = ws.getCell("A1");
   titleCell.value = "EXIT SCENARIO MODELLER";
@@ -230,7 +243,6 @@ function buildScenarioSheet(ws: ExcelJS.Worksheet, scenarios: ScenarioResult[], 
   titleCell.alignment = { horizontal: "left", vertical: "middle" };
   ws.getRow(1).height = 28;
 
-  // Header row
   const headerRow = ws.getRow(2);
   headers.forEach((h, i) => {
     const cell = headerRow.getCell(i + 1);
@@ -239,37 +251,40 @@ function buildScenarioSheet(ws: ExcelJS.Worksheet, scenarios: ScenarioResult[], 
   });
   applyNavyHeader(headerRow, headers.length);
 
-  // Data rows
+  const baseVal = strike * diluted;
+
   scenarios.forEach((row, i) => {
     const excelRow = ws.getRow(i + 3);
     excelRow.height = 20;
 
-    const isPositive = row.gainPerOption > 0;
-    const hasBase    = diluted > 0 && strike > 0 && row.valuation > 0;
-    const isAuto     = row.id === "base" || row.id === "two_x";
-    const rowFill: ExcelJS.Fill = i % 2 === 0 ? whiteFill() : offwhiteFill();
+    const hasBase      = diluted > 0 && strike > 0 && row.valuation > 0;
+    const isInMoney    = hasBase && row.gainPerOption > 0;
+    const isUnderwater = hasBase && row.gainPerOption <= 0 && row.valuation < baseVal;
+    const isAuto       = row.id === "base" || row.id === "two_x";
 
-    const valueColor  = isPositive ? BLUE_HEX : MUTED;
-    const valueBold   = isPositive;
+    const rowFill: ExcelJS.Fill = isInMoney    ? hexFill(GREEN_BG)
+      : isUnderwater ? hexFill(RED_BG)
+      : i % 2 === 0  ? whiteFill()
+      : offwhiteFill();
 
-    const setBase = (cell: ExcelJS.Cell, isLabel = false) => {
-      cell.fill = rowFill;
-      cell.border = slateBorder();
-      cell.font = {
-        name: "Arial",
-        size: 9,
-        bold: isLabel,
-        color: { argb: "FF" + (isLabel ? NAVY_HEX : MUTED) },
-      };
-      cell.alignment = { horizontal: isLabel ? "left" : "right", vertical: "middle" };
+    const valueHex  = isInMoney ? GREEN_TEXT : isUnderwater ? RED_TEXT : MUTED;
+    const valueBold = isInMoney;
+
+    const setLabel = (cell: ExcelJS.Cell) => {
+      cell.fill = rowFill; cell.border = slateBorder();
+      cell.font = { name: "Arial", size: 9, bold: true, color: { argb: "FF" + NAVY_HEX } };
+      cell.alignment = { horizontal: "left", vertical: "middle" };
+    };
+    const setVal = (cell: ExcelJS.Cell) => {
+      cell.fill = rowFill; cell.border = slateBorder();
+      cell.font = { name: "Arial", size: 9, bold: valueBold, color: { argb: "FF" + valueHex } };
+      cell.alignment = { horizontal: "right", vertical: "middle" };
     };
 
-    // Col A — scenario label
     const labelCell = excelRow.getCell(1);
     labelCell.value = row.label + (isAuto ? "  [Auto]" : "");
-    setBase(labelCell, true);
+    setLabel(labelCell);
 
-    // Col B — valuation
     const valCell = excelRow.getCell(2);
     valCell.value = row.valuation > 0 ? fmtValuationLabel(row.valuation) : "—";
     valCell.fill = row.editable
@@ -281,40 +296,27 @@ function buildScenarioSheet(ws: ExcelJS.Worksheet, scenarios: ScenarioResult[], 
       ? { ...slateBorder(), left: { style: "thin", color: { argb: "FF" + YELLOW_BORDER } } }
       : slateBorder();
 
-    // Col C — implied share price
     const spCell = excelRow.getCell(3);
     spCell.value = hasBase ? fmtCAD(row.impliedSharePrice) : "—";
-    setBase(spCell);
-    spCell.font = { name: "Arial", size: 9, bold: valueBold, color: { argb: "FF" + valueColor } };
+    setVal(spCell);
 
-    // Col D — gain per option
     const gpCell = excelRow.getCell(4);
-    gpCell.value = (diluted > 0 && strike > 0 && row.valuation > 0)
-      ? (isPositive ? fmtCAD(row.gainPerOption) : "$0.00")
-      : "—";
-    setBase(gpCell);
-    gpCell.font = { name: "Arial", size: 9, bold: valueBold, color: { argb: "FF" + valueColor } };
+    gpCell.value = hasBase ? (isInMoney ? fmtCAD(row.gainPerOption) : "$0.00") : "—";
+    setVal(gpCell);
 
-    // Col E — vested value
     const vvCell = excelRow.getCell(5);
-    vvCell.value = hasBase ? (isPositive ? fmtCAD(row.vestedValue) : "$0.00") : "—";
-    setBase(vvCell);
-    vvCell.font = { name: "Arial", size: 9, bold: valueBold, color: { argb: "FF" + valueColor } };
+    vvCell.value = hasBase ? (isInMoney ? fmtLargeCADLabel(row.vestedValue) : "$0.00") : "—";
+    setVal(vvCell);
 
-    // Col F — full grant value
     const fgCell = excelRow.getCell(6);
-    fgCell.value = hasBase ? (isPositive ? fmtCAD(row.fullGrantValue) : "$0.00") : "—";
-    setBase(fgCell);
-    fgCell.font = { name: "Arial", size: 9, bold: valueBold, color: { argb: "FF" + valueColor } };
+    fgCell.value = hasBase ? (isInMoney ? fmtLargeCADLabel(row.fullGrantValue) : "$0.00") : "—";
+    setVal(fgCell);
 
-    // Col G — multiple
     const mulCell = excelRow.getCell(7);
     mulCell.value = hasBase ? fmtMultiple(row.multiple) : "—";
-    setBase(mulCell);
-    mulCell.font = { name: "Arial", size: 9, bold: valueBold, color: { argb: "FF" + valueColor } };
+    setVal(mulCell);
   });
 
-  // Footer note
   const noteIdx = scenarios.length + 4;
   ws.mergeCells(`A${noteIdx}:G${noteIdx}`);
   const nc = ws.getRow(noteIdx).getCell(1);
