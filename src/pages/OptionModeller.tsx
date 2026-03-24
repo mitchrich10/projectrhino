@@ -103,7 +103,8 @@ const ValuationInput: FC<{
     value={value}
     onChange={(e) => onChange(e.target.value)}
     placeholder="Enter $"
-    className="w-full bg-yellow-50 border border-yellow-300 rounded px-2 py-1.5 text-sm text-foreground outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-400 transition-colors"
+    style={{ backgroundColor: "#FFFDE7", borderColor: "#F9A825" }}
+    className="w-full rounded px-2 py-1.5 text-sm text-foreground outline-none border transition-colors focus:ring-1"
   />
 );
 
