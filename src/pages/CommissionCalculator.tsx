@@ -524,13 +524,22 @@ const CommissionCalculator: FC = () => {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm min-w-[640px]">
+                <table className="w-full text-sm min-w-[680px]">
                   <thead>
                     <tr style={{ background: NAVY }}>
-                      {["Attainment", "Monthly Bonus", "Quarterly Bonus", "Annual Bonus", "Total Bonus (Ann.)", "Base + Bonus", "vs. OTE"].map((h) => (
-                        <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap"
-                          style={{ color: "rgba(255,255,255,0.75)" }}>
-                          {h}
+                      {[
+                        { label: "Attainment",            sub: "" },
+                        { label: "Monthly Bonus",         sub: "per month" },
+                        { label: "Quarterly Bonus",       sub: "per quarter" },
+                        { label: "Annual Bonus",          sub: "annual tranche" },
+                        { label: "Total Bonus (Ann.)",    sub: "mo×12 + qtr×4 + ann" },
+                        { label: "Base + Total Bonus",    sub: "annualised" },
+                        { label: "vs. OTE",               sub: "% of OTE" },
+                      ].map(({ label, sub }) => (
+                        <th key={label} className="px-4 py-2 text-left whitespace-nowrap"
+                          style={{ color: "rgba(255,255,255,0.85)" }}>
+                          <div className="text-[10px] font-semibold uppercase tracking-widest">{label}</div>
+                          {sub && <div className="text-[9px] font-normal normal-case tracking-normal opacity-60 mt-0.5">{sub}</div>}
                         </th>
                       ))}
                     </tr>
