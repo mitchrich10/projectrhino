@@ -603,7 +603,9 @@ const CommissionCalculator: FC = () => {
               </div>
               <div className="px-5 py-2.5 border-t flex flex-wrap gap-4 text-[10px]"
                 style={{ borderColor: SLATE, color: GREY_MID, background: OFFWHITE }}>
-                <span>Updates live as inputs change</span>
+                <span>Monthly/Quarterly columns show <strong style={{color:NAVY}}>per-period payouts</strong></span>
+                <span>·</span>
+                <span>Total Bonus = mo×12 + qtr×4 + annual</span>
                 <span>·</span>
                 <span>Cliff at {plan.cliffThreshold || 85}% · Accelerator at {plan.acceleratorThreshold || 110}% ({plan.acceleratorMultiplier || 2}× rate)</span>
                 {highlightRow && <span>· Your position: ~{highlightRow}% highlighted</span>}
