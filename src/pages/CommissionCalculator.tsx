@@ -1,6 +1,7 @@
 import { FC, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, Minus, Download } from "lucide-react";
+import { downloadCommissionXLSX } from "@/lib/exportCommissionCalculator";
 
 // ── Brand tokens ──────────────────────────────────────────────────────────────
 const NAVY     = "#173660";
