@@ -290,9 +290,9 @@ export async function downloadCommissionXLSX(
   const cliff     = parseNum(plan.cliffThreshold) / 100;
   const accel     = parseNum(plan.acceleratorThreshold) / 100;
 
-  buildPlanSheet(       wb.addSheet("Plan Inputs"),       plan, ote, totalPkg);
-  buildAttainmentSheet( wb.addSheet("Attainment Table"),  rows, cliff, accel);
-  buildRepSheet(        wb.addSheet("Rep Calculator"),    repSnap);
+  buildPlanSheet(       wb.addWorksheet("Plan Inputs"),       plan, ote, totalPkg);
+  buildAttainmentSheet( wb.addWorksheet("Attainment Table"),  rows, cliff, accel);
+  buildRepSheet(        wb.addWorksheet("Rep Calculator"),    repSnap);
 
   const buf  = await wb.xlsx.writeBuffer();
   const blob = new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
