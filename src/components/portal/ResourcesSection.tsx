@@ -1,6 +1,7 @@
 import { FC, useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, ExternalLink, FileText, Loader2, Lock } from "lucide-react";
+import { Download, ExternalLink, FileText, Loader2, Lock, Calculator } from "lucide-react";
 
 interface Resource {
   id: string;
@@ -106,6 +107,27 @@ const RequestAccessButton: FC<{
   );
 };
 
+// ── Interactive Tool Card ──────────────────────────────────────────────────────
+const OptionModellerCard: FC = () => (
+  <Link
+    to="/option-modeller"
+    className="group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors hover:border-primary/50 hover:bg-secondary/40"
+  >
+    <div className="flex items-start justify-between gap-2">
+      <h4 className="font-bold text-sm text-foreground leading-tight">Option Modeller</h4>
+      <Calculator className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+    </div>
+    <p className="text-xs text-muted-foreground leading-relaxed">
+      Interactive tool to model the value of your stock option grant across exit scenarios. Enter your grant details and explore conservative through exceptional outcomes.
+    </p>
+    <div className="flex items-center gap-1.5 mt-auto pt-1">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-primary group-hover:opacity-70 transition-opacity flex items-center gap-1">
+        <ExternalLink className="w-3 h-3" /> Open Tool
+      </span>
+    </div>
+  </Link>
+);
+
 // ── Main Section ───────────────────────────────────────────────────────────────
 const ResourcesSection: FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -172,16 +194,25 @@ const ResourcesSection: FC = () => {
           <Loader2 className="w-4 h-4 animate-spin" />
           <span className="text-xs">Loading resources…</span>
         </div>
-      ) : resources.length === 0 ? (
-        <p className="text-xs text-muted-foreground">Resources coming soon.</p>
       ) : (
         <div className="space-y-10">
+          {/* Always render Equity section with Option Modeller tool */}
+          {!grouped["Equity"] && (
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">Equity</h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <OptionModellerCard />
+              </div>
+            </div>
+          )}
           {Object.entries(grouped).sort().map(([category, items]) => (
             <div key={category}>
               <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">
                 {category}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Inject Option Modeller tool card into Equity category */}
+                {category === "Equity" && <OptionModellerCard />}
                 {items.map((r) => {
                   const isApproved = approvedIds.has(r.id);
 
