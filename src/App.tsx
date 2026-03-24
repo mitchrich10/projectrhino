@@ -30,6 +30,7 @@ const App = () => (
           <Route path="/admin/resources" element={<AdminHub />} />
           <Route path="/admin" element={<AdminHub />} />
           <Route path="/option-modeller" element={<OptionModeller />} />
+          <Route path="/commission-calculator" element={<CommissionCalculator />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
