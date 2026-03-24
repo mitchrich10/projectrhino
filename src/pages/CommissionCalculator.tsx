@@ -59,7 +59,11 @@ interface RepCalc {
 }
 
 // ── Calculation helpers ───────────────────────────────────────────────────────
-function calcBonusPart(tb: number, w: number, a: number, cliff: number, accel: number, mult: number): number {
+//
+// calcAnnualTranche: returns the ANNUALISED value for one bonus tranche.
+//   e.g. monthly tranche (w=0.25, target=$100K) at 100% attainment → $25K/yr
+//
+function calcAnnualTranche(tb: number, w: number, a: number, cliff: number, accel: number, mult: number): number {
   if (a < cliff) return 0;
   if (a >= accel) return tb * w * mult;
   return tb * w * a;
@@ -70,8 +74,14 @@ const ATTAINMENT_LEVELS = [70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125,
 
 interface AttainmentRow {
   attainment: number;
-  monthlyBonus: number; quarterlyBonus: number; annualBonus: number;
-  totalBonus: number; baseBonus: number; vsOTE: number;
+  // per-period amounts (what the rep receives each period)
+  monthlyBonus: number;   // per month
+  quarterlyBonus: number; // per quarter
+  annualBonus: number;    // per year (the annual tranche itself)
+  // annualised total: monthlyBonus×12 + quarterlyBonus×4 + annualBonus×1
+  totalBonus: number;
+  baseBonus: number;
+  vsOTE: number;
 }
 
 function buildAttainmentRows(plan: PlanInputs, ote: number): AttainmentRow[] {
@@ -84,14 +94,19 @@ function buildAttainmentRows(plan: PlanInputs, ote: number): AttainmentRow[] {
   const accel  = parseNum(plan.acceleratorThreshold) / 100;
   const mult   = parseNum(plan.acceleratorMultiplier);
   return ATTAINMENT_LEVELS.map((pct) => {
-    const a         = pct / 100;
-    const monthly   = calcBonusPart(target, mw, a, cliff, accel, mult);
-    const quarterly = calcBonusPart(target, qw, a, cliff, accel, mult);
-    const annual    = calcBonusPart(target, aw, a, cliff, accel, mult);
-    const total     = monthly * 12 + quarterly * 4 + annual;
-    const baseBonus = base + total;
-    const vsOTE     = ote > 0 ? (baseBonus / ote) * 100 : 0;
-    return { attainment: pct, monthlyBonus: monthly, quarterlyBonus: quarterly, annualBonus: annual, totalBonus: total, baseBonus, vsOTE };
+    const a = pct / 100;
+    // Annual tranche values
+    const annualMonthlyTranche   = calcAnnualTranche(target, mw, a, cliff, accel, mult);
+    const annualQuarterlyTranche = calcAnnualTranche(target, qw, a, cliff, accel, mult);
+    const annualBonus            = calcAnnualTranche(target, aw, a, cliff, accel, mult);
+    // Per-period payouts
+    const monthlyBonus   = annualMonthlyTranche / 12;
+    const quarterlyBonus = annualQuarterlyTranche / 4;
+    // Total annualised = monthly×12 + quarterly×4 + annual×1
+    const totalBonus = annualMonthlyTranche + annualQuarterlyTranche + annualBonus;
+    const baseBonus  = base + totalBonus;
+    const vsOTE      = ote > 0 ? (baseBonus / ote) * 100 : 0;
+    return { attainment: pct, monthlyBonus, quarterlyBonus, annualBonus, totalBonus, baseBonus, vsOTE };
   });
 }
 
