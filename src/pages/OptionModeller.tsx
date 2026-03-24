@@ -171,6 +171,7 @@ const OptionModeller: FC = () => {
     exceptional:  "300000000",
     custom:       "",
   });
+  const [exporting, setExporting] = useState(false);
 
   const setCustomVal = (id: string, v: string) =>
     setCustomVals((prev) => ({ ...prev, [id]: v }));
