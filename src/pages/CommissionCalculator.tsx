@@ -1,6 +1,7 @@
 import { FC, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, Minus, Download } from "lucide-react";
+import { downloadCommissionXLSX } from "@/lib/exportCommissionCalculator";
 
 // ── Brand tokens ──────────────────────────────────────────────────────────────
 const NAVY     = "#173660";
@@ -278,6 +279,35 @@ const CommissionCalculator: FC = () => {
   const totalPeriodEarnings = proRatedBase + periodBonus + psEarned;
   const aboveBelow        = actual - periodQuota;
 
+  const handleDownload = () => {
+    const statusLabels: Record<string, string> = {
+      cliff:   "Below cliff — no bonus",
+      partial: "Below target — partial bonus",
+      target:  "At or above target",
+      accel:   `Above accelerator threshold — ${mult}x rate`,
+    };
+    const sk: string = attainmentPct < cliff ? "cliff"
+      : attainmentPct >= accel ? "accel"
+      : attainmentPct >= 1 ? "target"
+      : "partial";
+
+    downloadCommissionXLSX(plan, rows, {
+      periodType: rep.periodType,
+      periodQuota,
+      actual,
+      attainmentPct,
+      periodBonus,
+      psCollected: parseNum(rep.psCollected),
+      psEarned,
+      proRatedBase,
+      totalPeriodEarnings,
+      aboveBelow,
+      statusLabel: statusLabels[sk],
+      annualisedRunRate: totalPeriodEarnings * (rep.periodType === "monthly" ? 12 : rep.periodType === "quarterly" ? 4 : 1),
+      psRate: parseNum(plan.psRate),
+    });
+  };
+
   type StatusKey = "cliff" | "partial" | "target" | "accel";
   const statusKey: StatusKey = attainmentPct < cliff ? "cliff"
     : attainmentPct >= accel ? "accel"
@@ -313,6 +343,14 @@ const CommissionCalculator: FC = () => {
           <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: GREY_MID }}>
             Commission Calculator
           </span>
+          <button
+            onClick={handleDownload}
+            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full transition-opacity hover:opacity-90 active:opacity-75"
+            style={{ background: BLUE, color: "#fff" }}
+          >
+            <Download className="w-3.5 h-3.5" />
+            Download Excel
+          </button>
         </div>
       </header>
 
