@@ -571,24 +571,37 @@ const OptionModeller: FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {scenarios.map((row, i) => {
+                      {scenarios.map((row) => {
                         const isAuto     = row.id === "base" || row.id === "two_x";
-                        const isCustom   = row.id === "custom";
-                        const isPositive = row.gainPerOption > 0;
-                        const rowBg      = i % 2 === 0 ? "#ffffff" : OFFWHITE;
+                        const isCustomRow = row.id === "custom";
                         const hasBase    = diluted > 0 && strike > 0 && row.valuation > 0;
+                        const gain       = row.gainPerOption;
 
-                        const vStyle = (active: boolean) => ({
-                          color:      !active ? MUTED : isPositive ? BLUE : MUTED,
-                          fontWeight: isPositive && active ? 700 : 400,
-                        });
+                        // Row colour tier
+                        const isInMoney     = hasBase && gain > 0;
+                        const isUnderwater  = hasBase && gain <= 0 && row.valuation < strike * diluted;
+                        // at-the-money: gain == 0 but valuation >= base (shouldn't show red)
+                        const rowBg = isCustomRow ? "#FEFDF5"
+                          : isInMoney    ? "#D6F0E0"
+                          : isUnderwater ? "#FBEAE8"
+                          : "#ffffff";
+
+                        // Text colour for value columns
+                        const valueColor = !hasBase ? MUTED
+                          : isInMoney    ? "#1A6B3C"
+                          : isUnderwater ? "#A33222"
+                          : MUTED;
+                        const valueBold  = isInMoney;
+
+                        const vStyle = { color: valueColor, fontWeight: valueBold ? 700 : 400 };
+                        const dimStyle = { color: MUTED };
 
                         return (
                           <tr
                             key={row.id}
-                            style={{ background: isCustom ? "#FEFDF5" : rowBg, borderTop: `1px solid ${SLATE}` }}
+                            style={{ background: rowBg, borderTop: `1px solid ${SLATE}` }}
                           >
-                            {/* Scenario */}
+                            {/* Scenario label — always navy */}
                             <td className="px-4 py-3 font-semibold whitespace-nowrap" style={{ color: NAVY }}>
                               {row.label}
                               {isAuto && (
@@ -601,49 +614,50 @@ const OptionModeller: FC = () => {
                               )}
                             </td>
 
-                            {/* Valuation */}
+                            {/* Valuation — always normal text */}
                             <td className="px-4 py-3">
                               {row.editable ? (
                                 <ValuationInput
                                   value={customVals[row.id] ?? ""}
                                   onChange={(v) => setCustomVal(row.id, v)}
-                                  isCustom={isCustom}
+                                  isCustom={isCustomRow}
                                 />
                               ) : (
-                                <span className="font-mono text-xs" style={{ color: MUTED }}>
+                                <span className="font-mono text-xs" style={dimStyle}>
                                   {fmtValuation(row.valuation)}
                                 </span>
                               )}
                             </td>
 
-                            <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle(hasBase)}>
+                            {/* Implied share price */}
+                            <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
                               {hasBase ? fmtCAD(row.impliedSharePrice) : "—"}
                             </td>
 
-                            <td className="px-4 py-3 text-right font-mono text-xs">
-                              <span style={vStyle(diluted > 0 && strike > 0 && row.valuation > 0)}>
-                                {diluted > 0 && strike > 0 && row.valuation > 0
-                                  ? isPositive ? fmtCAD(row.gainPerOption) : "$0.00"
-                                  : "—"}
-                              </span>
+                            {/* Gain / option */}
+                            <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
+                              {hasBase
+                                ? (isInMoney ? fmtCAD(gain) : "$0.00")
+                                : "—"}
                             </td>
 
-                            <td className="px-4 py-3 text-right font-mono text-xs">
-                              <span style={vStyle(hasBase && vestedInfo.count > 0)}>
-                                {hasBase ? (isPositive && vestedInfo.count > 0 ? fmtCAD(row.vestedValue) : "$0.00") : "—"}
-                              </span>
+                            {/* Value of vested */}
+                            <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
+                              {hasBase
+                                ? (isInMoney && vestedInfo.count > 0 ? fmtLargeCAD(row.vestedValue) : "$0.00")
+                                : "—"}
                             </td>
 
-                            <td className="px-4 py-3 text-right font-mono text-xs">
-                              <span style={vStyle(hasBase && total > 0)}>
-                                {hasBase && total > 0 ? (isPositive ? fmtCAD(row.fullGrantValue) : "$0.00") : "—"}
-                              </span>
+                            {/* Value of full grant */}
+                            <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
+                              {hasBase && total > 0
+                                ? (isInMoney ? fmtLargeCAD(row.fullGrantValue) : "$0.00")
+                                : "—"}
                             </td>
 
-                            <td className="px-4 py-3 text-right font-mono text-xs">
-                              <span style={vStyle(hasBase)}>
-                                {hasBase ? fmtMultiple(row.multiple) : "—"}
-                              </span>
+                            {/* Multiple */}
+                            <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
+                              {hasBase ? fmtMultiple(row.multiple) : "—"}
                             </td>
                           </tr>
                         );
