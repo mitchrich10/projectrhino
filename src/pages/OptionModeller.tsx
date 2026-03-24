@@ -1,6 +1,7 @@
 import { FC, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Info } from "lucide-react";
+import { ArrowLeft, Download, Info } from "lucide-react";
+import { downloadOptionModellerXLSX } from "@/lib/exportOptionModeller";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
