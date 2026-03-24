@@ -107,6 +107,27 @@ const RequestAccessButton: FC<{
   );
 };
 
+// ── Interactive Tool Card ──────────────────────────────────────────────────────
+const OptionModellerCard: FC = () => (
+  <Link
+    to="/option-modeller"
+    className="group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors hover:border-primary/50 hover:bg-secondary/40"
+  >
+    <div className="flex items-start justify-between gap-2">
+      <h4 className="font-bold text-sm text-foreground leading-tight">Option Modeller</h4>
+      <Calculator className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+    </div>
+    <p className="text-xs text-muted-foreground leading-relaxed">
+      Interactive tool to model the value of your stock option grant across exit scenarios. Enter your grant details and explore conservative through exceptional outcomes.
+    </p>
+    <div className="flex items-center gap-1.5 mt-auto pt-1">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-primary group-hover:opacity-70 transition-opacity flex items-center gap-1">
+        <ExternalLink className="w-3 h-3" /> Open Tool
+      </span>
+    </div>
+  </Link>
+);
+
 // ── Main Section ───────────────────────────────────────────────────────────────
 const ResourcesSection: FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
