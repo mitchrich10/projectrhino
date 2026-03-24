@@ -60,10 +60,29 @@ function fmtValuation(n: number): string {
   }
   if (n >= 1_000_000) {
     const v = n / 1_000_000;
-    return `$${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}M`;
+    // show 1 decimal only if < $100M (e.g. $50.5M), otherwise integer (e.g. $150M)
+    return `$${(v < 100 && v % 1 !== 0) ? v.toFixed(1) : v.toFixed(0)}M`;
   }
   if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
   return `$${n.toFixed(0)}`;
+}
+
+/** Format large CAD values (≥$1M) as $XM / $X.XB, otherwise precise CAD */
+function fmtLargeCAD(n: number): string {
+  if (!isFinite(n) || n <= 0) return "$0.00";
+  if (n >= 1_000_000_000) {
+    const v = n / 1_000_000_000;
+    return `$${v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}B`;
+  }
+  if (n >= 1_000_000) {
+    const v = n / 1_000_000;
+    return `$${(v < 100 && v % 1 !== 0) ? v.toFixed(1) : v.toFixed(0)}M`;
+  }
+  return new Intl.NumberFormat("en-CA", {
+    style: "currency",
+    currency: "CAD",
+    maximumFractionDigits: 2,
+  }).format(n);
 }
 
 function fmtCAD(n: number): string {
@@ -89,9 +108,11 @@ interface ScenarioRow {
   derived?: (baseVal: number) => number;
 }
 
+// Ordered: down round, base, conservative, moderate, 2x, strong, exceptional, custom
 const SCENARIOS: ScenarioRow[] = [
-  { id: "conservative", label: "Conservative Exit",    editable: true },
+  { id: "down_round",   label: "Down Round",           editable: true },
   { id: "base",         label: "Base — Last Round",    editable: false },
+  { id: "conservative", label: "Conservative Exit",    editable: true },
   { id: "moderate",     label: "Moderate Exit",        editable: true },
   { id: "two_x",        label: "2× Last Round",        editable: false, derived: (b) => b * 2 },
   { id: "strong",       label: "Strong Exit",          editable: true },
