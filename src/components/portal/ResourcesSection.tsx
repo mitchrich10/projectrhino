@@ -225,14 +225,23 @@ const ResourcesSection: FC = () => {
               </div>
             </div>
           )}
+          {/* Always render Compensation section with Commission Calculator */}
+          {!grouped["Compensation"] && (
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">Compensation</h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <CommissionCalculatorCard />
+              </div>
+            </div>
+          )}
           {Object.entries(grouped).sort().map(([category, items]) => (
             <div key={category}>
               <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">
                 {category}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Inject Option Modeller tool card into Equity category */}
                 {category === "Equity" && <OptionModellerCard />}
+                {category === "Compensation" && <CommissionCalculatorCard />}
                 {items.map((r) => {
                   const isApproved = approvedIds.has(r.id);
 
