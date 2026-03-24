@@ -373,8 +373,8 @@ function buildScenarioSheet(
     "Company Valuation (CAD)",
     "Implied Share Price",
     multiGrant ? "Wtd. Avg Gain / Option" : "Gain / Option",
-    "Total Value of Vested",
-    "Total Value of Full Grant",
+    "Value of Vested Options",
+    "Value of Full Grant",
     "Multiple on Strike",
   ];
   headers.forEach((h, i) => {
@@ -391,7 +391,6 @@ function buildScenarioSheet(
     const hasBase      = globalDiluted > 0 && row.valuation > 0;
     const isInMoney    = hasBase && row.totalFullGrantValue > 0;
     const isUnderwater = hasBase && row.totalFullGrantValue === 0 && row.valuation < baseVal;
-    const isAuto       = row.id === "base" || row.id === "two_x";
 
     const rowFill: ExcelJS.Fill = isInMoney     ? hexFill(GREEN_BG)
       : isUnderwater  ? hexFill(RED_BG)
@@ -406,20 +405,18 @@ function buildScenarioSheet(
 
     // Label
     const lc = r.getCell(1);
-    lc.value = row.label + (isAuto ? "  [Auto]" : "");
+    lc.value = row.label;
     lc.fill = rowFill; lc.border = slateBorder();
     lc.font = { name: "Arial", size: 9, bold: true, color: { argb: "FF" + NAVY_HEX } };
     lc.alignment = { horizontal: "left", vertical: "middle" };
 
-    // Valuation
+    // Valuation — yellow tint if editable (all rows are editable now)
     const vc = r.getCell(2);
     vc.value = row.valuation > 0 ? fmtValuation(row.valuation) : "—";
-    vc.fill = row.editable ? { type: "pattern", pattern: "solid", fgColor: { argb: "FF" + YELLOW_BG } } : rowFill;
+    vc.fill = hexFill(YELLOW_BG);
     vc.font = { name: "Arial", size: 9, color: { argb: "FF" + MUTED } };
     vc.alignment = { horizontal: "right", vertical: "middle" };
-    vc.border = row.editable
-      ? { ...slateBorder(), left: { style: "thin", color: { argb: "FF" + YELLOW_BORDER } } }
-      : slateBorder();
+    vc.border = { ...slateBorder(), left: { style: "thin", color: { argb: "FF" + YELLOW_BORDER } } };
 
     const valCells: [number, string][] = [
       [3, hasBase ? fmtCAD(row.impliedSharePrice) : "—"],
