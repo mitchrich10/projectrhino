@@ -59,7 +59,11 @@ interface RepCalc {
 }
 
 // ── Calculation helpers ───────────────────────────────────────────────────────
-function calcBonusPart(tb: number, w: number, a: number, cliff: number, accel: number, mult: number): number {
+//
+// calcAnnualTranche: returns the ANNUALISED value for one bonus tranche.
+//   e.g. monthly tranche (w=0.25, target=$100K) at 100% attainment → $25K/yr
+//
+function calcAnnualTranche(tb: number, w: number, a: number, cliff: number, accel: number, mult: number): number {
   if (a < cliff) return 0;
   if (a >= accel) return tb * w * mult;
   return tb * w * a;
@@ -70,8 +74,14 @@ const ATTAINMENT_LEVELS = [70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125,
 
 interface AttainmentRow {
   attainment: number;
-  monthlyBonus: number; quarterlyBonus: number; annualBonus: number;
-  totalBonus: number; baseBonus: number; vsOTE: number;
+  // per-period amounts (what the rep receives each period)
+  monthlyBonus: number;   // per month
+  quarterlyBonus: number; // per quarter
+  annualBonus: number;    // per year (the annual tranche itself)
+  // annualised total: monthlyBonus×12 + quarterlyBonus×4 + annualBonus×1
+  totalBonus: number;
+  baseBonus: number;
+  vsOTE: number;
 }
 
 function buildAttainmentRows(plan: PlanInputs, ote: number): AttainmentRow[] {
@@ -84,14 +94,19 @@ function buildAttainmentRows(plan: PlanInputs, ote: number): AttainmentRow[] {
   const accel  = parseNum(plan.acceleratorThreshold) / 100;
   const mult   = parseNum(plan.acceleratorMultiplier);
   return ATTAINMENT_LEVELS.map((pct) => {
-    const a         = pct / 100;
-    const monthly   = calcBonusPart(target, mw, a, cliff, accel, mult);
-    const quarterly = calcBonusPart(target, qw, a, cliff, accel, mult);
-    const annual    = calcBonusPart(target, aw, a, cliff, accel, mult);
-    const total     = monthly * 12 + quarterly * 4 + annual;
-    const baseBonus = base + total;
-    const vsOTE     = ote > 0 ? (baseBonus / ote) * 100 : 0;
-    return { attainment: pct, monthlyBonus: monthly, quarterlyBonus: quarterly, annualBonus: annual, totalBonus: total, baseBonus, vsOTE };
+    const a = pct / 100;
+    // Annual tranche values
+    const annualMonthlyTranche   = calcAnnualTranche(target, mw, a, cliff, accel, mult);
+    const annualQuarterlyTranche = calcAnnualTranche(target, qw, a, cliff, accel, mult);
+    const annualBonus            = calcAnnualTranche(target, aw, a, cliff, accel, mult);
+    // Per-period payouts
+    const monthlyBonus   = annualMonthlyTranche / 12;
+    const quarterlyBonus = annualQuarterlyTranche / 4;
+    // Total annualised = monthly×12 + quarterly×4 + annual×1
+    const totalBonus = annualMonthlyTranche + annualQuarterlyTranche + annualBonus;
+    const baseBonus  = base + totalBonus;
+    const vsOTE      = ote > 0 ? (baseBonus / ote) * 100 : 0;
+    return { attainment: pct, monthlyBonus, quarterlyBonus, annualBonus, totalBonus, baseBonus, vsOTE };
   });
 }
 
@@ -244,9 +259,11 @@ const CommissionCalculator: FC = () => {
   }, [attainmentPct, calcReady, actual]);
 
   const periodBonus = useMemo(() => {
-    if (rep.periodType === "monthly")   return calcBonusPart(targetBonus, mw / 100, attainmentPct, cliff, accel, mult);
-    if (rep.periodType === "quarterly") return calcBonusPart(targetBonus, qw / 100, attainmentPct, cliff, accel, mult);
-    return calcBonusPart(targetBonus, aw / 100, attainmentPct, cliff, accel, mult);
+    // Per-period bonus: annualise the tranche then divide by periods
+    const annualTranche = (w: number) => calcAnnualTranche(targetBonus, w, attainmentPct, cliff, accel, mult);
+    if (rep.periodType === "monthly")   return annualTranche(mw / 100) / 12;
+    if (rep.periodType === "quarterly") return annualTranche(qw / 100) / 4;
+    return annualTranche(aw / 100); // annual period — full year tranche
   }, [rep.periodType, targetBonus, mw, qw, aw, attainmentPct, cliff, accel, mult]);
 
   const psEarned           = parseNum(rep.psCollected) * psRate;
@@ -333,10 +350,13 @@ const CommissionCalculator: FC = () => {
           </CardHeader>
 
           {planOpen && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x" style={{ borderColor: SLATE }}>
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0"
+              style={{ borderColor: SLATE }}
+            >
 
               {/* Col 1 — Rep Details */}
-              <div className="p-5 space-y-3">
+              <div className="p-5 space-y-3 border-b lg:border-b-0 lg:border-r" style={{ borderColor: SLATE }}>
                 <div className="text-[10px] font-semibold uppercase tracking-widest pb-2 border-b" style={{ color: NAVY, borderColor: SLATE }}>
                   Rep Details
                 </div>
@@ -408,7 +428,7 @@ const CommissionCalculator: FC = () => {
               </div>
 
               {/* Col 2 — Bonus Structure */}
-              <div className="p-5 space-y-4">
+              <div className="p-5 space-y-4 border-b lg:border-b-0 lg:border-r" style={{ borderColor: SLATE }}>
                 <div className="text-[10px] font-semibold uppercase tracking-widest pb-2 border-b" style={{ color: NAVY, borderColor: SLATE }}>
                   Bonus Structure
                 </div>
@@ -440,10 +460,10 @@ const CommissionCalculator: FC = () => {
                 </div>
                 {weightsOk && (
                   <div className="grid grid-cols-2 gap-2">
-                    <MetricTile label="Monthly target" value={fmtCAD(targetBonus * mw / 100 / 12)} small />
-                    <MetricTile label="Quarterly target" value={fmtCAD(targetBonus * qw / 100 / 4)} small />
-                    <MetricTile label="Annual bonus" value={fmtCAD(targetBonus * aw / 100)} small />
-                    <MetricTile label="Total annual bonus" value={fmtCAD(targetBonus)} small />
+                  <MetricTile label="Monthly bonus (per mo.)" value={fmtCAD(targetBonus * mw / 100 / 12)} small />
+                  <MetricTile label="Quarterly bonus (per qtr)" value={fmtCAD(targetBonus * qw / 100 / 4)} small />
+                  <MetricTile label="Annual tranche" value={fmtCAD(targetBonus * aw / 100)} small />
+                  <MetricTile label="Total annual bonus" value={fmtCAD(targetBonus)} small />
                   </div>
                 )}
               </div>
@@ -507,13 +527,22 @@ const CommissionCalculator: FC = () => {
           ) : (
             <>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm min-w-[640px]">
+                <table className="w-full text-sm min-w-[680px]">
                   <thead>
                     <tr style={{ background: NAVY }}>
-                      {["Attainment", "Monthly Bonus", "Quarterly Bonus", "Annual Bonus", "Total Bonus (Ann.)", "Base + Bonus", "vs. OTE"].map((h) => (
-                        <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-widest whitespace-nowrap"
-                          style={{ color: "rgba(255,255,255,0.75)" }}>
-                          {h}
+                      {[
+                        { label: "Attainment",            sub: "" },
+                        { label: "Monthly Bonus",         sub: "per month" },
+                        { label: "Quarterly Bonus",       sub: "per quarter" },
+                        { label: "Annual Bonus",          sub: "annual tranche" },
+                        { label: "Total Bonus (Ann.)",    sub: "mo×12 + qtr×4 + ann" },
+                        { label: "Base + Total Bonus",    sub: "annualised" },
+                        { label: "vs. OTE",               sub: "% of OTE" },
+                      ].map(({ label, sub }) => (
+                        <th key={label} className="px-4 py-2 text-left whitespace-nowrap"
+                          style={{ color: "rgba(255,255,255,0.85)" }}>
+                          <div className="text-[10px] font-semibold uppercase tracking-widest">{label}</div>
+                          {sub && <div className="text-[9px] font-normal normal-case tracking-normal opacity-60 mt-0.5">{sub}</div>}
                         </th>
                       ))}
                     </tr>
@@ -577,7 +606,9 @@ const CommissionCalculator: FC = () => {
               </div>
               <div className="px-5 py-2.5 border-t flex flex-wrap gap-4 text-[10px]"
                 style={{ borderColor: SLATE, color: GREY_MID, background: OFFWHITE }}>
-                <span>Updates live as inputs change</span>
+                <span>Monthly/Quarterly columns show <strong style={{color:NAVY}}>per-period payouts</strong></span>
+                <span>·</span>
+                <span>Total Bonus = mo×12 + qtr×4 + annual</span>
                 <span>·</span>
                 <span>Cliff at {plan.cliffThreshold || 85}% · Accelerator at {plan.acceleratorThreshold || 110}% ({plan.acceleratorMultiplier || 2}× rate)</span>
                 {highlightRow && <span>· Your position: ~{highlightRow}% highlighted</span>}
