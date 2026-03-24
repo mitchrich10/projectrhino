@@ -1,7 +1,6 @@
 import { FC, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Info } from "lucide-react";
-import rhinoLogo from "@/assets/rhino-logo-black.png";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -13,15 +12,12 @@ function calcVestedOptions(totalOptions: number, grantDateStr: string, todayStr:
   const now = new Date(todayStr);
   const diffMs = now.getTime() - grant.getTime();
   const diffMonths = diffMs / (1000 * 60 * 60 * 24 * 30.4375);
-
-  if (diffMonths < 12) return 0; // cliff not hit
-
+  if (diffMonths < 12) return 0;
   const cliff = Math.round(totalOptions * 0.25);
   const remaining = totalOptions - cliff;
   const monthsAfterCliff = Math.floor(diffMonths - 12);
   const monthlyVest = remaining / 36;
   const vestedAfterCliff = Math.min(monthsAfterCliff * monthlyVest, remaining);
-
   return Math.floor(cliff + vestedAfterCliff);
 }
 
@@ -71,87 +67,121 @@ const SCENARIOS: ScenarioRow[] = [
   { id: "custom",       label: "Custom — Enter Below", editable: true, defaultVal: 0 },
 ];
 
-// ── NumberInput ───────────────────────────────────────────────────────────────
+// Brand colours (raw hex for inline styles where needed)
+const NAVY    = "#173660";
+const BLUE    = "#1A7EC8";
+const MINT    = "#A3D7C2";
+const SLATE   = "#CDD8E3";
+const OFFWHITE = "#F4F7FA";
+const MUTED   = "#5C6B7A";
 
-const NumberInput: FC<{
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+const FieldLabel: FC<{ children: React.ReactNode }> = ({ children }) => (
+  <label style={{ color: MUTED }} className="block text-[10px] font-bold uppercase tracking-widest mb-1">
+    {children}
+  </label>
+);
+
+const FieldInput: FC<{
   value: string;
   onChange: (v: string) => void;
+  type?: string;
   prefix?: string;
   placeholder?: string;
-  className?: string;
-}> = ({ value, onChange, prefix, placeholder = "0", className = "" }) => (
-  <div className={`flex items-center border border-border rounded bg-card focus-within:border-primary transition-colors ${className}`}>
-    {prefix && <span className="pl-3 text-sm text-muted-foreground select-none">{prefix}</span>}
+  readOnly?: boolean;
+}> = ({ value, onChange, type = "number", prefix, placeholder = "0", readOnly }) => (
+  <div
+    className="flex items-center rounded"
+    style={{
+      border: `1px solid ${SLATE}`,
+      background: readOnly ? OFFWHITE : "#fff",
+    }}
+  >
+    {prefix && (
+      <span className="pl-3 text-sm select-none" style={{ color: MUTED }}>
+        {prefix}
+      </span>
+    )}
     <input
-      type="number"
+      type={type}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="flex-1 bg-transparent px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none min-w-0"
+      readOnly={readOnly}
+      className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+      style={{ color: NAVY, cursor: readOnly ? "default" : "text" }}
     />
   </div>
 );
 
-// ── ValuationInput (yellow editable cells) ────────────────────────────────────
-
-const ValuationInput: FC<{
-  value: string;
-  onChange: (v: string) => void;
-}> = ({ value, onChange }) => (
+const ValuationInput: FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => (
   <input
     type="number"
     value={value}
     onChange={(e) => onChange(e.target.value)}
     placeholder="Enter $"
-    style={{ backgroundColor: "#FFFDE7", borderColor: "#F9A825" }}
-    className="w-full rounded px-2 py-1.5 text-sm text-foreground outline-none border transition-colors focus:ring-1"
+    className="w-full rounded px-2 py-1.5 text-sm outline-none border transition-colors focus:ring-1"
+    style={{
+      backgroundColor: "#FFFACD",
+      borderColor: "#E8C43A",
+      color: NAVY,
+    }}
   />
 );
 
-// ── Tooltip ───────────────────────────────────────────────────────────────────
-
 const Tooltip: FC<{ text: string }> = ({ text }) => (
-  <span className="group relative ml-1">
-    <Info className="w-3 h-3 text-muted-foreground inline cursor-help" />
-    <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-5 w-48 rounded bg-foreground text-background text-[10px] px-2 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-50 leading-snug text-center">
+  <span className="group relative ml-1 inline-flex">
+    <Info className="w-3 h-3 inline cursor-help" style={{ color: MUTED }} />
+    <span
+      className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-5 w-52 rounded text-[10px] px-2 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-50 leading-snug text-center"
+      style={{ background: NAVY, color: "#fff" }}
+    >
       {text}
     </span>
   </span>
 );
 
+const StatCard: FC<{ label: string; value: string; tooltip?: string }> = ({ label, value, tooltip }) => (
+  <div className="rounded-lg p-4" style={{ background: "#fff", border: `1px solid ${SLATE}` }}>
+    <p className="text-[10px] font-bold uppercase tracking-widest mb-1 flex items-center gap-0.5" style={{ color: MUTED }}>
+      {label}
+      {tooltip && <Tooltip text={tooltip} />}
+    </p>
+    <p className="text-2xl font-bold" style={{ color: value === "—" ? MUTED : BLUE }}>
+      {value}
+    </p>
+  </div>
+);
+
 // ── Main Component ────────────────────────────────────────────────────────────
 
 const OptionModeller: FC = () => {
-  // Section 1 — My Grant
-  const [totalOptions, setTotalOptions] = useState("");
-  const [strikePrice, setStrikePrice] = useState("");
-  const [fullyDiluted, setFullyDiluted] = useState("");
-  const [grantDate, setGrantDate] = useState("");
-  const [todayDate, setTodayDate] = useState(today());
+  const [totalOptions, setTotalOptions]   = useState("");
+  const [strikePrice, setStrikePrice]     = useState("");
+  const [fullyDiluted, setFullyDiluted]   = useState("");
+  const [grantDate, setGrantDate]         = useState("");
+  const [todayDate, setTodayDate]         = useState(today());
 
-  // Section 2 — custom valuations keyed by scenario id
   const [customVals, setCustomVals] = useState<Record<string, string>>({
     conservative: "25000000",
-    moderate: "75000000",
-    strong: "150000000",
-    exceptional: "300000000",
-    custom: "",
+    moderate:     "75000000",
+    strong:       "150000000",
+    exceptional:  "300000000",
+    custom:       "",
   });
 
   const setCustomVal = (id: string, v: string) =>
     setCustomVals((prev) => ({ ...prev, [id]: v }));
 
-  // ── Derived —
-  const total = parseFloat(totalOptions) || 0;
-  const strike = parseFloat(strikePrice) || 0;
+  const total   = parseFloat(totalOptions) || 0;
+  const strike  = parseFloat(strikePrice)  || 0;
   const diluted = parseFloat(fullyDiluted) || 0;
 
-  const ownershipPct = diluted > 0 ? (total / diluted) * 100 : 0;
-  const vestedOptions = calcVestedOptions(total, grantDate, todayDate);
-  const monthsVested = calcMonthsVested(grantDate, todayDate);
-
-  // Base valuation = strike × diluted shares
-  const baseValuation = strike * diluted;
+  const ownershipPct   = diluted > 0 ? (total / diluted) * 100 : 0;
+  const vestedOptions  = calcVestedOptions(total, grantDate, todayDate);
+  const monthsVested   = calcMonthsVested(grantDate, todayDate);
+  const baseValuation  = strike * diluted;
 
   const getValuation = (row: ScenarioRow): number => {
     if (!row.editable) {
@@ -167,10 +197,10 @@ const OptionModeller: FC = () => {
       SCENARIOS.map((row) => {
         const valuation = getValuation(row);
         const impliedSharePrice = diluted > 0 ? valuation / diluted : 0;
-        const gainPerOption = Math.max(0, impliedSharePrice - strike);
-        const vestedValue = gainPerOption * vestedOptions;
-        const fullGrantValue = gainPerOption * total;
-        const multiple = strike > 0 ? impliedSharePrice / strike : 0;
+        const gainPerOption     = Math.max(0, impliedSharePrice - strike);
+        const vestedValue       = gainPerOption * vestedOptions;
+        const fullGrantValue    = gainPerOption * total;
+        const multiple          = strike > 0 ? impliedSharePrice / strike : 0;
         return { ...row, valuation, impliedSharePrice, gainPerOption, vestedValue, fullGrantValue, multiple };
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,20 +208,35 @@ const OptionModeller: FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          <Link to="/" className="flex-shrink-0">
-            <img src={rhinoLogo} alt="Rhino Ventures" className="h-7 w-auto" />
+    <div className="min-h-screen flex flex-col" style={{ background: OFFWHITE, fontFamily: "'Inter', 'DM Sans', system-ui, sans-serif" }}>
+
+      {/* ── Top Header ── */}
+      <header
+        className="fixed top-0 w-full z-50 border-b"
+        style={{ background: "#fff", borderColor: SLATE }}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
+          {/* Wordmark */}
+          <Link to="/" className="flex items-center gap-2 select-none">
+            <span
+              className="text-sm font-bold tracking-[0.2em] uppercase"
+              style={{ color: NAVY, fontVariant: "small-caps" }}
+            >
+              Rhino Ventures
+            </span>
           </Link>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground hidden sm:block">
+
+          <div className="flex items-center gap-4">
+            <span
+              className="hidden sm:block text-[11px] font-semibold uppercase tracking-widest"
+              style={{ color: MUTED }}
+            >
               Option Modeller
             </span>
             <Link
               to="/portal"
-              className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
+              className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest transition-opacity hover:opacity-70"
+              style={{ color: BLUE }}
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Portal
@@ -200,228 +245,256 @@ const OptionModeller: FC = () => {
         </div>
       </header>
 
+      {/* ── Main ── */}
       <main className="flex-1 pt-20 pb-16 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
+
           {/* Page title */}
           <div className="mb-8">
-            <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Resources · Equity</p>
-            <h1 className="text-3xl font-black uppercase tracking-tighter text-foreground">Option Modeller</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Model the value of your stock option grant across exit scenarios. All figures in CAD.
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: BLUE }}>
+              Resources · Equity
+            </p>
+            <h1 className="text-2xl font-bold" style={{ color: NAVY }}>
+              Option Modeller
+            </h1>
+            <p className="text-sm mt-1" style={{ color: MUTED }}>
+              Model the potential value of your stock option grant across exit scenarios. All figures in CAD.
             </p>
           </div>
 
           {/* ── Section 1 — My Grant ── */}
           <section className="mb-10">
-            <h2 className="text-sm font-black uppercase tracking-widest text-foreground mb-5 pb-2 border-b border-border">
-              Section 1 — My Grant
-            </h2>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {/* Inputs */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Total Options Granted
-                </label>
-                <NumberInput value={totalOptions} onChange={setTotalOptions} placeholder="e.g. 50000" />
+            <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${SLATE}` }}>
+              {/* Card navy header */}
+              <div className="px-5 py-3" style={{ background: NAVY }}>
+                <h2 className="text-[11px] font-bold uppercase tracking-widest text-white">
+                  My Grant
+                </h2>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Strike Price per Share (CAD $)
-                </label>
-                <NumberInput value={strikePrice} onChange={setStrikePrice} prefix="$" placeholder="e.g. 1.50" />
-              </div>
+              <div className="p-5" style={{ background: "#fff" }}>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  <div>
+                    <FieldLabel>Total Options Granted</FieldLabel>
+                    <FieldInput value={totalOptions} onChange={setTotalOptions} placeholder="e.g. 50 000" />
+                  </div>
 
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Fully Diluted Shares Outstanding
-                </label>
-                <NumberInput value={fullyDiluted} onChange={setFullyDiluted} placeholder="e.g. 10000000" />
-              </div>
+                  <div>
+                    <FieldLabel>Strike Price per Share (CAD $)</FieldLabel>
+                    <FieldInput value={strikePrice} onChange={setStrikePrice} prefix="$" placeholder="e.g. 1.50" />
+                  </div>
 
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Vesting Schedule
-                </label>
-                <div className="flex items-center h-[42px] border border-border rounded bg-secondary/40 px-3 text-sm text-muted-foreground">
-                  4-year / 1-year cliff
+                  <div>
+                    <FieldLabel>Fully Diluted Shares Outstanding</FieldLabel>
+                    <FieldInput value={fullyDiluted} onChange={setFullyDiluted} placeholder="e.g. 10 000 000" />
+                  </div>
+
+                  <div>
+                    <FieldLabel>Vesting Schedule</FieldLabel>
+                    <FieldInput value="4-year / 1-year cliff" onChange={() => {}} readOnly />
+                  </div>
+
+                  <div>
+                    <FieldLabel>Grant Date</FieldLabel>
+                    <input
+                      type="date"
+                      value={grantDate}
+                      onChange={(e) => setGrantDate(e.target.value)}
+                      className="w-full rounded px-3 py-2.5 text-sm outline-none transition-colors"
+                      style={{ border: `1px solid ${SLATE}`, background: "#fff", color: NAVY }}
+                    />
+                  </div>
+
+                  <div>
+                    <FieldLabel>
+                      Today's Date
+                      <Tooltip text="Auto-filled to today. Change to model a future or past date." />
+                    </FieldLabel>
+                    <input
+                      type="date"
+                      value={todayDate}
+                      onChange={(e) => setTodayDate(e.target.value)}
+                      className="w-full rounded px-3 py-2.5 text-sm outline-none transition-colors"
+                      style={{ border: `1px solid ${SLATE}`, background: "#fff", color: NAVY }}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Grant Date
-                </label>
-                <input
-                  type="date"
-                  value={grantDate}
-                  onChange={(e) => setGrantDate(e.target.value)}
-                  className="w-full border border-border rounded bg-card px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary transition-colors"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                  Today's Date
-                  <Tooltip text="Auto-filled to today. You can change this to model a future or past date." />
-                </label>
-                <input
-                  type="date"
-                  value={todayDate}
-                  onChange={(e) => setTodayDate(e.target.value)}
-                  className="w-full border border-border rounded bg-card px-3 py-2.5 text-sm text-foreground outline-none focus:border-primary transition-colors"
-                />
-              </div>
-            </div>
-
-            {/* Derived outputs */}
-            <div className="mt-6 grid sm:grid-cols-3 gap-4">
-              <div className="border border-border rounded-lg bg-card p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
-                  % Ownership
-                  <Tooltip text="Your options ÷ fully diluted shares outstanding." />
-                </p>
-                <p className="text-2xl font-black text-primary">
-                  {diluted > 0 && total > 0 ? `${ownershipPct.toFixed(4)}%` : "—"}
-                </p>
-              </div>
-              <div className="border border-border rounded-lg bg-card p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
-                  Vested Options Today
-                  <Tooltip text="25% vests at 1-year cliff, remainder monthly over 36 months." />
-                </p>
-                <p className="text-2xl font-black text-primary">
-                  {total > 0 && grantDate ? vestedOptions.toLocaleString() : "—"}
-                </p>
-              </div>
-              <div className="border border-border rounded-lg bg-card p-4">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
-                  Months Vested
-                </p>
-                <p className="text-2xl font-black text-primary">
-                  {grantDate ? `${monthsVested}` : "—"}
-                </p>
+                {/* Derived outputs */}
+                <div className="mt-6 grid sm:grid-cols-3 gap-4">
+                  <StatCard
+                    label="% Ownership"
+                    tooltip="Your options ÷ fully diluted shares outstanding."
+                    value={diluted > 0 && total > 0 ? `${ownershipPct.toFixed(4)}%` : "—"}
+                  />
+                  <StatCard
+                    label="Vested Options Today"
+                    tooltip="25% vests at the 1-year cliff, remainder monthly over 36 months."
+                    value={total > 0 && grantDate ? vestedOptions.toLocaleString() : "—"}
+                  />
+                  <StatCard
+                    label="Months Vested"
+                    value={grantDate ? `${monthsVested}` : "—"}
+                  />
+                </div>
               </div>
             </div>
           </section>
 
           {/* ── Section 2 — Exit Scenario Modeller ── */}
           <section>
-            <h2 className="text-sm font-black uppercase tracking-widest text-foreground mb-5 pb-2 border-b border-border">
-              Section 2 — Exit Scenario Modeller
-            </h2>
+            <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${SLATE}` }}>
+              {/* Card navy header */}
+              <div className="px-5 py-3" style={{ background: NAVY }}>
+                <h2 className="text-[11px] font-bold uppercase tracking-widest text-white">
+                  Exit Scenario Modeller
+                </h2>
+              </div>
 
-            <div className="overflow-x-auto rounded-lg border border-border">
-              <table className="w-full text-sm min-w-[900px]">
-                <thead>
-                  <tr className="bg-foreground text-background">
-                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest w-44">
-                      Scenario
-                    </th>
-                    <th className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest w-40">
-                      Company Valuation
-                      <span className="font-normal normal-case tracking-normal text-background/60 ml-1">(CAD)</span>
-                    </th>
-                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest">
-                      Implied Share Price
-                    </th>
-                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest">
-                      Gain / Option
-                    </th>
-                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest">
-                      Value of Vested
-                    </th>
-                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest">
-                      Value of Full Grant
-                    </th>
-                    <th className="px-4 py-3 text-right text-[10px] font-black uppercase tracking-widest">
-                      Multiple on Strike
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {scenarios.map((row, i) => {
-                    const isBase = row.id === "base" || row.id === "two_x";
-                    const isPositive = row.gainPerOption > 0;
-                    const isCustom = row.id === "custom";
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[860px]">
+                  <thead>
+                    <tr style={{ background: NAVY }}>
+                      <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-white w-44">
+                        Scenario
+                      </th>
+                      <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-widest text-white w-44">
+                        Company Valuation
+                        <span className="font-normal normal-case tracking-normal opacity-60 ml-1">(CAD)</span>
+                      </th>
+                      <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-widest text-white">
+                        Implied Share Price
+                      </th>
+                      <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-widest text-white">
+                        Gain / Option
+                      </th>
+                      <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-widest text-white">
+                        Value of Vested
+                      </th>
+                      <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-widest text-white">
+                        Value of Full Grant
+                      </th>
+                      <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-widest text-white">
+                        Multiple on Strike
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scenarios.map((row, i) => {
+                      const isAuto     = row.id === "base" || row.id === "two_x";
+                      const isPositive = row.gainPerOption > 0;
+                      const rowBg      = i % 2 === 0 ? "#ffffff" : OFFWHITE;
 
-                    return (
-                      <tr
-                        key={row.id}
-                        className={`border-t border-border transition-colors ${
-                          isBase ? "bg-secondary/50" : i % 2 === 0 ? "bg-card" : "bg-background"
-                        } hover:bg-secondary/30`}
-                      >
-                        {/* Scenario */}
-                        <td className="px-4 py-3 font-bold text-foreground whitespace-nowrap">
-                          {row.label}
-                          {isBase && (
-                            <span className="ml-2 text-[9px] font-black uppercase tracking-widest bg-primary/10 text-primary px-1.5 py-0.5 rounded">
-                              Auto
+                      const valueCls = isPositive ? "" : "";
+                      const valueStyle = (hasData: boolean) => ({
+                        color: !hasData ? MUTED : isPositive ? BLUE : MUTED,
+                        fontWeight: isPositive && hasData ? 700 : 400,
+                      });
+
+                      const hasBase = diluted > 0 && strike > 0 && row.valuation > 0;
+
+                      return (
+                        <tr
+                          key={row.id}
+                          style={{ background: rowBg, borderTop: `1px solid ${SLATE}` }}
+                        >
+                          {/* Scenario */}
+                          <td className="px-4 py-3 font-semibold whitespace-nowrap" style={{ color: NAVY }}>
+                            {row.label}
+                            {isAuto && (
+                              <span
+                                className="ml-2 text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded"
+                                style={{ background: `${BLUE}18`, color: BLUE }}
+                              >
+                                Auto
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Valuation */}
+                          <td className="px-4 py-3">
+                            {row.editable ? (
+                              <ValuationInput
+                                value={customVals[row.id] ?? ""}
+                                onChange={(v) => setCustomVal(row.id, v)}
+                              />
+                            ) : (
+                              <span className="font-mono text-xs" style={{ color: MUTED }}>
+                                {fmtValuation(row.valuation)}
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Implied share price */}
+                          <td className="px-4 py-3 text-right font-mono text-xs" style={valueStyle(hasBase)}>
+                            {hasBase ? fmtCAD(row.impliedSharePrice) : "—"}
+                          </td>
+
+                          {/* Gain per option */}
+                          <td className="px-4 py-3 text-right font-mono text-xs">
+                            <span style={valueStyle(diluted > 0 && strike > 0 && row.valuation > 0)}>
+                              {diluted > 0 && strike > 0 && row.valuation > 0
+                                ? isPositive ? fmtCAD(row.gainPerOption) : "$0.00"
+                                : "—"}
                             </span>
-                          )}
-                        </td>
+                          </td>
 
-                        {/* Valuation */}
-                        <td className="px-4 py-3">
-                          {row.editable ? (
-                            <ValuationInput
-                              value={customVals[row.id] ?? ""}
-                              onChange={(v) => setCustomVal(row.id, v)}
-                            />
-                          ) : (
-                            <span className="text-muted-foreground font-mono text-xs">
-                              {fmtValuation(row.valuation)}
+                          {/* Vested value */}
+                          <td className="px-4 py-3 text-right font-mono text-xs">
+                            <span style={valueStyle(hasBase && vestedOptions > 0)}>
+                              {hasBase ? (isPositive && vestedOptions > 0 ? fmtCAD(row.vestedValue) : "$0.00") : "—"}
                             </span>
-                          )}
-                        </td>
+                          </td>
 
-                        {/* Implied share price */}
-                        <td className="px-4 py-3 text-right font-mono text-xs text-foreground">
-                          {diluted > 0 && row.valuation > 0 ? fmtCAD(row.impliedSharePrice) : "—"}
-                        </td>
+                          {/* Full grant value */}
+                          <td className="px-4 py-3 text-right font-mono text-xs">
+                            <span style={valueStyle(hasBase && total > 0)}>
+                              {hasBase && total > 0
+                                ? isPositive ? fmtCAD(row.fullGrantValue) : "$0.00"
+                                : "—"}
+                            </span>
+                          </td>
 
-                        {/* Gain per option */}
-                        <td className="px-4 py-3 text-right font-mono text-xs">
-                          <span className={isPositive ? "text-primary font-bold" : "text-muted-foreground"}>
-                            {diluted > 0 && strike > 0 && row.valuation > 0 ? fmtCAD(row.gainPerOption) : "—"}
-                          </span>
-                        </td>
+                          {/* Multiple */}
+                          <td className="px-4 py-3 text-right font-mono text-xs">
+                            <span style={valueStyle(hasBase)}>
+                              {hasBase ? fmtMultiple(row.multiple) : "—"}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
 
-                        {/* Vested value */}
-                        <td className="px-4 py-3 text-right font-mono text-xs">
-                          <span className={isPositive && vestedOptions > 0 ? "text-primary font-bold" : "text-muted-foreground"}>
-                            {strike > 0 && diluted > 0 && row.valuation > 0 ? fmtCAD(row.vestedValue) : "—"}
-                          </span>
-                        </td>
-
-                        {/* Full grant value */}
-                        <td className="px-4 py-3 text-right font-mono text-xs">
-                          <span className={isPositive && total > 0 ? "text-primary font-bold" : "text-muted-foreground"}>
-                            {strike > 0 && diluted > 0 && total > 0 && row.valuation > 0 ? fmtCAD(row.fullGrantValue) : "—"}
-                          </span>
-                        </td>
-
-                        {/* Multiple */}
-                        <td className="px-4 py-3 text-right font-mono text-xs">
-                          <span className={isPositive ? "text-primary font-bold" : "text-muted-foreground"}>
-                            {strike > 0 && diluted > 0 && row.valuation > 0 ? fmtMultiple(row.multiple) : "—"}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              {/* Mint positive-value legend strip */}
+              <div
+                className="px-5 py-2.5 flex items-center gap-3 text-[10px] font-medium border-t"
+                style={{ background: OFFWHITE, borderColor: SLATE, color: MUTED }}
+              >
+                <span className="flex items-center gap-1.5">
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: BLUE }} />
+                  Above strike — positive value
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: MUTED }} />
+                  Underwater — $0 gain
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: "#FFFACD", border: "1px solid #E8C43A" }} />
+                  Editable input
+                </span>
+              </div>
             </div>
-
-            <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed">
-              <strong>Note:</strong> This tool is for illustrative purposes only. It does not account for taxes, dilution from future financing rounds, option pool top-ups, or liquidation preferences. Consult your legal and tax advisors before making financial decisions based on these estimates.
-            </p>
           </section>
         </div>
       </main>
+
+      {/* ── Footer ── */}
+      <footer className="py-5 text-center text-[11px]" style={{ borderTop: `1px solid ${SLATE}`, background: "#fff", color: MUTED }}>
+        Rhino Ventures · rhinovc.com · For informational purposes only. Not financial or legal advice.
+      </footer>
     </div>
   );
 };
