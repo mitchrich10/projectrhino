@@ -196,6 +196,15 @@ const ResourcesSection: FC = () => {
         </div>
       ) : (
         <div className="space-y-10">
+          {/* Always render Equity section with Option Modeller tool */}
+          {!grouped["Equity"] && (
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">Equity</h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <OptionModellerCard />
+              </div>
+            </div>
+          )}
           {Object.entries(grouped).sort().map(([category, items]) => (
             <div key={category}>
               <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">
