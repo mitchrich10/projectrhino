@@ -107,7 +107,27 @@ const RequestAccessButton: FC<{
   );
 };
 
-// ── Interactive Tool Card ──────────────────────────────────────────────────────
+// ── Interactive Tool Cards ─────────────────────────────────────────────────────
+const CommissionCalculatorCard: FC = () => (
+  <Link
+    to="/commission-calculator"
+    className="group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors hover:border-primary/50 hover:bg-secondary/40"
+  >
+    <div className="flex items-start justify-between gap-2">
+      <h4 className="font-bold text-sm text-foreground leading-tight">Commission Calculator</h4>
+      <Calculator className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+    </div>
+    <p className="text-xs text-muted-foreground leading-relaxed">
+      Model your sales compensation plan across attainment levels. Enter base, bonus, and quota details to see per-period earnings, accelerators, and export to Excel.
+    </p>
+    <div className="flex items-center gap-1.5 mt-auto pt-1">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-primary group-hover:opacity-70 transition-opacity flex items-center gap-1">
+        <ExternalLink className="w-3 h-3" /> Open Tool
+      </span>
+    </div>
+  </Link>
+);
+
 const OptionModellerCard: FC = () => (
   <Link
     to="/option-modeller"
@@ -205,14 +225,23 @@ const ResourcesSection: FC = () => {
               </div>
             </div>
           )}
+          {/* Always render Compensation section with Commission Calculator */}
+          {!grouped["Compensation"] && (
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">Compensation</h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <CommissionCalculatorCard />
+              </div>
+            </div>
+          )}
           {Object.entries(grouped).sort().map(([category, items]) => (
             <div key={category}>
               <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">
                 {category}
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Inject Option Modeller tool card into Equity category */}
                 {category === "Equity" && <OptionModellerCard />}
+                {category === "Compensation" && <CommissionCalculatorCard />}
                 {items.map((r) => {
                   const isApproved = approvedIds.has(r.id);
 
