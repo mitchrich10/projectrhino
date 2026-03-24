@@ -343,6 +343,14 @@ const CommissionCalculator: FC = () => {
           <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: GREY_MID }}>
             Commission Calculator
           </span>
+          <button
+            onClick={handleDownload}
+            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full transition-opacity hover:opacity-90 active:opacity-75"
+            style={{ background: BLUE, color: "#fff" }}
+          >
+            <Download className="w-3.5 h-3.5" />
+            Download Excel
+          </button>
         </div>
       </header>
 
