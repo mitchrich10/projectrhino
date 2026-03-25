@@ -590,10 +590,18 @@ const CommissionCalculator: FC = () => {
                   </thead>
                   <tbody>
                     {rows.map((r, i) => {
-                      const tier     = getRowTier(r.attainment, cliff, accel);
-                      const rs       = ROW_STYLES[tier];
-                      const rowBg    = rs.bg === "#fff" && i % 2 === 1 ? OFFWHITE : rs.bg;
+                      const tier        = getRowTier(r.attainment, cliff, accel);
+                      const rs          = ROW_STYLES[tier];
+                      const rowBg       = rs.bg === "#fff" && i % 2 === 1 ? OFFWHITE : rs.bg;
                       const isHighlight = r.attainment === highlightRow;
+
+                      // Badges are driven by exact threshold matches — not tier inference
+                      const cliffPct = parseNum(plan.cliffThreshold);
+                      const accelPct = parseNum(plan.acceleratorThreshold);
+                      const isCliffRow  = r.attainment === cliffPct;
+                      const isTargetRow = r.attainment === 100;
+                      const isAccelRow  = r.attainment === accelPct;
+
                       return (
                         <tr
                           key={r.attainment}
@@ -605,24 +613,34 @@ const CommissionCalculator: FC = () => {
                         >
                           <td className="px-4 py-2.5 font-semibold whitespace-nowrap" style={{ color: NAVY }}>
                             {r.attainment}%
+                            {/* "← You" always takes priority */}
                             {isHighlight && (
                               <span className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold" style={{ background: BLUE, color: "#fff" }}>
                                 ← You
                               </span>
                             )}
-                            {r.attainment === 100 && !isHighlight && (
+                            {/* Below-cliff row: show CLIFF badge on the first row (below cliff) */}
+                            {tier === "below-cliff" && (
+                              <span className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold uppercase tracking-wide" style={{ background: "#A33222", color: "#fff" }}>
+                                Below Cliff
+                              </span>
+                            )}
+                            {/* Cliff row: exact match to cliff threshold */}
+                            {isCliffRow && tier !== "below-cliff" && !isHighlight && (
+                              <span className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold uppercase tracking-wide" style={{ background: "#A33222", color: "#fff" }}>
+                                Cliff
+                              </span>
+                            )}
+                            {/* Target row: exactly 100% */}
+                            {isTargetRow && !isHighlight && !isAccelRow && (
                               <span className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold uppercase tracking-wide" style={{ background: BLUE, color: "#fff" }}>
                                 Target
                               </span>
                             )}
-                            {tier === "accel" && (
+                            {/* Accel row: exact match to accelerator threshold */}
+                            {isAccelRow && !isHighlight && (
                               <span className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold uppercase tracking-wide" style={{ background: NAVY, color: MINT }}>
                                 Accel
-                              </span>
-                            )}
-                            {tier === "below-cliff" && (
-                              <span className="ml-1.5 text-[9px] px-1.5 py-0.5 font-semibold uppercase tracking-wide" style={{ background: "#A33222", color: "#fff" }}>
-                                Cliff
                               </span>
                             )}
                           </td>
@@ -651,8 +669,8 @@ const CommissionCalculator: FC = () => {
                 <span>·</span>
                 <span>Total Bonus = mo×12 + qtr×4 + annual</span>
                 <span>·</span>
-                <span>Rows snap to your cliff ({plan.cliffThreshold || 85}%) &amp; accelerator ({plan.acceleratorThreshold || 110}%, {plan.acceleratorMultiplier || 2}× rate) thresholds</span>
-                {highlightRow && <span>· Your position: ~{highlightRow}% highlighted</span>}
+                <span>Cliff at {plan.cliffThreshold || 85}% · Accelerator at {plan.acceleratorThreshold || 110}% ({plan.acceleratorMultiplier || 2}× rate)</span>
+                {highlightRow && <span>· Your position: ~{highlightRow}% highlighted in Rep Calculator</span>}
               </div>
             </>
           )}
