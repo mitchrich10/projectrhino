@@ -314,10 +314,11 @@ const CommissionCalculator: FC = () => {
   const highlightRow = useMemo(() => {
     if (!calcReady || actual === 0) return null;
     const repPct = attainmentPct * 100;
-    return ATTAINMENT_LEVELS.reduce((best, lvl) =>
+    const levels = rows.map((r) => r.attainment);
+    return levels.reduce((best, lvl) =>
       Math.abs(lvl - repPct) < Math.abs(best - repPct) ? lvl : best
-    , ATTAINMENT_LEVELS[0]);
-  }, [attainmentPct, calcReady, actual]);
+    , levels[0]);
+  }, [attainmentPct, calcReady, actual, rows]);
 
   const periodBonus = useMemo(() => {
     // Per-period bonus: annualise the tranche then divide by periods
