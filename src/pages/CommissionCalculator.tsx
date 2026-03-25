@@ -672,7 +672,7 @@ const CommissionCalculator: FC = () => {
                 <span>·</span>
                 <span>Total Bonus = mo×12 + qtr×4 + annual</span>
                 <span>·</span>
-                <span>Cliff at {plan.cliffThreshold || 85}% · Accelerator at {plan.acceleratorThreshold || 110}% ({plan.acceleratorMultiplier || 2}× rate)</span>
+                <span>Rows snap to your cliff ({plan.cliffThreshold || 85}%) &amp; accelerator ({plan.acceleratorThreshold || 110}%, {plan.acceleratorMultiplier || 2}× rate) thresholds</span>
                 {highlightRow && <span>· Your position: ~{highlightRow}% highlighted</span>}
               </div>
             </>
