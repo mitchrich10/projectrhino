@@ -83,61 +83,43 @@ interface AttainmentRow {
 }
 
 /**
- * Returns 5 attainment levels that dynamically snap around the user's cliff
- * and accelerator thresholds:
- *   1. Below cliff (to illustrate $0 behaviour)
- *   2. 100% (always — the target baseline)
- *   3. Exactly at cliff (first row that earns bonus)
- *   4. Exactly at accelerator threshold
- *   5. Strong performance above accelerator
- *   6. Exceptional performance above accelerator
+ * Returns exactly 5 attainment levels derived from the user's cliff and
+ * accelerator thresholds:
+ *   Row 1 — below cliff:  cliffPct - 10  (illustrates $0 zone)
+ *   Row 2 — at cliff:     exactly cliffPct (first row that earns a bonus)
+ *   Row 3 — at target:    exactly 100%
+ *   Row 4 — at accel:     exactly accelPct (where multiplier kicks in)
+ *   Row 5 — above accel:  accelPct + 15   (strong performance)
  *
- * Snapping rules keep rows at clean multiples of 5 where possible.
+ * All five values update immediately when the user changes any threshold.
  */
 function getDynamicAttainmentLevels(cliffPct: number, accelPct: number): number[] {
-  // Row 1: one meaningful step below the cliff (illustrate no-bonus zone)
-  // Snap to nearest 5% below cliff, but at least cliff-10
-  const belowCliff = Math.max(5, Math.floor((cliffPct - 7) / 5) * 5);
+  const belowCliff = Math.max(5, cliffPct - 10);
+  const atCliff    = cliffPct;
+  const atTarget   = 100;
+  const atAccel    = accelPct;
+  const aboveAccel = accelPct + 15;
 
-  // Row 2: 100% target — always fixed
-  const atTarget = 100;
+  // Build ordered list, collapsing any accidental duplicates gracefully
+  const ordered = [belowCliff, atCliff, atTarget, atAccel, aboveAccel];
 
-  // Row 3: exactly at cliff threshold (or nearest clean number)
-  const atCliff = Math.round(cliffPct / 5) * 5 === cliffPct
-    ? cliffPct
-    : cliffPct; // keep exact value so the label is accurate
-
-  // Row 4: exactly at accelerator threshold
-  const atAccel = accelPct;
-
-  // Row 5: strong — accel + ~15pp, snapped to nearest 5
-  const strong = Math.round((accelPct + 15) / 5) * 5;
-
-  // Row 6: exceptional — accel + ~40pp, snapped to nearest 5 (min 150)
-  const exceptional = Math.max(150, Math.round((accelPct + 40) / 5) * 5);
-
-  // Deduplicate and sort, keeping exactly 5 rows
-  const candidates = Array.from(new Set([belowCliff, atCliff, atTarget, atAccel, strong, exceptional])).sort((a, b) => a - b);
-
-  // We always want exactly 5: below-cliff, at/near-cliff, 100%, at-accel, strong, exceptional
-  // Drop at-cliff if it equals belowCliff or atTarget to avoid duplicates
-  const five: number[] = [];
-  five.push(belowCliff);
-  if (atCliff !== belowCliff && atCliff !== atTarget) five.push(atCliff);
-  if (!five.includes(atTarget)) five.push(atTarget);
-  if (!five.includes(atAccel) && atAccel !== atTarget) five.push(atAccel);
-
-  // Fill remaining slots from strong / exceptional
-  for (const v of [strong, exceptional]) {
-    if (!five.includes(v) && five.length < 5) five.push(v);
-  }
-  // Ensure we always have 5 entries; if exceptional already included, add one more above
-  if (five.length < 5) {
-    const last = five[five.length - 1];
-    five.push(Math.round((last + 25) / 5) * 5);
+  // Deduplicate while preserving order
+  const seen = new Set<number>();
+  const deduped: number[] = [];
+  for (const v of ordered) {
+    if (!seen.has(v)) { seen.add(v); deduped.push(v); }
   }
 
-  return five.slice(0, 5).sort((a, b) => a - b);
+  // If we lost rows due to deduplication (e.g. cliff === 100 or accel === 100)
+  // pad at the top end to always return 5 rows
+  while (deduped.length < 5) {
+    const last = deduped[deduped.length - 1];
+    const next = last + 10;
+    if (!seen.has(next)) { seen.add(next); deduped.push(next); }
+    else deduped.push(last + deduped.length * 5);
+  }
+
+  return deduped.sort((a, b) => a - b);
 }
 
 function buildAttainmentRows(plan: PlanInputs, ote: number): AttainmentRow[] {
@@ -156,17 +138,14 @@ function buildAttainmentRows(plan: PlanInputs, ote: number): AttainmentRow[] {
 
   return levels.map((pct) => {
     const a = pct / 100;
-    // Annual tranche values
     const annualMonthlyTranche   = calcAnnualTranche(target, mw, a, cliff, accel, mult);
     const annualQuarterlyTranche = calcAnnualTranche(target, qw, a, cliff, accel, mult);
     const annualBonus            = calcAnnualTranche(target, aw, a, cliff, accel, mult);
-    // Per-period payouts
     const monthlyBonus   = annualMonthlyTranche / 12;
     const quarterlyBonus = annualQuarterlyTranche / 4;
-    // Total annualised = monthly×12 + quarterly×4 + annual×1
-    const totalBonus = annualMonthlyTranche + annualQuarterlyTranche + annualBonus;
-    const baseBonus  = base + totalBonus;
-    const vsOTE      = ote > 0 ? (baseBonus / ote) * 100 : 0;
+    const totalBonus     = annualMonthlyTranche + annualQuarterlyTranche + annualBonus;
+    const baseBonus      = base + totalBonus;
+    const vsOTE          = ote > 0 ? (baseBonus / ote) * 100 : 0;
     return { attainment: pct, monthlyBonus, quarterlyBonus, annualBonus, totalBonus, baseBonus, vsOTE };
   });
 }
