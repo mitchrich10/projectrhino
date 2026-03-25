@@ -577,7 +577,7 @@ const CommissionCalculator: FC = () => {
               ? `${plan.role}${plan.territory ? ` · ${plan.territory}` : ""}${plan.planPeriod ? ` · ${plan.planPeriod}` : ""}`
               : plan.planPeriod || undefined}
           >
-            Attainment Table — 70% to 130%
+            Attainment Table — Key Scenarios
           </CardHeader>
 
           {!calcReady ? (
