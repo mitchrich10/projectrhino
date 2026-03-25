@@ -70,8 +70,6 @@ function calcAnnualTranche(tb: number, w: number, a: number, cliff: number, acce
 }
 
 // ── Attainment ────────────────────────────────────────────────────────────────
-const ATTAINMENT_LEVELS = [70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130];
-
 interface AttainmentRow {
   attainment: number;
   // per-period amounts (what the rep receives each period)
@@ -84,16 +82,79 @@ interface AttainmentRow {
   vsOTE: number;
 }
 
+/**
+ * Returns 5 attainment levels that dynamically snap around the user's cliff
+ * and accelerator thresholds:
+ *   1. Below cliff (to illustrate $0 behaviour)
+ *   2. 100% (always — the target baseline)
+ *   3. Exactly at cliff (first row that earns bonus)
+ *   4. Exactly at accelerator threshold
+ *   5. Strong performance above accelerator
+ *   6. Exceptional performance above accelerator
+ *
+ * Snapping rules keep rows at clean multiples of 5 where possible.
+ */
+function getDynamicAttainmentLevels(cliffPct: number, accelPct: number): number[] {
+  // Row 1: one meaningful step below the cliff (illustrate no-bonus zone)
+  // Snap to nearest 5% below cliff, but at least cliff-10
+  const belowCliff = Math.max(5, Math.floor((cliffPct - 7) / 5) * 5);
+
+  // Row 2: 100% target — always fixed
+  const atTarget = 100;
+
+  // Row 3: exactly at cliff threshold (or nearest clean number)
+  const atCliff = Math.round(cliffPct / 5) * 5 === cliffPct
+    ? cliffPct
+    : cliffPct; // keep exact value so the label is accurate
+
+  // Row 4: exactly at accelerator threshold
+  const atAccel = accelPct;
+
+  // Row 5: strong — accel + ~15pp, snapped to nearest 5
+  const strong = Math.round((accelPct + 15) / 5) * 5;
+
+  // Row 6: exceptional — accel + ~40pp, snapped to nearest 5 (min 150)
+  const exceptional = Math.max(150, Math.round((accelPct + 40) / 5) * 5);
+
+  // Deduplicate and sort, keeping exactly 5 rows
+  const candidates = Array.from(new Set([belowCliff, atCliff, atTarget, atAccel, strong, exceptional])).sort((a, b) => a - b);
+
+  // We always want exactly 5: below-cliff, at/near-cliff, 100%, at-accel, strong, exceptional
+  // Drop at-cliff if it equals belowCliff or atTarget to avoid duplicates
+  const five: number[] = [];
+  five.push(belowCliff);
+  if (atCliff !== belowCliff && atCliff !== atTarget) five.push(atCliff);
+  if (!five.includes(atTarget)) five.push(atTarget);
+  if (!five.includes(atAccel) && atAccel !== atTarget) five.push(atAccel);
+
+  // Fill remaining slots from strong / exceptional
+  for (const v of [strong, exceptional]) {
+    if (!five.includes(v) && five.length < 5) five.push(v);
+  }
+  // Ensure we always have 5 entries; if exceptional already included, add one more above
+  if (five.length < 5) {
+    const last = five[five.length - 1];
+    five.push(Math.round((last + 25) / 5) * 5);
+  }
+
+  return five.slice(0, 5).sort((a, b) => a - b);
+}
+
 function buildAttainmentRows(plan: PlanInputs, ote: number): AttainmentRow[] {
-  const target = parseNum(plan.targetBonus);
-  const base   = parseNum(plan.baseSalary);
-  const mw     = parseNum(plan.monthlyWeight) / 100;
-  const qw     = parseNum(plan.quarterlyWeight) / 100;
-  const aw     = parseNum(plan.annualWeight) / 100;
-  const cliff  = parseNum(plan.cliffThreshold) / 100;
-  const accel  = parseNum(plan.acceleratorThreshold) / 100;
-  const mult   = parseNum(plan.acceleratorMultiplier);
-  return ATTAINMENT_LEVELS.map((pct) => {
+  const target   = parseNum(plan.targetBonus);
+  const base     = parseNum(plan.baseSalary);
+  const mw       = parseNum(plan.monthlyWeight) / 100;
+  const qw       = parseNum(plan.quarterlyWeight) / 100;
+  const aw       = parseNum(plan.annualWeight) / 100;
+  const cliff    = parseNum(plan.cliffThreshold) / 100;
+  const accel    = parseNum(plan.acceleratorThreshold) / 100;
+  const mult     = parseNum(plan.acceleratorMultiplier);
+  const cliffPct = parseNum(plan.cliffThreshold);
+  const accelPct = parseNum(plan.acceleratorThreshold);
+
+  const levels = getDynamicAttainmentLevels(cliffPct, accelPct);
+
+  return levels.map((pct) => {
     const a = pct / 100;
     // Annual tranche values
     const annualMonthlyTranche   = calcAnnualTranche(target, mw, a, cliff, accel, mult);
