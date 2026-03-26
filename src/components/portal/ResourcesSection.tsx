@@ -262,7 +262,8 @@ const ResourcesSection: FC = () => {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {category === "Equity" && <OptionModellerCard />}
                 {category === "Compensation" && <CommissionCalculatorCard />}
-                {items.map((r) => {
+                {category === "Financing Guide" && <FinancingGuideCard />}
+                {category === "Financing Guide" ? null : items.map((r) => {
                   const isApproved = approvedIds.has(r.id);
 
                   if (r.approval_required && !isApproved) {
