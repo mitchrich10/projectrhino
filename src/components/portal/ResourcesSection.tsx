@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, ExternalLink, FileText, Loader2, Lock, Calculator } from "lucide-react";
+import { Download, ExternalLink, FileText, Loader2, Lock, Calculator, BookOpen } from "lucide-react";
 
 interface Resource {
   id: string;
@@ -148,6 +148,26 @@ const OptionModellerCard: FC = () => (
   </Link>
 );
 
+const FinancingGuideCard: FC = () => (
+  <Link
+    to="/portal/financing-guide"
+    className="group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors hover:border-primary/50 hover:bg-secondary/40"
+  >
+    <div className="flex items-start justify-between gap-2">
+      <h4 className="font-bold text-sm text-foreground leading-tight">Financing Process Guide</h4>
+      <BookOpen className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+    </div>
+    <p className="text-xs text-muted-foreground leading-relaxed">
+      A curated package of 5 frameworks, templates, and tools for founders preparing for a Series A or growth-stage financing round.
+    </p>
+    <div className="flex items-center gap-1.5 mt-auto pt-1">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-primary group-hover:opacity-70 transition-opacity flex items-center gap-1">
+        <ExternalLink className="w-3 h-3" /> View Guide
+      </span>
+    </div>
+  </Link>
+);
+
 // ── Main Section ───────────────────────────────────────────────────────────────
 const ResourcesSection: FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -242,7 +262,8 @@ const ResourcesSection: FC = () => {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {category === "Equity" && <OptionModellerCard />}
                 {category === "Compensation" && <CommissionCalculatorCard />}
-                {items.map((r) => {
+                {category === "Financing Guide" && <FinancingGuideCard />}
+                {category === "Financing Guide" ? null : items.map((r) => {
                   const isApproved = approvedIds.has(r.id);
 
                   if (r.approval_required && !isApproved) {
