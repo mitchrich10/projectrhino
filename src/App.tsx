@@ -32,6 +32,7 @@ const App = () => (
           <Route path="/admin" element={<AdminHub />} />
           <Route path="/option-modeller" element={<OptionModeller />} />
           <Route path="/commission-calculator" element={<CommissionCalculator />} />
+          <Route path="/portal/financing-guide" element={<FinancingGuide />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
