@@ -161,25 +161,31 @@ const RequestAccessBtn: FC<{ companyName: string }> = ({ companyName }) => {
 
   if (status === "requested") {
     return (
-      <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-white/80">
-        <Lock className="w-4 h-4" /> Access Requested ✓
-      </span>
+      <div className="flex flex-col items-center gap-2">
+        <span className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-white/80">
+          <Lock className="w-4 h-4" /> Access Requested ✓
+        </span>
+        <p className="text-xs text-white/50">Rhino reviews all resource requests and will confirm access shortly.</p>
+      </div>
     );
   }
 
   return (
-    <button
-      onClick={handleRequest}
-      disabled={status === "loading"}
-      className="inline-flex items-center gap-2 bg-[#1A7EC8] text-white font-bold uppercase tracking-widest text-sm px-6 py-3 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
-    >
-      {status === "loading" ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
-      ) : (
-        <Lock className="w-4 h-4" />
-      )}
-      Request Access
-    </button>
+    <div className="flex flex-col items-center gap-2">
+      <button
+        onClick={handleRequest}
+        disabled={status === "loading"}
+        className="inline-flex items-center gap-2 bg-[#1A7EC8] text-white font-bold uppercase tracking-widest text-sm px-6 py-3 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+      >
+        {status === "loading" ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <Lock className="w-4 h-4" />
+        )}
+        Request Access
+      </button>
+      <p className="text-xs text-white/50">Rhino reviews all resource requests and will confirm access shortly.</p>
+    </div>
   );
 };
 
