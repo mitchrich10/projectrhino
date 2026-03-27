@@ -27,6 +27,7 @@ const LOGO_DOMAINS: Record<string, string> = {
   Float: "float.com",
   Notion: "notion.so",
   DocSend: "docsend.com",
+  Article: "article.com",
 };
 
 const fallbackDescriptions: Record<string, string> = {
