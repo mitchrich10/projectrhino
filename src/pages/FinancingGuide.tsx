@@ -79,6 +79,7 @@ const DownloadBtn: FC<{ href: string; filename: string }> = ({ href, filename })
     async (e: React.MouseEvent) => {
       e.stopPropagation();
       setLoading(true);
+      console.log("[analytics] file_download", { filename });
       try {
         const res = await fetch(href);
         const blob = await res.blob();
@@ -99,7 +100,7 @@ const DownloadBtn: FC<{ href: string; filename: string }> = ({ href, filename })
     <button
       onClick={handleDownload}
       disabled={loading}
-      className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-[#1A7EC8] text-white px-3 py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+      className="flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-[#1A7EC8] text-white px-3 py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50 w-full sm:w-auto"
     >
       {loading ? (
         <Loader2 className="w-3 h-3 animate-spin" />
@@ -135,6 +136,7 @@ const RequestAccessBtn: FC<{ companyName: string }> = ({ companyName }) => {
 
   const handleRequest = async () => {
     setStatus("loading");
+    console.log("[analytics] request_access", { item: "Financing Process Guide Package" });
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -448,7 +450,7 @@ const FinancingGuide: FC = () => {
       {/* Resource cards */}
       <main className="flex-1 px-6 py-12">
         <div className="max-w-6xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {resources.map((r) => (
               <ResourceCard key={r.id} resource={r} unlocked={unlocked} />
             ))}
