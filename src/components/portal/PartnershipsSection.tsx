@@ -218,7 +218,7 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
   return (
     <button
       onClick={onClick}
-      className="group relative flex flex-col items-center justify-center p-4 border rounded-lg bg-white hover:border-[#1A7EC8] hover:shadow-md transition-all duration-200 text-left w-full min-h-[80px]"
+      className="group relative flex flex-col items-center justify-center p-4 border rounded-lg bg-white hover:border-[#1A7EC8] hover:shadow-md transition-all duration-200 text-left h-[120px] w-full"
       style={{ borderColor: "#e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
     >
       <div className="flex items-center justify-between w-full">
@@ -232,16 +232,7 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
 };
 
 // ── Grid helper ──
-const getGridClasses = (count: number): string => {
-  if (count === 1) return "grid grid-cols-1 gap-3";
-  if (count === 2) return "grid grid-cols-1 sm:grid-cols-2 gap-3";
-  return "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3";
-};
-
-const getItemClasses = (count: number): string => {
-  if (count === 1) return "sm:col-span-1 lg:max-w-md";
-  return "";
-};
+const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3";
 
 // ── Main Section ──
 const PartnershipsSection: FC = () => {
@@ -301,9 +292,9 @@ const PartnershipsSection: FC = () => {
                   <div className="w-1 h-5 rounded-full bg-[#1A7EC8]" />
                   <p className="text-sm font-bold uppercase tracking-widest text-foreground">{category}</p>
                 </div>
-                <div className={getGridClasses(items.length)}>
+                <div className={GRID_CLASSES}>
                   {items.map((p) => (
-                    <div key={p.id} className={getItemClasses(items.length)}>
+                    <div key={p.id}>
                       <PartnershipTile partnership={p} onClick={() => setSelected(p)} />
                     </div>
                   ))}
