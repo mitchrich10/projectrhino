@@ -226,10 +226,6 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
         {partnership.approval_required && (
           <Lock className="w-3 h-3 text-muted-foreground/50 flex-shrink-0" />
         )}
-      </div>
-      {description && (
-        <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">{description}</p>
-      )}
     </button>
   );
 };
