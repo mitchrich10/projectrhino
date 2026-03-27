@@ -18,7 +18,69 @@ interface Partnership {
   approval_required: boolean;
 }
 
-// ── Request Access Button ──────────────────────────────────────────────────────
+// Clearbit logo domains
+const clearbitDomains: Record<string, string> = {
+  "AWS": "amazon.com",
+  "Microsoft for Startups": "microsoft.com",
+  "Google Cloud": "google.com",
+  "Stripe": "stripe.com",
+  "Carta": "carta.com",
+  "Float": "float.com",
+  "Notion": "notion.so",
+  "DocSend": "docsend.com",
+  "Boldhouse": "boldhouse.ca",
+  "Promosapien": "promosapien.com",
+};
+
+// Fallback descriptions for cards missing one
+const fallbackDescriptions: Record<string, string> = {
+  "Microsoft for Startups": "Cloud credits, developer tools, and Azure benefits for eligible startups",
+  "Google Cloud": "GCP credits and startup support program for Rhino portfolio companies",
+  "Stripe": "Payment infrastructure with preferred rates for Rhino portfolio companies",
+  "Carta": "Equity management and cap table software",
+  "Float": "Cash flow forecasting and runway management for startups",
+};
+
+const getClearbitLogo = (name: string): string | null => {
+  const domain = clearbitDomains[name];
+  return domain ? `https://logo.clearbit.com/${domain}` : null;
+};
+
+// ── Logo component with Clearbit + fallback ──
+const PartnerLogo: FC<{ partnership: Partnership; size?: "sm" | "md" }> = ({ partnership, size = "sm" }) => {
+  const [imgError, setImgError] = useState(false);
+
+  // Priority: logo_key (local asset) > Clearbit > logo_url > text fallback
+  const localLogo = partnership.logo_key ? companyLogos[partnership.logo_key] : null;
+  const clearbitLogo = getClearbitLogo(partnership.name);
+  const logoSrc = localLogo || (!imgError ? clearbitLogo : null) || partnership.logo_url;
+
+  const dims = size === "md" ? "w-14 h-14" : "w-10 h-10";
+  const imgMax = size === "md" ? "max-h-10 max-w-[96px]" : "max-h-8 max-w-[64px]";
+
+  if (logoSrc && !imgError) {
+    return (
+      <div className={`${dims} flex items-center justify-center flex-shrink-0`}>
+        <img
+          src={logoSrc}
+          alt={partnership.name}
+          className={`${imgMax} w-auto h-auto object-contain`}
+          onError={() => setImgError(true)}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`${dims} flex items-center justify-center flex-shrink-0`}>
+      <span className="text-xs font-black uppercase tracking-tight text-foreground text-center leading-tight px-1">
+        {partnership.name}
+      </span>
+    </div>
+  );
+};
+
+// ── Request Access Button ──
 const RequestAccessButton: FC<{
   itemId: string;
   itemName: string;
@@ -28,7 +90,6 @@ const RequestAccessButton: FC<{
   const [status, setStatus] = useState<"idle" | "loading" | "requested" | "error">("idle");
 
   useEffect(() => {
-    // Check if already requested
     const check = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
@@ -81,7 +142,7 @@ const RequestAccessButton: FC<{
   );
 };
 
-// ── Partnership Modal ──────────────────────────────────────────────────────────
+// ── Partnership Modal ──
 const PartnershipModal: FC<{
   partnership: Partnership;
   companyName: string;
@@ -89,10 +150,6 @@ const PartnershipModal: FC<{
   onClose: () => void;
 }> = ({ partnership, companyName, isApproved, onClose }) => {
   const [copied, setCopied] = useState(false);
-
-  const logoSrc = partnership.logo_key
-    ? companyLogos[partnership.logo_key]
-    : partnership.logo_url ?? null;
 
   const copyCode = async () => {
     if (!partnership.promo_code) return;
@@ -116,17 +173,8 @@ const PartnershipModal: FC<{
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-border">
           <div className="flex items-center gap-4">
-            {logoSrc ? (
-              <div className="w-14 h-14 border border-border rounded-lg flex items-center justify-center p-2 bg-secondary/10 flex-shrink-0">
-                <img src={logoSrc} alt={partnership.name} className="max-h-10 max-w-[96px] w-auto h-auto object-contain" />
-              </div>
-            ) : (
-              <div className="w-14 h-14 border border-border rounded-lg flex items-center justify-center bg-secondary/10 flex-shrink-0">
-                <span className="text-xs font-black uppercase tracking-tight text-foreground text-center leading-tight px-1">{partnership.name}</span>
-              </div>
-            )}
+            <PartnerLogo partnership={partnership} size="md" />
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-0.5">{partnership.category}</p>
               <h3 className="text-lg font-black uppercase tracking-tighter text-foreground leading-tight">{partnership.name}</h3>
               {partnership.tagline && (
                 <p className="text-xs text-muted-foreground mt-0.5">{partnership.tagline}</p>
@@ -194,49 +242,52 @@ const PartnershipModal: FC<{
   );
 };
 
-// ── Partnership Tile ───────────────────────────────────────────────────────────
+// ── Partnership Tile ──
 const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = ({ partnership, onClick }) => {
-  const logoSrc = partnership.logo_key
-    ? companyLogos[partnership.logo_key]
-    : partnership.logo_url ?? null;
+  const description = partnership.description || partnership.tagline || fallbackDescriptions[partnership.name] || null;
 
   return (
     <button
       onClick={onClick}
-      className="group relative flex flex-col items-start gap-2.5 p-4 border border-border rounded-lg bg-card hover:border-primary hover:shadow-md hover:shadow-primary/10 transition-all duration-200 text-left w-full"
+      className="group relative flex flex-col items-start gap-3 p-4 border rounded-lg bg-white hover:border-[#1A7EC8] hover:shadow-md transition-all duration-200 text-left w-full min-h-[120px]"
+      style={{
+        borderColor: "#e2e8f0",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+      }}
     >
-      <div className="flex items-center justify-between w-full">
-        <span className="text-[9px] font-bold uppercase tracking-widest text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded">
-          {partnership.category}
-        </span>
+      <div className="flex items-center gap-3 w-full">
+        <PartnerLogo partnership={partnership} size="sm" />
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-black uppercase tracking-tighter text-foreground group-hover:text-[#1A7EC8] transition-colors leading-tight">
+            {partnership.name}
+          </p>
+        </div>
         {partnership.approval_required && (
           <Lock className="w-3 h-3 text-muted-foreground/50 flex-shrink-0" />
         )}
       </div>
-      <div className="flex items-center gap-3 w-full">
-        {logoSrc ? (
-          <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
-            <img
-              src={logoSrc}
-              alt={partnership.name}
-              className="max-h-8 max-w-[64px] w-auto h-auto object-contain group-hover:opacity-80 transition-opacity"
-            />
-          </div>
-        ) : null}
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-black uppercase tracking-tighter text-foreground group-hover:text-primary transition-colors leading-tight">
-            {partnership.name}
-          </p>
-          {partnership.tagline && (
-            <p className="text-[10px] text-muted-foreground leading-tight line-clamp-2 mt-0.5">{partnership.tagline}</p>
-          )}
-        </div>
-      </div>
+      {description && (
+        <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">
+          {description}
+        </p>
+      )}
     </button>
   );
 };
 
-// ── Main Section ───────────────────────────────────────────────────────────────
+// ── Grid helper: span cards wider when few items ──
+const getGridClasses = (count: number): string => {
+  if (count === 1) return "grid grid-cols-1 gap-3";
+  if (count === 2) return "grid grid-cols-1 sm:grid-cols-2 gap-3";
+  return "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3";
+};
+
+const getItemClasses = (count: number): string => {
+  if (count === 1) return "sm:col-span-1 lg:max-w-md";
+  return "";
+};
+
+// ── Main Section ──
 const PartnershipsSection: FC = () => {
   const [partnerships, setPartnerships] = useState<Partnership[]>([]);
   const [loading, setLoading] = useState(true);
@@ -302,17 +353,25 @@ const PartnershipsSection: FC = () => {
       ) : partnerships.length === 0 ? (
         <p className="text-xs text-muted-foreground">Partnership deals coming soon.</p>
       ) : (
-        <div className="space-y-6">
-          {categories.map((category) => (
-            <div key={category}>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">{category}</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {grouped[category].map((p) => (
-                  <PartnershipTile key={p.id} partnership={p} onClick={() => setSelected(p)} />
-                ))}
+        <div className="space-y-8">
+          {categories.map((category) => {
+            const items = grouped[category];
+            return (
+              <div key={category}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1 h-5 rounded-full bg-[#1A7EC8]" />
+                  <p className="text-sm font-bold uppercase tracking-widest text-foreground">{category}</p>
+                </div>
+                <div className={getGridClasses(items.length)}>
+                  {items.map((p) => (
+                    <div key={p.id} className={getItemClasses(items.length)}>
+                      <PartnershipTile partnership={p} onClick={() => setSelected(p)} />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
