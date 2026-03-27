@@ -215,12 +215,10 @@ const PartnershipModal: FC<{
 
 // ── Partnership Tile ──
 const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = ({ partnership, onClick }) => {
-  const description = partnership.description || partnership.tagline || fallbackDescriptions[partnership.name] || null;
-
   return (
     <button
       onClick={onClick}
-      className="group relative flex flex-col items-start gap-3 p-4 border rounded-lg bg-white hover:border-[#1A7EC8] hover:shadow-md transition-all duration-200 text-left w-full min-h-[120px]"
+      className="group relative flex flex-col items-center justify-center p-4 border rounded-lg bg-white hover:border-[#1A7EC8] hover:shadow-md transition-all duration-200 text-left w-full min-h-[80px]"
       style={{ borderColor: "#e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
     >
       <div className="flex items-center justify-between w-full">
@@ -229,9 +227,6 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
           <Lock className="w-3 h-3 text-muted-foreground/50 flex-shrink-0" />
         )}
       </div>
-      {description && (
-        <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">{description}</p>
-      )}
     </button>
   );
 };
