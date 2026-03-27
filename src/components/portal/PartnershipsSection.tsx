@@ -1,8 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ExternalLink, Copy, Check, Lock } from "lucide-react";
+import { Loader2, ExternalLink, Copy, Check, Lock, X } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
-import { X } from "lucide-react";
 
 interface Partnership {
   id: string;
@@ -18,66 +17,62 @@ interface Partnership {
   approval_required: boolean;
 }
 
-// Clearbit logo domains
-const clearbitDomains: Record<string, string> = {
-  "AWS": "amazon.com",
+// Only companies with reliable Clearbit logos
+const LOGO_DOMAINS: Record<string, string> = {
+  AWS: "amazon.com",
   "Microsoft for Startups": "microsoft.com",
   "Google Cloud": "google.com",
-  "Stripe": "stripe.com",
-  "Carta": "carta.com",
-  "Float": "float.com",
-  "Notion": "notion.so",
-  "DocSend": "docsend.com",
-  "Boldhouse": "boldhouse.ca",
-  "Promosapien": "promosapien.com",
+  Stripe: "stripe.com",
+  Carta: "carta.com",
+  Float: "float.com",
+  Notion: "notion.so",
+  DocSend: "docsend.com",
 };
 
-// Fallback descriptions for cards missing one
 const fallbackDescriptions: Record<string, string> = {
   "Microsoft for Startups": "Cloud credits, developer tools, and Azure benefits for eligible startups",
   "Google Cloud": "GCP credits and startup support program for Rhino portfolio companies",
-  "Stripe": "Payment infrastructure with preferred rates for Rhino portfolio companies",
-  "Carta": "Equity management and cap table software",
-  "Float": "Cash flow forecasting and runway management for startups",
+  Stripe: "Payment infrastructure with preferred rates for Rhino portfolio companies",
+  Carta: "Equity management and cap table software",
+  Float: "Cash flow forecasting and runway management for startups",
 };
 
-const getClearbitLogo = (name: string): string | null => {
-  const domain = clearbitDomains[name];
-  return domain ? `https://logo.clearbit.com/${domain}` : null;
-};
+// ── CompanyMark: shows logo XOR name, never both ──
+const CompanyMark: FC<{ name: string; logoKey?: string | null }> = ({ name, logoKey }) => {
+  const localLogo = logoKey ? companyLogos[logoKey] : null;
 
-// ── Logo component with Clearbit + fallback ──
-const PartnerLogo: FC<{ partnership: Partnership; size?: "sm" | "md" }> = ({ partnership, size = "sm" }) => {
-  const [imgError, setImgError] = useState(false);
-
-  // Priority: logo_key (local asset) > Clearbit > logo_url > text fallback
-  const localLogo = partnership.logo_key ? companyLogos[partnership.logo_key] : null;
-  const clearbitLogo = getClearbitLogo(partnership.name);
-  const logoSrc = localLogo || (!imgError ? clearbitLogo : null) || partnership.logo_url;
-
-  const dims = size === "md" ? "w-14 h-14" : "w-10 h-10";
-  const imgMax = size === "md" ? "max-h-10 max-w-[96px]" : "max-h-8 max-w-[64px]";
-
-  if (logoSrc && !imgError) {
+  // Local asset logo — always reliable
+  if (localLogo) {
     return (
-      <div className={`${dims} flex items-center justify-center flex-shrink-0`}>
-        <img
-          src={logoSrc}
-          alt={partnership.name}
-          className={`${imgMax} w-auto h-auto object-contain`}
-          onError={() => setImgError(true)}
-        />
+      <div className="h-8 flex items-center">
+        <img src={localLogo} alt={name} style={{ objectFit: "contain", maxWidth: "120px", height: "32px" }} />
       </div>
     );
   }
 
-  return (
-    <div className={`${dims} flex items-center justify-center flex-shrink-0`}>
-      <span className="text-xs font-black uppercase tracking-tight text-foreground text-center leading-tight px-1">
-        {partnership.name}
-      </span>
-    </div>
-  );
+  // Clearbit logo with inline fallback
+  const domain = LOGO_DOMAINS[name];
+  if (domain) {
+    return (
+      <div className="h-8 flex items-center">
+        <img
+          src={`https://logo.clearbit.com/${domain}`}
+          alt=""
+          height={32}
+          style={{ objectFit: "contain", maxWidth: "120px" }}
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+            const sibling = e.currentTarget.nextElementSibling as HTMLSpanElement;
+            if (sibling) sibling.style.display = "block";
+          }}
+        />
+        <span style={{ display: "none", fontWeight: 700, fontSize: "15px" }}>{name}</span>
+      </div>
+    );
+  }
+
+  // No logo source — text only
+  return <span style={{ fontWeight: 700, fontSize: "15px" }}>{name}</span>;
 };
 
 // ── Request Access Button ──
@@ -108,14 +103,10 @@ const RequestAccessButton: FC<{
     setStatus("loading");
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { setStatus("error"); return; }
-
     const res = await supabase.functions.invoke("request-access", {
       body: { item_type: itemType, item_id: itemId, item_name: itemName, company_name: companyName },
     });
-
-    if (res.error || res.data?.error === "already_requested") {
-      setStatus("requested");
-    } else if (res.data?.success) {
+    if (res.error || res.data?.error === "already_requested" || res.data?.success) {
       setStatus("requested");
     } else {
       setStatus("error");
@@ -165,21 +156,15 @@ const PartnershipModal: FC<{
   const locked = partnership.approval_required && !isApproved;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-      onClick={handleBackdrop}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={handleBackdrop}>
       <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-border">
           <div className="flex items-center gap-4">
-            <PartnerLogo partnership={partnership} size="md" />
-            <div>
-              <h3 className="text-lg font-black uppercase tracking-tighter text-foreground leading-tight">{partnership.name}</h3>
-              {partnership.tagline && (
-                <p className="text-xs text-muted-foreground mt-0.5">{partnership.tagline}</p>
-              )}
-            </div>
+            <CompanyMark name={partnership.name} logoKey={partnership.logo_key} />
+            {partnership.tagline && (
+              <p className="text-xs text-muted-foreground">{partnership.tagline}</p>
+            )}
           </div>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 ml-2 mt-0.5">
             <X className="w-4 h-4" />
@@ -192,12 +177,7 @@ const PartnershipModal: FC<{
             <div className="border border-border rounded-lg p-4 bg-secondary/20 text-center space-y-3">
               <Lock className="w-5 h-5 text-muted-foreground mx-auto" />
               <p className="text-sm text-muted-foreground">Access to this partnership requires approval from the Rhino Ventures team.</p>
-              <RequestAccessButton
-                itemId={partnership.id}
-                itemName={partnership.name}
-                itemType="partnership"
-                companyName={companyName}
-              />
+              <RequestAccessButton itemId={partnership.id} itemName={partnership.name} itemType="partnership" companyName={companyName} />
             </div>
           ) : (
             <>
@@ -209,11 +189,7 @@ const PartnershipModal: FC<{
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Promo Code</p>
                   <div className="flex items-center gap-2 border border-border rounded-lg px-4 py-3 bg-secondary/20">
                     <code className="text-sm font-bold text-primary tracking-wider flex-1">{partnership.promo_code}</code>
-                    <button
-                      onClick={copyCode}
-                      className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
-                      title="Copy code"
-                    >
+                    <button onClick={copyCode} className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0" title="Copy code">
                       {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
                     </button>
                   </div>
@@ -226,14 +202,9 @@ const PartnershipModal: FC<{
         {/* Footer */}
         {!locked && partnership.redemption_url && (
           <div className="px-6 py-4 border-t border-border">
-            <a
-              href={partnership.redemption_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-5 py-3 rounded hover:opacity-90 transition-opacity"
-            >
-              Redeem Offer
-              <ExternalLink className="w-3.5 h-3.5" />
+            <a href={partnership.redemption_url} target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-5 py-3 rounded hover:opacity-90 transition-opacity">
+              Redeem Offer <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>
         )}
@@ -250,32 +221,22 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
     <button
       onClick={onClick}
       className="group relative flex flex-col items-start gap-3 p-4 border rounded-lg bg-white hover:border-[#1A7EC8] hover:shadow-md transition-all duration-200 text-left w-full min-h-[120px]"
-      style={{
-        borderColor: "#e2e8f0",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-      }}
+      style={{ borderColor: "#e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
     >
-      <div className="flex items-center gap-3 w-full">
-        <PartnerLogo partnership={partnership} size="sm" />
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-black uppercase tracking-tighter text-foreground group-hover:text-[#1A7EC8] transition-colors leading-tight">
-            {partnership.name}
-          </p>
-        </div>
+      <div className="flex items-center justify-between w-full">
+        <CompanyMark name={partnership.name} logoKey={partnership.logo_key} />
         {partnership.approval_required && (
           <Lock className="w-3 h-3 text-muted-foreground/50 flex-shrink-0" />
         )}
       </div>
       {description && (
-        <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">
-          {description}
-        </p>
+        <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">{description}</p>
       )}
     </button>
   );
 };
 
-// ── Grid helper: span cards wider when few items ──
+// ── Grid helper ──
 const getGridClasses = (count: number): string => {
   if (count === 1) return "grid grid-cols-1 gap-3";
   if (count === 2) return "grid grid-cols-1 sm:grid-cols-2 gap-3";
@@ -298,36 +259,19 @@ const PartnershipsSection: FC = () => {
   useEffect(() => {
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-
       const [{ data: partnerData }, { data: approvedData }] = await Promise.all([
-        supabase
-          .from("partnerships")
-          .select("*")
-          .order("display_order", { ascending: true })
-          .order("name", { ascending: true }),
+        supabase.from("partnerships").select("*").order("display_order", { ascending: true }).order("name", { ascending: true }),
         session
-          ? supabase
-              .from("partner_requests")
-              .select("item_id")
-              .eq("user_id", session.user.id)
-              .eq("item_type", "partnership")
-              .eq("status", "approved")
+          ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).eq("item_type", "partnership").eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
-
       setPartnerships((partnerData as Partnership[]) ?? []);
       setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
-
       if (session?.user?.email) {
         const domain = session.user.email.split("@")[1];
-        const { data: domainData } = await supabase
-          .from("approved_domains")
-          .select("company_name")
-          .eq("domain", domain)
-          .maybeSingle();
+        const { data: domainData } = await supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle();
         setCompanyName(domainData?.company_name ?? domain);
       }
-
       setLoading(false);
     };
     init();
