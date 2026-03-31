@@ -102,6 +102,8 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
         logo_path: rest.logo_path,
         primary_color: rest.primary_color,
         secondary_color: rest.secondary_color,
+        tertiary_color: rest.tertiary_color || null,
+        accent_color: rest.accent_color || null,
         brand_guidelines_path: rest.brand_guidelines_path,
         tagline: rest.tagline,
         additional_contacts: rest.additional_contacts,
