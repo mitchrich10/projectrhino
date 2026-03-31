@@ -13,6 +13,7 @@ serve(async (req) => {
       companyName, userEmail, teamMembers, needs, additionalNotes,
       logoPermission, announcingRaise, wantsRhinoSupport,
       techStack, priorityContext, logoPath, primaryColor, secondaryColor,
+      tertiaryColor, accentColor,
       brandGuidelinesPath, prioritiesOther,
     } = await req.json();
 
