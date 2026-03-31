@@ -92,6 +92,20 @@ const TechStackStep: FC<Props> = ({ data, onChange }) => {
           );
         })}
       </div>
+
+      {/* General other tools */}
+      <div className="border-t border-[#CDD8E3] pt-6">
+        <label className="block text-sm font-medium text-[#173660] mb-2">
+          Any other tools or platforms you use that we haven't listed?
+        </label>
+        <textarea
+          value={(stack as any).other_tools_notes ?? ""}
+          onChange={(e) => onChange({ tech_stack: { ...stack, other_tools_notes: e.target.value } as any })}
+          rows={3}
+          placeholder="e.g. Linear for project management, Retool for internal tools, Segment for analytics…"
+          className="w-full border border-[#CDD8E3] rounded-lg px-3 py-2 text-sm bg-white text-[#173660] placeholder:text-[#173660]/30 resize-none"
+        />
+      </div>
     </div>
   );
 };

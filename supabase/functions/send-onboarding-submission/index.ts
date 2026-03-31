@@ -9,32 +9,73 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { companyName, userEmail, teamMembers, needs, additionalNotes, logoPermission, announcingRaise, wantsRhinoSupport } = await req.json();
+    const {
+      companyName, userEmail, teamMembers, needs, additionalNotes,
+      logoPermission, announcingRaise, wantsRhinoSupport,
+      techStack, priorityContext, logoPath, primaryColor, secondaryColor,
+      brandGuidelinesPath, prioritiesOther,
+    } = await req.json();
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not set");
 
     const teamHtml = (teamMembers ?? [])
-      .map((m: { name: string; title: string; email: string }) =>
-        `<li><strong>${m.name}</strong>${m.title ? ` — ${m.title}` : ""}${m.email ? ` (${m.email})` : ""}</li>`
+      .map((m: { name: string; role?: string; title?: string; email: string }) =>
+        `<li><strong>${m.name}</strong>${m.role || m.title ? ` — ${m.role || m.title}` : ""}${m.email ? ` (${m.email})` : ""}</li>`
       ).join("");
 
     const needsHtml = (needs ?? []).length > 0
       ? (needs as string[]).map((n) => `<li>${n}</li>`).join("")
-      : "<li>None specified</li>";
+      : "<li><em>Not completed</em></li>";
+
+    // Tech stack summary
+    const techStackEntries = Object.entries(techStack ?? {}).filter(([k]) => k !== "other_tools_notes");
+    const techStackHtml = techStackEntries.length > 0
+      ? techStackEntries.map(([k, v]) => {
+          const vals = v as string[];
+          return vals.length > 0 ? `<li><strong>${k}:</strong> ${vals.join(", ")}</li>` : null;
+        }).filter(Boolean).join("") || "<li><em>Not completed</em></li>"
+      : "<li><em>Not completed</em></li>";
+
+    const otherToolsNotes = (techStack as any)?.other_tools_notes;
+
+    // Priority context
+    const contextEntries = Object.entries(priorityContext ?? {}).filter(([, v]) => (v as string)?.trim());
+    const contextHtml = contextEntries.length > 0
+      ? contextEntries.map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`).join("")
+      : "";
 
     const html = `
-      <h2>New Onboarding Submission: ${companyName}</h2>
+      <h2>Onboarding Submission: ${companyName}</h2>
       <p><strong>Submitted by:</strong> ${userEmail}</p>
+
+      <h3>Brand Assets</h3>
+      <ul>
+        <li><strong>Logo:</strong> ${logoPath ? `<a href="${logoPath}">Uploaded</a>` : "<em>Not provided</em>"}</li>
+        <li><strong>Primary colour:</strong> ${primaryColor ?? "<em>Default</em>"}</li>
+        <li><strong>Secondary colour:</strong> ${secondaryColor ?? "<em>Default</em>"}</li>
+        <li><strong>Brand guidelines:</strong> ${brandGuidelinesPath ? `<a href="${brandGuidelinesPath}">Uploaded</a>` : "<em>Not provided</em>"}</li>
+      </ul>
+
       <h3>Key Team Members</h3>
-      <ul>${teamHtml || "<li>None provided</li>"}</ul>
-      <h3>Short-term Needs</h3>
+      <ul>${teamHtml || "<li><em>Not completed</em></li>"}</ul>
+
+      <h3>Tech Stack</h3>
+      <ul>${techStackHtml}</ul>
+      ${otherToolsNotes ? `<p><strong>Other tools:</strong> ${otherToolsNotes}</p>` : ""}
+
+      <h3>Short-term Priorities</h3>
       <ul>${needsHtml}</ul>
+      ${contextHtml ? `<h4>Priority Context</h4><ul>${contextHtml}</ul>` : ""}
+      ${prioritiesOther ? `<p><strong>Other priorities:</strong> ${prioritiesOther}</p>` : ""}
       ${additionalNotes ? `<h3>Additional Notes</h3><p>${additionalNotes}</p>` : ""}
-      <h3>Logo on Rhino Site</h3>
-      <p>${logoPermission === true ? "✅ Yes — permission granted" : logoPermission === false ? "❌ Not yet" : "Not answered"}</p>
-      <h3>Announcing Raise</h3>
-      <p>${announcingRaise === true ? "✅ Yes" : announcingRaise === false ? "No / Not sure" : "Not answered"}${announcingRaise === true ? ` — Rhino support: ${wantsRhinoSupport === true ? "Yes please" : wantsRhinoSupport === false ? "We've got it covered" : "Not answered"}` : ""}</p>
+
+      <h3>Quick Questions</h3>
+      <ul>
+        <li><strong>Feature on Rhino site:</strong> ${logoPermission === true ? "✅ Yes" : logoPermission === false ? "❌ Not yet" : "<em>Not answered</em>"}</li>
+        <li><strong>Announcing raise:</strong> ${announcingRaise ?? "<em>Not answered</em>"}</li>
+        <li><strong>Rhino assistance requested:</strong> ${wantsRhinoSupport ?? "<em>Not answered</em>"}</li>
+      </ul>
     `;
 
     const res = await fetch("https://api.resend.com/emails", {
@@ -42,8 +83,8 @@ serve(async (req) => {
       headers: { "Authorization": `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: "Rhino Portal <portal@rhinovc.com>",
-        to: ["candace@rhinovc.com"],
-        subject: `New Onboarding Submission: ${companyName}`,
+        to: ["candace@rhinovc.com", "mitch@rhinovc.com"],
+        subject: `Onboarding Submission: ${companyName}`,
         html,
       }),
     });
