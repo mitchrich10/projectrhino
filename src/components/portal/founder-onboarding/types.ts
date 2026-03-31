@@ -4,6 +4,8 @@ export interface FounderOnboardingData {
   logo_path: string | null;
   primary_color: string;
   secondary_color: string;
+  tertiary_color: string;
+  accent_color: string;
   brand_guidelines_path: string | null;
   tagline: string | null;
   additional_contacts: Contact[];
