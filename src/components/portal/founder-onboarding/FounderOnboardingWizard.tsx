@@ -23,6 +23,8 @@ const EMPTY_DATA: FounderOnboardingData = {
   logo_path: null,
   primary_color: "#173660",
   secondary_color: "#1A7EC8",
+  tertiary_color: "",
+  accent_color: "",
   brand_guidelines_path: null,
   tagline: null,
   additional_contacts: [],
