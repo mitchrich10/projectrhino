@@ -32,6 +32,7 @@ interface Partnership {
   approval_required: boolean;
   detail_pdf_url: string | null;
   applies_to: string | null;
+  website_url: string | null;
 }
 
 const PARTNER_LOGOS: Record<string, string> = {
