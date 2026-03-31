@@ -231,15 +231,7 @@ const ResourcesSection: FC = () => {
               </div>
             </div>
           )}
-          {/* Always render Compensation section with Commission Calculator */}
-          {!grouped["Compensation"] && (
-            <div>
-              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">Compensation</h3>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <CommissionCalculatorCard />
-              </div>
-            </div>
-          )}
+          {/* Compensation section removed */}
           {Object.entries(grouped).sort().map(([category, items]) => (
             <div key={category}>
               <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">
