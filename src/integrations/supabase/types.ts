@@ -74,6 +74,117 @@ export type Database = {
         }
         Relationships: []
       }
+      founder_onboarding: {
+        Row: {
+          additional_contacts: Json | null
+          batch_id: string
+          brand_guidelines_path: string | null
+          completed: boolean | null
+          created_at: string
+          id: string
+          logo_path: string | null
+          primary_color: string | null
+          priorities: string[] | null
+          priorities_notes: string | null
+          priorities_other: string | null
+          secondary_color: string | null
+          tagline: string | null
+          tech_stack: Json | null
+          updated_at: string
+        }
+        Insert: {
+          additional_contacts?: Json | null
+          batch_id: string
+          brand_guidelines_path?: string | null
+          completed?: boolean | null
+          created_at?: string
+          id?: string
+          logo_path?: string | null
+          primary_color?: string | null
+          priorities?: string[] | null
+          priorities_notes?: string | null
+          priorities_other?: string | null
+          secondary_color?: string | null
+          tagline?: string | null
+          tech_stack?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          additional_contacts?: Json | null
+          batch_id?: string
+          brand_guidelines_path?: string | null
+          completed?: boolean | null
+          created_at?: string
+          id?: string
+          logo_path?: string | null
+          primary_color?: string | null
+          priorities?: string[] | null
+          priorities_notes?: string | null
+          priorities_other?: string | null
+          secondary_color?: string | null
+          tagline?: string | null
+          tech_stack?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      founder_onboarding_shares: {
+        Row: {
+          batch_id: string
+          created_at: string
+          created_by: string
+          id: string
+          target_step: number | null
+          token: string
+        }
+        Insert: {
+          batch_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          target_step?: number | null
+          token?: string
+        }
+        Update: {
+          batch_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          target_step?: number | null
+          token?: string
+        }
+        Relationships: []
+      }
+      founder_onboarding_step_completions: {
+        Row: {
+          batch_id: string
+          completed_at: string
+          id: string
+          step_number: number
+          user_email: string
+          user_id: string
+          user_name: string | null
+        }
+        Insert: {
+          batch_id: string
+          completed_at?: string
+          id?: string
+          step_number: number
+          user_email: string
+          user_id: string
+          user_name?: string | null
+        }
+        Update: {
+          batch_id?: string
+          completed_at?: string
+          id?: string
+          step_number?: number
+          user_email?: string
+          user_id?: string
+          user_name?: string | null
+        }
+        Relationships: []
+      }
       notification_subscriptions: {
         Row: {
           created_at: string
