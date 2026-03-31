@@ -35,7 +35,7 @@ interface Partnership {
 }
 
 const PARTNER_LOGOS: Record<string, string> = {
-  AWS: logoAws,
+  "AWS Activate": logoAws,
   "Microsoft for Startups": logoMicrosoftStartups,
   "Google Cloud": logoGoogleCloud,
   Stripe: logoStripe,
@@ -43,7 +43,7 @@ const PARTNER_LOGOS: Record<string, string> = {
   Float: logoFloat,
   Notion: logoNotion,
   DocSend: logoDocsend,
-  Boldhouse: logoBoldhouse,
+  BoldHouse: logoBoldhouse,
   Promosapien: logoPromosapien,
   "CMG Inc.": logoCmg,
   "Stem Health": companyLogos["stem-health"],
@@ -62,13 +62,14 @@ const PartnerLogo: FC<{
   const partnerLogo = PARTNER_LOGOS[name];
   const logoSrc = localLogo || partnerLogo;
   const h = size === "lg" ? "max-h-12" : "max-h-[48px]";
+  const w = size === "lg" ? "max-w-[160px]" : "max-w-[180px]";
 
   if (logoSrc) {
     return (
       <img
         src={logoSrc}
         alt={name}
-        className={`${h} max-w-[160px] object-contain`}
+        className={`${h} ${w} object-contain`}
         onError={onError}
       />
     );
@@ -251,16 +252,16 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
   return (
     <button
       onClick={onClick}
-      className="group relative flex flex-col items-center p-5 rounded-lg bg-white border border-[#DDE4EC] hover:border-[#1A7EC8] transition-all duration-200 text-left w-full"
+      className="group relative flex flex-col items-center justify-center rounded-lg bg-white border border-[#DDE4EC] hover:border-[#1A7EC8] transition-all duration-200 w-full"
       style={{
+        height: "140px",
         boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
         fontFamily: "'DM Sans', sans-serif",
       }}
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)"; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08)"; }}
     >
-      {/* Logo area — fixed height for alignment */}
-      <div className="h-[80px] w-full flex items-center justify-center">
+      <div className="h-[100px] w-full flex items-center justify-center px-4">
         {hasLogo && !logoFailed ? (
           <PartnerLogo
             name={partnership.name}
@@ -272,14 +273,6 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
         )}
       </div>
 
-      {/* Tagline only — no name text when logo is visible */}
-      {partnership.tagline && (
-        <p className="text-[13px] text-[#5C6B7A] mt-2 text-center leading-snug line-clamp-2 w-full">
-          {partnership.tagline}
-        </p>
-      )}
-
-      {/* Lock indicator */}
       {partnership.approval_required && (
         <Lock className="w-3 h-3 text-[#5C6B7A]/40 absolute top-3 right-3" />
       )}
