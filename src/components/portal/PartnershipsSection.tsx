@@ -3,6 +3,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ExternalLink, Copy, Check, Lock, X } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
 
+import logoAws from "@/assets/logo-aws.jpg";
+import logoMicrosoftStartups from "@/assets/logo-microsoft-startups.png";
+import logoGoogleCloud from "@/assets/logo-google-cloud.webp";
+import logoCarta from "@/assets/logo-carta.png";
+import logoFloat from "@/assets/logo-float.png";
+import logoNotion from "@/assets/logo-notion.png";
+import logoDocsend from "@/assets/logo-docsend.png";
+import logoBoldhouse from "@/assets/logo-boldhouse.jpg";
+import logoPromosapien from "@/assets/logo-promosapien.jpg";
+import logoCmg from "@/assets/logo-cmg.webp";
+import logoStripe from "@/assets/logo-article.png"; // placeholder, will map below
+
 interface Partnership {
   id: string;
   name: string;
@@ -17,57 +29,35 @@ interface Partnership {
   approval_required: boolean;
 }
 
-// Only companies with reliable Clearbit logos
-const LOGO_DOMAINS: Record<string, string> = {
-  AWS: "amazon.com",
-  "Microsoft for Startups": "microsoft.com",
-  "Google Cloud": "google.com",
-  Stripe: "stripe.com",
-  Carta: "carta.com",
-  Float: "float.com",
-  Notion: "notion.so",
-  DocSend: "docsend.com",
-  Article: "article.com",
-};
-
-const fallbackDescriptions: Record<string, string> = {
-  "Microsoft for Startups": "Cloud credits, developer tools, and Azure benefits for eligible startups",
-  "Google Cloud": "GCP credits and startup support program for Rhino portfolio companies",
-  Stripe: "Payment infrastructure with preferred rates for Rhino portfolio companies",
-  Carta: "Equity management and cap table software",
-  Float: "Cash flow forecasting and runway management for startups",
+// Map partnership names to local logo assets
+const PARTNER_LOGOS: Record<string, string> = {
+  AWS: logoAws,
+  "Microsoft for Startups": logoMicrosoftStartups,
+  "Google Cloud": logoGoogleCloud,
+  Stripe: "https://logo.clearbit.com/stripe.com",
+  Carta: logoCarta,
+  Float: logoFloat,
+  Notion: logoNotion,
+  DocSend: logoDocsend,
+  Boldhouse: logoBoldhouse,
+  Promosapien: logoPromosapien,
+  "CMG Inc.": logoCmg,
+  "Stem Health": companyLogos["stem-health"],
+  Article: companyLogos["article"],
 };
 
 // ── CompanyMark: shows logo XOR name, never both ──
 const CompanyMark: FC<{ name: string; logoKey?: string | null }> = ({ name, logoKey }) => {
   const localLogo = logoKey ? companyLogos[logoKey] : null;
 
-  // Local asset logo — always reliable
-  if (localLogo) {
-    return (
-      <div className="h-8 flex items-center">
-        <img src={localLogo} alt={name} style={{ objectFit: "contain", maxWidth: "120px", height: "32px" }} />
-      </div>
-    );
-  }
+  // Check partner logo map first
+  const partnerLogo = PARTNER_LOGOS[name];
+  const logoSrc = localLogo || partnerLogo;
 
-  // Clearbit logo with inline fallback
-  const domain = LOGO_DOMAINS[name];
-  if (domain) {
+  if (logoSrc) {
     return (
       <div className="h-8 flex items-center">
-        <img
-          src={`https://logo.clearbit.com/${domain}`}
-          alt=""
-          height={32}
-          style={{ objectFit: "contain", maxWidth: "120px" }}
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-            const sibling = e.currentTarget.nextElementSibling as HTMLSpanElement;
-            if (sibling) sibling.style.display = "block";
-          }}
-        />
-        <span style={{ display: "none", fontWeight: 700, fontSize: "15px" }}>{name}</span>
+        <img src={logoSrc} alt={name} style={{ objectFit: "contain", maxWidth: "120px", height: "32px" }} />
       </div>
     );
   }
