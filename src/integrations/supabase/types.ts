@@ -76,6 +76,7 @@ export type Database = {
       }
       founder_onboarding: {
         Row: {
+          accent_color: string | null
           additional_contacts: Json | null
           announcing_raise: string | null
           batch_id: string
@@ -94,9 +95,11 @@ export type Database = {
           secondary_color: string | null
           tagline: string | null
           tech_stack: Json | null
+          tertiary_color: string | null
           updated_at: string
         }
         Insert: {
+          accent_color?: string | null
           additional_contacts?: Json | null
           announcing_raise?: string | null
           batch_id: string
@@ -115,9 +118,11 @@ export type Database = {
           secondary_color?: string | null
           tagline?: string | null
           tech_stack?: Json | null
+          tertiary_color?: string | null
           updated_at?: string
         }
         Update: {
+          accent_color?: string | null
           additional_contacts?: Json | null
           announcing_raise?: string | null
           batch_id?: string
@@ -136,6 +141,7 @@ export type Database = {
           secondary_color?: string | null
           tagline?: string | null
           tech_stack?: Json | null
+          tertiary_color?: string | null
           updated_at?: string
         }
         Relationships: []
