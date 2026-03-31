@@ -3,12 +3,11 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, LogOut, Menu, X, BookOpen, Calendar, Handshake } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
-import rhinoLogoWhite from "@/assets/rhino-logo-white.png";
+import rhinoIconBlack from "@/assets/rhino-icon-black.png";
 import { companyLogos } from "@/lib/companyLogos";
 import ResourcesSection from "@/components/portal/ResourcesSection";
 import EventsSection from "@/components/portal/EventsSection";
 import PartnershipsSection from "@/components/portal/PartnershipsSection";
-import OnboardingSection from "@/components/portal/OnboardingSection";
 import { NotificationOptIn } from "@/components/portal/OnboardingSection";
 import RequestsSection from "@/components/portal/RequestsSection";
 import FounderOnboardingWizard from "@/components/portal/founder-onboarding/FounderOnboardingWizard";
@@ -28,19 +27,22 @@ const Portal: FC = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
-  const [isInvited, setIsInvited] = useState(false);
   const [batchId, setBatchId] = useState<string | null>(null);
   const [shareTargetStep, setShareTargetStep] = useState<number | null>(null);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_OUT" || (!session && event !== "INITIAL_SESSION")) {
         navigate("/partner-login");
       }
     });
 
     const init = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.user?.email) {
         navigate("/partner-login");
         return;
@@ -68,7 +70,7 @@ const Portal: FC = () => {
 
       const [{ data: domainData }, { data: inviteData }] = await Promise.all([
         supabase.from("approved_domains").select("company_name, logo_key").eq("domain", domain).maybeSingle(),
-        supabase.from("onboarding_invites").select("id, batch_id").eq("email", email.toLowerCase()).maybeSingle(),
+        supabase.from("onboarding_invites").select("batch_id").eq("email", email.toLowerCase()).maybeSingle(),
       ]);
 
       setCompany(domainData ?? { company_name: "Partner", logo_key: null });
@@ -83,14 +85,13 @@ const Portal: FC = () => {
       setUserId(session.user.id);
       setUserEmail(email);
       setUserName(fullName);
-      setIsInvited(!!inviteData || email.endsWith("@rhinovc.com"));
-      setBatchId((inviteData as any)?.batch_id ?? null);
+      setBatchId((inviteData as { batch_id?: string } | null)?.batch_id ?? null);
       setLoading(false);
     };
 
     init();
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, searchParams, setSearchParams]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -98,6 +99,7 @@ const Portal: FC = () => {
   };
 
   const logoSrc = company?.logo_key ? companyLogos[company.logo_key] : null;
+  const effectiveBatchId = batchId ?? userId ?? "00000000-0000-0000-0000-000000000001";
 
   if (loading) {
     return (
@@ -120,9 +122,7 @@ const Portal: FC = () => {
             {logoSrc ? (
               <img src={logoSrc} alt={company?.company_name} className="h-6 w-auto object-contain" />
             ) : (
-              <span className="text-xs font-bold uppercase tracking-widest text-foreground">
-                {company?.company_name}
-              </span>
+              <span className="text-xs font-bold uppercase tracking-widest text-foreground">{company?.company_name}</span>
             )}
             <button
               onClick={handleSignOut}
@@ -132,20 +132,13 @@ const Portal: FC = () => {
               Sign Out
             </button>
             {isAdmin && (
-              <Link
-                to="/admin"
-                className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] hover:opacity-70 transition-opacity"
-              >
+              <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] hover:opacity-70 transition-opacity">
                 Admin
               </Link>
             )}
           </div>
 
-          <button
-            className="md:hidden text-foreground"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
+          <button className="md:hidden text-foreground" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
@@ -166,9 +159,7 @@ const Portal: FC = () => {
               <LogOut className="w-3.5 h-3.5" />
               Sign Out
             </button>
-            {isAdmin && (
-              <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8]">Admin</Link>
-            )}
+            {isAdmin && <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8]">Admin</Link>}
           </div>
         )}
       </header>
@@ -180,10 +171,8 @@ const Portal: FC = () => {
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start justify-between gap-6">
               <div>
-                <img src={rhinoLogoWhite} alt="Rhino" className="h-8 w-auto opacity-80 mb-6" />
-                <h1 className="text-3xl font-bold text-white mb-3">
-                  Welcome to the Crash
-                </h1>
+                <img src={rhinoIconBlack} alt="Rhino logo" className="h-8 w-auto mb-6 invert" />
+                <h1 className="text-3xl font-bold text-white mb-3">Welcome to the Crash</h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
                   Your team's home base for Rhino partnerships, resources, and events. Get set up below so we can make sure you're plugged into everything that's relevant to you.
                 </p>
@@ -234,25 +223,21 @@ const Portal: FC = () => {
         </div>
 
         <div className="max-w-6xl mx-auto px-6 py-12 space-y-20">
-          {/* Founder Onboarding Wizard — shown for all invited users */}
-          {userId && isInvited && batchId && (
-            <FounderOnboardingWizard
-              userId={userId}
-              userEmail={userEmail}
-              userName={userName}
-              batchId={batchId}
-              companyName={company?.company_name ?? "Your Company"}
-              targetStep={shareTargetStep}
-            />
-          )}
-
-          {/* Checklist fallback — only for invited users WITHOUT a batch (legacy) */}
-          {userId && isInvited && !batchId && (
-            <OnboardingSection
-              userId={userId}
-              userEmail={userEmail}
-              isInvited={isInvited}
-            />
+          {userId && (
+            <section id="onboarding" className="space-y-4">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Onboarding</p>
+                <h2 className="text-2xl font-semibold tracking-tight text-[#173660]">Get set up</h2>
+              </div>
+              <FounderOnboardingWizard
+                userId={userId}
+                userEmail={userEmail}
+                userName={userName}
+                batchId={effectiveBatchId}
+                companyName={company?.company_name ?? "Your Company"}
+                targetStep={shareTargetStep}
+              />
+            </section>
           )}
 
           <div id="partnerships">
@@ -264,13 +249,7 @@ const Portal: FC = () => {
           <div id="events">
             <EventsSection />
           </div>
-          {userId && (
-            <RequestsSection
-              userId={userId}
-              userEmail={userEmail}
-              companyName={company?.company_name ?? ""}
-            />
-          )}
+          {userId && <RequestsSection userId={userId} userEmail={userEmail} companyName={company?.company_name ?? ""} />}
 
           {/* Notifications */}
           {userId && (
