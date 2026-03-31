@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ExternalLink, Copy, Check, Lock, X, Download } from "lucide-react";
+import { Loader2, ExternalLink, Copy, Check, Lock, Download } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,7 @@ import logoDocsend from "@/assets/logo-docsend.png";
 import logoBoldhouse from "@/assets/logo-boldhouse.jpg";
 import logoPromosapien from "@/assets/logo-promosapien.jpg";
 import logoCmg from "@/assets/logo-cmg.webp";
+import logoStripe from "@/assets/logo-stripe.png";
 
 interface Partnership {
   id: string;
@@ -37,7 +38,7 @@ const PARTNER_LOGOS: Record<string, string> = {
   AWS: logoAws,
   "Microsoft for Startups": logoMicrosoftStartups,
   "Google Cloud": logoGoogleCloud,
-  Stripe: "https://logo.clearbit.com/stripe.com",
+  Stripe: logoStripe,
   Carta: logoCarta,
   Float: logoFloat,
   Notion: logoNotion,
@@ -50,22 +51,27 @@ const PARTNER_LOGOS: Record<string, string> = {
   "Twig Fertility": companyLogos["twig"],
 };
 
-const FILTER_OPTIONS = [
-  { label: "All", value: "all" },
-  { label: "Software", value: "software" },
-  { label: "Producer", value: "producer" },
-  { label: "Both", value: "both" },
-] as const;
-
 // ── Logo renderer ──
-const PartnerLogo: FC<{ name: string; logoKey?: string | null; size?: "sm" | "lg" }> = ({ name, logoKey, size = "sm" }) => {
+const PartnerLogo: FC<{
+  name: string;
+  logoKey?: string | null;
+  size?: "sm" | "lg";
+  onError?: () => void;
+}> = ({ name, logoKey, size = "sm", onError }) => {
   const localLogo = logoKey ? companyLogos[logoKey] : null;
   const partnerLogo = PARTNER_LOGOS[name];
   const logoSrc = localLogo || partnerLogo;
-  const h = size === "lg" ? "h-12" : "h-8";
+  const h = size === "lg" ? "max-h-12" : "max-h-[48px]";
 
   if (logoSrc) {
-    return <img src={logoSrc} alt={name} className={`${h} object-contain max-w-[140px]`} />;
+    return (
+      <img
+        src={logoSrc}
+        alt={name}
+        className={`${h} max-w-[160px] object-contain`}
+        onError={onError}
+      />
+    );
   }
   return null;
 };
@@ -236,10 +242,16 @@ const PartnershipPanel: FC<{
 
 // ── Partnership Tile ──
 const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = ({ partnership, onClick }) => {
+  const [logoFailed, setLogoFailed] = useState(false);
+  const hasLogo = !!(
+    (partnership.logo_key && companyLogos[partnership.logo_key]) ||
+    PARTNER_LOGOS[partnership.name]
+  );
+
   return (
     <button
       onClick={onClick}
-      className="group relative flex flex-col items-start p-5 rounded-lg bg-white border border-[#DDE4EC] hover:border-[#1A7EC8] transition-all duration-200 text-left w-full"
+      className="group relative flex flex-col items-center p-5 rounded-lg bg-white border border-[#DDE4EC] hover:border-[#1A7EC8] transition-all duration-200 text-left w-full"
       style={{
         boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
         fontFamily: "'DM Sans', sans-serif",
@@ -247,19 +259,26 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)"; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08)"; }}
     >
-      {/* Logo area */}
-      <div className="h-[80px] w-full flex items-center justify-center mb-3">
-        <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} />
-        {!PARTNER_LOGOS[partnership.name] && !(partnership.logo_key && companyLogos[partnership.logo_key]) && (
+      {/* Logo area — fixed height for alignment */}
+      <div className="h-[80px] w-full flex items-center justify-center">
+        {hasLogo && !logoFailed ? (
+          <PartnerLogo
+            name={partnership.name}
+            logoKey={partnership.logo_key}
+            onError={() => setLogoFailed(true)}
+          />
+        ) : (
           <span className="text-base font-semibold text-[#173660]">{partnership.name}</span>
         )}
       </div>
-      {/* Name */}
-      <p className="text-sm font-semibold text-[#173660] leading-tight">{partnership.name}</p>
-      {/* Tagline */}
+
+      {/* Tagline only — no name text when logo is visible */}
       {partnership.tagline && (
-        <p className="text-[13px] text-[#5C6B7A] mt-1 line-clamp-1">{partnership.tagline}</p>
+        <p className="text-[13px] text-[#5C6B7A] mt-2 text-center leading-snug line-clamp-2 w-full">
+          {partnership.tagline}
+        </p>
       )}
+
       {/* Lock indicator */}
       {partnership.approval_required && (
         <Lock className="w-3 h-3 text-[#5C6B7A]/40 absolute top-3 right-3" />
@@ -267,25 +286,6 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
     </button>
   );
 };
-
-// ── Filter Bar ──
-const FilterBar: FC<{ active: string; onChange: (v: string) => void }> = ({ active, onChange }) => (
-  <div className="flex items-center gap-2 mb-6" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-    {FILTER_OPTIONS.map((opt) => (
-      <button
-        key={opt.value}
-        onClick={() => onChange(opt.value)}
-        className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-          active === opt.value
-            ? "bg-[#1A7EC8] text-white"
-            : "bg-white text-[#173660] border border-[#DDE4EC] hover:border-[#1A7EC8]"
-        }`}
-      >
-        {opt.label}
-      </button>
-    ))}
-  </div>
-);
 
 // ── Grid helper ──
 const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
@@ -297,7 +297,6 @@ const PartnershipsSection: FC = () => {
   const [selected, setSelected] = useState<Partnership | null>(null);
   const [companyName, setCompanyName] = useState("");
   const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
-  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     const init = async () => {
@@ -320,12 +319,7 @@ const PartnershipsSection: FC = () => {
     init();
   }, []);
 
-  const filtered = partnerships.filter((p) => {
-    if (filter === "all") return true;
-    return p.applies_to === filter || p.applies_to === "both";
-  });
-
-  const grouped = filtered.reduce<Record<string, Partnership[]>>((acc, p) => {
+  const grouped = partnerships.reduce<Record<string, Partnership[]>>((acc, p) => {
     (acc[p.category] = acc[p.category] ?? []).push(p);
     return acc;
   }, {});
@@ -337,15 +331,13 @@ const PartnershipsSection: FC = () => {
         Partnerships
       </h2>
 
-      <FilterBar active={filter} onChange={setFilter} />
-
       {loading ? (
         <div className="flex items-center gap-2 text-[#5C6B7A]">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span className="text-xs">Loading partnerships…</span>
         </div>
-      ) : filtered.length === 0 ? (
-        <p className="text-xs text-[#5C6B7A]">No partnerships match this filter.</p>
+      ) : partnerships.length === 0 ? (
+        <p className="text-xs text-[#5C6B7A]">No partnerships available.</p>
       ) : (
         <div className="space-y-8">
           {categories.map((category) => {
