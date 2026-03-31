@@ -44,6 +44,7 @@ const PARTNER_LOGOS: Record<string, string> = {
   "CMG Inc.": logoCmg,
   "Stem Health": companyLogos["stem-health"],
   Article: companyLogos["article"],
+  "Twig Fertility": companyLogos["twig"],
 };
 
 // ── CompanyMark: shows logo XOR name, never both ──
