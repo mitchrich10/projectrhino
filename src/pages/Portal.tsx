@@ -234,8 +234,8 @@ const Portal: FC = () => {
         </div>
 
         <div className="max-w-6xl mx-auto px-6 py-12 space-y-20">
-          {/* Founder Onboarding Wizard */}
-          {userId && batchId && (
+          {/* Founder Onboarding Wizard — shown for all invited users */}
+          {userId && isInvited && batchId && (
             <FounderOnboardingWizard
               userId={userId}
               userEmail={userEmail}
@@ -246,7 +246,8 @@ const Portal: FC = () => {
             />
           )}
 
-          {userId && (
+          {/* Checklist fallback — only for invited users WITHOUT a batch (legacy) */}
+          {userId && isInvited && !batchId && (
             <OnboardingSection
               userId={userId}
               userEmail={userEmail}
