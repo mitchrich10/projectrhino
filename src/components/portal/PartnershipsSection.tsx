@@ -32,6 +32,7 @@ interface Partnership {
   approval_required: boolean;
   detail_pdf_url: string | null;
   applies_to: string | null;
+  website_url: string | null;
 }
 
 const PARTNER_LOGOS: Record<string, string> = {
@@ -61,15 +62,20 @@ const PartnerLogo: FC<{
   const localLogo = logoKey ? companyLogos[logoKey] : null;
   const partnerLogo = PARTNER_LOGOS[name];
   const logoSrc = localLogo || partnerLogo;
-  const h = size === "lg" ? "max-h-12" : "max-h-[48px]";
-  const w = size === "lg" ? "max-w-[160px]" : "max-w-[180px]";
 
   if (logoSrc) {
     return (
       <img
         src={logoSrc}
         alt={name}
-        className={`${h} ${w} object-contain block mx-auto`}
+        className="object-contain block mx-auto"
+        style={{
+          maxHeight: size === "lg" ? "56px" : "48px",
+          maxWidth: "180px",
+          width: "auto",
+          height: "auto",
+          minHeight: "32px",
+        }}
         onError={onError}
       />
     );
@@ -167,14 +173,27 @@ const PartnershipPanel: FC<{
       <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         {/* Header */}
         <div className="px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
-          <div className="flex items-start justify-between">
-            <div className="space-y-3">
-              <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} size="lg" />
+          <div className="flex flex-col items-start gap-3">
+            <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} size="lg" />
+            {/* Show name only if no logo */}
+            {!PARTNER_LOGOS[partnership.name] && !(partnership.logo_key && companyLogos[partnership.logo_key]) && (
               <h2 className="text-xl font-semibold text-[#173660]">{partnership.name}</h2>
-              <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
-                {partnership.category}
-              </Badge>
-            </div>
+            )}
+            {(() => {
+              const url = partnership.website_url || partnership.redemption_url;
+              if (!url) return null;
+              try {
+                const domain = new URL(url).hostname.replace(/^www\./, "");
+                return (
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1A7EC8] hover:underline">
+                    {domain}
+                  </a>
+                );
+              } catch { return null; }
+            })()}
+            <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
+              {partnership.category}
+            </Badge>
           </div>
           {partnership.tagline && (
             <p className="text-sm text-[#5C6B7A] mt-3">{partnership.tagline}</p>
@@ -218,7 +237,7 @@ const PartnershipPanel: FC<{
           <div className="px-6 py-5 border-t border-[#DDE4EC] space-y-3">
             <button
               onClick={handleDownload}
-              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+              className="flex items-center justify-center gap-2 w-full border border-[#DDE4EC] text-[#173660] text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#F4F7FA] transition-colors"
               style={{ fontFamily: "'DM Sans', sans-serif" }}
             >
               <Download className="w-3.5 h-3.5" />
@@ -229,7 +248,7 @@ const PartnershipPanel: FC<{
                 href={partnership.redemption_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full border border-[#DDE4EC] text-[#173660] text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#F4F7FA] transition-colors"
+                className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
               >
                 Redeem Offer <ExternalLink className="w-3.5 h-3.5" />
               </a>
