@@ -69,7 +69,7 @@ const PartnerLogo: FC<{
       <img
         src={logoSrc}
         alt={name}
-        className={`${h} ${w} object-contain`}
+        className={`${h} ${w} object-contain block mx-auto`}
         onError={onError}
       />
     );
