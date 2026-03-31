@@ -162,18 +162,6 @@ const BrandAssetsStep: FC<Props> = ({ data, onChange, batchId }) => {
           className="hidden"
         />
       </div>
-
-      {/* Tagline */}
-      <div>
-        <label className="block text-sm font-medium text-[#173660] mb-2">Tagline or One-liner</label>
-        <input
-          type="text"
-          value={data.tagline ?? ""}
-          onChange={(e) => onChange({ tagline: e.target.value })}
-          placeholder="e.g. Making healthcare accessible for everyone"
-          className="w-full h-10 border border-[#CDD8E3] rounded-lg px-3 text-sm bg-white text-[#173660] placeholder:text-[#173660]/30"
-        />
-      </div>
     </div>
   );
 };

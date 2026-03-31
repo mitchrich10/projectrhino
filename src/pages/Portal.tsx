@@ -1,9 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, LogOut, Menu, X, BookOpen, Calendar, Handshake } from "lucide-react";
+import { Loader2, LogOut, Menu, X, BookOpen, Handshake, Link2, Copy, Check, ChevronDown } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
-import rhinoIconBlack from "@/assets/rhino-icon-black.png";
 import { companyLogos } from "@/lib/companyLogos";
 import ResourcesSection from "@/components/portal/ResourcesSection";
 import EventsSection from "@/components/portal/EventsSection";
@@ -28,7 +27,15 @@ const Portal: FC = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [batchId, setBatchId] = useState<string | null>(null);
+  const [isInvited, setIsInvited] = useState(false);
   const [shareTargetStep, setShareTargetStep] = useState<number | null>(null);
+  const [hasEvents, setHasEvents] = useState(false);
+  const [copiedPortal, setCopiedPortal] = useState(false);
+
+  // Admin preview
+  const [previewCompanies, setPreviewCompanies] = useState<{ domain: string; company_name: string }[]>([]);
+  const [previewAs, setPreviewAs] = useState<string | null>(null);
+  const [previewDropdownOpen, setPreviewDropdownOpen] = useState(false);
 
   useEffect(() => {
     const {
@@ -68,12 +75,14 @@ const Portal: FC = () => {
         setSearchParams(searchParams, { replace: true });
       }
 
-      const [{ data: domainData }, { data: inviteData }] = await Promise.all([
+      const [{ data: domainData }, { data: inviteData }, { data: eventsData }] = await Promise.all([
         supabase.from("approved_domains").select("company_name, logo_key").eq("domain", domain).maybeSingle(),
         supabase.from("onboarding_invites").select("batch_id").eq("email", email.toLowerCase()).maybeSingle(),
+        supabase.from("events").select("id").gte("event_date", new Date().toISOString()).limit(1),
       ]);
 
       setCompany(domainData ?? { company_name: "Partner", logo_key: null });
+      setHasEvents((eventsData?.length ?? 0) > 0);
 
       if (!domainData && !email.endsWith("@rhinovc.com")) {
         await supabase.auth.signOut();
@@ -81,11 +90,25 @@ const Portal: FC = () => {
         return;
       }
 
-      setIsAdmin(email.endsWith("@rhinovc.com"));
+      const adminUser = email.endsWith("@rhinovc.com");
+      setIsAdmin(adminUser);
       setUserId(session.user.id);
       setUserEmail(email);
       setUserName(fullName);
+
+      const hasInvite = !!(inviteData as { batch_id?: string } | null)?.batch_id;
+      setIsInvited(hasInvite);
       setBatchId((inviteData as { batch_id?: string } | null)?.batch_id ?? null);
+
+      // Load admin preview companies
+      if (adminUser) {
+        const { data: allDomains } = await supabase
+          .from("approved_domains")
+          .select("domain, company_name")
+          .order("company_name");
+        setPreviewCompanies((allDomains ?? []) as { domain: string; company_name: string }[]);
+      }
+
       setLoading(false);
     };
 
@@ -98,8 +121,21 @@ const Portal: FC = () => {
     navigate("/partner-login");
   };
 
+  const handleCopyPortalLink = () => {
+    navigator.clipboard.writeText(`${window.location.origin}/partner-login`);
+    setCopiedPortal(true);
+    setTimeout(() => setCopiedPortal(false), 2000);
+  };
+
+  // Determine display company name (preview override or actual)
+  const displayCompanyName = previewAs
+    ? previewCompanies.find((c) => c.domain === previewAs)?.company_name ?? company?.company_name
+    : company?.company_name;
+
   const logoSrc = company?.logo_key ? companyLogos[company.logo_key] : null;
-  const effectiveBatchId = batchId ?? userId ?? "00000000-0000-0000-0000-000000000001";
+
+  // Onboarding visibility: only for invited users or admins
+  const showOnboarding = (isInvited && batchId) || isAdmin;
 
   if (loading) {
     return (
@@ -167,15 +203,58 @@ const Portal: FC = () => {
       {/* Main content */}
       <main className="flex-1 pt-16">
         {/* Hero — Navy background */}
-        <div className="bg-[#173660] px-6 py-12">
+        <div className="bg-[#173660] px-6 py-12 relative">
+          {/* Admin Preview Dropdown */}
+          {isAdmin && previewCompanies.length > 0 && (
+            <div className="absolute top-4 right-6 z-10">
+              <div className="relative">
+                <button
+                  onClick={() => setPreviewDropdownOpen(!previewDropdownOpen)}
+                  className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/40 hover:text-white/70 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 transition-colors"
+                >
+                  Preview as {previewAs ? previewCompanies.find(c => c.domain === previewAs)?.company_name : "—"}
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+                {previewDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-lg shadow-lg border border-[#CDD8E3] max-h-64 overflow-y-auto z-20">
+                    <button
+                      onClick={() => { setPreviewAs(null); setPreviewDropdownOpen(false); }}
+                      className={`w-full text-left px-3 py-2 text-xs hover:bg-[#F4F7FA] transition-colors ${!previewAs ? "font-bold text-[#1A7EC8]" : "text-[#173660]"}`}
+                    >
+                      Default (my view)
+                    </button>
+                    {previewCompanies.map((c) => (
+                      <button
+                        key={c.domain}
+                        onClick={() => { setPreviewAs(c.domain); setPreviewDropdownOpen(false); }}
+                        className={`w-full text-left px-3 py-2 text-xs hover:bg-[#F4F7FA] transition-colors ${previewAs === c.domain ? "font-bold text-[#1A7EC8]" : "text-[#173660]"}`}
+                      >
+                        {c.company_name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start justify-between gap-6">
               <div>
-                <img src={rhinoIconBlack} alt="Rhino logo" className="h-8 w-auto mb-6 invert" />
-                <h1 className="text-3xl font-bold text-white mb-3">Welcome to the Crash</h1>
+                <h1 className="text-3xl font-bold text-white mb-3">
+                  Welcome to the Crash{displayCompanyName && displayCompanyName !== "Partner" ? `, ${displayCompanyName}` : ""}
+                </h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
                   Your team's home base for Rhino partnerships, resources, and events. Get set up below so we can make sure you're plugged into everything that's relevant to you.
                 </p>
+                {/* Share with your team button */}
+                <button
+                  onClick={handleCopyPortalLink}
+                  className="mt-4 flex items-center gap-2 text-xs font-semibold text-white/50 border border-white/20 rounded-lg px-4 py-2 hover:text-white hover:border-white/40 transition-colors"
+                >
+                  {copiedPortal ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
+                  {copiedPortal ? "Link copied!" : "Share with your team"}
+                </button>
               </div>
               {logoSrc && (
                 <img
@@ -186,8 +265,8 @@ const Portal: FC = () => {
               )}
             </div>
 
-            {/* Nav cards */}
-            <div className="grid sm:grid-cols-3 gap-4 mt-8">
+            {/* Nav cards — only Partnerships and Resources */}
+            <div className="grid sm:grid-cols-2 gap-4 mt-8">
               <a
                 href="#partnerships"
                 className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-5 hover:bg-white/15 transition-all hover:shadow-lg group"
@@ -208,36 +287,21 @@ const Portal: FC = () => {
                   Templates, guides, and vendor recommendations curated by Rhino — from legal docs to hiring frameworks.
                 </p>
               </a>
-              <a
-                href="#events"
-                className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-5 hover:bg-white/15 transition-all hover:shadow-lg group"
-              >
-                <Calendar className="w-5 h-5 text-[#1A7EC8] mb-3" />
-                <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Events</p>
-                <p className="text-xs text-white/50 leading-relaxed">
-                  Upcoming founder dinners, workshops, and portfolio gatherings. Stay in the loop and connect with your peers.
-                </p>
-              </a>
             </div>
           </div>
         </div>
 
         <div className="max-w-6xl mx-auto px-6 py-12 space-y-20">
-          {userId && (
-            <section id="onboarding" className="space-y-4">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Onboarding</p>
-                <h2 className="text-2xl font-semibold tracking-tight text-[#173660]">Get set up</h2>
-              </div>
-              <FounderOnboardingWizard
-                userId={userId}
-                userEmail={userEmail}
-                userName={userName}
-                batchId={effectiveBatchId}
-                companyName={company?.company_name ?? "Your Company"}
-                targetStep={shareTargetStep}
-              />
-            </section>
+          {/* Onboarding — only for invited users or admins */}
+          {showOnboarding && userId && (
+            <FounderOnboardingWizard
+              userId={userId}
+              userEmail={userEmail}
+              userName={userName}
+              batchId={batchId ?? userId}
+              companyName={displayCompanyName ?? "Your Company"}
+              targetStep={shareTargetStep}
+            />
           )}
 
           <div id="partnerships">
@@ -246,9 +310,12 @@ const Portal: FC = () => {
           <div id="resources">
             <ResourcesSection />
           </div>
-          <div id="events">
-            <EventsSection />
-          </div>
+          {/* Events — only render if events exist */}
+          {hasEvents && (
+            <div id="events">
+              <EventsSection />
+            </div>
+          )}
           {userId && <RequestsSection userId={userId} userEmail={userEmail} companyName={company?.company_name ?? ""} />}
 
           {/* Notifications */}

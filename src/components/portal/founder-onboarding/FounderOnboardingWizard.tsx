@@ -145,11 +145,38 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
   const handleNext = () => { if (currentStep < 4) goToStep(currentStep + 1); };
   const handleBack = () => { if (currentStep > 1) goToStep(currentStep - 1); };
 
+  const sendCompletionEmail = async (finalData: FounderOnboardingData) => {
+    try {
+      await supabase.functions.invoke("send-onboarding-submission", {
+        body: {
+          companyName,
+          userEmail,
+          teamMembers: finalData.additional_contacts ?? [],
+          needs: finalData.priorities ?? [],
+          additionalNotes: finalData.priorities_notes,
+          logoPermission: finalData.feature_company,
+          announcingRaise: finalData.announcing_raise,
+          wantsRhinoSupport: finalData.rhino_assistance,
+          techStack: finalData.tech_stack,
+          priorityContext: finalData.priority_context,
+          logoPath: finalData.logo_path,
+          primaryColor: finalData.primary_color,
+          secondaryColor: finalData.secondary_color,
+          brandGuidelinesPath: finalData.brand_guidelines_path,
+          prioritiesOther: finalData.priorities_other,
+        },
+      });
+    } catch (e) {
+      console.error("Failed to send completion email", e);
+    }
+  };
+
   const handleComplete = async () => {
     await markStepComplete(currentStep);
     const newData = { ...data, completed: true };
     setData(newData);
     await saveData(newData);
+    await sendCompletionEmail(newData);
     setCollapsed(true);
     localStorage.setItem(`onboarding-collapsed-${batchId}`, "true");
   };
@@ -198,9 +225,6 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Get set up</p>
           <h2 className="text-white text-lg font-semibold">Tell us about {companyName}</h2>
-          <p className="text-white/60 text-sm mt-0.5">
-            Complete these steps so Rhino can make sure you're plugged into everything that's relevant.
-          </p>
         </div>
         <div className="flex items-center gap-3">
           {saving && (
@@ -277,7 +301,7 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
               onClick={handleComplete}
               className="h-10 px-6 text-sm font-semibold text-white bg-[#1A7EC8] rounded-lg hover:bg-[#173660] transition-colors"
             >
-              Complete Onboarding
+              Finish
             </button>
           )}
         </div>
