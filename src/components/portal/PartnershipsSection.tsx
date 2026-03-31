@@ -6,7 +6,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { generatePartnershipPdf } from "@/lib/generatePartnershipPdf";
 
-import logoAws from "@/assets/logo-aws.jpg";
+import logoAws from "@/assets/logo-aws.png";
 import logoMicrosoftStartups from "@/assets/logo-microsoft-startups.png";
 import logoGoogleCloud from "@/assets/logo-google-cloud.webp";
 import logoCarta from "@/assets/logo-carta.png";
