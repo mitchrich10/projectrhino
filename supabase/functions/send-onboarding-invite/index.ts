@@ -107,7 +107,7 @@ serve(async (req: Request) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: "Rhino Ventures <onboarding@resend.dev>",
+          from: "Candace Hobin <candace@rhinovc.com>",
           to: trimmedEmails,
           subject: "Welcome to the Rhino Ventures Partner Portal",
           html: emailHtml,
