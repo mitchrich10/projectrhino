@@ -74,20 +74,20 @@ serve(async (req: Request) => {
     // Send ONE group email to all recipients together
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <div style="background: #000; padding: 24px 32px;">
-          <h1 style="color: #fff; font-size: 22px; font-weight: 900; letter-spacing: -1px; margin: 0; text-transform: uppercase;">Rhino Ventures</h1>
-          <p style="color: #aaa; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin: 4px 0 0;">Partner Portal</p>
+        <div style="background: #173660; padding: 24px 32px;">
+          <h1 style="color: #fff; font-size: 22px; font-weight: 900; letter-spacing: -1px; margin: 0; text-transform: uppercase;">RHINO</h1>
+          <p style="color: #aaa; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin: 2px 0 0;">Partner Portal</p>
         </div>
         <div style="padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
-          <h2 style="font-size: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin: 0 0 16px;">Welcome to the Rhino Partner Portal</h2>
+          <h2 style="font-size: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin: 0 0 16px;">Welcome to the Crash</h2>
           <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
-            We've set up your team's access to the Rhino Ventures Partner Portal — your hub for partnerships, resources, events, and everything you need as a portfolio company.
+            We've set up your portal access. When you log in, you'll find a short onboarding flow to get your team set up — share your brand assets, key contacts, and current priorities so we can make sure you're plugged into everything relevant.
           </p>
           ${note ? `<p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">${note}</p>` : ""}
           <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 24px;">
             Click below to sign in. Enter your email address and we'll send you a magic link to access the portal.
           </p>
-          <a href="${portalUrl}" style="display: inline-block; background: #000; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 14px 28px; text-decoration: none; border-radius: 4px;">
+          <a href="${portalUrl}" style="display: inline-block; background: #1A7EC8; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 14px 28px; text-decoration: none; border-radius: 4px;">
             Access the Portal →
           </a>
           <p style="color: #999; font-size: 11px; margin: 24px 0 0;">
