@@ -73,7 +73,8 @@ const PartnerLogo: FC<{
         className="object-contain block mx-auto"
         style={{
           width: "100%",
-          height: size === "lg" ? "56px" : "48px",
+          maxHeight: size === "lg" ? "56px" : "48px",
+          maxWidth: "180px",
           objectFit: "contain",
         }}
         onLoad={(event) => {
