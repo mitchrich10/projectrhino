@@ -73,7 +73,8 @@ const PartnerLogo: FC<{
         className="object-contain block mx-auto"
         style={{
           width: "100%",
-          height: size === "lg" ? "56px" : "48px",
+          maxHeight: size === "lg" ? "56px" : "48px",
+          maxWidth: "180px",
           objectFit: "contain",
         }}
         onLoad={(event) => {
@@ -216,17 +217,6 @@ const PartnershipPanel: FC<{
             {!PARTNER_LOGOS[partnership.name] && !(partnership.logo_key && companyLogos[partnership.logo_key]) && (
               <h2 className="text-xl font-semibold text-[#173660]">{partnership.name}</h2>
             )}
-            {redemptionDomain && partnership.redemption_url && (
-              <a
-                href={/^https?:\/\//i.test(partnership.redemption_url) ? partnership.redemption_url : `https://${partnership.redemption_url}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#1A7EC8] underline"
-                style={{ fontSize: "13px" }}
-              >
-                {redemptionDomain}
-              </a>
-            )}
             <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
               {partnership.category}
             </Badge>
@@ -270,7 +260,18 @@ const PartnershipPanel: FC<{
 
         {/* Footer actions */}
         {!locked && (
-          <div className="px-6 py-5 border-t border-[#DDE4EC]">
+          <div className="px-6 py-5 border-t border-[#DDE4EC] space-y-3">
+            {redemptionDomain && partnership.redemption_url && (
+              <a
+                href={/^https?:\/\//i.test(partnership.redemption_url) ? partnership.redemption_url : `https://${partnership.redemption_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center text-[#1A7EC8] underline"
+                style={{ fontSize: "13px" }}
+              >
+                {redemptionDomain}
+              </a>
+            )}
             {partnership.redemption_url && (
               <a
                 href={partnership.redemption_url}
