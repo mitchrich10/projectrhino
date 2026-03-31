@@ -248,7 +248,7 @@ const PartnershipPanel: FC<{
                 href={partnership.redemption_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full border border-[#DDE4EC] text-[#173660] text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#F4F7FA] transition-colors"
+                className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
               >
                 Redeem Offer <ExternalLink className="w-3.5 h-3.5" />
               </a>
