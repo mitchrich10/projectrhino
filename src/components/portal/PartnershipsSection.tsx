@@ -35,7 +35,7 @@ interface Partnership {
 }
 
 const PARTNER_LOGOS: Record<string, string> = {
-  AWS: logoAws,
+  "AWS Activate": logoAws,
   "Microsoft for Startups": logoMicrosoftStartups,
   "Google Cloud": logoGoogleCloud,
   Stripe: logoStripe,
@@ -43,7 +43,7 @@ const PARTNER_LOGOS: Record<string, string> = {
   Float: logoFloat,
   Notion: logoNotion,
   DocSend: logoDocsend,
-  Boldhouse: logoBoldhouse,
+  BoldHouse: logoBoldhouse,
   Promosapien: logoPromosapien,
   "CMG Inc.": logoCmg,
   "Stem Health": companyLogos["stem-health"],
