@@ -86,6 +86,7 @@ const Navigation: FC<NavigationProps> = ({ variant = "dark" }) => {
           >
             LP Portal
           </a>
+          <Link to="/partner-login" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Rhino Community Portal</Link>
           <Link to="/contact" onClick={close} className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors duration-200 uppercase tracking-widest">Contact</Link>
         </div>
       )}
