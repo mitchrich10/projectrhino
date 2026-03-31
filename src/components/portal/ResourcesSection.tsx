@@ -108,11 +108,8 @@ const RequestAccessButton: FC<{
 };
 
 // ── Interactive Tool Cards ─────────────────────────────────────────────────────
-// CommissionCalculatorCard removed
-      </span>
-    </div>
-  </Link>
-);
+
+
 
 const OptionModellerCard: FC = () => (
   <Link
