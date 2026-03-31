@@ -173,14 +173,27 @@ const PartnershipPanel: FC<{
       <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         {/* Header */}
         <div className="px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
-          <div className="flex items-start justify-between">
-            <div className="space-y-3">
-              <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} size="lg" />
+          <div className="flex flex-col items-start gap-3">
+            <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} size="lg" />
+            {/* Show name only if no logo */}
+            {!PARTNER_LOGOS[partnership.name] && !(partnership.logo_key && companyLogos[partnership.logo_key]) && (
               <h2 className="text-xl font-semibold text-[#173660]">{partnership.name}</h2>
-              <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
-                {partnership.category}
-              </Badge>
-            </div>
+            )}
+            {(() => {
+              const url = partnership.website_url || partnership.redemption_url;
+              if (!url) return null;
+              try {
+                const domain = new URL(url).hostname.replace(/^www\./, "");
+                return (
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1A7EC8] hover:underline">
+                    {domain}
+                  </a>
+                );
+              } catch { return null; }
+            })()}
+            <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
+              {partnership.category}
+            </Badge>
           </div>
           {partnership.tagline && (
             <p className="text-sm text-[#5C6B7A] mt-3">{partnership.tagline}</p>
