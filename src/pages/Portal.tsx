@@ -180,12 +180,7 @@ const Portal: FC = () => {
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start justify-between gap-6">
               <div>
-                <div className="flex items-center gap-4 mb-4">
-                  <img src={rhinoLogoWhite} alt="Rhino" className="h-8 w-auto opacity-80" />
-                </div>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-2">
-                  The Crash
-                </p>
+                <img src={rhinoLogoWhite} alt="Rhino" className="h-8 w-auto opacity-80 mb-6" />
                 <h1 className="text-3xl font-bold text-white mb-3">
                   Welcome to the Crash
                 </h1>
