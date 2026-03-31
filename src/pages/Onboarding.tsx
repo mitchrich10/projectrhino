@@ -3,9 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Loader2, CheckCircle2, Plus, Trash2, Upload, X,
-  BookOpen, Calendar, Users, Mail, ArrowRight, Copy, Check, Send, Link2
+  BookOpen, Calendar, Handshake, ArrowRight, Copy, Check, Send, Link2, UserPlus, Users
 } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
+import rhinoLogoWhite from "@/assets/rhino-logo-white.png";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface TeamMember {
@@ -15,50 +16,62 @@ interface TeamMember {
 }
 
 const NEEDS_OPTIONS = [
-  { value: "Hiring", label: "Hiring" },
-  { value: "Legal intro", label: "Legal intro" },
-  { value: "Customer intros", label: "Customer intros" },
-  { value: "Finance/accounting", label: "Finance / Accounting" },
-  { value: "PR/marketing", label: "PR / Marketing" },
-  { value: "Other", label: "Other" },
+  { value: "Hiring key roles", label: "Hiring key roles", contextPrompt: "What roles are you looking to fill?" },
+  { value: "Setting up or improving board reporting", label: "Board reporting", contextPrompt: "Where are you at today? (e.g., no current reporting, informal updates, looking to formalize)" },
+  { value: "Exploring cloud/AI credits", label: "Cloud / AI credits", contextPrompt: "Which platforms are you most interested in? (e.g., AWS, GCP, Azure, OpenAI)" },
+  { value: "Financial modelling or forecasting", label: "Financial modelling", contextPrompt: "What are you trying to model? (e.g., unit economics, fundraising projections, pricing)" },
+  { value: "Fundraising prep (next round)", label: "Fundraising prep", contextPrompt: "What stage and timeline are you thinking? (e.g., Series A in 12 months)" },
+  { value: "Legal/compliance structuring", label: "Legal / compliance", contextPrompt: "What's the focus? (e.g., corporate restructuring, employment law, IP protection)" },
+  { value: "Sales/marketing infrastructure", label: "Sales / marketing", contextPrompt: "What are you looking to build or improve? (e.g., CRM setup, demand gen, brand strategy)" },
+  { value: "Other", label: "Other", contextPrompt: "Please describe…" },
 ];
 
 const emptyMember = (): TeamMember => ({ name: "", title: "", email: "" });
 
 // ── Welcome / Portal Overview ─────────────────────────────────────────────────
 const WelcomeOverview: FC = () => (
-  <div className="mb-10 pb-10 border-b border-border">
-    <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Partner Portal</p>
-    <h1 className="text-3xl font-black uppercase tracking-tighter text-foreground mb-4 leading-tight">
-      Welcome to Rhino
-    </h1>
-    <p className="text-sm text-muted-foreground mb-8 max-w-xl leading-relaxed">
-      We're glad you're here. This portal is your home base for everything Rhino has to offer its portfolio companies. Complete the intake form below so we can get to know you better and hit the ground running.
-    </p>
+  <div className="mb-10">
+    {/* Navy hero */}
+    <div className="bg-[#173660] rounded-xl px-8 py-10 mb-8 -mx-2">
+      <div className="flex items-center gap-4 mb-4">
+        <img src={rhinoLogoWhite} alt="Rhino" className="h-8 w-auto opacity-80" />
+      </div>
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-2">
+        The Crash
+      </p>
+      <h1 className="text-3xl font-bold text-white mb-3 leading-tight">
+        Welcome to the Crash
+      </h1>
+      <p className="text-sm text-white/60 max-w-xl leading-relaxed">
+        Your team's home base for Rhino partnerships, resources, and events. Get set up below so we can make sure you're plugged into everything that's relevant to you.
+      </p>
+    </div>
+
+    {/* Nav cards */}
     <div className="grid sm:grid-cols-3 gap-4">
-      <div className="border border-border rounded-xl p-5 bg-secondary/20">
-        <BookOpen className="w-5 h-5 text-primary mb-3" />
-        <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">Resources</p>
-        <p className="text-xs text-muted-foreground leading-relaxed">Templates, guides, and vendor recommendations curated by Rhino — from legal docs to hiring frameworks.</p>
+      <div className="bg-white border border-[#CDD8E3] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-shadow">
+        <Handshake className="w-5 h-5 text-[#1A7EC8] mb-3" />
+        <p className="text-xs font-bold uppercase tracking-widest text-[#173660] mb-1">Partnerships</p>
+        <p className="text-xs text-[#173660]/50 leading-relaxed">Discounts, credits, and tools available to Crash companies — from cloud infrastructure to hiring platforms.</p>
       </div>
-      <div className="border border-border rounded-xl p-5 bg-secondary/20">
-        <Calendar className="w-5 h-5 text-primary mb-3" />
-        <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">Events</p>
-        <p className="text-xs text-muted-foreground leading-relaxed">Upcoming founder dinners, workshops, and portfolio gatherings. Stay in the loop and connect with your peers.</p>
+      <div className="bg-white border border-[#CDD8E3] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-shadow">
+        <BookOpen className="w-5 h-5 text-[#1A7EC8] mb-3" />
+        <p className="text-xs font-bold uppercase tracking-widest text-[#173660] mb-1">Resources</p>
+        <p className="text-xs text-[#173660]/50 leading-relaxed">Templates, guides, and vendor recommendations curated by Rhino — from legal docs to hiring frameworks.</p>
       </div>
-      <div className="border border-border rounded-xl p-5 bg-secondary/20">
-        <Mail className="w-5 h-5 text-primary mb-3" />
-        <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">Reach Rhino</p>
-        <p className="text-xs text-muted-foreground leading-relaxed">Need an intro, a sounding board, or just want to say hi? Email us at <a href="mailto:team@rhinovc.com" className="text-primary font-semibold hover:underline">team@rhinovc.com</a> — we respond fast.</p>
+      <div className="bg-white border border-[#CDD8E3] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-shadow">
+        <Calendar className="w-5 h-5 text-[#1A7EC8] mb-3" />
+        <p className="text-xs font-bold uppercase tracking-widest text-[#173660] mb-1">Events</p>
+        <p className="text-xs text-[#173660]/50 leading-relaxed">Upcoming founder dinners, workshops, and portfolio gatherings. Stay in the loop and connect with your peers.</p>
       </div>
     </div>
   </div>
 );
 
-// ── Share Portal Access ────────────────────────────────────────────────────────
+// ── Share Portal Access — two mechanisms ─────────────────────────────────────
 const SharePortalAccess: FC<{ companyName: string; userEmail: string }> = ({ companyName, userEmail }) => {
   const portalUrl = `${window.location.origin}/partner-login`;
-  const [copied, setCopied] = useState(false);
+  const [copiedPortal, setCopiedPortal] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [sending, setSending] = useState(false);
   const [sendResults, setSendResults] = useState<{ email: string; success: boolean }[] | null>(null);
@@ -66,8 +79,8 @@ const SharePortalAccess: FC<{ companyName: string; userEmail: string }> = ({ com
 
   const handleCopy = () => {
     navigator.clipboard.writeText(portalUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedPortal(true);
+    setTimeout(() => setCopiedPortal(false), 2000);
   };
 
   const handleSendInvites = async () => {
@@ -76,12 +89,7 @@ const SharePortalAccess: FC<{ companyName: string; userEmail: string }> = ({ com
     setSending(true); setSendError(null); setSendResults(null);
 
     const { data, error } = await supabase.functions.invoke("send-portal-invite", {
-      body: {
-        emails,
-        senderName: userEmail,
-        companyName,
-        portalUrl,
-      },
+      body: { emails, senderName: userEmail, companyName, portalUrl },
     });
 
     if (error) {
@@ -94,63 +102,63 @@ const SharePortalAccess: FC<{ companyName: string; userEmail: string }> = ({ com
   };
 
   return (
-    <div className="mt-10 border border-border rounded-xl p-6 bg-secondary/10">
-      <div className="flex items-center gap-2 mb-1">
-        <Link2 className="w-4 h-4 text-primary" />
-        <p className="text-xs font-black uppercase tracking-widest text-foreground">Share Portal Access</p>
-      </div>
-      <p className="text-xs text-muted-foreground mb-5 leading-relaxed">
-        Your team can access the portal using their <strong>{userEmail.split("@")[1]}</strong> work email. Share the link directly or send invites below.
-      </p>
-
-      {/* Copyable link */}
-      <div className="flex items-center gap-2 mb-6">
-        <div className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-xs font-mono text-muted-foreground truncate">
-          {portalUrl}
+    <div className="mt-10 space-y-4">
+      {/* Share portal with team */}
+      <div className="border border-[#CDD8E3] rounded-xl p-6 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+        <div className="flex items-center gap-2 mb-1">
+          <Link2 className="w-4 h-4 text-[#1A7EC8]" />
+          <p className="text-sm font-bold text-[#173660]">Share portal with your team</p>
         </div>
-        <button
-          onClick={handleCopy}
-          className="flex items-center gap-1.5 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-3 py-2 rounded hover:opacity-90 transition-opacity flex-shrink-0"
-        >
-          {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-          {copied ? "Copied!" : "Copy"}
-        </button>
-      </div>
+        <p className="text-xs text-[#173660]/50 mb-4 leading-relaxed">
+          Anyone on your company's Google domain can access the full portal — partnerships, resources, and events. Share the link directly or send invites below.
+        </p>
 
-      {/* Email invite */}
-      <div>
-        <label className="block text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">
-          Or send an email invite
-        </label>
-        <textarea
-          value={emailInput}
-          onChange={(e) => setEmailInput(e.target.value)}
-          rows={3}
-          placeholder={"colleague@yourcompany.com\nanother@yourcompany.com"}
-          className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none font-mono mb-3"
-        />
-        <p className="text-[10px] text-muted-foreground mb-3">Separate multiple emails by new line, comma, or semicolon.</p>
-        <button
-          onClick={handleSendInvites}
-          disabled={sending || !emailInput.trim()}
-          className="flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
-        >
-          {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-          {sending ? "Sending…" : "Send Invites"}
-        </button>
-
-        {sendError && <p className="text-xs text-destructive mt-2">{sendError}</p>}
-        {sendResults && (
-          <div className="mt-3 space-y-1">
-            {sendResults.map((r) => (
-              <div key={r.email} className={`flex items-center gap-2 text-xs ${r.success ? "text-green-600" : "text-destructive"}`}>
-                {r.success ? <Check className="w-3.5 h-3.5 flex-shrink-0" /> : <X className="w-3.5 h-3.5 flex-shrink-0" />}
-                <span className="font-mono">{r.email}</span>
-                {r.success && <span className="text-muted-foreground">— invite sent</span>}
-              </div>
-            ))}
+        <div className="flex items-center gap-2 mb-5">
+          <div className="flex-1 bg-[#F4F7FA] border border-[#CDD8E3] rounded-lg px-3 py-2 text-xs font-mono text-[#173660]/60 truncate">
+            {portalUrl}
           </div>
-        )}
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-1.5 bg-[#1A7EC8] text-white text-xs font-bold uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-[#173660] transition-colors flex-shrink-0"
+          >
+            {copiedPortal ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+            {copiedPortal ? "Copied!" : "Copy"}
+          </button>
+        </div>
+
+        <div>
+          <label className="block text-[10px] font-bold uppercase tracking-widest text-[#173660]/50 mb-2">
+            Or send an email invite
+          </label>
+          <textarea
+            value={emailInput}
+            onChange={(e) => setEmailInput(e.target.value)}
+            rows={2}
+            placeholder={"colleague@yourcompany.com"}
+            className="w-full bg-[#F4F7FA] border border-[#CDD8E3] rounded-lg px-3 py-2 text-sm text-[#173660] placeholder:text-[#173660]/30 resize-none mb-2"
+          />
+          <button
+            onClick={handleSendInvites}
+            disabled={sending || !emailInput.trim()}
+            className="flex items-center gap-2 bg-[#1A7EC8] text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-[#173660] transition-colors disabled:opacity-50"
+          >
+            {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+            {sending ? "Sending…" : "Send Invites"}
+          </button>
+
+          {sendError && <p className="text-xs text-destructive mt-2">{sendError}</p>}
+          {sendResults && (
+            <div className="mt-3 space-y-1">
+              {sendResults.map((r) => (
+                <div key={r.email} className={`flex items-center gap-2 text-xs ${r.success ? "text-[#a3d7c2]" : "text-destructive"}`}>
+                  {r.success ? <Check className="w-3.5 h-3.5 flex-shrink-0" /> : <X className="w-3.5 h-3.5 flex-shrink-0" />}
+                  <span className="font-mono">{r.email}</span>
+                  {r.success && <span className="text-[#173660]/40">— invite sent</span>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -160,16 +168,16 @@ const SharePortalAccess: FC<{ companyName: string; userEmail: string }> = ({ com
 const ThankYou: FC<{ companyName: string; userEmail: string }> = ({ companyName, userEmail }) => (
   <div className="py-12">
     <div className="text-center mb-10">
-      <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-6" />
-      <h2 className="text-2xl font-black uppercase tracking-tighter text-foreground mb-3">
+      <CheckCircle2 className="w-16 h-16 text-[#a3d7c2] mx-auto mb-6" />
+      <h2 className="text-2xl font-bold text-[#173660] mb-3">
         You're all set!
       </h2>
-      <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
-        Thanks for completing your intake form. The Rhino team will review your submission and reach out shortly. In the meantime, explore the portal.
+      <p className="text-sm text-[#173660]/60 mb-8 max-w-md mx-auto leading-relaxed">
+        Thanks for getting set up. The Rhino team will review and reach out shortly. In the meantime, explore the portal.
       </p>
       <Link
         to="/portal"
-        className="inline-flex items-center gap-2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-6 py-3 rounded hover:opacity-90 transition-opacity"
+        className="inline-flex items-center gap-2 bg-[#1A7EC8] text-white text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-lg hover:bg-[#173660] transition-colors"
       >
         Go to Portal <ArrowRight className="w-3.5 h-3.5" />
       </Link>
@@ -190,11 +198,11 @@ const OnboardingPage: FC = () => {
   const [brandAssets, setBrandAssets] = useState<File[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([emptyMember()]);
   const [needs, setNeeds] = useState<string[]>([]);
-  const [needsOther, setNeedsOther] = useState("");
+  const [needsContext, setNeedsContext] = useState<Record<string, string>>({});
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [logoPermission, setLogoPermission] = useState<boolean | null>(null);
-  const [announcingRaise, setAnnouncingRaise] = useState<boolean | null>(null);
-  const [wantsRhinoSupport, setWantsRhinoSupport] = useState<boolean | null>(null);
+  const [announcingRaise, setAnnouncingRaise] = useState<string | null>(null);
+  const [wantsRhinoAssistance, setWantsRhinoAssistance] = useState<string | null>(null);
 
   // UI state
   const [submitting, setSubmitting] = useState(false);
@@ -236,7 +244,6 @@ const OnboardingPage: FC = () => {
       const names = new Set(prev.map((f) => f.name));
       return [...prev, ...files.filter((f) => !names.has(f.name))];
     });
-    // reset input so re-selecting same file works
     e.target.value = "";
   };
 
@@ -264,7 +271,6 @@ const OnboardingPage: FC = () => {
     if (!userId) return;
     setError(null);
 
-    // Validate at least one team member has a name
     const validMembers = teamMembers.filter((m) => m.name.trim());
     if (validMembers.length === 0) {
       setError("Please add at least one team member.");
@@ -274,7 +280,6 @@ const OnboardingPage: FC = () => {
     setSubmitting(true);
 
     try {
-      // Upload brand assets if provided (store first file path in logo_path for compatibility)
       let logoPath: string | null = null;
       for (const asset of brandAssets) {
         const ext = asset.name.split(".").pop();
@@ -286,10 +291,10 @@ const OnboardingPage: FC = () => {
         if (!logoPath) logoPath = path;
       }
 
-      // Build final needs array (replace "Other" placeholder with actual text if provided)
       const finalNeeds = needs.filter((n) => n !== "Other");
-      if (needs.includes("Other") && needsOther.trim()) {
-        finalNeeds.push(`Other: ${needsOther.trim()}`);
+      const otherContext = needsContext["Other"];
+      if (needs.includes("Other") && otherContext?.trim()) {
+        finalNeeds.push(`Other: ${otherContext.trim()}`);
       } else if (needs.includes("Other")) {
         finalNeeds.push("Other");
       }
@@ -301,13 +306,12 @@ const OnboardingPage: FC = () => {
         logo_path: logoPath,
         team_members: validMembers as unknown as never,
         needs: finalNeeds,
-        needs_other: needsOther.trim() || null,
+        needs_other: otherContext?.trim() || null,
         additional_notes: additionalNotes.trim() || null,
       } as never);
 
       if (insertError) throw new Error(insertError.message);
 
-      // Send notification email
       await supabase.functions.invoke("send-onboarding-submission", {
         body: {
           companyName,
@@ -317,9 +321,9 @@ const OnboardingPage: FC = () => {
           additionalNotes: additionalNotes.trim() || null,
           logoPermission,
           announcingRaise,
-          wantsRhinoSupport,
+          wantsRhinoSupport: wantsRhinoAssistance,
         },
-      }).catch(() => { /* best-effort — don't block on email failure */ });
+      }).catch(() => {});
 
       setSubmitted(true);
     } catch (err: unknown) {
@@ -331,23 +335,23 @@ const OnboardingPage: FC = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      <div className="min-h-screen bg-[#F4F7FA] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1A7EC8]" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen bg-[#F4F7FA] text-foreground flex flex-col" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-md border-b border-border">
+      <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-[#CDD8E3]">
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/">
             <img src={rhinoLogo} alt="Rhino Ventures" className="h-7 w-auto" />
           </Link>
           <Link
             to="/portal"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-bold uppercase tracking-widest text-[#173660]/50 hover:text-[#173660] transition-colors"
           >
             Back to Portal
           </Link>
@@ -363,42 +367,34 @@ const OnboardingPage: FC = () => {
           ) : (
             <>
               <div className="mb-8">
-                <p className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Intake Form</p>
-                <h2 className="text-xl font-black uppercase tracking-tighter text-foreground">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Get set up</p>
+                <h2 className="text-xl font-bold text-[#173660]">
                   Tell us about {companyName}
                 </h2>
               </div>
 
               <div className="space-y-10">
                 {/* Brand Assets */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-3">
+                <div className="bg-white border border-[#CDD8E3] border-l-4 border-l-[#1A7EC8] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Branding</p>
+                  <label className="block text-sm font-bold text-[#173660] mb-1">
                     Brand Assets
                   </label>
-                  <p className="text-xs text-muted-foreground mb-4">Upload your logo, brand kit, or any other brand assets (PNG, SVG, JPG, PDF, ZIP — up to 50 MB each).</p>
+                  <p className="text-xs text-[#173660]/50 mb-4">Upload your logo, brand kit, or any other brand assets (PNG, SVG, JPG, PDF, ZIP — up to 50 MB each).</p>
                   {brandAssets.length > 0 && (
                     <div className="mb-3 space-y-2">
                       {brandAssets.map((file) => (
-                        <div key={file.name} className="flex items-center gap-3 border border-border rounded-lg px-3 py-2 bg-secondary/10">
+                        <div key={file.name} className="flex items-center gap-3 border border-[#CDD8E3] rounded-lg px-3 py-2 bg-[#F4F7FA]">
                           {file.type.startsWith("image/") ? (
-                            <img
-                              src={URL.createObjectURL(file)}
-                              alt={file.name}
-                              className="h-8 w-8 object-contain rounded bg-white flex-shrink-0"
-                            />
+                            <img src={URL.createObjectURL(file)} alt={file.name} className="h-8 w-8 object-contain rounded bg-white flex-shrink-0" />
                           ) : (
-                            <div className="h-8 w-8 flex items-center justify-center bg-secondary rounded flex-shrink-0">
-                              <Upload className="w-3.5 h-3.5 text-muted-foreground" />
+                            <div className="h-8 w-8 flex items-center justify-center bg-[#CDD8E3]/30 rounded flex-shrink-0">
+                              <Upload className="w-3.5 h-3.5 text-[#173660]/40" />
                             </div>
                           )}
-                          <span className="text-xs text-foreground flex-1 truncate">{file.name}</span>
-                          <span className="text-[10px] text-muted-foreground flex-shrink-0">
-                            {(file.size / 1024 / 1024).toFixed(1)} MB
-                          </span>
-                          <button
-                            onClick={() => removeBrandAsset(file.name)}
-                            className="text-muted-foreground hover:text-destructive transition-colors flex-shrink-0"
-                          >
+                          <span className="text-xs text-[#173660] flex-1 truncate">{file.name}</span>
+                          <span className="text-[10px] text-[#173660]/40 flex-shrink-0">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
+                          <button onClick={() => removeBrandAsset(file.name)} className="text-[#173660]/30 hover:text-red-500 transition-colors flex-shrink-0">
                             <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
@@ -407,7 +403,7 @@ const OnboardingPage: FC = () => {
                   )}
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center gap-3 border border-dashed border-border rounded-xl px-6 py-5 text-sm text-muted-foreground hover:text-foreground hover:border-primary transition-colors w-full sm:w-auto"
+                    className="flex items-center gap-3 border-2 border-dashed border-[#CDD8E3] rounded-xl px-6 py-5 text-sm text-[#173660]/50 hover:text-[#173660] hover:border-[#1A7EC8] transition-colors w-full sm:w-auto"
                   >
                     <Upload className="w-4 h-4 flex-shrink-0" />
                     <span className="text-xs font-bold uppercase tracking-widest">
@@ -425,203 +421,197 @@ const OnboardingPage: FC = () => {
                 </div>
 
                 {/* Team Members */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-1">
+                <div className="bg-white border border-[#CDD8E3] border-l-4 border-l-[#1A7EC8] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Your team</p>
+                  <label className="block text-sm font-bold text-[#173660] mb-1">
                     Key Team Members
                   </label>
-                  <p className="text-xs text-muted-foreground mb-4">Who should Rhino be in touch with? Add founders and key team leads.</p>
+                  <p className="text-xs text-[#173660]/50 mb-4">Who should we loop in? Add the people on your team we should reach out to for events, operational discussions, finance check-ins, and portfolio updates.</p>
                   <div className="space-y-3">
                     {teamMembers.map((member, idx) => (
-                      <div key={idx} className="border border-border rounded-xl p-4 bg-secondary/10">
+                      <div key={idx} className="border border-[#CDD8E3] rounded-xl p-4 bg-[#F4F7FA]">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
-                            <Users className="w-3.5 h-3.5 text-primary" />
-                            <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                            <Users className="w-3.5 h-3.5 text-[#1A7EC8]" />
+                            <span className="text-xs font-bold uppercase tracking-widest text-[#173660]/50">
                               Team Member {idx + 1}
                             </span>
                           </div>
                           {teamMembers.length > 1 && (
-                            <button onClick={() => removeMember(idx)} className="text-muted-foreground hover:text-destructive transition-colors">
+                            <button onClick={() => removeMember(idx)} className="text-[#173660]/30 hover:text-red-500 transition-colors">
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           )}
                         </div>
                         <div className="grid sm:grid-cols-3 gap-3">
                           <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Name *</label>
-                            <input
-                              type="text"
-                              value={member.name}
-                              onChange={(e) => updateMember(idx, "name", e.target.value)}
-                              placeholder="Jane Smith"
-                              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                            />
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-[#173660]/40 mb-1">Name</label>
+                            <input type="text" value={member.name} onChange={(e) => updateMember(idx, "name", e.target.value)} placeholder="Jane Smith" className="w-full bg-white border border-[#CDD8E3] rounded-lg px-3 py-2 text-sm text-[#173660] placeholder:text-[#173660]/30 focus:outline-none focus:ring-1 focus:ring-[#1A7EC8]" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Title</label>
-                            <input
-                              type="text"
-                              value={member.title}
-                              onChange={(e) => updateMember(idx, "title", e.target.value)}
-                              placeholder="CEO"
-                              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                            />
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-[#173660]/40 mb-1">Title</label>
+                            <input type="text" value={member.title} onChange={(e) => updateMember(idx, "title", e.target.value)} placeholder="CEO" className="w-full bg-white border border-[#CDD8E3] rounded-lg px-3 py-2 text-sm text-[#173660] placeholder:text-[#173660]/30 focus:outline-none focus:ring-1 focus:ring-[#1A7EC8]" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Email</label>
-                            <input
-                              type="email"
-                              value={member.email}
-                              onChange={(e) => updateMember(idx, "email", e.target.value)}
-                              placeholder="jane@company.com"
-                              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                            />
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-[#173660]/40 mb-1">Email</label>
+                            <input type="email" value={member.email} onChange={(e) => updateMember(idx, "email", e.target.value)} placeholder="jane@company.com" className="w-full bg-white border border-[#CDD8E3] rounded-lg px-3 py-2 text-sm text-[#173660] placeholder:text-[#173660]/30 focus:outline-none focus:ring-1 focus:ring-[#1A7EC8]" />
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                  <button
-                    onClick={addMember}
-                    className="mt-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
-                  >
+                  <button onClick={addMember} className="mt-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#1A7EC8] hover:text-[#173660] transition-colors">
                     <Plus className="w-3.5 h-3.5" /> Add Another Member
                   </button>
                 </div>
 
-                {/* Short-term Needs */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-1">
+                {/* Short-term Needs with expandable context */}
+                <div className="bg-white border border-[#CDD8E3] border-l-4 border-l-[#1A7EC8] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Priorities</p>
+                  <label className="block text-sm font-bold text-[#173660] mb-1">
                     Short-term Needs
                   </label>
-                  <p className="text-xs text-muted-foreground mb-4">What's top of mind right now? Select all that apply.</p>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {NEEDS_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        onClick={() => toggleNeed(opt.value)}
-                        className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-colors ${
-                          needs.includes(opt.value)
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-secondary/30 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                  {needs.includes("Other") && (
-                    <input
-                      type="text"
-                      value={needsOther}
-                      onChange={(e) => setNeedsOther(e.target.value)}
-                      placeholder="Please describe…"
-                      className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary mt-2"
-                    />
-                  )}
-                </div>
-
-                {/* Logo Permission */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-1">
-                    Can we feature your logo on the Rhino site?
-                  </label>
-                  <p className="text-xs text-muted-foreground mb-4">We'd love to showcase our portfolio companies on rhinovc.com.</p>
-                  <div className="flex gap-3">
-                    {[{ label: "Yes, go for it", value: true }, { label: "Not yet", value: false }].map(({ label, value }) => (
-                      <button
-                        key={String(value)}
-                        type="button"
-                        onClick={() => setLogoPermission(value)}
-                        className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-colors ${
-                          logoPermission === value
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-secondary/30 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Announcing Raise */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-1">
-                    Are you planning to announce your raise?
-                  </label>
-                  <p className="text-xs text-muted-foreground mb-4">Let us know if a public announcement is on the horizon.</p>
-                  <div className="flex gap-3 mb-4">
-                    {[{ label: "Yes", value: true }, { label: "No / Not sure", value: false }].map(({ label, value }) => (
-                      <button
-                        key={String(value)}
-                        type="button"
-                        onClick={() => { setAnnouncingRaise(value); if (!value) setWantsRhinoSupport(null); }}
-                        className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-colors ${
-                          announcingRaise === value
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-secondary/30 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                  {announcingRaise === true && (
-                    <div className="pl-4 border-l-2 border-primary/30">
-                      <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">Would you like Rhino's support with the announcement?</p>
-                      <p className="text-xs text-muted-foreground mb-3">We can help with amplification, intros to press contacts, and more.</p>
-                      <div className="flex gap-3">
-                        {[{ label: "Yes please", value: true }, { label: "We've got it covered", value: false }].map(({ label, value }) => (
+                  <p className="text-xs text-[#173660]/50 mb-4">What's top of mind right now? Select all that apply.</p>
+                  <div className="space-y-2">
+                    {NEEDS_OPTIONS.map((opt) => {
+                      const isSelected = needs.includes(opt.value);
+                      return (
+                        <div key={opt.value}>
                           <button
-                            key={String(value)}
-                            type="button"
-                            onClick={() => setWantsRhinoSupport(value)}
-                            className={`text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full border transition-colors ${
-                              wantsRhinoSupport === value
-                                ? "bg-primary text-primary-foreground border-primary"
-                                : "bg-secondary/30 text-muted-foreground border-border hover:text-foreground hover:border-foreground/30"
+                            onClick={() => toggleNeed(opt.value)}
+                            className={`w-full text-left px-4 py-3 rounded-lg border text-sm font-medium transition-colors ${
+                              isSelected
+                                ? "bg-[#1A7EC8]/5 border-[#1A7EC8] text-[#173660]"
+                                : "bg-[#F4F7FA] text-[#173660]/70 border-[#CDD8E3] hover:border-[#1A7EC8]/50"
                             }`}
                           >
-                            {label}
+                            {opt.label}
                           </button>
-                        ))}
-                      </div>
+                          {isSelected && (
+                            <div className="ml-4 mt-2 mb-3">
+                              <input
+                                type="text"
+                                value={needsContext[opt.value] ?? ""}
+                                onChange={(e) => setNeedsContext((p) => ({ ...p, [opt.value]: e.target.value }))}
+                                placeholder={opt.contextPrompt}
+                                className="w-full h-10 border border-[#CDD8E3] rounded-lg px-3 text-sm bg-[#F4F7FA] text-[#173660] placeholder:text-[#173660]/40 focus:outline-none focus:ring-1 focus:ring-[#1A7EC8]"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Rhino assistance */}
+                  <div className="mt-6 pt-6 border-t border-[#CDD8E3]">
+                    <label className="block text-sm font-semibold text-[#173660] mb-3">
+                      Would you like Rhino's assistance with any of your short-term needs?
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { label: "Yes", value: "yes" },
+                        { label: "No", value: "no" },
+                        { label: "Not sure", value: "not_sure" },
+                      ].map(({ label, value }) => (
+                        <button
+                          key={value}
+                          onClick={() => setWantsRhinoAssistance(value)}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                            wantsRhinoAssistance === value
+                              ? "bg-[#1A7EC8] text-white border-[#1A7EC8]"
+                              : "bg-white text-[#173660] border-[#CDD8E3] hover:border-[#1A7EC8]"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                </div>
+
+                {/* Logo Permission + Announcing Raise */}
+                <div className="bg-white border border-[#CDD8E3] border-l-4 border-l-[#1A7EC8] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.08)] space-y-6">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Quick questions</p>
+                    <label className="block text-sm font-semibold text-[#173660] mb-3">
+                      Can we feature your company on the Rhino site?
+                    </label>
+                    <div className="flex gap-3">
+                      {[{ label: "Yes, go for it", value: true }, { label: "Not yet", value: false }].map(({ label, value }) => (
+                        <button
+                          key={String(value)}
+                          type="button"
+                          onClick={() => setLogoPermission(value)}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                            logoPermission === value
+                              ? "bg-[#1A7EC8] text-white border-[#1A7EC8]"
+                              : "bg-white text-[#173660] border-[#CDD8E3] hover:border-[#1A7EC8]"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-[#CDD8E3] pt-6">
+                    <label className="block text-sm font-semibold text-[#173660] mb-3">
+                      Are you planning to announce your raise?
+                    </label>
+                    <div className="flex flex-wrap gap-3">
+                      {[
+                        { label: "Yes", value: "yes" },
+                        { label: "No", value: "no" },
+                        { label: "Not yet decided", value: "not_yet" },
+                      ].map(({ label, value }) => (
+                        <button
+                          key={value}
+                          type="button"
+                          onClick={() => setAnnouncingRaise(value)}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                            announcingRaise === value
+                              ? "bg-[#1A7EC8] text-white border-[#1A7EC8]"
+                              : "bg-white text-[#173660] border-[#CDD8E3] hover:border-[#1A7EC8]"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Anything Else */}
-                <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-foreground mb-1">
+                <div className="bg-white border border-[#CDD8E3] border-l-4 border-l-[#1A7EC8] rounded-xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+                  <label className="block text-sm font-semibold text-[#173660] mb-2">
                     Anything else you'd like Rhino to know?
                   </label>
-                  <p className="text-xs text-muted-foreground mb-3">Context about your business, current challenges, or how we can be most helpful.</p>
+                  <p className="text-xs text-[#173660]/50 mb-3">Context about your business, current challenges, or how we can be most helpful.</p>
                   <textarea
                     value={additionalNotes}
                     onChange={(e) => setAdditionalNotes(e.target.value)}
                     rows={4}
                     placeholder="We're currently focused on… Our biggest challenge right now is…"
-                    className="w-full bg-secondary/30 border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+                    className="w-full bg-[#F4F7FA] border border-[#CDD8E3] rounded-xl px-4 py-3 text-sm text-[#173660] placeholder:text-[#173660]/30 focus:outline-none focus:ring-1 focus:ring-[#1A7EC8] resize-none"
                   />
                 </div>
 
                 {error && (
-                  <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
-                    <p className="text-sm text-destructive">{error}</p>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                    <p className="text-sm text-red-600">{error}</p>
                   </div>
                 )}
 
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="flex items-center gap-2 bg-primary text-primary-foreground text-sm font-bold uppercase tracking-widest px-8 py-3 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+                  className="flex items-center gap-2 bg-[#1A7EC8] text-white text-sm font-bold uppercase tracking-widest px-8 py-3 rounded-lg hover:bg-[#173660] transition-colors disabled:opacity-50"
                 >
                   {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-                  {submitting ? "Submitting…" : "Submit Intake Form"}
+                  {submitting ? "Submitting…" : "Submit"}
                 </button>
 
-                {/* Share portal access — available before submission too */}
                 <SharePortalAccess companyName={companyName} userEmail={userEmail} />
               </div>
             </>

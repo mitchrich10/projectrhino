@@ -31,9 +31,10 @@ const KeyContactsStep: FC<Props> = ({ data, onChange, founderEmail, founderName 
   return (
     <div className="space-y-8" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <div>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Your team</p>
         <h3 className="text-lg font-semibold text-[#173660] mb-1">Key Contacts</h3>
         <p className="text-sm text-[#173660]/60">
-          Let us know who to loop in on relevant topics — finance, operations, marketing, or other areas where Rhino can help.
+          Who should we loop in? Add the people on your team we should reach out to for events, operational discussions, finance check-ins, and portfolio updates.
         </p>
       </div>
 

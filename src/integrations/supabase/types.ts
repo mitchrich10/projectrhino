@@ -77,16 +77,20 @@ export type Database = {
       founder_onboarding: {
         Row: {
           additional_contacts: Json | null
+          announcing_raise: string | null
           batch_id: string
           brand_guidelines_path: string | null
           completed: boolean | null
           created_at: string
+          feature_company: boolean | null
           id: string
           logo_path: string | null
           primary_color: string | null
           priorities: string[] | null
           priorities_notes: string | null
           priorities_other: string | null
+          priority_context: Json | null
+          rhino_assistance: string | null
           secondary_color: string | null
           tagline: string | null
           tech_stack: Json | null
@@ -94,16 +98,20 @@ export type Database = {
         }
         Insert: {
           additional_contacts?: Json | null
+          announcing_raise?: string | null
           batch_id: string
           brand_guidelines_path?: string | null
           completed?: boolean | null
           created_at?: string
+          feature_company?: boolean | null
           id?: string
           logo_path?: string | null
           primary_color?: string | null
           priorities?: string[] | null
           priorities_notes?: string | null
           priorities_other?: string | null
+          priority_context?: Json | null
+          rhino_assistance?: string | null
           secondary_color?: string | null
           tagline?: string | null
           tech_stack?: Json | null
@@ -111,16 +119,20 @@ export type Database = {
         }
         Update: {
           additional_contacts?: Json | null
+          announcing_raise?: string | null
           batch_id?: string
           brand_guidelines_path?: string | null
           completed?: boolean | null
           created_at?: string
+          feature_company?: boolean | null
           id?: string
           logo_path?: string | null
           primary_color?: string | null
           priorities?: string[] | null
           priorities_notes?: string | null
           priorities_other?: string | null
+          priority_context?: Json | null
+          rhino_assistance?: string | null
           secondary_color?: string | null
           tagline?: string | null
           tech_stack?: Json | null
