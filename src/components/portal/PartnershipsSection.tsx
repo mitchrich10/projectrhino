@@ -237,7 +237,7 @@ const PartnershipPanel: FC<{
           <div className="px-6 py-5 border-t border-[#DDE4EC] space-y-3">
             <button
               onClick={handleDownload}
-              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+              className="flex items-center justify-center gap-2 w-full border border-[#DDE4EC] text-[#173660] text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#F4F7FA] transition-colors"
               style={{ fontFamily: "'DM Sans', sans-serif" }}
             >
               <Download className="w-3.5 h-3.5" />
