@@ -239,7 +239,6 @@ const ResourcesSection: FC = () => {
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {category === "Equity" && <OptionModellerCard />}
-                {category === "Compensation" && <CommissionCalculatorCard />}
                 {category === "Financing Guide" && <FinancingGuideCard />}
                 {category === "Financing Guide" ? null : items.map((r) => {
                   const isApproved = approvedIds.has(r.id);

@@ -109,7 +109,7 @@ serve(async (req: Request) => {
         body: JSON.stringify({
           from: "Candace Hobin <candace@rhinovc.com>",
           to: trimmedEmails,
-          subject: "Welcome to the Rhino Ventures Partner Portal",
+          subject: "Welcome to the Crash — Rhino Ventures",
           html: emailHtml,
         }),
       });
