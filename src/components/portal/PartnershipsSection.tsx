@@ -64,17 +64,29 @@ const PartnerLogo: FC<{
   const logoSrc = localLogo || partnerLogo;
 
   if (logoSrc) {
+    const isCloudPartner = ["AWS Activate", "Microsoft for Startups", "Google Cloud"].includes(name);
+
     return (
       <img
         src={logoSrc}
         alt={name}
         className="object-contain block mx-auto"
         style={{
-          maxHeight: size === "lg" ? "56px" : "48px",
-          maxWidth: "180px",
-          width: "auto",
-          height: "auto",
-          minHeight: "32px",
+          width: "100%",
+          height: size === "lg" ? "56px" : "48px",
+          objectFit: "contain",
+        }}
+        onLoad={(event) => {
+          if (!isCloudPartner) return;
+          const img = event.currentTarget;
+          const rendered = img.getBoundingClientRect();
+          console.log("[PartnershipLogoMetrics]", {
+            partner: name,
+            naturalWidth: img.naturalWidth,
+            naturalHeight: img.naturalHeight,
+            renderedWidth: Math.round(rendered.width),
+            renderedHeight: Math.round(rendered.height),
+          });
         }}
         onError={onError}
       />
@@ -160,6 +172,20 @@ const PartnershipPanel: FC<{
 
   const locked = partnership.approval_required && !isApproved;
 
+  const redemptionDomain = (() => {
+    if (!partnership.redemption_url) return null;
+
+    const normalizedUrl = /^https?:\/\//i.test(partnership.redemption_url)
+      ? partnership.redemption_url
+      : `https://${partnership.redemption_url}`;
+
+    try {
+      return new URL(normalizedUrl).hostname.replace(/^www\./, "");
+    } catch {
+      return null;
+    }
+  })();
+
   const handleDownload = () => {
     if (partnership.detail_pdf_url) {
       window.open(partnership.detail_pdf_url, "_blank");
@@ -172,25 +198,35 @@ const PartnershipPanel: FC<{
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         {/* Header */}
-        <div className="px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
+        <div className="relative px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
+          {!locked && (
+            <button
+              type="button"
+              onClick={handleDownload}
+              className="absolute top-4 right-12 text-[#5C6B7A] hover:text-[#1A7EC8] transition-colors"
+              title="Download details"
+              aria-label="Download details"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          )}
           <div className="flex flex-col items-start gap-3">
             <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} size="lg" />
             {/* Show name only if no logo */}
             {!PARTNER_LOGOS[partnership.name] && !(partnership.logo_key && companyLogos[partnership.logo_key]) && (
               <h2 className="text-xl font-semibold text-[#173660]">{partnership.name}</h2>
             )}
-            {(() => {
-              const url = partnership.website_url || partnership.redemption_url;
-              if (!url) return null;
-              try {
-                const domain = new URL(url).hostname.replace(/^www\./, "");
-                return (
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1A7EC8] hover:underline">
-                    {domain}
-                  </a>
-                );
-              } catch { return null; }
-            })()}
+            {redemptionDomain && partnership.redemption_url && (
+              <a
+                href={/^https?:\/\//i.test(partnership.redemption_url) ? partnership.redemption_url : `https://${partnership.redemption_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#1A7EC8] underline"
+                style={{ fontSize: "13px" }}
+              >
+                {redemptionDomain}
+              </a>
+            )}
             <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
               {partnership.category}
             </Badge>
@@ -234,15 +270,7 @@ const PartnershipPanel: FC<{
 
         {/* Footer actions */}
         {!locked && (
-          <div className="px-6 py-5 border-t border-[#DDE4EC] space-y-3">
-            <button
-              onClick={handleDownload}
-              className="flex items-center justify-center gap-2 w-full border border-[#DDE4EC] text-[#173660] text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#F4F7FA] transition-colors"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
-            >
-              <Download className="w-3.5 h-3.5" />
-              Download Details
-            </button>
+          <div className="px-6 py-5 border-t border-[#DDE4EC]">
             {partnership.redemption_url && (
               <a
                 href={partnership.redemption_url}
