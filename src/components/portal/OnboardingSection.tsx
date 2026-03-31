@@ -161,10 +161,10 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
   return (
     <section id="onboarding">
       <div className="flex items-center gap-2 mb-1">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8]">Checklist</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8]">Onboarding</p>
       </div>
-      <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
-        Get Set Up
+      <h2 className="text-xl font-black tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
+        Get set up
       </h2>
 
       {loading ? (

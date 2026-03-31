@@ -180,12 +180,7 @@ const Portal: FC = () => {
           <div className="max-w-6xl mx-auto">
             <div className="flex items-start justify-between gap-6">
               <div>
-                <div className="flex items-center gap-4 mb-4">
-                  <img src={rhinoLogoWhite} alt="Rhino" className="h-8 w-auto opacity-80" />
-                </div>
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-2">
-                  The Crash
-                </p>
+                <img src={rhinoLogoWhite} alt="Rhino" className="h-8 w-auto opacity-80 mb-6" />
                 <h1 className="text-3xl font-bold text-white mb-3">
                   Welcome to the Crash
                 </h1>
@@ -239,8 +234,8 @@ const Portal: FC = () => {
         </div>
 
         <div className="max-w-6xl mx-auto px-6 py-12 space-y-20">
-          {/* Founder Onboarding Wizard */}
-          {userId && batchId && (
+          {/* Founder Onboarding Wizard — shown for all invited users */}
+          {userId && isInvited && batchId && (
             <FounderOnboardingWizard
               userId={userId}
               userEmail={userEmail}
@@ -251,7 +246,8 @@ const Portal: FC = () => {
             />
           )}
 
-          {userId && (
+          {/* Checklist fallback — only for invited users WITHOUT a batch (legacy) */}
+          {userId && isInvited && !batchId && (
             <OnboardingSection
               userId={userId}
               userEmail={userEmail}
