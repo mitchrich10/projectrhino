@@ -259,7 +259,18 @@ const PartnershipPanel: FC<{
 
         {/* Footer actions */}
         {!locked && (
-          <div className="px-6 py-5 border-t border-[#DDE4EC]">
+          <div className="px-6 py-5 border-t border-[#DDE4EC] space-y-3">
+            {redemptionDomain && partnership.redemption_url && (
+              <a
+                href={/^https?:\/\//i.test(partnership.redemption_url) ? partnership.redemption_url : `https://${partnership.redemption_url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center text-[#1A7EC8] underline"
+                style={{ fontSize: "13px" }}
+              >
+                {redemptionDomain}
+              </a>
+            )}
             {partnership.redemption_url && (
               <a
                 href={partnership.redemption_url}
