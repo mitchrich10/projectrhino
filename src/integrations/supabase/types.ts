@@ -432,6 +432,7 @@ export type Database = {
           redemption_url: string | null
           tagline: string | null
           updated_at: string
+          website_url: string | null
         }
         Insert: {
           applies_to?: string | null
@@ -449,6 +450,7 @@ export type Database = {
           redemption_url?: string | null
           tagline?: string | null
           updated_at?: string
+          website_url?: string | null
         }
         Update: {
           applies_to?: string | null
@@ -466,6 +468,7 @@ export type Database = {
           redemption_url?: string | null
           tagline?: string | null
           updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }
