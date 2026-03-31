@@ -55,6 +55,8 @@ serve(async (req) => {
         <li><strong>Logo:</strong> ${logoPath ? `<a href="${logoPath}">Uploaded</a>` : "<em>Not provided</em>"}</li>
         <li><strong>Primary colour:</strong> ${primaryColor ?? "<em>Default</em>"}</li>
         <li><strong>Secondary colour:</strong> ${secondaryColor ?? "<em>Default</em>"}</li>
+        <li><strong>Tertiary colour:</strong> ${tertiaryColor || "<em>Not provided</em>"}</li>
+        <li><strong>Accent colour:</strong> ${accentColor || "<em>Not provided</em>"}</li>
         <li><strong>Brand guidelines:</strong> ${brandGuidelinesPath ? `<a href="${brandGuidelinesPath}">Uploaded</a>` : "<em>Not provided</em>"}</li>
       </ul>
 

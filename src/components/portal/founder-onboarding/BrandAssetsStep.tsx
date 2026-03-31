@@ -87,42 +87,31 @@ const BrandAssetsStep: FC<Props> = ({ data, onChange, batchId }) => {
       <div>
         <label className="block text-sm font-medium text-[#173660] mb-3">Brand Colours</label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs text-[#173660]/60 mb-1">Primary</label>
-            <div className="flex items-center gap-2">
-              <input
-                type="color"
-                value={data.primary_color}
-                onChange={(e) => onChange({ primary_color: e.target.value })}
-                className="w-10 h-10 rounded border border-[#CDD8E3] cursor-pointer"
-              />
-              <input
-                type="text"
-                value={data.primary_color}
-                onChange={(e) => onChange({ primary_color: e.target.value })}
-                placeholder="#173660"
-                className="flex-1 h-10 border border-[#CDD8E3] rounded-lg px-3 text-sm bg-white text-[#173660]"
-              />
+          {([
+            { key: "primary_color" as const, label: "Primary", placeholder: "#173660" },
+            { key: "secondary_color" as const, label: "Secondary", placeholder: "#1A7EC8" },
+            { key: "tertiary_color" as const, label: "Tertiary", placeholder: "#a3d7c2" },
+            { key: "accent_color" as const, label: "Accent", placeholder: "#CDD8E3" },
+          ]).map(({ key, label, placeholder }) => (
+            <div key={key}>
+              <label className="block text-xs text-[#173660]/60 mb-1">{label}</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={data[key] || placeholder}
+                  onChange={(e) => onChange({ [key]: e.target.value })}
+                  className="w-10 h-10 rounded border border-[#CDD8E3] cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={data[key]}
+                  onChange={(e) => onChange({ [key]: e.target.value })}
+                  placeholder={placeholder}
+                  className="flex-1 h-10 border border-[#CDD8E3] rounded-lg px-3 text-sm bg-white text-[#173660]"
+                />
+              </div>
             </div>
-          </div>
-          <div>
-            <label className="block text-xs text-[#173660]/60 mb-1">Secondary</label>
-            <div className="flex items-center gap-2">
-              <input
-                type="color"
-                value={data.secondary_color}
-                onChange={(e) => onChange({ secondary_color: e.target.value })}
-                className="w-10 h-10 rounded border border-[#CDD8E3] cursor-pointer"
-              />
-              <input
-                type="text"
-                value={data.secondary_color}
-                onChange={(e) => onChange({ secondary_color: e.target.value })}
-                placeholder="#1A7EC8"
-                className="flex-1 h-10 border border-[#CDD8E3] rounded-lg px-3 text-sm bg-white text-[#173660]"
-              />
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
