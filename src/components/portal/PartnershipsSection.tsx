@@ -13,7 +13,7 @@ import logoDocsend from "@/assets/logo-docsend.png";
 import logoBoldhouse from "@/assets/logo-boldhouse.jpg";
 import logoPromosapien from "@/assets/logo-promosapien.jpg";
 import logoCmg from "@/assets/logo-cmg.webp";
-import logoStripe from "@/assets/logo-article.png"; // placeholder, will map below
+
 
 interface Partnership {
   id: string;
