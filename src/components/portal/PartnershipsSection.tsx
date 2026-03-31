@@ -62,13 +62,14 @@ const PartnerLogo: FC<{
   const partnerLogo = PARTNER_LOGOS[name];
   const logoSrc = localLogo || partnerLogo;
   const h = size === "lg" ? "max-h-12" : "max-h-[48px]";
+  const w = size === "lg" ? "max-w-[160px]" : "max-w-[180px]";
 
   if (logoSrc) {
     return (
       <img
         src={logoSrc}
         alt={name}
-        className={`${h} max-w-[160px] object-contain`}
+        className={`${h} ${w} object-contain`}
         onError={onError}
       />
     );
