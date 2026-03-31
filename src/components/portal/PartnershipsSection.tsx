@@ -1,7 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ExternalLink, Copy, Check, Lock, X } from "lucide-react";
+import { Loader2, ExternalLink, Copy, Check, Lock, X, Download } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
+import { generatePartnershipPdf } from "@/lib/generatePartnershipPdf";
 
 import logoAws from "@/assets/logo-aws.jpg";
 import logoMicrosoftStartups from "@/assets/logo-microsoft-startups.png";
@@ -13,7 +16,6 @@ import logoDocsend from "@/assets/logo-docsend.png";
 import logoBoldhouse from "@/assets/logo-boldhouse.jpg";
 import logoPromosapien from "@/assets/logo-promosapien.jpg";
 import logoCmg from "@/assets/logo-cmg.webp";
-
 
 interface Partnership {
   id: string;
@@ -27,9 +29,10 @@ interface Partnership {
   promo_code: string | null;
   display_order: number;
   approval_required: boolean;
+  detail_pdf_url: string | null;
+  applies_to: string | null;
 }
 
-// Map partnership names to local logo assets
 const PARTNER_LOGOS: Record<string, string> = {
   AWS: logoAws,
   "Microsoft for Startups": logoMicrosoftStartups,
@@ -47,24 +50,24 @@ const PARTNER_LOGOS: Record<string, string> = {
   "Twig Fertility": companyLogos["twig"],
 };
 
-// ── CompanyMark: shows logo XOR name, never both ──
-const CompanyMark: FC<{ name: string; logoKey?: string | null }> = ({ name, logoKey }) => {
-  const localLogo = logoKey ? companyLogos[logoKey] : null;
+const FILTER_OPTIONS = [
+  { label: "All", value: "all" },
+  { label: "Software", value: "software" },
+  { label: "Producer", value: "producer" },
+  { label: "Both", value: "both" },
+] as const;
 
-  // Check partner logo map first
+// ── Logo renderer ──
+const PartnerLogo: FC<{ name: string; logoKey?: string | null; size?: "sm" | "lg" }> = ({ name, logoKey, size = "sm" }) => {
+  const localLogo = logoKey ? companyLogos[logoKey] : null;
   const partnerLogo = PARTNER_LOGOS[name];
   const logoSrc = localLogo || partnerLogo;
+  const h = size === "lg" ? "h-12" : "h-8";
 
   if (logoSrc) {
-    return (
-      <div className="h-8 flex items-center">
-        <img src={logoSrc} alt={name} style={{ objectFit: "contain", maxWidth: "120px", height: "32px" }} />
-      </div>
-    );
+    return <img src={logoSrc} alt={name} className={`${h} object-contain max-w-[140px]`} />;
   }
-
-  // No logo source — text only
-  return <span style={{ fontWeight: 700, fontSize: "15px" }}>{name}</span>;
+  return null;
 };
 
 // ── Request Access Button ──
@@ -117,7 +120,7 @@ const RequestAccessButton: FC<{
     <button
       onClick={handleRequest}
       disabled={status === "loading"}
-      className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+      className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-[#1A7EC8] text-white px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
     >
       {status === "loading" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Lock className="w-3 h-3" />}
       Request Access
@@ -125,13 +128,14 @@ const RequestAccessButton: FC<{
   );
 };
 
-// ── Partnership Modal ──
-const PartnershipModal: FC<{
+// ── Slide-over Panel ──
+const PartnershipPanel: FC<{
   partnership: Partnership;
   companyName: string;
   isApproved: boolean;
+  open: boolean;
   onClose: () => void;
-}> = ({ partnership, companyName, isApproved, onClose }) => {
+}> = ({ partnership, companyName, isApproved, open, onClose }) => {
   const [copied, setCopied] = useState(false);
 
   const copyCode = async () => {
@@ -141,48 +145,59 @@ const PartnershipModal: FC<{
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
   const locked = partnership.approval_required && !isApproved;
 
+  const handleDownload = () => {
+    if (partnership.detail_pdf_url) {
+      window.open(partnership.detail_pdf_url, "_blank");
+    } else {
+      generatePartnershipPdf(partnership);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={handleBackdrop}>
-      <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+    <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         {/* Header */}
-        <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-border">
-          <div className="flex items-center gap-4">
-            <CompanyMark name={partnership.name} logoKey={partnership.logo_key} />
-            {partnership.tagline && (
-              <p className="text-xs text-muted-foreground">{partnership.tagline}</p>
-            )}
+        <div className="px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
+          <div className="flex items-start justify-between">
+            <div className="space-y-3">
+              <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} size="lg" />
+              <h2 className="text-xl font-semibold text-[#173660]">{partnership.name}</h2>
+              <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
+                {partnership.category}
+              </Badge>
+            </div>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors flex-shrink-0 ml-2 mt-0.5">
-            <X className="w-4 h-4" />
-          </button>
+          {partnership.tagline && (
+            <p className="text-sm text-[#5C6B7A] mt-3">{partnership.tagline}</p>
+          )}
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5 space-y-5">
+        <div className="px-6 py-6 space-y-6">
           {locked ? (
-            <div className="border border-border rounded-lg p-4 bg-secondary/20 text-center space-y-3">
-              <Lock className="w-5 h-5 text-muted-foreground mx-auto" />
-              <p className="text-sm text-muted-foreground">Access to this partnership requires approval from the Rhino Ventures team.</p>
+            <div className="border border-[#DDE4EC] rounded-lg p-5 bg-[#F4F7FA] text-center space-y-3">
+              <Lock className="w-5 h-5 text-[#5C6B7A] mx-auto" />
+              <p className="text-sm text-[#5C6B7A]">Access to this partnership requires approval from the Rhino Ventures team.</p>
               <RequestAccessButton itemId={partnership.id} itemName={partnership.name} itemType="partnership" companyName={companyName} />
             </div>
           ) : (
             <>
               {partnership.description && (
-                <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{partnership.description}</p>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#5C6B7A] mb-2">Details</p>
+                  <p className="text-sm text-[#173660]/80 leading-relaxed whitespace-pre-line">{partnership.description}</p>
+                </div>
               )}
+
               {partnership.promo_code && (
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">Promo Code</p>
-                  <div className="flex items-center gap-2 border border-border rounded-lg px-4 py-3 bg-secondary/20">
-                    <code className="text-sm font-bold text-primary tracking-wider flex-1">{partnership.promo_code}</code>
-                    <button onClick={copyCode} className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0" title="Copy code">
-                      {copied ? <Check className="w-4 h-4 text-primary" /> : <Copy className="w-4 h-4" />}
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#5C6B7A] mb-2">Promo Code</p>
+                  <div className="flex items-center gap-2 border border-[#DDE4EC] rounded-lg px-4 py-3 bg-[#F4F7FA]">
+                    <code className="text-sm font-bold text-[#1A7EC8] tracking-wider flex-1">{partnership.promo_code}</code>
+                    <button onClick={copyCode} className="text-[#5C6B7A] hover:text-[#1A7EC8] transition-colors flex-shrink-0" title="Copy code">
+                      {copied ? <Check className="w-4 h-4 text-[#1A7EC8]" /> : <Copy className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
@@ -191,17 +206,31 @@ const PartnershipModal: FC<{
           )}
         </div>
 
-        {/* Footer */}
-        {!locked && partnership.redemption_url && (
-          <div className="px-6 py-4 border-t border-border">
-            <a href={partnership.redemption_url} target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest px-5 py-3 rounded hover:opacity-90 transition-opacity">
-              Redeem Offer <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+        {/* Footer actions */}
+        {!locked && (
+          <div className="px-6 py-5 border-t border-[#DDE4EC] space-y-3">
+            <button
+              onClick={handleDownload}
+              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+              style={{ fontFamily: "'DM Sans', sans-serif" }}
+            >
+              <Download className="w-3.5 h-3.5" />
+              Download Details
+            </button>
+            {partnership.redemption_url && (
+              <a
+                href={partnership.redemption_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full border border-[#DDE4EC] text-[#173660] text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#F4F7FA] transition-colors"
+              >
+                Redeem Offer <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
           </div>
         )}
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 };
 
@@ -210,21 +239,56 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
   return (
     <button
       onClick={onClick}
-      className="group relative flex flex-col items-center justify-center p-4 border rounded-lg bg-white hover:border-[#1A7EC8] hover:shadow-md transition-all duration-200 text-left h-[120px] w-full"
-      style={{ borderColor: "#e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
+      className="group relative flex flex-col items-start p-5 rounded-lg bg-white border border-[#DDE4EC] hover:border-[#1A7EC8] transition-all duration-200 text-left w-full"
+      style={{
+        boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+        fontFamily: "'DM Sans', sans-serif",
+      }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08)"; }}
     >
-      <div className="flex items-center justify-between w-full">
-        <CompanyMark name={partnership.name} logoKey={partnership.logo_key} />
-        {partnership.approval_required && (
-          <Lock className="w-3 h-3 text-muted-foreground/50 flex-shrink-0" />
+      {/* Logo area */}
+      <div className="h-[80px] w-full flex items-center justify-center mb-3">
+        <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} />
+        {!PARTNER_LOGOS[partnership.name] && !(partnership.logo_key && companyLogos[partnership.logo_key]) && (
+          <span className="text-base font-semibold text-[#173660]">{partnership.name}</span>
         )}
       </div>
+      {/* Name */}
+      <p className="text-sm font-semibold text-[#173660] leading-tight">{partnership.name}</p>
+      {/* Tagline */}
+      {partnership.tagline && (
+        <p className="text-[13px] text-[#5C6B7A] mt-1 line-clamp-1">{partnership.tagline}</p>
+      )}
+      {/* Lock indicator */}
+      {partnership.approval_required && (
+        <Lock className="w-3 h-3 text-[#5C6B7A]/40 absolute top-3 right-3" />
+      )}
     </button>
   );
 };
 
+// ── Filter Bar ──
+const FilterBar: FC<{ active: string; onChange: (v: string) => void }> = ({ active, onChange }) => (
+  <div className="flex items-center gap-2 mb-6" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    {FILTER_OPTIONS.map((opt) => (
+      <button
+        key={opt.value}
+        onClick={() => onChange(opt.value)}
+        className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+          active === opt.value
+            ? "bg-[#1A7EC8] text-white"
+            : "bg-white text-[#173660] border border-[#DDE4EC] hover:border-[#1A7EC8]"
+        }`}
+      >
+        {opt.label}
+      </button>
+    ))}
+  </div>
+);
+
 // ── Grid helper ──
-const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3";
+const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
 // ── Main Section ──
 const PartnershipsSection: FC = () => {
@@ -233,6 +297,7 @@ const PartnershipsSection: FC = () => {
   const [selected, setSelected] = useState<Partnership | null>(null);
   const [companyName, setCompanyName] = useState("");
   const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     const init = async () => {
@@ -255,7 +320,12 @@ const PartnershipsSection: FC = () => {
     init();
   }, []);
 
-  const grouped = partnerships.reduce<Record<string, Partnership[]>>((acc, p) => {
+  const filtered = partnerships.filter((p) => {
+    if (filter === "all") return true;
+    return p.applies_to === filter || p.applies_to === "both";
+  });
+
+  const grouped = filtered.reduce<Record<string, Partnership[]>>((acc, p) => {
     (acc[p.category] = acc[p.category] ?? []).push(p);
     return acc;
   }, {});
@@ -263,17 +333,19 @@ const PartnershipsSection: FC = () => {
 
   return (
     <section id="partnerships">
-      <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
+      <h2 className="text-xl font-black uppercase tracking-tighter text-[#173660] mb-6 pb-3 border-b border-[#DDE4EC]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         Partnerships
       </h2>
 
+      <FilterBar active={filter} onChange={setFilter} />
+
       {loading ? (
-        <div className="flex items-center gap-2 text-muted-foreground">
+        <div className="flex items-center gap-2 text-[#5C6B7A]">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span className="text-xs">Loading partnerships…</span>
         </div>
-      ) : partnerships.length === 0 ? (
-        <p className="text-xs text-muted-foreground">Partnership deals coming soon.</p>
+      ) : filtered.length === 0 ? (
+        <p className="text-xs text-[#5C6B7A]">No partnerships match this filter.</p>
       ) : (
         <div className="space-y-8">
           {categories.map((category) => {
@@ -282,13 +354,11 @@ const PartnershipsSection: FC = () => {
               <div key={category}>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-1 h-5 rounded-full bg-[#1A7EC8]" />
-                  <p className="text-sm font-bold uppercase tracking-widest text-foreground">{category}</p>
+                  <p className="text-sm font-bold uppercase tracking-widest text-[#173660]">{category}</p>
                 </div>
                 <div className={GRID_CLASSES}>
                   {items.map((p) => (
-                    <div key={p.id}>
-                      <PartnershipTile partnership={p} onClick={() => setSelected(p)} />
-                    </div>
+                    <PartnershipTile key={p.id} partnership={p} onClick={() => setSelected(p)} />
                   ))}
                 </div>
               </div>
@@ -298,10 +368,11 @@ const PartnershipsSection: FC = () => {
       )}
 
       {selected && (
-        <PartnershipModal
+        <PartnershipPanel
           partnership={selected}
           companyName={companyName}
           isApproved={approvedIds.has(selected.id)}
+          open={!!selected}
           onClose={() => setSelected(null)}
         />
       )}

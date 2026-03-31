@@ -411,10 +411,12 @@ export type Database = {
       }
       partnerships: {
         Row: {
+          applies_to: string | null
           approval_required: boolean
           category: string
           created_at: string
           description: string | null
+          detail_pdf_url: string | null
           display_order: number
           id: string
           logo_key: string | null
@@ -426,10 +428,12 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          applies_to?: string | null
           approval_required?: boolean
           category?: string
           created_at?: string
           description?: string | null
+          detail_pdf_url?: string | null
           display_order?: number
           id?: string
           logo_key?: string | null
@@ -441,10 +445,12 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          applies_to?: string | null
           approval_required?: boolean
           category?: string
           created_at?: string
           description?: string | null
+          detail_pdf_url?: string | null
           display_order?: number
           id?: string
           logo_key?: string | null

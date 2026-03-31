@@ -171,12 +171,23 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
     }
   };
 
+  const pushToDrive = async (finalData: FounderOnboardingData) => {
+    try {
+      const filePaths = [finalData.logo_path, finalData.brand_guidelines_path].filter(Boolean);
+      await supabase.functions.invoke("push-onboarding-to-drive", {
+        body: { companyName, submissionHtml: "", filePaths },
+      });
+    } catch (e) {
+      console.error("Drive push failed (non-blocking)", e);
+    }
+  };
+
   const handleComplete = async () => {
     await markStepComplete(currentStep);
     const newData = { ...data, completed: true };
     setData(newData);
     await saveData(newData);
-    await sendCompletionEmail(newData);
+    await Promise.all([sendCompletionEmail(newData), pushToDrive(newData)]);
     setCollapsed(true);
     localStorage.setItem(`onboarding-collapsed-${batchId}`, "true");
   };
