@@ -62,15 +62,20 @@ const PartnerLogo: FC<{
   const localLogo = logoKey ? companyLogos[logoKey] : null;
   const partnerLogo = PARTNER_LOGOS[name];
   const logoSrc = localLogo || partnerLogo;
-  const h = size === "lg" ? "max-h-12" : "max-h-[48px]";
-  const w = size === "lg" ? "max-w-[160px]" : "max-w-[180px]";
 
   if (logoSrc) {
     return (
       <img
         src={logoSrc}
         alt={name}
-        className={`${h} ${w} object-contain block mx-auto`}
+        className="object-contain block mx-auto"
+        style={{
+          maxHeight: size === "lg" ? "56px" : "48px",
+          maxWidth: "180px",
+          width: "auto",
+          height: "auto",
+          minHeight: "32px",
+        }}
         onError={onError}
       />
     );
