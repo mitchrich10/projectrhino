@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, LogOut, Menu, X } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
@@ -10,6 +10,7 @@ import PartnershipsSection from "@/components/portal/PartnershipsSection";
 import OnboardingSection from "@/components/portal/OnboardingSection";
 import { NotificationOptIn } from "@/components/portal/OnboardingSection";
 import RequestsSection from "@/components/portal/RequestsSection";
+import FounderOnboardingWizard from "@/components/portal/founder-onboarding/FounderOnboardingWizard";
 
 interface CompanyInfo {
   company_name: string;
@@ -18,13 +19,17 @@ interface CompanyInfo {
 
 const Portal: FC = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<CompanyInfo | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [userEmail, setUserEmail] = useState<string>("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [isInvited, setIsInvited] = useState(false);
+  const [batchId, setBatchId] = useState<string | null>(null);
+  const [shareTargetStep, setShareTargetStep] = useState<number | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -42,10 +47,29 @@ const Portal: FC = () => {
 
       const email = session.user.email;
       const domain = email.split("@")[1]?.toLowerCase();
+      const fullName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || "";
+
+      // Handle share token redemption
+      const shareToken = searchParams.get("onboarding-share");
+      if (shareToken) {
+        try {
+          const { data: redeemResult } = await supabase.functions.invoke("redeem-onboarding-share", {
+            body: { token: shareToken, email },
+          });
+          if (redeemResult?.target_step) {
+            setShareTargetStep(redeemResult.target_step);
+          }
+        } catch (e) {
+          console.error("Share token redemption failed", e);
+        }
+        // Clean URL
+        searchParams.delete("onboarding-share");
+        setSearchParams(searchParams, { replace: true });
+      }
 
       const [{ data: domainData }, { data: inviteData }] = await Promise.all([
         supabase.from("approved_domains").select("company_name, logo_key").eq("domain", domain).maybeSingle(),
-        supabase.from("onboarding_invites").select("id").eq("email", email.toLowerCase()).maybeSingle(),
+        supabase.from("onboarding_invites").select("id, batch_id").eq("email", email.toLowerCase()).maybeSingle(),
       ]);
 
       setCompany(domainData ?? { company_name: "Partner", logo_key: null });
@@ -59,7 +83,9 @@ const Portal: FC = () => {
       setIsAdmin(email.endsWith("@rhinovc.com"));
       setUserId(session.user.id);
       setUserEmail(email);
+      setUserName(fullName);
       setIsInvited(!!inviteData || email.endsWith("@rhinovc.com"));
+      setBatchId((inviteData as any)?.batch_id ?? null);
       setLoading(false);
     };
 
@@ -171,6 +197,17 @@ const Portal: FC = () => {
         </div>
 
         <div className="max-w-6xl mx-auto px-6 py-12 space-y-20">
+          {/* Founder Onboarding Wizard — top of page for invited founders */}
+          {userId && batchId && (
+            <FounderOnboardingWizard
+              userId={userId}
+              userEmail={userEmail}
+              userName={userName}
+              batchId={batchId}
+              targetStep={shareTargetStep}
+            />
+          )}
+
           {userId && (
             <OnboardingSection
               userId={userId}
