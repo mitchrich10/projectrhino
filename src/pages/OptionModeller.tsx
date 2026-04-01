@@ -185,8 +185,8 @@ function makeDefaultGrant(overrides?: Partial<Grant>): Grant {
     strikePrice: "10",
     fullyDiluted: "10000000",
     grantDate: monthsAgo(18),
-    vestYears: 4,
-    cliffMonths: 12,
+    vestYears: 5,
+    cliffMonths: 24,
     ...overrides,
   };
 }
