@@ -208,6 +208,17 @@ const ResourcePanel: FC<{
 
         {/* Body */}
         <div className="px-6 py-6 space-y-6">
+          {/* PDF inline viewer */}
+          {resource?.file_path?.toLowerCase().endsWith(".pdf") && !isSpecial && (
+            <div className="w-full" style={{ height: "400px" }}>
+              <iframe
+                src={getFileUrl(resource.file_path)}
+                className="w-full h-full rounded border border-[#DDE4EC]"
+                title={title}
+              />
+            </div>
+          )}
+
           {description && (
             <p className="text-sm text-[#173660]/80 leading-[1.7] whitespace-pre-line">{description}</p>
           )}
