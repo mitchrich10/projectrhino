@@ -74,23 +74,25 @@ const RequestAccessButton: FC<{
   itemId: string;
   itemName: string;
   companyName: string;
-}> = ({ itemId, itemName, companyName }) => {
+  itemType?: string;
+}> = ({ itemId, itemName, companyName, itemType = "resource" }) => {
   const [status, setStatus] = useState<"idle" | "loading" | "requested" | "error">("idle");
 
   useEffect(() => {
     const check = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-      const { data } = await supabase
+      const query = supabase
         .from("partner_requests")
         .select("id")
         .eq("user_id", session.user.id)
-        .eq("item_id", itemId)
-        .maybeSingle();
+        .eq("item_type", itemType);
+      if (itemId) query.eq("item_id", itemId);
+      const { data } = await query.maybeSingle();
       if (data) setStatus("requested");
     };
     check();
-  }, [itemId]);
+  }, [itemId, itemType]);
 
   const handleRequest = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -99,7 +101,7 @@ const RequestAccessButton: FC<{
     if (!session) { setStatus("error"); return; }
 
     const res = await supabase.functions.invoke("request-access", {
-      body: { item_type: "resource", item_id: itemId, item_name: itemName, company_name: companyName },
+      body: { item_type: itemType, item_id: itemId === "fundraising-toolkit" ? null : itemId, item_name: itemName, company_name: companyName },
     });
 
     setStatus(res.error || res.data?.error === "already_requested" || res.data?.success ? "requested" : "error");
