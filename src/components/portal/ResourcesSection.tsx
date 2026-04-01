@@ -262,6 +262,7 @@ const ResourcePanel: FC<{
             <button
               onClick={() => {
                 const url = getFileUrl(resource.file_path!);
+                trackPortalEvent("resource_download", resource.title, resource.id);
                 onDownload(resource.id, url, resource.file_path!.split("/").pop()!);
               }}
               disabled={loadingId === resource?.id}
