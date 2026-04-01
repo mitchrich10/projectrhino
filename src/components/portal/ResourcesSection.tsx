@@ -515,7 +515,7 @@ const ResourcesSection: FC = () => {
                           Fundraising Toolkit
                         </h4>
                         <div className="mt-auto">
-                          <RequestAccessButton itemId="fundraising-toolkit" itemName="Fundraising Toolkit" companyName={companyName} />
+                          <RequestAccessButton itemId="fundraising-toolkit" itemName="Fundraising Toolkit" companyName={companyName} itemType="financing_guide" />
                         </div>
                       </div>
                     )}
