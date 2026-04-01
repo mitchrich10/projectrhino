@@ -1,7 +1,10 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Download, ExternalLink, FileText, Loader2, Lock, Calculator, BookOpen } from "lucide-react";
+import {
+  Download, ExternalLink, FileText, Loader2, Lock,
+  Calculator, BookOpen, FileSpreadsheet, Presentation,
+} from "lucide-react";
 
 interface Resource {
   id: string;
@@ -13,13 +16,27 @@ interface Resource {
   approval_required: boolean;
 }
 
-// ── Download Button (blob fetch to force download cross-origin) ────────────────
-const DownloadButton: FC<{ href: string; filename: string }> = ({ href, filename }) => {
-  const [loading, setLoading] = useState(false);
+/* ── Category display order ─────────────────────────────────────────────── */
+const CATEGORY_ORDER = ["Fundraising", "Governance", "Compensation & Equity", "Hiring"];
 
-  const handleDownload = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setLoading(true);
+/* ── Icon resolver ──────────────────────────────────────────────────────── */
+const getResourceIcon = (title: string, filePath: string | null) => {
+  const t = title.toLowerCase();
+  if (t.includes("financing") || t.includes("fundrais")) return BookOpen;
+  if (t.includes("option modeller") || t.includes("commission") || t.includes("calculator")) return Calculator;
+  if (t.includes("spreadsheet") || t.includes("tracker") || t.includes("data room") || t.includes("co-investor"))
+    return FileSpreadsheet;
+  if (filePath?.endsWith(".pptx") || filePath?.endsWith(".ppt") || t.includes("presentation") || t.includes("hiring"))
+    return Presentation;
+  return FileText;
+};
+
+/* ── Download helper ────────────────────────────────────────────────────── */
+const useBlobDownload = () => {
+  const [loadingId, setLoadingId] = useState<string | null>(null);
+
+  const download = useCallback(async (id: string, href: string, filename: string) => {
+    setLoadingId(id);
     try {
       const res = await fetch(href);
       const blob = await res.blob();
@@ -30,23 +47,14 @@ const DownloadButton: FC<{ href: string; filename: string }> = ({ href, filename
       a.click();
       URL.revokeObjectURL(url);
     } finally {
-      setLoading(false);
+      setLoadingId(null);
     }
-  }, [href, filename]);
+  }, []);
 
-  return (
-    <button
-      onClick={handleDownload}
-      disabled={loading}
-      className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
-    >
-      {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
-      Download
-    </button>
-  );
+  return { loadingId, download };
 };
 
-// ── Request Access Button ──────────────────────────────────────────────────────
+/* ── Request Access Button ──────────────────────────────────────────────── */
 const RequestAccessButton: FC<{
   itemId: string;
   itemName: string;
@@ -69,7 +77,8 @@ const RequestAccessButton: FC<{
     check();
   }, [itemId]);
 
-  const handleRequest = async () => {
+  const handleRequest = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     setStatus("loading");
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { setStatus("error"); return; }
@@ -78,18 +87,12 @@ const RequestAccessButton: FC<{
       body: { item_type: "resource", item_id: itemId, item_name: itemName, company_name: companyName },
     });
 
-    if (res.error || res.data?.error === "already_requested") {
-      setStatus("requested");
-    } else if (res.data?.success) {
-      setStatus("requested");
-    } else {
-      setStatus("error");
-    }
+    setStatus(res.error || res.data?.error === "already_requested" || res.data?.success ? "requested" : "error");
   };
 
   if (status === "requested") {
     return (
-      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-[#5C6B7A]">
         Requested ✓
       </span>
     );
@@ -99,7 +102,7 @@ const RequestAccessButton: FC<{
     <button
       onClick={handleRequest}
       disabled={status === "loading"}
-      className="flex items-center gap-1.5 self-start text-[10px] font-bold uppercase tracking-widest bg-primary text-primary-foreground px-2.5 py-1.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+      className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-[#1A7EC8] hover:opacity-70 transition-opacity disabled:opacity-50"
     >
       {status === "loading" ? <Loader2 className="w-3 h-3 animate-spin" /> : <Lock className="w-3 h-3" />}
       Request Access
@@ -107,74 +110,38 @@ const RequestAccessButton: FC<{
   );
 };
 
-// ── Interactive Tool Cards ─────────────────────────────────────────────────────
+/* ── Special tool cards (same visual style as DB resource cards) ─────────── */
+const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: typeof BookOpen; to?: string; href?: string }> = {
+  "Compensation & Equity:option-modeller": {
+    title: "Option Modeller",
+    description: "Interactive tool to model the value of your stock option grant across exit scenarios.",
+    icon: Calculator,
+    to: "/option-modeller",
+  },
+  "Fundraising:financing-guide": {
+    title: "Financing Process Guide",
+    description: "A curated package of frameworks, templates, and tools for founders preparing for a Series A or growth-stage round.",
+    icon: BookOpen,
+    to: "/portal/financing-guide",
+  },
+};
 
-
-
-const OptionModellerCard: FC = () => (
-  <Link
-    to="/option-modeller"
-    className="group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors hover:border-primary/50 hover:bg-secondary/40"
-  >
-    <div className="flex items-start justify-between gap-2">
-      <h4 className="font-bold text-sm text-foreground leading-tight">Option Modeller</h4>
-      <Calculator className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-    </div>
-    <p className="text-xs text-muted-foreground leading-relaxed">
-      Interactive tool to model the value of your stock option grant across exit scenarios. Enter your grant details and explore conservative through exceptional outcomes.
-    </p>
-    <div className="flex items-center gap-1.5 mt-auto pt-1">
-      <span className="text-[10px] font-bold uppercase tracking-widest text-primary group-hover:opacity-70 transition-opacity flex items-center gap-1">
-        <ExternalLink className="w-3 h-3" /> Open Tool
-      </span>
-    </div>
-  </Link>
-);
-
-const FinancingGuideCard: FC = () => (
-  <Link
-    to="/portal/financing-guide"
-    className="group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors hover:border-primary/50 hover:bg-secondary/40"
-  >
-    <div className="flex items-start justify-between gap-2">
-      <h4 className="font-bold text-sm text-foreground leading-tight">Financing Process Guide</h4>
-      <BookOpen className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-    </div>
-    <p className="text-xs text-muted-foreground leading-relaxed">
-      A curated package of 5 frameworks, templates, and tools for founders preparing for a Series A or growth-stage financing round.
-    </p>
-    <div className="flex items-center gap-1.5 mt-auto pt-1">
-      <span className="text-[10px] font-bold uppercase tracking-widest text-primary group-hover:opacity-70 transition-opacity flex items-center gap-1">
-        <ExternalLink className="w-3 h-3" /> View Guide
-      </span>
-    </div>
-  </Link>
-);
-
-// ── Main Section ───────────────────────────────────────────────────────────────
+/* ── Main Section ───────────────────────────────────────────────────────── */
 const ResourcesSection: FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [companyName, setCompanyName] = useState("");
   const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
+  const { loadingId, download } = useBlobDownload();
 
   useEffect(() => {
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       const [{ data }, { data: approvedData }] = await Promise.all([
-        supabase
-          .from("resources")
-          .select("id, title, description, url, file_path, category, approval_required")
-          .order("category")
-          .order("title"),
+        supabase.from("resources").select("id, title, description, url, file_path, category, approval_required").order("category").order("title"),
         session
-          ? supabase
-              .from("partner_requests")
-              .select("item_id")
-              .eq("user_id", session.user.id)
-              .eq("item_type", "resource")
-              .eq("status", "approved")
+          ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).eq("item_type", "resource").eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
 
@@ -183,11 +150,7 @@ const ResourcesSection: FC = () => {
 
       if (session?.user?.email) {
         const domain = session.user.email.split("@")[1];
-        const { data: domainData } = await supabase
-          .from("approved_domains")
-          .select("company_name")
-          .eq("domain", domain)
-          .maybeSingle();
+        const { data: domainData } = await supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle();
         setCompanyName(domainData?.company_name ?? domain);
       }
 
@@ -201,118 +164,166 @@ const ResourcesSection: FC = () => {
     return data.publicUrl;
   };
 
+  /* Group by category */
   const grouped = resources.reduce<Record<string, Resource[]>>((acc, r) => {
     (acc[r.category] = acc[r.category] ?? []).push(r);
     return acc;
   }, {});
 
+  /* Sort categories by defined order */
+  const sortedCategories = Object.keys(grouped).sort((a, b) => {
+    const ai = CATEGORY_ORDER.indexOf(a);
+    const bi = CATEGORY_ORDER.indexOf(b);
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  });
+
+  /* ── Card renderer ────────────────────────────────────────────────── */
+  const renderCard = (r: Resource) => {
+    const isApproved = approvedIds.has(r.id);
+    const locked = r.approval_required && !isApproved;
+    const href = r.file_path ? getFileUrl(r.file_path) : r.url;
+    const isFile = !!r.file_path;
+    const isExternal = !isFile && !!r.url;
+    const Icon = getResourceIcon(r.title, r.file_path);
+
+    const handleCardClick = () => {
+      if (locked) return;
+      if (isFile && href) {
+        download(r.id, href, r.file_path!.split("/").pop()!);
+      } else if (isExternal && href) {
+        window.open(href, "_blank", "noopener,noreferrer");
+      }
+    };
+
+    return (
+      <div
+        key={r.id}
+        onClick={handleCardClick}
+        className={`relative bg-white border rounded-lg p-5 flex flex-col gap-2 transition-all duration-200 ${
+          locked
+            ? "border-[#DDE4EC] opacity-70 cursor-default"
+            : "border-[#DDE4EC] cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:border-[#1A7EC8]"
+        }`}
+        style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
+      >
+        {/* Top row: icon left, action icon right */}
+        <div className="flex items-start justify-between">
+          <Icon className="w-5 h-5 text-[#1A7EC8] flex-shrink-0" />
+          {locked ? (
+            <Lock className="w-3.5 h-3.5 text-[#5C6B7A]/50 flex-shrink-0" />
+          ) : isFile ? (
+            loadingId === r.id ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#1A7EC8] flex-shrink-0" />
+            ) : (
+              <Download className="w-3.5 h-3.5 text-[#5C6B7A] flex-shrink-0" />
+            )
+          ) : isExternal ? (
+            <ExternalLink className="w-3.5 h-3.5 text-[#5C6B7A] flex-shrink-0" />
+          ) : null}
+        </div>
+
+        {/* Title */}
+        <h4 className="text-sm font-semibold leading-tight" style={{ color: "#173660", fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+          {r.title}
+        </h4>
+
+        {/* Description */}
+        {r.description && (
+          <p className="text-[13px] leading-relaxed line-clamp-2" style={{ color: "#5C6B7A" }}>
+            {r.description}
+          </p>
+        )}
+
+        {/* Request access for locked */}
+        {locked && (
+          <div className="mt-auto">
+            <RequestAccessButton itemId={r.id} itemName={r.title} companyName={companyName} />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  /* ── Special card (tools/links) ────────────────────────────────────── */
+  const renderSpecialCard = (key: string) => {
+    const card = SPECIAL_CARDS[key];
+    if (!card) return null;
+    const Icon = card.icon;
+
+    const inner = (
+      <div
+        className="relative bg-white border border-[#DDE4EC] rounded-lg p-5 flex flex-col gap-2 transition-all duration-200 cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:border-[#1A7EC8]"
+        style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
+      >
+        <div className="flex items-start justify-between">
+          <Icon className="w-5 h-5 text-[#1A7EC8] flex-shrink-0" />
+          <ExternalLink className="w-3.5 h-3.5 text-[#5C6B7A] flex-shrink-0" />
+        </div>
+        <h4 className="text-sm font-semibold leading-tight" style={{ color: "#173660", fontFamily: "'DM Sans', sans-serif", fontWeight: 600 }}>
+          {card.title}
+        </h4>
+        <p className="text-[13px] leading-relaxed line-clamp-2" style={{ color: "#5C6B7A" }}>
+          {card.description}
+        </p>
+      </div>
+    );
+
+    if (card.to) {
+      return <Link key={key} to={card.to}>{inner}</Link>;
+    }
+    if (card.href) {
+      return <a key={key} href={card.href} target="_blank" rel="noopener noreferrer">{inner}</a>;
+    }
+    return inner;
+  };
+
   return (
     <section id="resources">
-      <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
+      {/* Section header matching partnerships */}
+      <div className="flex items-center gap-2 mb-1">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8]">Library</p>
+      </div>
+      <h2 className="text-xl font-bold text-[#173660] mb-8 pb-3 border-b border-[#DDE4EC]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         Resources
       </h2>
 
       {loading ? (
-        <div className="flex items-center gap-2 text-muted-foreground">
+        <div className="flex items-center gap-2 text-[#5C6B7A]">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span className="text-xs">Loading resources…</span>
         </div>
       ) : (
-        <div className="space-y-10">
-          {/* Always render Equity section with Option Modeller tool */}
-          {!grouped["Equity"] && (
-            <div>
-              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">Equity</h3>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <OptionModellerCard />
-              </div>
-            </div>
-          )}
-          {/* Compensation section removed */}
-          {Object.entries(grouped).sort().map(([category, items]) => (
-            <div key={category}>
-              <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4">
-                {category}
-              </h3>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {category === "Equity" && <OptionModellerCard />}
-                {category === "Financing Guide" && <FinancingGuideCard />}
-                {category === "Financing Guide" ? null : items.map((r) => {
-                  const isApproved = approvedIds.has(r.id);
+        <div className="space-y-12">
+          {sortedCategories.map((category) => {
+            const items = grouped[category];
+            // Determine special cards for this category
+            const specialKeys = Object.keys(SPECIAL_CARDS).filter((k) => k.startsWith(category + ":"));
 
-                  if (r.approval_required && !isApproved) {
-                    return (
-                      <div
-                        key={r.id}
-                        className="border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-bold text-sm text-foreground leading-tight">{r.title}</h4>
-                          <Lock className="w-3.5 h-3.5 text-muted-foreground/50 flex-shrink-0 mt-0.5" />
-                        </div>
-                        {r.description && (
-                          <p className="text-xs text-muted-foreground leading-relaxed">{r.description}</p>
-                        )}
-                        <RequestAccessButton
-                          itemId={r.id}
-                          itemName={r.title}
-                          companyName={companyName}
-                        />
-                      </div>
-                    );
-                  }
+            return (
+              <div key={category}>
+                {/* Category header with Electric Blue left border */}
+                <h3
+                  className="text-xs font-bold uppercase tracking-widest mb-5 pl-3"
+                  style={{ color: "#1A7EC8", borderLeft: "3px solid #1A7EC8", fontFamily: "'DM Sans', sans-serif" }}
+                >
+                  {category}
+                </h3>
 
-                  const href = r.file_path ? getFileUrl(r.file_path) : r.url;
-                  const isFile = !!r.file_path;
-                  return (
-                    <div
-                      key={r.id}
-                      className={`group border border-border rounded-lg p-5 bg-secondary/20 flex flex-col gap-2 transition-colors ${href ? "hover:border-primary/50 hover:bg-secondary/40" : ""}`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <h4 className="font-bold text-sm text-foreground leading-tight">{r.title}</h4>
-                        {href && (
-                          isFile
-                            ? <FileText className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                            : <ExternalLink className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary flex-shrink-0 mt-0.5 transition-colors" />
-                        )}
-                      </div>
-                      {r.description && (
-                        <p className="text-xs text-muted-foreground leading-relaxed">{r.description}</p>
-                      )}
-                      {href && (
-                        <div className="flex items-center gap-2 mt-auto pt-1">
-                          {isFile ? (
-                            <>
-                              <DownloadButton href={href} filename={r.file_path!.split("/").pop()!} />
-                              <a
-                                href={href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <ExternalLink className="w-3 h-3" /> View
-                              </a>
-                            </>
-                          ) : (
-                            <a
-                              href={href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-opacity"
-                            >
-                              <ExternalLink className="w-3 h-3" /> Open Link
-                            </a>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Special cards first */}
+                  {specialKeys.map((k) => renderSpecialCard(k))}
+                  {/* DB resource cards — skip items that match Financing Guide page */}
+                  {items
+                    .filter((r) => {
+                      // Don't duplicate the Financing Process Guide from Fundraising — it's a special card linking to the page
+                      if (category === "Fundraising" && r.title === "Financing Process Guide") return false;
+                      return true;
+                    })
+                    .map(renderCard)}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </section>
