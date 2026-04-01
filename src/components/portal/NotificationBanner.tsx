@@ -2,7 +2,9 @@ import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Bell, X, Loader2, BellOff } from "lucide-react";
 
-/* ── Top-of-page banner (shown to users who haven't decided yet) ──────── */
+const getDismissKey = (userId: string) => `notification-banner-dismissed:${userId}`;
+
+/* ── Top-of-page banner (shown to users who haven't subscribed yet) ───── */
 export const NotificationBanner: FC<{ userId: string; email: string }> = ({ userId, email }) => {
   const [status, setStatus] = useState<"loading" | "show" | "hidden">("loading");
   const [saving, setSaving] = useState(false);
@@ -14,9 +16,13 @@ export const NotificationBanner: FC<{ userId: string; email: string }> = ({ user
         .select("subscribed")
         .eq("user_id", userId)
         .maybeSingle();
-      // Show banner only if user has never interacted
-      setStatus(data === null ? "show" : "hidden");
+
+      const hiddenForSession = sessionStorage.getItem(getDismissKey(userId)) === "1";
+      const permanentlySubscribed = data?.subscribed === true;
+
+      setStatus(permanentlySubscribed || hiddenForSession ? "hidden" : "show");
     };
+
     check();
   }, [userId]);
 
@@ -24,17 +30,15 @@ export const NotificationBanner: FC<{ userId: string; email: string }> = ({ user
     setSaving(true);
     await supabase.from("notification_subscriptions").upsert(
       { user_id: userId, email, subscribed: true },
-      { onConflict: "user_id" }
+      { onConflict: "user_id" },
     );
+    sessionStorage.removeItem(getDismissKey(userId));
     setStatus("hidden");
+    setSaving(false);
   };
 
-  const dismiss = async () => {
-    // Dismiss = opt out so banner never returns
-    await supabase.from("notification_subscriptions").upsert(
-      { user_id: userId, email, subscribed: false },
-      { onConflict: "user_id" }
-    );
+  const dismiss = () => {
+    sessionStorage.setItem(getDismissKey(userId), "1");
     setStatus("hidden");
   };
 
@@ -91,8 +95,9 @@ export const NotificationSettingsLink: FC<{ userId: string; email: string }> = (
     const next = !subscribed;
     await supabase.from("notification_subscriptions").upsert(
       { user_id: userId, email, subscribed: next },
-      { onConflict: "user_id" }
+      { onConflict: "user_id" },
     );
+    if (!next) sessionStorage.removeItem(getDismissKey(userId));
     setSubscribed(next);
     setSaving(false);
   };
