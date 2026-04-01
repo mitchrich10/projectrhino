@@ -242,7 +242,7 @@ const Portal: FC = () => {
             <div className="flex items-start justify-between gap-6">
               <div>
                 <h1 className="text-3xl font-bold text-white mb-3">
-                  Welcome to the Crash{displayCompanyName && displayCompanyName !== "Partner" ? `, ${displayCompanyName}` : ""}
+                  The Crash
                 </h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
                   Your team's home base for Rhino partnerships, resources, and events. Get set up below so we can make sure you're plugged into everything that's relevant to you.

@@ -5,6 +5,8 @@ import {
   Download, ExternalLink, FileText, Loader2, Lock,
   Calculator, BookOpen, FileSpreadsheet, Presentation,
 } from "lucide-react";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
 
 interface Resource {
   id: string;
@@ -23,12 +25,24 @@ const CATEGORY_ORDER = ["Fundraising", "Governance", "Compensation & Equity", "H
 const getResourceIcon = (title: string, filePath: string | null) => {
   const t = title.toLowerCase();
   if (t.includes("financing") || t.includes("fundrais")) return BookOpen;
-  if (t.includes("option modeller") || t.includes("commission") || t.includes("calculator")) return Calculator;
+  if (t.includes("option modeller") || t.includes("calculator")) return Calculator;
   if (t.includes("spreadsheet") || t.includes("tracker") || t.includes("data room") || t.includes("co-investor"))
     return FileSpreadsheet;
   if (filePath?.endsWith(".pptx") || filePath?.endsWith(".ppt") || t.includes("presentation") || t.includes("hiring"))
     return Presentation;
   return FileText;
+};
+
+/* ── File type label ────────────────────────────────────────────────────── */
+const getFileTypeBadge = (resource: Resource, isSpecial?: boolean): string => {
+  if (isSpecial) return "Interactive Tool";
+  if (!resource.file_path && resource.url) return "External Link";
+  const fp = resource.file_path?.toLowerCase() ?? "";
+  if (fp.endsWith(".pdf")) return "PDF";
+  if (fp.endsWith(".xlsx") || fp.endsWith(".xls")) return "Excel";
+  if (fp.endsWith(".pptx") || fp.endsWith(".ppt")) return "Presentation";
+  if (fp.endsWith(".docx") || fp.endsWith(".doc")) return "Document";
+  return "File";
 };
 
 /* ── Download helper ────────────────────────────────────────────────────── */
@@ -110,20 +124,137 @@ const RequestAccessButton: FC<{
   );
 };
 
+/* ── Comp benchmarks description ────────────────────────────────────────── */
+const COMP_BENCHMARKS_DETAIL = {
+  pave: {
+    name: "Pave Market Data Lite",
+    description: "Free for companies under 200 employees. Connect your HRIS to access real-time base salary and equity benchmarks from 8,700+ peer companies. Covers US + one additional market.",
+    url: "https://www.pave.com/products/market-data-lite",
+  },
+  carta: {
+    name: "Carta Total Comp",
+    description: "If you're already using Carta for your cap table, you can access compensation benchmarks through their platform. Particularly strong on equity data for private companies.",
+    url: "https://carta.com",
+  },
+};
+
 /* ── Special tool cards (same visual style as DB resource cards) ─────────── */
-const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: typeof BookOpen; to?: string; href?: string }> = {
+const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: typeof BookOpen; to?: string; href?: string; fileType: string }> = {
   "Compensation & Equity:option-modeller": {
     title: "Option Modeller",
     description: "Interactive tool to model the value of your stock option grant across exit scenarios.",
     icon: Calculator,
     to: "/option-modeller",
+    fileType: "Interactive Tool",
   },
   "Fundraising:financing-guide": {
     title: "Financing Process Guide",
     description: "A curated package of frameworks, templates, and tools for founders preparing for a Series A or growth-stage round.",
     icon: BookOpen,
     to: "/portal/financing-guide",
+    fileType: "Interactive Tool",
   },
+};
+
+/* ── Resource Detail Panel ──────────────────────────────────────────────── */
+const ResourcePanel: FC<{
+  resource: Resource | null;
+  specialCard: (typeof SPECIAL_CARDS)[string] | null;
+  open: boolean;
+  onClose: () => void;
+  onDownload: (id: string, href: string, filename: string) => void;
+  getFileUrl: (fp: string) => string;
+  loadingId: string | null;
+}> = ({ resource, specialCard, open, onClose, onDownload, getFileUrl, loadingId }) => {
+  const isCompBenchmarks = resource?.title === "Compensation Benchmarks";
+  const isSpecial = !!specialCard;
+  const title = specialCard?.title ?? resource?.title ?? "";
+  const description = specialCard?.description ?? resource?.description ?? "";
+  const category = resource?.category ?? "";
+  const fileType = specialCard ? specialCard.fileType : resource ? getFileTypeBadge(resource) : "";
+
+  return (
+    <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+        {/* Header */}
+        <div className="px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
+          <h2 className="text-xl font-semibold text-[#173660] mb-3">{title}</h2>
+          <div className="flex items-center gap-2 flex-wrap">
+            {category && (
+              <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
+                {category}
+              </Badge>
+            )}
+            {fileType && (
+              <Badge variant="outline" className="text-[10px] uppercase tracking-wider font-semibold text-[#5C6B7A] border-[#CDD8E3]">
+                {fileType}
+              </Badge>
+            )}
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-6 space-y-6">
+          {description && (
+            <p className="text-sm text-[#173660]/80 leading-relaxed whitespace-pre-line">{description}</p>
+          )}
+
+          {/* Comp benchmarks special content */}
+          {isCompBenchmarks && (
+            <div className="space-y-4">
+              {Object.values(COMP_BENCHMARKS_DETAIL).map((tool) => (
+                <div key={tool.name} className="border border-[#DDE4EC] rounded-lg p-4 space-y-2">
+                  <h4 className="text-sm font-semibold text-[#173660]">{tool.name}</h4>
+                  <p className="text-[13px] text-[#5C6B7A] leading-relaxed">{tool.description}</p>
+                  <a
+                    href={tool.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-[#1A7EC8] hover:opacity-70 transition-opacity"
+                  >
+                    Open <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer actions */}
+        <div className="px-6 py-5 border-t border-[#DDE4EC]">
+          {isSpecial && specialCard?.to ? (
+            <Link
+              to={specialCard.to}
+              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+            >
+              Open Tool <ExternalLink className="w-3.5 h-3.5" />
+            </Link>
+          ) : isCompBenchmarks ? null : resource?.file_path ? (
+            <button
+              onClick={() => {
+                const url = getFileUrl(resource.file_path!);
+                onDownload(resource.id, url, resource.file_path!.split("/").pop()!);
+              }}
+              disabled={loadingId === resource?.id}
+              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors disabled:opacity-50"
+            >
+              {loadingId === resource?.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              Download
+            </button>
+          ) : resource?.url ? (
+            <a
+              href={resource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+            >
+              Open <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          ) : null}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
 };
 
 /* ── Main Section ───────────────────────────────────────────────────────── */
@@ -132,6 +263,8 @@ const ResourcesSection: FC = () => {
   const [loading, setLoading] = useState(true);
   const [companyName, setCompanyName] = useState("");
   const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+  const [selectedSpecial, setSelectedSpecial] = useState<(typeof SPECIAL_CARDS)[string] | null>(null);
   const { loadingId, download } = useBlobDownload();
 
   useEffect(() => {
@@ -181,18 +314,14 @@ const ResourcesSection: FC = () => {
   const renderCard = (r: Resource) => {
     const isApproved = approvedIds.has(r.id);
     const locked = r.approval_required && !isApproved;
-    const href = r.file_path ? getFileUrl(r.file_path) : r.url;
     const isFile = !!r.file_path;
     const isExternal = !isFile && !!r.url;
     const Icon = getResourceIcon(r.title, r.file_path);
 
     const handleCardClick = () => {
       if (locked) return;
-      if (isFile && href) {
-        download(r.id, href, r.file_path!.split("/").pop()!);
-      } else if (isExternal && href) {
-        window.open(href, "_blank", "noopener,noreferrer");
-      }
+      setSelectedSpecial(null);
+      setSelectedResource(r);
     };
 
     return (
@@ -212,11 +341,7 @@ const ResourcesSection: FC = () => {
           {locked ? (
             <Lock className="w-3.5 h-3.5 text-[#5C6B7A]/50 flex-shrink-0" />
           ) : isFile ? (
-            loadingId === r.id ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-[#1A7EC8] flex-shrink-0" />
-            ) : (
-              <Download className="w-3.5 h-3.5 text-[#5C6B7A] flex-shrink-0" />
-            )
+            <Download className="w-3.5 h-3.5 text-[#5C6B7A] flex-shrink-0" />
           ) : isExternal ? (
             <ExternalLink className="w-3.5 h-3.5 text-[#5C6B7A] flex-shrink-0" />
           ) : null}
@@ -250,8 +375,13 @@ const ResourcesSection: FC = () => {
     if (!card) return null;
     const Icon = card.icon;
 
-    const inner = (
+    return (
       <div
+        key={key}
+        onClick={() => {
+          setSelectedResource(null);
+          setSelectedSpecial(card);
+        }}
         className="relative bg-white border border-[#DDE4EC] rounded-lg p-5 flex flex-col gap-2 transition-all duration-200 cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:border-[#1A7EC8]"
         style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
       >
@@ -267,14 +397,6 @@ const ResourcesSection: FC = () => {
         </p>
       </div>
     );
-
-    if (card.to) {
-      return <Link key={key} to={card.to}>{inner}</Link>;
-    }
-    if (card.href) {
-      return <a key={key} href={card.href} target="_blank" rel="noopener noreferrer">{inner}</a>;
-    }
-    return inner;
   };
 
   return (
@@ -296,12 +418,10 @@ const ResourcesSection: FC = () => {
         <div className="space-y-12">
           {sortedCategories.map((category) => {
             const items = grouped[category];
-            // Determine special cards for this category
             const specialKeys = Object.keys(SPECIAL_CARDS).filter((k) => k.startsWith(category + ":"));
 
             return (
               <div key={category}>
-                {/* Category header with Electric Blue left border */}
                 <h3
                   className="text-xs font-bold uppercase tracking-widest mb-5 pl-3"
                   style={{ color: "#1A7EC8", borderLeft: "3px solid #1A7EC8", fontFamily: "'DM Sans', sans-serif" }}
@@ -310,12 +430,9 @@ const ResourcesSection: FC = () => {
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Special cards first */}
                   {specialKeys.map((k) => renderSpecialCard(k))}
-                  {/* DB resource cards — skip items that match Financing Guide page */}
                   {items
                     .filter((r) => {
-                      // Don't duplicate the Financing Process Guide from Fundraising — it's a special card linking to the page
                       if (category === "Fundraising" && r.title === "Financing Process Guide") return false;
                       return true;
                     })
@@ -326,6 +443,17 @@ const ResourcesSection: FC = () => {
           })}
         </div>
       )}
+
+      {/* Detail panel */}
+      <ResourcePanel
+        resource={selectedResource}
+        specialCard={selectedSpecial}
+        open={!!(selectedResource || selectedSpecial)}
+        onClose={() => { setSelectedResource(null); setSelectedSpecial(null); }}
+        onDownload={download}
+        getFileUrl={getFileUrl}
+        loadingId={loadingId}
+      />
     </section>
   );
 };

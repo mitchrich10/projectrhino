@@ -16,6 +16,7 @@ interface Partnership {
   promo_code: string | null;
   display_order: number;
   approval_required: boolean;
+  detail_pdf_url: string | null;
   created_at: string;
 }
 
@@ -32,6 +33,7 @@ const emptyForm = () => ({
   promo_code: "",
   display_order: 0,
   approval_required: false,
+  detail_pdf_url: "",
 });
 
 const PartnershipsAdmin: FC = () => {
@@ -43,6 +45,8 @@ const PartnershipsAdmin: FC = () => {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { fetchPartnerships(); }, []);
 
@@ -76,9 +80,26 @@ const PartnershipsAdmin: FC = () => {
       promo_code: p.promo_code ?? "",
       display_order: p.display_order,
       approval_required: p.approval_required,
+      detail_pdf_url: p.detail_pdf_url ?? "",
     });
     setError(null);
     setModalOpen(true);
+  };
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const filePath = `pdfs/${Date.now()}-${file.name}`;
+    const { error: uploadError } = await supabase.storage.from("partnerships").upload(filePath, file, { upsert: true });
+    if (uploadError) {
+      setError(`Upload failed: ${uploadError.message}`);
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("partnerships").getPublicUrl(filePath);
+    setForm((f) => ({ ...f, detail_pdf_url: urlData.publicUrl }));
+    setUploading(false);
   };
 
   const handleSave = async () => {
@@ -97,6 +118,7 @@ const PartnershipsAdmin: FC = () => {
       promo_code: form.promo_code?.trim() || null,
       display_order: form.display_order,
       approval_required: form.approval_required,
+      detail_pdf_url: form.detail_pdf_url?.trim() || null,
     };
 
     if (editingId) {
@@ -161,7 +183,6 @@ const PartnershipsAdmin: FC = () => {
                   const logoSrc = p.logo_key ? companyLogos[p.logo_key] : p.logo_url ?? null;
                   return (
                     <div key={p.id} className="flex items-center gap-4 border border-border rounded-lg p-4 bg-secondary/10">
-                      {/* Logo preview */}
                       <div className="w-10 h-10 border border-border rounded flex items-center justify-center bg-background flex-shrink-0 p-1">
                         {logoSrc ? (
                           <img src={logoSrc} alt={p.name} className="max-h-8 max-w-[36px] w-auto h-auto object-contain" />
@@ -172,6 +193,9 @@ const PartnershipsAdmin: FC = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                           <span className="font-bold text-sm text-foreground">{p.name}</span>
+                          {p.detail_pdf_url && (
+                            <span className="text-[10px] font-bold uppercase tracking-widest bg-green-100 text-green-700 px-1.5 py-0.5 rounded">PDF</span>
+                          )}
                           {p.promo_code && (
                             <span className="text-[10px] font-bold uppercase tracking-widest bg-secondary text-muted-foreground px-1.5 py-0.5 rounded font-mono">{p.promo_code}</span>
                           )}
@@ -307,6 +331,32 @@ const PartnershipsAdmin: FC = () => {
                   className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                   placeholder="e.g. RHINO2026"
                 />
+              </div>
+
+              {/* PDF One-Pager Upload */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">PDF One-Pager</label>
+                <div className="space-y-2">
+                  {form.detail_pdf_url && (
+                    <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                      <span className="truncate flex-1">{form.detail_pdf_url.split("/").pop()}</span>
+                      <button onClick={() => setForm((f) => ({ ...f, detail_pdf_url: "" }))} className="text-red-500 hover:text-red-700 flex-shrink-0">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                  <input ref={pdfInputRef} type="file" accept=".pdf" onChange={handlePdfUpload} className="hidden" />
+                  <button
+                    type="button"
+                    onClick={() => pdfInputRef.current?.click()}
+                    disabled={uploading}
+                    className="flex items-center gap-2 text-xs font-semibold text-muted-foreground border border-border rounded-lg px-3 py-2 hover:bg-secondary/30 transition-colors disabled:opacity-50"
+                  >
+                    {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                    {uploading ? "Uploading…" : "Upload PDF"}
+                  </button>
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">Upload a one-pager PDF for this partnership. This will be used as the default download instead of auto-generated PDFs.</p>
               </div>
 
               <div>
