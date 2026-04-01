@@ -12,6 +12,7 @@ import AdminHub from "./pages/admin/AdminHub";
 import OptionModeller from "./pages/OptionModeller";
 import FinancingGuide from "./pages/FinancingGuide";
 import NotFound from "./pages/NotFound";
+import InvestmentBriefBuilder from "./pages/InvestmentBriefBuilder";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/admin" element={<AdminHub />} />
           <Route path="/option-modeller" element={<OptionModeller />} />
           <Route path="/portal/financing-guide" element={<FinancingGuide />} />
+          <Route path="/investment-brief" element={<InvestmentBriefBuilder />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
