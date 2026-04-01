@@ -53,10 +53,15 @@ serve(async (req) => {
       <h3>Brand Assets</h3>
       <ul>
         <li><strong>Logo:</strong> ${logoPath ? `<a href="${logoPath}">Uploaded</a>` : "<em>Not provided</em>"}</li>
-        <li><strong>Primary colour:</strong> ${primaryColor ?? "<em>Default</em>"}</li>
-        <li><strong>Secondary colour:</strong> ${secondaryColor ?? "<em>Default</em>"}</li>
-        <li><strong>Tertiary colour:</strong> ${tertiaryColor || "<em>Not provided</em>"}</li>
-        <li><strong>Accent colour:</strong> ${accentColor || "<em>Not provided</em>"}</li>
+        ${(!primaryColor && !secondaryColor && !tertiaryColor && !accentColor) 
+          ? `<li><strong>Brand colours:</strong> <em>Not set</em></li>`
+          : [
+              primaryColor ? `<li><strong>Primary colour:</strong> ${primaryColor}</li>` : "",
+              secondaryColor ? `<li><strong>Secondary colour:</strong> ${secondaryColor}</li>` : "",
+              tertiaryColor ? `<li><strong>Tertiary colour:</strong> ${tertiaryColor}</li>` : "",
+              accentColor ? `<li><strong>Accent colour:</strong> ${accentColor}</li>` : "",
+            ].filter(Boolean).join("\n")
+        }
         <li><strong>Brand guidelines:</strong> ${brandGuidelinesPath ? `<a href="${brandGuidelinesPath}">Uploaded</a>` : "<em>Not provided</em>"}</li>
       </ul>
 
