@@ -583,7 +583,7 @@ const OptionModeller: FC = () => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["g_initial"]));
   const [globalDiluted, setGlobalDiluted] = useState("10000000");
   const [todayDate] = useState(today());
-  const [exporting, setExporting] = useState(false);
+  
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
