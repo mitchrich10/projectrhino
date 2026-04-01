@@ -11,22 +11,24 @@ import { exportBrief, downloadTemplate, type BriefFormData } from "@/lib/exportI
 import { useToast } from "@/hooks/use-toast";
 
 const INVESTMENT_TYPES = ["R&D", "Hiring", "Marketing", "Capex", "Partnership", "Other"];
-const RETURN_TYPES = ["Revenue Uplift", "Cost Reduction", "Risk Mitigation", "Time Saved"];
-const LIKELIHOOD_OPTIONS = ["Low", "Medium", "High"];
+const RETURN_TYPES = ["Revenue Uplift", "Cost Reduction", "Risk Mitigation", "Time Saved", "Other"];
 
 const emptyRoi = () => ({ lineItem: "", returnAmt: "", cost: "", paybackPeriod: "" });
-const emptyRisk = () => ({ risk: "", likelihood: "Low", impact: "Low", mitigation: "" });
 const emptySuccess = () => ({ metric: "", baseline: "", target: "", reviewDate: "", owner: "" });
+
+const fmtCurrency = (val: string) => {
+  const n = parseFloat(val);
+  if (isNaN(n)) return "";
+  return n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
 
 export default function InvestmentBriefBuilder() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [mode, setMode] = useState<"fill" | "template">("fill");
 
   const [company, setCompany] = useState("");
   const [owner, setOwner] = useState("");
   const [date, setDate] = useState("");
-  const [deadline, setDeadline] = useState("");
   const [investmentType, setInvestmentType] = useState("");
   const [investmentTypeOther, setInvestmentTypeOther] = useState("");
   const [totalAsk, setTotalAsk] = useState("");
@@ -35,8 +37,8 @@ export default function InvestmentBriefBuilder() {
   const [outOfScope, setOutOfScope] = useState("");
   const [roiRows, setRoiRows] = useState([emptyRoi()]);
   const [returnTypes, setReturnTypes] = useState<string[]>([]);
+  const [returnTypeOther, setReturnTypeOther] = useState("");
   const [keyAssumptions, setKeyAssumptions] = useState("");
-  const [riskRows, setRiskRows] = useState([emptyRisk()]);
   const [successRows, setSuccessRows] = useState([emptySuccess()]);
 
   const toggleReturnType = (rt: string) => {
@@ -48,24 +50,22 @@ export default function InvestmentBriefBuilder() {
   };
   const removeRoi = (i: number) => setRoiRows(prev => prev.filter((_, idx) => idx !== i));
 
-  const updateRisk = (i: number, field: string, val: string) => {
-    setRiskRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
-  };
-  const removeRisk = (i: number) => setRiskRows(prev => prev.filter((_, idx) => idx !== i));
-
   const updateSuccess = (i: number, field: string, val: string) => {
     setSuccessRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
   };
   const removeSuccess = (i: number) => setSuccessRows(prev => prev.filter((_, idx) => idx !== i));
 
   const handleExport = async () => {
+    const allReturnTypes = returnTypes.includes("Other") && returnTypeOther.trim()
+      ? [...returnTypes.filter(r => r !== "Other"), returnTypeOther.trim()]
+      : returnTypes;
     const data: BriefFormData = {
-      company, owner, date, deadline, investmentType, investmentTypeOther,
-      totalAsk, problem, inScope, outOfScope, roiRows, returnTypes,
-      keyAssumptions, riskRows, successRows,
+      company, owner, date, investmentType, investmentTypeOther,
+      totalAsk, problem, inScope, outOfScope, roiRows, returnTypes: allReturnTypes,
+      keyAssumptions, successRows,
     };
     await exportBrief(data);
-    toast({ title: "Brief exported", description: "Your .docx file has been downloaded." });
+    toast({ title: "Proposal exported", description: "Your .docx file has been downloaded." });
   };
 
   const handleDownloadTemplate = async () => {
@@ -94,10 +94,10 @@ export default function InvestmentBriefBuilder() {
           </button>
           <div className="flex items-center gap-2">
             <Button
-              variant={mode === "fill" ? "default" : "outline"}
+              variant="default"
               size="sm"
-              onClick={() => setMode("fill")}
               className="text-xs"
+              disabled
             >
               <FileText className="w-3.5 h-3.5 mr-1" /> Fill & Export
             </Button>
@@ -115,11 +115,13 @@ export default function InvestmentBriefBuilder() {
 
       {/* Main content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-1">Investment Brief Builder</h1>
-        <p className="text-sm text-gray-500 mb-8">Structure and export investment proposals in a clean, professional format.</p>
+        <h1 className="text-2xl font-semibold text-gray-900 mb-1">Project Proposal Template</h1>
+        <p className="text-sm text-gray-500 mb-8 max-w-2xl leading-relaxed">
+          All company investments should be tied to hypotheses on the impact to the business. We highly recommend instituting some sort of project proposal framework to manage investments and track outcomes.
+        </p>
 
         {/* Header fields */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
             <Label className="text-xs text-gray-500">Company</Label>
             <Input value={company} onChange={e => setCompany(e.target.value)} placeholder="Acme Corp" />
@@ -131,10 +133,6 @@ export default function InvestmentBriefBuilder() {
           <div>
             <Label className="text-xs text-gray-500">Date</Label>
             <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
-          </div>
-          <div>
-            <Label className="text-xs text-gray-500">Decision Deadline</Label>
-            <Input type="date" value={deadline} onChange={e => setDeadline(e.target.value)} />
           </div>
         </div>
 
@@ -156,7 +154,12 @@ export default function InvestmentBriefBuilder() {
           )}
           <div>
             <Label className="text-xs text-gray-500">Total Investment Ask (C$)</Label>
-            <Input value={totalAsk} onChange={e => setTotalAsk(e.target.value)} placeholder="250,000" />
+            <Input
+              value={totalAsk}
+              onChange={e => setTotalAsk(e.target.value)}
+              onBlur={() => { if (totalAsk) setTotalAsk(fmtCurrency(totalAsk.replace(/,/g, ""))); }}
+              placeholder="250,000.00"
+            />
           </div>
         </div>
 
@@ -208,10 +211,24 @@ export default function InvestmentBriefBuilder() {
                       <Input value={row.lineItem} onChange={e => updateRoi(i, "lineItem", e.target.value)} className="border-0 h-8 text-sm" placeholder="e.g. New SDR team" />
                     </td>
                     <td className="p-1 border border-gray-200">
-                      <Input type="number" value={row.returnAmt} onChange={e => updateRoi(i, "returnAmt", e.target.value)} className="border-0 h-8 text-sm" placeholder="0" />
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={row.returnAmt}
+                        onChange={e => updateRoi(i, "returnAmt", e.target.value)}
+                        className="border-0 h-8 text-sm"
+                        placeholder="0.00"
+                      />
                     </td>
                     <td className="p-1 border border-gray-200">
-                      <Input type="number" value={row.cost} onChange={e => updateRoi(i, "cost", e.target.value)} className="border-0 h-8 text-sm" placeholder="0" />
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={row.cost}
+                        onChange={e => updateRoi(i, "cost", e.target.value)}
+                        className="border-0 h-8 text-sm"
+                        placeholder="0.00"
+                      />
                     </td>
                     <td className="p-1 border border-gray-200 text-center font-medium text-gray-700">
                       {fmtMultiple(row.returnAmt, row.cost)}
@@ -245,6 +262,16 @@ export default function InvestmentBriefBuilder() {
                 </label>
               ))}
             </div>
+            {returnTypes.includes("Other") && (
+              <div className="mt-2">
+                <Input
+                  value={returnTypeOther}
+                  onChange={e => setReturnTypeOther(e.target.value)}
+                  placeholder="Specify return type"
+                  className="max-w-xs text-sm"
+                />
+              </div>
+            )}
             <p className="text-xs text-gray-400 mt-2 leading-relaxed">
               Revenue uplift = incremental ARR or conversion lift. Cost reduction = vendor or headcount savings. Risk mitigation = churn or compliance cost avoided. Time saved = hours × fully-loaded cost rate.
             </p>
@@ -256,65 +283,9 @@ export default function InvestmentBriefBuilder() {
           </div>
         </div>
 
-        {/* Section 4 */}
+        {/* Section 4 — Success Metrics */}
         <div className={sectionClass}>
-          <h2 className="text-base font-semibold text-gray-800 mb-3">4. Risks & Mitigations</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-gray-50 text-gray-600">
-                  <th className="text-left p-2 font-medium border border-gray-200">Risk</th>
-                  <th className="text-left p-2 font-medium border border-gray-200 w-28">Likelihood</th>
-                  <th className="text-left p-2 font-medium border border-gray-200 w-28">Impact</th>
-                  <th className="text-left p-2 font-medium border border-gray-200">Mitigation</th>
-                  <th className="w-10 border border-gray-200"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {riskRows.map((row, i) => (
-                  <tr key={i}>
-                    <td className="p-1 border border-gray-200">
-                      <Input value={row.risk} onChange={e => updateRisk(i, "risk", e.target.value)} className="border-0 h-8 text-sm" placeholder="Describe risk" />
-                    </td>
-                    <td className="p-1 border border-gray-200">
-                      <Select value={row.likelihood} onValueChange={v => updateRisk(i, "likelihood", v)}>
-                        <SelectTrigger className="border-0 h-8 text-sm"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {LIKELIHOOD_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </td>
-                    <td className="p-1 border border-gray-200">
-                      <Select value={row.impact} onValueChange={v => updateRisk(i, "impact", v)}>
-                        <SelectTrigger className="border-0 h-8 text-sm"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          {LIKELIHOOD_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </td>
-                    <td className="p-1 border border-gray-200">
-                      <Input value={row.mitigation} onChange={e => updateRisk(i, "mitigation", e.target.value)} className="border-0 h-8 text-sm" placeholder="How to mitigate" />
-                    </td>
-                    <td className="p-1 border border-gray-200 text-center">
-                      {riskRows.length > 1 && (
-                        <button onClick={() => removeRisk(i)} className="text-gray-400 hover:text-red-500 transition-colors">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => setRiskRows(prev => [...prev, emptyRisk()])} className="mt-2 text-xs">
-            <Plus className="w-3.5 h-3.5 mr-1" /> Add Row
-          </Button>
-        </div>
-
-        {/* Section 5 */}
-        <div className={sectionClass}>
-          <h2 className="text-base font-semibold text-gray-800 mb-3">5. Success Metrics</h2>
+          <h2 className="text-base font-semibold text-gray-800 mb-3">4. Success Metrics</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
