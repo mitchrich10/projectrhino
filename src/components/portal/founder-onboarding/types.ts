@@ -59,7 +59,7 @@ export const TECH_CATEGORIES: { key: keyof TechStack; label: string; options: st
   { key: "hris", label: "HRIS / Payroll", options: ["Gusto", "Rippling", "Deel", "ADP"] },
   { key: "crm", label: "CRM", options: ["HubSpot", "Salesforce", "Pipedrive"] },
   { key: "project_management", label: "Project Management", options: ["Notion", "Asana", "Monday", "Jira"] },
-  { key: "cap_table", label: "Cap Table", options: ["Carta", "Pulley"] },
+  { key: "cap_table", label: "Cap Table", options: ["Carta", "Pulley", "Excel / Spreadsheet"] },
 ];
 
 export const PRIORITY_OPTIONS: { value: string; contextPrompt: string }[] = [
