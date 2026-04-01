@@ -7,7 +7,7 @@ import { companyLogos } from "@/lib/companyLogos";
 import ResourcesSection from "@/components/portal/ResourcesSection";
 import EventsSection from "@/components/portal/EventsSection";
 import PartnershipsSection from "@/components/portal/PartnershipsSection";
-import { NotificationOptIn } from "@/components/portal/OnboardingSection";
+import { NotificationBanner, NotificationSettingsLink } from "@/components/portal/NotificationBanner";
 import RequestsSection from "@/components/portal/RequestsSection";
 import FounderOnboardingWizard from "@/components/portal/founder-onboarding/FounderOnboardingWizard";
 
@@ -167,6 +167,7 @@ const Portal: FC = () => {
               <LogOut className="w-3.5 h-3.5" />
               Sign Out
             </button>
+            {userId && <NotificationSettingsLink userId={userId} email={userEmail} />}
             {isAdmin && (
               <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] hover:opacity-70 transition-opacity">
                 Admin
@@ -304,6 +305,9 @@ const Portal: FC = () => {
             />
           )}
 
+          {/* Notification banner — below onboarding, above partnerships */}
+          {userId && <NotificationBanner userId={userId} email={userEmail} />}
+
           <div id="partnerships">
             <PartnershipsSection />
           </div>
@@ -317,19 +321,6 @@ const Portal: FC = () => {
             </div>
           )}
           {userId && <RequestsSection userId={userId} userEmail={userEmail} companyName={company?.company_name ?? ""} />}
-
-          {/* Notifications */}
-          {userId && (
-            <section id="notifications">
-              <div className="flex items-center gap-2 mb-1">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8]">Settings</p>
-              </div>
-              <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
-                Notifications
-              </h2>
-              <NotificationOptIn userId={userId} email={userEmail} />
-            </section>
-          )}
         </div>
       </main>
     </div>
