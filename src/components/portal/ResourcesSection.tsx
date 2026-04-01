@@ -154,9 +154,9 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     to: "/portal/financing-guide",
     fileType: "Interactive Tool",
   },
-  "Governance:investment-brief": {
-    title: "Investment Brief Builder",
-    description: "Structure and export investment proposals with a guided form. Fill in details and export a clean Word document, or download a blank template.",
+  "Governance:project-proposal": {
+    title: "Project Proposal Template",
+    description: "All company investments should be tied to hypotheses on the impact to the business. Use this guided form to structure proposals and export a clean Word document, or download a blank template.",
     icon: FileText,
     to: "/investment-brief",
     fileType: "Interactive Tool",
@@ -448,13 +448,14 @@ const ResourcesSection: FC = () => {
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {specialKeys.map((k) => renderSpecialCard(k))}
+                  {category !== "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
                   {items
                     .filter((r) => {
                       if (category === "Fundraising" && r.title === "Financing Process Guide") return false;
                       return true;
                     })
                     .map(renderCard)}
+                  {category === "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
                 </div>
               </div>
             );
