@@ -178,11 +178,10 @@ const PartnershipPanel: FC<{
     return `https://${url}`;
   };
 
-  const redemptionDomain = (() => {
-    if (!partnership.redemption_url) return null;
-    if (/^mailto:/i.test(partnership.redemption_url)) return partnership.redemption_url.replace(/^mailto:/i, '');
+  const websiteDomain = (() => {
+    if (!partnership.website_url) return null;
 
-    const normalizedUrl = normalizeUrl(partnership.redemption_url);
+    const normalizedUrl = normalizeUrl(partnership.website_url);
 
     try {
       return new URL(normalizedUrl).hostname.replace(/^www\./, "");
