@@ -30,7 +30,6 @@ const App = () => (
           <Route path="/admin/resources" element={<AdminHub />} />
           <Route path="/admin" element={<AdminHub />} />
           <Route path="/option-modeller" element={<OptionModeller />} />
-          {/* Commission Calculator route removed */}
           <Route path="/portal/financing-guide" element={<FinancingGuide />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
