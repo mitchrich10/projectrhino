@@ -410,6 +410,8 @@ const PartnershipsSection: FC = () => {
         <div className="space-y-8">
           {categories.map((category) => {
             const items = grouped[category];
+            // Find coming soon items for this category
+            const comingSoon = COMING_SOON_ITEMS.filter((cs) => cs.category === category);
             return (
               <div key={category}>
                 <div className="flex items-center gap-2 mb-3">
@@ -418,12 +420,40 @@ const PartnershipsSection: FC = () => {
                 </div>
                 <div className={GRID_CLASSES}>
                   {items.map((p) => (
-                    <PartnershipTile key={p.id} partnership={p} onClick={() => setSelected(p)} />
+                    <PartnershipTile key={p.id} partnership={p} onClick={() => {
+                      trackPortalEvent("partnership_click", p.name, p.id);
+                      setSelected(p);
+                    }} />
+                  ))}
+                  {comingSoon.map((cs) => (
+                    <ComingSoonTile key={cs.name} name={cs.name} />
                   ))}
                 </div>
               </div>
             );
           })}
+          {/* Render coming-soon categories that don't have any existing partnerships */}
+          {COMING_SOON_ITEMS
+            .filter((cs) => !categories.includes(cs.category))
+            .reduce<{ category: string; items: typeof COMING_SOON_ITEMS }[]>((acc, cs) => {
+              const existing = acc.find((g) => g.category === cs.category);
+              if (existing) existing.items.push(cs);
+              else acc.push({ category: cs.category, items: [cs] });
+              return acc;
+            }, [])
+            .map(({ category, items }) => (
+              <div key={category}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1 h-5 rounded-full bg-[#1A7EC8]" />
+                  <p className="text-sm font-bold uppercase tracking-widest text-[#173660]">{category}</p>
+                </div>
+                <div className={GRID_CLASSES}>
+                  {items.map((cs) => (
+                    <ComingSoonTile key={cs.name} name={cs.name} />
+                  ))}
+                </div>
+              </div>
+            ))}
         </div>
       )}
 
