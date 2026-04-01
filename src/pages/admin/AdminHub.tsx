@@ -239,7 +239,7 @@ const AdminHub: FC = () => {
           <p className="text-xs font-bold uppercase tracking-widest text-primary">Admin</p>
         </div>
         <div className="max-w-5xl mx-auto px-6 flex gap-0 border-t border-border">
-          {(["resources", "events", "partnerships", "requests", "onboarding"] as Tab[]).map((t) => (
+          {(["resources", "events", "partnerships", "requests", "onboarding", "analytics"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
