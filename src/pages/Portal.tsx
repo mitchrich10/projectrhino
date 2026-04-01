@@ -10,6 +10,7 @@ import PartnershipsSection from "@/components/portal/PartnershipsSection";
 import { NotificationBanner, NotificationSettingsLink } from "@/components/portal/NotificationBanner";
 import RequestsSection from "@/components/portal/RequestsSection";
 import FounderOnboardingWizard from "@/components/portal/founder-onboarding/FounderOnboardingWizard";
+import RequestAccess from "@/pages/RequestAccess";
 
 interface CompanyInfo {
   company_name: string;
