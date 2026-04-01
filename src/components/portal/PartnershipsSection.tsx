@@ -5,6 +5,7 @@ import { companyLogos } from "@/lib/companyLogos";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { generatePartnershipPdf } from "@/lib/generatePartnershipPdf";
+import { trackPortalEvent } from "@/lib/portalAnalytics";
 
 import logoAws from "@/assets/logo-aws-activate.png";
 import logoMicrosoftStartups from "@/assets/logo-microsoft-startups.png";
