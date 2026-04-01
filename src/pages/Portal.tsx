@@ -242,7 +242,7 @@ const Portal: FC = () => {
             <div className="flex items-start justify-between gap-6">
               <div>
                 <h1 className="text-3xl font-bold text-white mb-3">
-                  The Crash
+                  Crash Portal
                 </h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
                   Partnerships, resources, and tools for Rhino companies.
