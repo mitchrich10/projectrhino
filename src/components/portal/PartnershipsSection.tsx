@@ -264,15 +264,15 @@ const PartnershipPanel: FC<{
         {/* Footer actions */}
         {!locked && (
           <div className="px-6 py-5 border-t border-[#DDE4EC] space-y-3">
-            {redemptionDomain && partnership.redemption_url && (
+            {websiteDomain && partnership.website_url && (
               <a
-                href={normalizeUrl(partnership.redemption_url)}
+                href={normalizeUrl(partnership.website_url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-center text-[#1A7EC8] underline"
                 style={{ fontSize: "13px" }}
               >
-                {redemptionDomain}
+                {websiteDomain}
               </a>
             )}
             {partnership.redemption_url && (
