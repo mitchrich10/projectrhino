@@ -147,6 +147,12 @@ const Portal: FC = () => {
     );
   }
 
+  // Show request access page for unrecognized domains
+  const domainApproved = company?.company_name !== "Partner" || isAdmin;
+  if (!domainApproved && userEmail) {
+    return <RequestAccess email={userEmail} />;
+  }
+
   return (
     <div className="min-h-screen bg-[#F4F7FA] text-foreground flex flex-col" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       {/* Top Nav */}
