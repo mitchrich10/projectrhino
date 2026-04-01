@@ -173,12 +173,16 @@ const PartnershipPanel: FC<{
 
   const locked = partnership.approval_required && !isApproved;
 
+  const normalizeUrl = (url: string) => {
+    if (/^(https?:\/\/|mailto:)/i.test(url)) return url;
+    return `https://${url}`;
+  };
+
   const redemptionDomain = (() => {
     if (!partnership.redemption_url) return null;
+    if (/^mailto:/i.test(partnership.redemption_url)) return partnership.redemption_url.replace(/^mailto:/i, '');
 
-    const normalizedUrl = /^https?:\/\//i.test(partnership.redemption_url)
-      ? partnership.redemption_url
-      : `https://${partnership.redemption_url}`;
+    const normalizedUrl = normalizeUrl(partnership.redemption_url);
 
     try {
       return new URL(normalizedUrl).hostname.replace(/^www\./, "");
