@@ -126,6 +126,10 @@ function calcVestedForGrant(
 
 // ── Formatting ────────────────────────────────────────────────────────────────
 
+function fmtNum(n: number): string {
+  return n.toLocaleString("en-CA");
+}
+
 function fmtValuation(n: number): string {
   if (!n || n <= 0) return "$0";
   if (n >= 1_000_000_000) {
