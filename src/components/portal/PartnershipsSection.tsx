@@ -192,6 +192,7 @@ const PartnershipPanel: FC<{
   })();
 
   const handleDownload = () => {
+    trackPortalEvent("partnership_download", partnership.name, partnership.id);
     if (partnership.detail_pdf_url) {
       window.open(partnership.detail_pdf_url, "_blank");
     } else {
