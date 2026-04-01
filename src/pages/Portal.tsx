@@ -304,6 +304,9 @@ const Portal: FC = () => {
             />
           )}
 
+          {/* Notification banner — below onboarding, above partnerships */}
+          {userId && <NotificationBanner userId={userId} email={userEmail} />}
+
           <div id="partnerships">
             <PartnershipsSection />
           </div>
@@ -317,19 +320,6 @@ const Portal: FC = () => {
             </div>
           )}
           {userId && <RequestsSection userId={userId} userEmail={userEmail} companyName={company?.company_name ?? ""} />}
-
-          {/* Notifications */}
-          {userId && (
-            <section id="notifications">
-              <div className="flex items-center gap-2 mb-1">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8]">Settings</p>
-              </div>
-              <h2 className="text-xl font-black uppercase tracking-tighter text-foreground mb-6 pb-3 border-b border-border">
-                Notifications
-              </h2>
-              <NotificationOptIn userId={userId} email={userEmail} />
-            </section>
-          )}
         </div>
       </main>
     </div>
