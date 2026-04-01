@@ -448,13 +448,14 @@ const ResourcesSection: FC = () => {
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {category !== "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
                   {items
                     .filter((r) => {
                       if (category === "Fundraising" && r.title === "Financing Process Guide") return false;
                       return true;
                     })
                     .map(renderCard)}
-                  {specialKeys.map((k) => renderSpecialCard(k))}
+                  {category === "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
                 </div>
               </div>
             );
