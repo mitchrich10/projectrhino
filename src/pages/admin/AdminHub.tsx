@@ -22,7 +22,7 @@ interface Resource {
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const CATEGORIES = ["Legal", "Finance", "Operations", "Hiring", "Marketing", "Other"];
+const CATEGORIES = ["Fundraising", "Governance", "Compensation & Equity", "Hiring"];
 const emptyResource = (): Omit<Resource, "id" | "created_at"> => ({
   title: "", description: "", url: "", file_path: null, category: "Legal",
 });
