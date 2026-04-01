@@ -197,6 +197,7 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
     setData(newData);
     await saveData(newData);
     await Promise.all([sendCompletionEmail(newData), pushToDrive(newData)]);
+    trackPortalEvent("onboarding_completed", companyName);
     setCollapsed(true);
     localStorage.setItem(`onboarding-collapsed-${batchId}`, "true");
   };
@@ -204,6 +205,9 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
   const toggleCollapse = () => {
     const next = !collapsed;
     setCollapsed(next);
+    if (!next && !data.completed) {
+      trackPortalEvent("onboarding_started", companyName);
+    }
     localStorage.setItem(`onboarding-collapsed-${batchId}`, String(next));
   };
 
