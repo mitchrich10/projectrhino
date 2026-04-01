@@ -84,10 +84,11 @@ const Portal: FC = () => {
 
       setCompany(domainData ?? { company_name: "Partner", logo_key: null });
       setHasEvents((eventsData?.length ?? 0) > 0);
+      setUserEmail(email);
 
       if (!domainData && !email.endsWith("@rhinovc.com")) {
-        await supabase.auth.signOut();
-        navigate("/partner-login");
+        // Show request access page instead of signing out
+        setLoading(false);
         return;
       }
 
