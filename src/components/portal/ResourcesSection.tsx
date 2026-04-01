@@ -295,6 +295,8 @@ const ResourcesSection: FC = () => {
   const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
   const [selectedSpecial, setSelectedSpecial] = useState<(typeof SPECIAL_CARDS)[string] | null>(null);
+  const [fundraisingUnlocked, setFundraisingUnlocked] = useState(false);
+  const [isAutoApproved, setIsAutoApproved] = useState(false);
   const { loadingId, download } = useBlobDownload();
 
   useEffect(() => {
@@ -304,17 +306,33 @@ const ResourcesSection: FC = () => {
       const [{ data }, { data: approvedData }] = await Promise.all([
         supabase.from("resources").select("id, title, description, url, file_path, category, approval_required").order("category").order("title"),
         session
-          ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).eq("item_type", "resource").eq("status", "approved")
+          ? supabase.from("partner_requests").select("item_id, item_type").eq("user_id", session.user.id).eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
 
       setResources(data ?? []);
-      setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
+      const approved = (approvedData ?? []) as { item_id: string; item_type: string }[];
+      setApprovedIds(new Set(approved.filter(r => r.item_type === "resource").map(r => r.item_id)));
+
+      // Check fundraising toolkit access
+      const hasFundraisingAccess = approved.some(r => r.item_type === "financing_guide");
 
       if (session?.user?.email) {
-        const domain = session.user.email.split("@")[1];
+        const email = session.user.email;
+        const domain = email.split("@")[1];
         const { data: domainData } = await supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle();
         setCompanyName(domainData?.company_name ?? domain);
+
+        // Auto-approve for rhino admins and invited users
+        const isRhino = email.endsWith("@rhinovc.com");
+        const { data: inviteData } = await supabase
+          .from("onboarding_invites")
+          .select("id")
+          .eq("email", email.toLowerCase())
+          .maybeSingle();
+        const autoApprove = isRhino || !!inviteData;
+        setIsAutoApproved(autoApprove);
+        setFundraisingUnlocked(hasFundraisingAccess || autoApprove);
       }
 
       setLoading(false);
