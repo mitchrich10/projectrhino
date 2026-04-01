@@ -68,6 +68,7 @@ const RESOURCE_ORDER = [
   "First Meeting Prep Guide",
   "VC Prospecting Tracker",
   "Fundraising Questions",
+  "SAFE Template",
 ];
 
 /* ── Download helper ───────────────────────────────────────── */
