@@ -332,6 +332,29 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
   );
 };
 
+// ── Coming Soon Placeholder Tile ──
+const COMING_SOON_ITEMS = [
+  { name: "Outsourced CFO / Finance Partner", category: "Finance & Accounting" },
+  { name: "Marketing / Brand Agency", category: "Marketing" },
+  { name: "Insurance Partner", category: "Insurance" },
+  { name: "Benefits Partner", category: "HR & Benefits" },
+];
+
+const ComingSoonTile: FC<{ name: string }> = ({ name }) => (
+  <div
+    className="relative flex flex-col items-center justify-center rounded-lg bg-[#F4F7FA] border border-dashed border-[#CDD8E3] w-full"
+    style={{
+      height: "140px",
+      fontFamily: "'DM Sans', sans-serif",
+    }}
+  >
+    <span className="text-sm font-semibold text-[#5C6B7A] text-center px-4 mb-2">{name}</span>
+    <span className="text-[9px] font-bold uppercase tracking-widest text-[#5C6B7A]/60 bg-[#CDD8E3]/40 px-2 py-0.5 rounded">
+      Coming soon
+    </span>
+  </div>
+);
+
 // ── Grid helper ──
 const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
