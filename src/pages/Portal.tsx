@@ -7,7 +7,7 @@ import { companyLogos } from "@/lib/companyLogos";
 import ResourcesSection from "@/components/portal/ResourcesSection";
 import EventsSection from "@/components/portal/EventsSection";
 import PartnershipsSection from "@/components/portal/PartnershipsSection";
-import { NotificationOptIn } from "@/components/portal/OnboardingSection";
+import { NotificationBanner, NotificationSettingsLink } from "@/components/portal/NotificationBanner";
 import RequestsSection from "@/components/portal/RequestsSection";
 import FounderOnboardingWizard from "@/components/portal/founder-onboarding/FounderOnboardingWizard";
 
