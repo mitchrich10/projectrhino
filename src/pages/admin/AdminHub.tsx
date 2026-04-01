@@ -27,7 +27,7 @@ const emptyResource = (): Omit<Resource, "id" | "created_at"> => ({
   title: "", description: "", url: "", file_path: null, category: "Legal",
 });
 
-type Tab = "resources" | "events" | "partnerships" | "requests" | "onboarding";
+type Tab = "resources" | "events" | "partnerships" | "requests" | "onboarding" | "analytics";
 
 // ── Resources panel ───────────────────────────────────────────────────────────
 const ResourcesPanel: FC = () => {
