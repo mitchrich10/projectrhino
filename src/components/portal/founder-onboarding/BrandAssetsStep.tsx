@@ -1,5 +1,5 @@
 import { FC, useState, useRef } from "react";
-import { Upload, X, FileText } from "lucide-react";
+import { Upload, X, FileText, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { FounderOnboardingData } from "./types";
 
@@ -9,11 +9,84 @@ interface Props {
   batchId: string;
 }
 
+interface BrandColour {
+  id: string;
+  label: string;
+  value: string;
+}
+
+const COLOUR_KEYS = ["primary_color", "secondary_color", "tertiary_color", "accent_color"] as const;
+const COLOUR_LABELS = ["Primary", "Secondary", "Tertiary", "Accent"];
+
 const BrandAssetsStep: FC<Props> = ({ data, onChange, batchId }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadingGuidelines, setUploadingGuidelines] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const guidelinesInputRef = useRef<HTMLInputElement>(null);
+
+  // Determine if "skip colours" is active — all colour fields empty and no colours set
+  const allColoursEmpty = COLOUR_KEYS.every((k) => !data[k]);
+  const [skipColours, setSkipColours] = useState(false);
+
+  // Build dynamic colour list from data
+  const getActiveColours = (): { key: typeof COLOUR_KEYS[number]; label: string; value: string }[] => {
+    const colours: { key: typeof COLOUR_KEYS[number]; label: string; value: string }[] = [];
+    COLOUR_KEYS.forEach((key, i) => {
+      if (data[key]) {
+        colours.push({ key, label: COLOUR_LABELS[i], value: data[key] });
+      }
+    });
+    // If no colours set and not skipping, show 2 empty slots
+    if (colours.length === 0 && !skipColours) {
+      return [
+        { key: "primary_color", label: "Primary", value: "" },
+        { key: "secondary_color", label: "Secondary", value: "" },
+      ];
+    }
+    return colours;
+  };
+
+  const [colours, setColours] = useState(getActiveColours);
+
+  const handleAddColour = () => {
+    // Find next unused key
+    const usedKeys = new Set(colours.map((c) => c.key));
+    const nextIdx = COLOUR_KEYS.findIndex((k) => !usedKeys.has(k));
+    if (nextIdx === -1) return; // max 4
+    const newColours = [...colours, { key: COLOUR_KEYS[nextIdx], label: COLOUR_LABELS[nextIdx], value: "" }];
+    setColours(newColours);
+  };
+
+  const handleRemoveColour = (idx: number) => {
+    const removed = colours[idx];
+    const newColours = colours.filter((_, i) => i !== idx);
+    setColours(newColours);
+    onChange({ [removed.key]: "" });
+  };
+
+  const handleColourChange = (idx: number, value: string) => {
+    const updated = [...colours];
+    updated[idx] = { ...updated[idx], value };
+    setColours(updated);
+    onChange({ [updated[idx].key]: value });
+  };
+
+  const handleSkipToggle = (checked: boolean) => {
+    setSkipColours(checked);
+    if (checked) {
+      // Clear all colours
+      const patch: Partial<FounderOnboardingData> = {};
+      COLOUR_KEYS.forEach((k) => { (patch as any)[k] = ""; });
+      onChange(patch);
+      setColours([]);
+    } else {
+      // Restore 2 default empty slots
+      setColours([
+        { key: "primary_color", label: "Primary", value: "" },
+        { key: "secondary_color", label: "Secondary", value: "" },
+      ]);
+    }
+  };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,6 +111,8 @@ const BrandAssetsStep: FC<Props> = ({ data, onChange, batchId }) => {
     onChange({ brand_guidelines_path: urlData.publicUrl });
     setUploadingGuidelines(false);
   };
+
+  const canAddMore = colours.length < COLOUR_KEYS.length;
 
   return (
     <div className="space-y-8" style={{ fontFamily: "'DM Sans', sans-serif" }}>
@@ -86,33 +161,63 @@ const BrandAssetsStep: FC<Props> = ({ data, onChange, batchId }) => {
       {/* Brand colours */}
       <div>
         <label className="block text-sm font-medium text-[#173660] mb-3">Brand Colours</label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {([
-            { key: "primary_color" as const, label: "Primary", placeholder: "#173660" },
-            { key: "secondary_color" as const, label: "Secondary", placeholder: "#1A7EC8" },
-            { key: "tertiary_color" as const, label: "Tertiary", placeholder: "#a3d7c2" },
-            { key: "accent_color" as const, label: "Accent", placeholder: "#CDD8E3" },
-          ]).map(({ key, label, placeholder }) => (
-            <div key={key}>
-              <label className="block text-xs text-[#173660]/60 mb-1">{label}</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={data[key] || placeholder}
-                  onChange={(e) => onChange({ [key]: e.target.value })}
-                  className="w-10 h-10 rounded border border-[#CDD8E3] cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={data[key]}
-                  onChange={(e) => onChange({ [key]: e.target.value })}
-                  placeholder={placeholder}
-                  className="flex-1 h-10 border border-[#CDD8E3] rounded-lg px-3 text-sm bg-white text-[#173660]"
-                />
-              </div>
+
+        {/* Skip toggle */}
+        <label className="flex items-center gap-2 mb-4 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={skipColours}
+            onChange={(e) => handleSkipToggle(e.target.checked)}
+            className="w-4 h-4 rounded border-[#CDD8E3] text-[#1A7EC8] focus:ring-[#1A7EC8]"
+          />
+          <span className="text-sm text-[#173660]/60">We don't have brand colours yet</span>
+        </label>
+
+        {!skipColours && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {colours.map((colour, idx) => (
+                <div key={colour.key}>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs text-[#173660]/60">{colour.label}</label>
+                    {colours.length > 1 && (
+                      <button
+                        onClick={() => handleRemoveColour(idx)}
+                        className="text-[#173660]/30 hover:text-red-500 transition-colors"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={colour.value || "#ffffff"}
+                      onChange={(e) => handleColourChange(idx, e.target.value)}
+                      className="w-10 h-10 rounded border border-[#CDD8E3] cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={colour.value}
+                      onChange={(e) => handleColourChange(idx, e.target.value)}
+                      placeholder="#000000"
+                      className="flex-1 h-10 border border-[#CDD8E3] rounded-lg px-3 text-sm bg-white text-[#173660]"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+            {canAddMore && (
+              <button
+                onClick={handleAddColour}
+                className="mt-4 flex items-center gap-1.5 text-sm font-medium text-[#1A7EC8] hover:opacity-70 transition-opacity"
+              >
+                <Plus className="w-4 h-4" />
+                Add another colour
+              </button>
+            )}
+          </>
+        )}
       </div>
 
       {/* Brand guidelines */}
