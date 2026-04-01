@@ -470,6 +470,62 @@ const ResourcesSection: FC = () => {
             const items = grouped[category];
             const specialKeys = Object.keys(SPECIAL_CARDS).filter((k) => k.startsWith(category + ":"));
 
+            // For Fundraising: replace individual cards with single Fundraising Toolkit card
+            if (category === "Fundraising") {
+              return (
+                <div key={category}>
+                  <h3
+                    className="text-xs font-bold uppercase tracking-widest mb-5 pl-3"
+                    style={{ color: "#1A7EC8", borderLeft: "3px solid #1A7EC8", fontFamily: "'DM Sans', sans-serif" }}
+                  >
+                    {category}
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Single Fundraising Toolkit card */}
+                    {fundraisingUnlocked ? (
+                      <Link
+                        to="/portal/financing-guide"
+                        className="relative bg-white border border-[#DDE4EC] rounded-lg p-5 flex flex-col gap-2 transition-all duration-200 cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:border-[#1A7EC8]"
+                        style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
+                        onClick={() => trackPortalEvent("resource_click", "Fundraising Toolkit")}
+                      >
+                        <div className="flex items-start justify-between">
+                          <BookOpen className="w-5 h-5 text-[#1A7EC8] flex-shrink-0" />
+                          <ExternalLink className="w-3.5 h-3.5 text-[#5C6B7A] flex-shrink-0" />
+                        </div>
+                        <h4 className="text-sm font-semibold leading-tight" style={{ color: "#173660" }}>
+                          Fundraising Toolkit
+                        </h4>
+                        <p className="text-[13px] leading-relaxed line-clamp-2" style={{ color: "#5C6B7A" }}>
+                          Guides, templates, and trackers for founders preparing for a financing round.
+                        </p>
+                      </Link>
+                    ) : (
+                      <div
+                        className="relative bg-white border border-[#DDE4EC] rounded-lg p-5 flex flex-col gap-2 opacity-70 cursor-default"
+                        style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
+                      >
+                        <div className="flex items-start justify-between">
+                          <BookOpen className="w-5 h-5 text-[#1A7EC8] flex-shrink-0" />
+                          <Lock className="w-3.5 h-3.5 text-[#5C6B7A]/50 flex-shrink-0" />
+                        </div>
+                        <h4 className="text-sm font-semibold leading-tight" style={{ color: "#173660" }}>
+                          Fundraising Toolkit
+                        </h4>
+                        <div className="mt-auto">
+                          <RequestAccessButton itemId="fundraising-toolkit" itemName="Fundraising Toolkit" companyName={companyName} />
+                        </div>
+                      </div>
+                    )}
+                    {/* SAFE Template (non-gated fundraising resource) */}
+                    {items
+                      .filter((r) => !r.approval_required)
+                      .map(renderCard)}
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div key={category}>
                 <h3
@@ -481,12 +537,7 @@ const ResourcesSection: FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {category !== "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
-                  {items
-                    .filter((r) => {
-                      if (category === "Fundraising" && r.title === "Financing Process Guide") return false;
-                      return true;
-                    })
-                    .map(renderCard)}
+                  {items.map(renderCard)}
                   {category === "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
                 </div>
               </div>
