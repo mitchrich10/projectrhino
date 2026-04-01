@@ -472,6 +472,39 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_analytics: {
+        Row: {
+          company_name: string
+          created_at: string
+          event_type: string
+          id: string
+          item_id: string | null
+          item_name: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          company_name?: string
+          created_at?: string
+          event_type: string
+          id?: string
+          item_id?: string | null
+          item_name: string
+          user_email: string
+          user_id: string
+        }
+        Update: {
+          company_name?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          item_id?: string | null
+          item_name?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       resources: {
         Row: {
           approval_required: boolean

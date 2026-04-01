@@ -68,6 +68,7 @@ const RESOURCE_ORDER = [
   "First Meeting Prep Guide",
   "VC Prospecting Tracker",
   "Fundraising Questions",
+  "SAFE Template",
 ];
 
 /* ── Download helper ───────────────────────────────────────── */
@@ -277,7 +278,7 @@ const FinancingGuide: FC = () => {
       const email = session.user.email;
       const domain = email.split("@")[1]?.toLowerCase();
 
-      const [{ data: domainData }, { data: resourceData }, { data: approvedData }] =
+      const [{ data: domainData }, { data: resourceData }, { data: approvedData }, { data: inviteData }] =
         await Promise.all([
           supabase
             .from("approved_domains")
@@ -287,7 +288,7 @@ const FinancingGuide: FC = () => {
           supabase
             .from("resources")
             .select("id, title, description, file_path")
-            .eq("category", "Financing Guide")
+            .eq("category", "Fundraising")
             .order("title"),
           supabase
             .from("partner_requests")
@@ -296,20 +297,24 @@ const FinancingGuide: FC = () => {
             .eq("item_type", "financing_guide")
             .eq("status", "approved")
             .maybeSingle(),
+          supabase
+            .from("onboarding_invites")
+            .select("id")
+            .eq("email", email.toLowerCase())
+            .maybeSingle(),
         ]);
 
       setCompany(domainData ?? { company_name: "Partner", logo_key: null });
 
       if (!domainData && !email.endsWith("@rhinovc.com")) {
-        await supabase.auth.signOut();
-        navigate("/partner-login");
+        navigate("/portal");
         return;
       }
 
       setIsAdmin(email.endsWith("@rhinovc.com"));
 
-      // Admins always unlocked
-      setUnlocked(!!approvedData || email.endsWith("@rhinovc.com"));
+      // Admins and invited users always unlocked
+      setUnlocked(!!approvedData || email.endsWith("@rhinovc.com") || !!inviteData);
 
       // Sort resources to match desired order
       const sorted = (resourceData ?? []).sort((a, b) => {

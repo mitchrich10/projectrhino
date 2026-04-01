@@ -5,6 +5,7 @@ import { companyLogos } from "@/lib/companyLogos";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { generatePartnershipPdf } from "@/lib/generatePartnershipPdf";
+import { trackPortalEvent } from "@/lib/portalAnalytics";
 
 import logoAws from "@/assets/logo-aws-activate.png";
 import logoMicrosoftStartups from "@/assets/logo-microsoft-startups.png";
@@ -191,6 +192,7 @@ const PartnershipPanel: FC<{
   })();
 
   const handleDownload = () => {
+    trackPortalEvent("partnership_download", partnership.name, partnership.id);
     if (partnership.detail_pdf_url) {
       window.open(partnership.detail_pdf_url, "_blank");
     } else {
@@ -331,6 +333,29 @@ const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = (
   );
 };
 
+// ── Coming Soon Placeholder Tile ──
+const COMING_SOON_ITEMS = [
+  { name: "Outsourced CFO / Finance Partner", category: "Finance & Accounting" },
+  { name: "Marketing / Brand Agency", category: "Marketing" },
+  { name: "Insurance Partner", category: "Insurance" },
+  { name: "Benefits Partner", category: "HR & Benefits" },
+];
+
+const ComingSoonTile: FC<{ name: string }> = ({ name }) => (
+  <div
+    className="relative flex flex-col items-center justify-center rounded-lg bg-[#F4F7FA] border border-dashed border-[#CDD8E3] w-full"
+    style={{
+      height: "140px",
+      fontFamily: "'DM Sans', sans-serif",
+    }}
+  >
+    <span className="text-sm font-semibold text-[#5C6B7A] text-center px-4 mb-2">{name}</span>
+    <span className="text-[9px] font-bold uppercase tracking-widest text-[#5C6B7A]/60 bg-[#CDD8E3]/40 px-2 py-0.5 rounded">
+      Coming soon
+    </span>
+  </div>
+);
+
 // ── Grid helper ──
 const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
@@ -386,6 +411,8 @@ const PartnershipsSection: FC = () => {
         <div className="space-y-8">
           {categories.map((category) => {
             const items = grouped[category];
+            // Find coming soon items for this category
+            const comingSoon = COMING_SOON_ITEMS.filter((cs) => cs.category === category);
             return (
               <div key={category}>
                 <div className="flex items-center gap-2 mb-3">
@@ -394,12 +421,40 @@ const PartnershipsSection: FC = () => {
                 </div>
                 <div className={GRID_CLASSES}>
                   {items.map((p) => (
-                    <PartnershipTile key={p.id} partnership={p} onClick={() => setSelected(p)} />
+                    <PartnershipTile key={p.id} partnership={p} onClick={() => {
+                      trackPortalEvent("partnership_click", p.name, p.id);
+                      setSelected(p);
+                    }} />
+                  ))}
+                  {comingSoon.map((cs) => (
+                    <ComingSoonTile key={cs.name} name={cs.name} />
                   ))}
                 </div>
               </div>
             );
           })}
+          {/* Render coming-soon categories that don't have any existing partnerships */}
+          {COMING_SOON_ITEMS
+            .filter((cs) => !categories.includes(cs.category))
+            .reduce<{ category: string; items: typeof COMING_SOON_ITEMS }[]>((acc, cs) => {
+              const existing = acc.find((g) => g.category === cs.category);
+              if (existing) existing.items.push(cs);
+              else acc.push({ category: cs.category, items: [cs] });
+              return acc;
+            }, [])
+            .map(({ category, items }) => (
+              <div key={category}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1 h-5 rounded-full bg-[#1A7EC8]" />
+                  <p className="text-sm font-bold uppercase tracking-widest text-[#173660]">{category}</p>
+                </div>
+                <div className={GRID_CLASSES}>
+                  {items.map((cs) => (
+                    <ComingSoonTile key={cs.name} name={cs.name} />
+                  ))}
+                </div>
+              </div>
+            ))}
         </div>
       )}
 

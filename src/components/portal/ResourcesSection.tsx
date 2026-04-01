@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
+import { trackPortalEvent } from "@/lib/portalAnalytics";
 
 interface Resource {
   id: string;
@@ -73,23 +74,25 @@ const RequestAccessButton: FC<{
   itemId: string;
   itemName: string;
   companyName: string;
-}> = ({ itemId, itemName, companyName }) => {
+  itemType?: string;
+}> = ({ itemId, itemName, companyName, itemType = "resource" }) => {
   const [status, setStatus] = useState<"idle" | "loading" | "requested" | "error">("idle");
 
   useEffect(() => {
     const check = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
-      const { data } = await supabase
+      const query = supabase
         .from("partner_requests")
         .select("id")
         .eq("user_id", session.user.id)
-        .eq("item_id", itemId)
-        .maybeSingle();
+        .eq("item_type", itemType);
+      if (itemId) query.eq("item_id", itemId);
+      const { data } = await query.maybeSingle();
       if (data) setStatus("requested");
     };
     check();
-  }, [itemId]);
+  }, [itemId, itemType]);
 
   const handleRequest = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -98,7 +101,7 @@ const RequestAccessButton: FC<{
     if (!session) { setStatus("error"); return; }
 
     const res = await supabase.functions.invoke("request-access", {
-      body: { item_type: "resource", item_id: itemId, item_name: itemName, company_name: companyName },
+      body: { item_type: itemType, item_id: itemId === "fundraising-toolkit" ? null : itemId, item_name: itemName, company_name: companyName },
     });
 
     setStatus(res.error || res.data?.error === "already_requested" || res.data?.success ? "requested" : "error");
@@ -147,13 +150,7 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     to: "/option-modeller",
     fileType: "Interactive Tool",
   },
-  "Fundraising:financing-guide": {
-    title: "Financing Process Guide",
-    description: "A curated package of frameworks, templates, and tools for founders preparing for a Series A or growth-stage round.",
-    icon: BookOpen,
-    to: "/portal/financing-guide",
-    fileType: "Interactive Tool",
-  },
+  // Financing guide is now handled by Fundraising Toolkit card
   "Governance:project-proposal": {
     title: "Project Proposal Template",
     description: "All company investments should be tied to hypotheses on the impact to the business. Use this guided form to structure proposals and export a clean Word document, or download a blank template.",
@@ -207,6 +204,17 @@ const ResourcePanel: FC<{
 
         {/* Body */}
         <div className="px-6 py-6 space-y-6">
+          {/* PDF inline viewer */}
+          {resource?.file_path?.toLowerCase().endsWith(".pdf") && !isSpecial && (
+            <div className="w-full" style={{ height: "400px" }}>
+              <iframe
+                src={getFileUrl(resource.file_path)}
+                className="w-full h-full rounded border border-[#DDE4EC]"
+                title={title}
+              />
+            </div>
+          )}
+
           {description && (
             <p className="text-sm text-[#173660]/80 leading-[1.7] whitespace-pre-line">{description}</p>
           )}
@@ -250,6 +258,7 @@ const ResourcePanel: FC<{
             <button
               onClick={() => {
                 const url = getFileUrl(resource.file_path!);
+                trackPortalEvent("resource_download", resource.title, resource.id);
                 onDownload(resource.id, url, resource.file_path!.split("/").pop()!);
               }}
               disabled={loadingId === resource?.id}
@@ -282,6 +291,8 @@ const ResourcesSection: FC = () => {
   const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
   const [selectedSpecial, setSelectedSpecial] = useState<(typeof SPECIAL_CARDS)[string] | null>(null);
+  const [fundraisingUnlocked, setFundraisingUnlocked] = useState(false);
+  const [isAutoApproved, setIsAutoApproved] = useState(false);
   const { loadingId, download } = useBlobDownload();
 
   useEffect(() => {
@@ -291,17 +302,33 @@ const ResourcesSection: FC = () => {
       const [{ data }, { data: approvedData }] = await Promise.all([
         supabase.from("resources").select("id, title, description, url, file_path, category, approval_required").order("category").order("title"),
         session
-          ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).eq("item_type", "resource").eq("status", "approved")
+          ? supabase.from("partner_requests").select("item_id, item_type").eq("user_id", session.user.id).eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
 
       setResources(data ?? []);
-      setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
+      const approved = (approvedData ?? []) as { item_id: string; item_type: string }[];
+      setApprovedIds(new Set(approved.filter(r => r.item_type === "resource").map(r => r.item_id)));
+
+      // Check fundraising toolkit access
+      const hasFundraisingAccess = approved.some(r => r.item_type === "financing_guide");
 
       if (session?.user?.email) {
-        const domain = session.user.email.split("@")[1];
+        const email = session.user.email;
+        const domain = email.split("@")[1];
         const { data: domainData } = await supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle();
         setCompanyName(domainData?.company_name ?? domain);
+
+        // Auto-approve for rhino admins and invited users
+        const isRhino = email.endsWith("@rhinovc.com");
+        const { data: inviteData } = await supabase
+          .from("onboarding_invites")
+          .select("id")
+          .eq("email", email.toLowerCase())
+          .maybeSingle();
+        const autoApprove = isRhino || !!inviteData;
+        setIsAutoApproved(autoApprove);
+        setFundraisingUnlocked(hasFundraisingAccess || autoApprove);
       }
 
       setLoading(false);
@@ -338,6 +365,7 @@ const ResourcesSection: FC = () => {
 
     const handleCardClick = () => {
       if (locked) return;
+      trackPortalEvent("resource_click", r.title, r.id);
       setSelectedSpecial(null);
       setSelectedResource(r);
     };
@@ -438,6 +466,62 @@ const ResourcesSection: FC = () => {
             const items = grouped[category];
             const specialKeys = Object.keys(SPECIAL_CARDS).filter((k) => k.startsWith(category + ":"));
 
+            // For Fundraising: replace individual cards with single Fundraising Toolkit card
+            if (category === "Fundraising") {
+              return (
+                <div key={category}>
+                  <h3
+                    className="text-xs font-bold uppercase tracking-widest mb-5 pl-3"
+                    style={{ color: "#1A7EC8", borderLeft: "3px solid #1A7EC8", fontFamily: "'DM Sans', sans-serif" }}
+                  >
+                    {category}
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Single Fundraising Toolkit card */}
+                    {fundraisingUnlocked ? (
+                      <Link
+                        to="/portal/financing-guide"
+                        className="relative bg-white border border-[#DDE4EC] rounded-lg p-5 flex flex-col gap-2 transition-all duration-200 cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:border-[#1A7EC8]"
+                        style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
+                        onClick={() => trackPortalEvent("resource_click", "Fundraising Toolkit")}
+                      >
+                        <div className="flex items-start justify-between">
+                          <BookOpen className="w-5 h-5 text-[#1A7EC8] flex-shrink-0" />
+                          <ExternalLink className="w-3.5 h-3.5 text-[#5C6B7A] flex-shrink-0" />
+                        </div>
+                        <h4 className="text-sm font-semibold leading-tight" style={{ color: "#173660" }}>
+                          Fundraising Toolkit
+                        </h4>
+                        <p className="text-[13px] leading-relaxed line-clamp-2" style={{ color: "#5C6B7A" }}>
+                          Guides, templates, and trackers for founders preparing for a financing round.
+                        </p>
+                      </Link>
+                    ) : (
+                      <div
+                        className="relative bg-white border border-[#DDE4EC] rounded-lg p-5 flex flex-col gap-2 opacity-70 cursor-default"
+                        style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
+                      >
+                        <div className="flex items-start justify-between">
+                          <BookOpen className="w-5 h-5 text-[#1A7EC8] flex-shrink-0" />
+                          <Lock className="w-3.5 h-3.5 text-[#5C6B7A]/50 flex-shrink-0" />
+                        </div>
+                        <h4 className="text-sm font-semibold leading-tight" style={{ color: "#173660" }}>
+                          Fundraising Toolkit
+                        </h4>
+                        <div className="mt-auto">
+                          <RequestAccessButton itemId="fundraising-toolkit" itemName="Fundraising Toolkit" companyName={companyName} itemType="financing_guide" />
+                        </div>
+                      </div>
+                    )}
+                    {/* SAFE Template (non-gated fundraising resource) */}
+                    {items
+                      .filter((r) => !r.approval_required)
+                      .map(renderCard)}
+                  </div>
+                </div>
+              );
+            }
+
             return (
               <div key={category}>
                 <h3
@@ -449,12 +533,7 @@ const ResourcesSection: FC = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {category !== "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
-                  {items
-                    .filter((r) => {
-                      if (category === "Fundraising" && r.title === "Financing Process Guide") return false;
-                      return true;
-                    })
-                    .map(renderCard)}
+                  {items.map(renderCard)}
                   {category === "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
                 </div>
               </div>

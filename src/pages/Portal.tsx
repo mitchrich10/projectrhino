@@ -10,6 +10,7 @@ import PartnershipsSection from "@/components/portal/PartnershipsSection";
 import { NotificationBanner, NotificationSettingsLink } from "@/components/portal/NotificationBanner";
 import RequestsSection from "@/components/portal/RequestsSection";
 import FounderOnboardingWizard from "@/components/portal/founder-onboarding/FounderOnboardingWizard";
+import RequestAccess from "@/pages/RequestAccess";
 
 interface CompanyInfo {
   company_name: string;
@@ -83,10 +84,11 @@ const Portal: FC = () => {
 
       setCompany(domainData ?? { company_name: "Partner", logo_key: null });
       setHasEvents((eventsData?.length ?? 0) > 0);
+      setUserEmail(email);
 
       if (!domainData && !email.endsWith("@rhinovc.com")) {
-        await supabase.auth.signOut();
-        navigate("/partner-login");
+        // Show request access page instead of signing out
+        setLoading(false);
         return;
       }
 
@@ -143,6 +145,12 @@ const Portal: FC = () => {
         <Loader2 className="w-8 h-8 animate-spin text-[#1A7EC8]" />
       </div>
     );
+  }
+
+  // Show request access page for unrecognized domains
+  const domainApproved = company?.company_name !== "Partner" || isAdmin;
+  if (!domainApproved && userEmail) {
+    return <RequestAccess email={userEmail} />;
   }
 
   return (
