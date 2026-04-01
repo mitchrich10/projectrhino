@@ -8,6 +8,7 @@ import EventsAdmin from "./EventsAdmin";
 import PartnershipsAdmin from "./PartnershipsAdmin";
 import RequestsAdmin from "./RequestsAdmin";
 import OnboardingAdmin from "./OnboardingAdmin";
+import AnalyticsPanel from "./AnalyticsPanel";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Resource {
