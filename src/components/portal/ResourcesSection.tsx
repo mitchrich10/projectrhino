@@ -369,6 +369,7 @@ const ResourcesSection: FC = () => {
 
     const handleCardClick = () => {
       if (locked) return;
+      trackPortalEvent("resource_click", r.title, r.id);
       setSelectedSpecial(null);
       setSelectedResource(r);
     };
