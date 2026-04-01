@@ -150,13 +150,7 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     to: "/option-modeller",
     fileType: "Interactive Tool",
   },
-  "Fundraising:financing-guide": {
-    title: "Financing Process Guide",
-    description: "A curated package of frameworks, templates, and tools for founders preparing for a Series A or growth-stage round.",
-    icon: BookOpen,
-    to: "/portal/financing-guide",
-    fileType: "Interactive Tool",
-  },
+  // Financing guide is now handled by Fundraising Toolkit card
   "Governance:project-proposal": {
     title: "Project Proposal Template",
     description: "All company investments should be tied to hypotheses on the impact to the business. Use this guided form to structure proposals and export a clean Word document, or download a blank template.",
