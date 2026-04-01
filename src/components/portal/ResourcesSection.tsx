@@ -324,8 +324,9 @@ const ResourcesSection: FC = () => {
   const renderCard = (r: Resource) => {
     const isApproved = approvedIds.has(r.id);
     const locked = r.approval_required && !isApproved;
+    const isCompBenchmarks = r.title === "Compensation Benchmarks";
     const isFile = !!r.file_path;
-    const isExternal = !isFile && !!r.url;
+    const isExternal = !isFile && !!r.url && !isCompBenchmarks;
     const Icon = getResourceIcon(r.title, r.file_path);
 
     const handleCardClick = () => {
