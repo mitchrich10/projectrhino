@@ -167,6 +167,7 @@ const Portal: FC = () => {
               <LogOut className="w-3.5 h-3.5" />
               Sign Out
             </button>
+            {userId && <NotificationSettingsLink userId={userId} email={userEmail} />}
             {isAdmin && (
               <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] hover:opacity-70 transition-opacity">
                 Admin
