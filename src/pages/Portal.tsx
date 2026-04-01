@@ -245,7 +245,7 @@ const Portal: FC = () => {
                   The Crash
                 </h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
-                  Your team's home base for Rhino partnerships, resources, and events. Get set up below so we can make sure you're plugged into everything that's relevant to you.
+                  Partnerships, resources, and tools for Rhino companies.
                 </p>
                 {/* Share with your team button */}
                 <button
