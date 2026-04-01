@@ -173,11 +173,16 @@ const ResourcePanel: FC<{
   const category = resource?.category ?? "";
   const fileType = specialCard ? specialCard.fileType : resource ? getFileTypeBadge(resource) : "";
 
+  const Icon = resource ? getResourceIcon(resource.title, resource.file_path) : specialCard ? specialCard.icon : FileText;
+
   return (
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         {/* Header */}
         <div className="px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
+          <div className="w-12 h-12 rounded-lg bg-[#1A7EC8]/10 flex items-center justify-center mb-4">
+            <Icon className="w-6 h-6 text-[#1A7EC8]" />
+          </div>
           <h2 className="text-xl font-semibold text-[#173660] mb-3">{title}</h2>
           <div className="flex items-center gap-2 flex-wrap">
             {category && (
@@ -196,7 +201,7 @@ const ResourcePanel: FC<{
         {/* Body */}
         <div className="px-6 py-6 space-y-6">
           {description && (
-            <p className="text-sm text-[#173660]/80 leading-relaxed whitespace-pre-line">{description}</p>
+            <p className="text-sm text-[#173660]/80 leading-[1.7] whitespace-pre-line">{description}</p>
           )}
 
           {/* Comp benchmarks special content */}
@@ -220,8 +225,13 @@ const ResourcePanel: FC<{
           )}
         </div>
 
+        {/* Divider */}
+        <div className="px-6">
+          <div className="h-px bg-[#1A7EC8]/20" />
+        </div>
+
         {/* Footer actions */}
-        <div className="px-6 py-5 border-t border-[#DDE4EC]">
+        <div className="px-6 py-5">
           {isSpecial && specialCard?.to ? (
             <Link
               to={specialCard.to}
