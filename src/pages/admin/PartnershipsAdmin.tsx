@@ -12,6 +12,7 @@ interface Partnership {
   description: string | null;
   logo_key: string | null;
   logo_url: string | null;
+  website_url: string | null;
   redemption_url: string | null;
   promo_code: string | null;
   display_order: number;
@@ -29,6 +30,7 @@ const emptyForm = () => ({
   description: "",
   logo_key: "",
   logo_url: "",
+  website_url: "",
   redemption_url: "",
   promo_code: "",
   display_order: 0,
@@ -76,6 +78,7 @@ const PartnershipsAdmin: FC = () => {
       description: p.description ?? "",
       logo_key: p.logo_key ?? "",
       logo_url: p.logo_url ?? "",
+      website_url: p.website_url ?? "",
       redemption_url: p.redemption_url ?? "",
       promo_code: p.promo_code ?? "",
       display_order: p.display_order,
@@ -114,6 +117,7 @@ const PartnershipsAdmin: FC = () => {
       description: form.description?.trim() || null,
       logo_key: form.logo_key?.trim() || null,
       logo_url: form.logo_url?.trim() || null,
+      website_url: form.website_url?.trim() || null,
       redemption_url: form.redemption_url?.trim() || null,
       promo_code: form.promo_code?.trim() || null,
       display_order: form.display_order,
@@ -309,6 +313,18 @@ const PartnershipsAdmin: FC = () => {
                     placeholder="https://…"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Website URL</label>
+                <input
+                  type="url"
+                  value={form.website_url}
+                  onChange={(e) => setForm((f) => ({ ...f, website_url: e.target.value }))}
+                  className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  placeholder="https://partner.com"
+                />
+                <p className="text-[10px] text-muted-foreground mt-1">Displayed as the domain link in the detail panel.</p>
               </div>
 
               <div>
