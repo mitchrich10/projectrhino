@@ -249,8 +249,8 @@ const ResourcesAdmin: FC = () => {
       {/* Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border sticky top-0 bg-background">
+          <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0">
               <h3 className="text-sm font-black uppercase tracking-widest text-foreground">
                 {editingId ? "Edit Resource" : "Add Resource"}
               </h3>
