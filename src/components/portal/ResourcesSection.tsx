@@ -204,6 +204,10 @@ const ResourcePanel: FC<{
 
         {/* Body */}
         <div className="px-6 py-6 space-y-6">
+          {description && (
+            <p className="text-sm text-[#173660]/80 leading-[1.7] whitespace-pre-line">{description}</p>
+          )}
+
           {/* PDF inline viewer */}
           {resource?.file_path?.toLowerCase().endsWith(".pdf") && !isSpecial && (
             <div className="w-full" style={{ height: "400px" }}>
@@ -213,10 +217,6 @@ const ResourcePanel: FC<{
                 title={title}
               />
             </div>
-          )}
-
-          {description && (
-            <p className="text-sm text-[#173660]/80 leading-[1.7] whitespace-pre-line">{description}</p>
           )}
 
           {/* Comp benchmarks special content */}
