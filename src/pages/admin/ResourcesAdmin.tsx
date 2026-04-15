@@ -351,18 +351,6 @@ const ResourcesAdmin: FC = () => {
                 )}
               </div>
 
-              {/* Approval Required toggle */}
-              <div className="flex items-center justify-between border border-border rounded-lg px-4 py-3 bg-secondary/10">
-                <div>
-                  <p className="text-xs font-bold text-foreground">Require Approval</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Partners must request access before viewing this resource</p>
-                </div>
-                <Switch
-                  checked={form.approval_required}
-                  onCheckedChange={(v) => setForm((f) => ({ ...f, approval_required: v }))}
-                />
-              </div>
-
               {error && <p className="text-xs text-destructive font-medium">{error}</p>}
             </div>
 
