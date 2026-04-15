@@ -354,7 +354,7 @@ const ResourcesAdmin: FC = () => {
               {error && <p className="text-xs text-destructive font-medium">{error}</p>}
             </div>
 
-            <div className="flex justify-end gap-3 px-6 py-4 border-t border-border sticky bottom-0 bg-background">
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-border flex-shrink-0">
               <button
                 onClick={() => setModalOpen(false)}
                 className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 py-2"
