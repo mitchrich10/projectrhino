@@ -1,0 +1,1 @@
+UPDATE resources SET file_path = 'legal/TEMPLATE_Post-Money_SAFE.docx' WHERE id = '43d7dd01-ba22-4736-a7c8-c312a2989a11';
