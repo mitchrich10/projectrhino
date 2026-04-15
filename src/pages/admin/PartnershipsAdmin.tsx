@@ -29,6 +29,7 @@ const emptyForm = () => ({
   description: "",
   logo_key: "",
   logo_url: "",
+  website_url: "",
   redemption_url: "",
   promo_code: "",
   display_order: 0,
