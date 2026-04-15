@@ -306,7 +306,8 @@ const FinancingGuide: FC = () => {
 
       setCompany(domainData ?? { company_name: "Partner", logo_key: null });
 
-      if (!domainData && !email.endsWith("@rhinovc.com")) {
+      // Allow rhinovc admins, approved domains, and invited users
+      if (!domainData && !email.endsWith("@rhinovc.com") && !inviteData) {
         navigate("/portal");
         return;
       }
