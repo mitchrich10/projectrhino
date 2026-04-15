@@ -249,8 +249,8 @@ const ResourcesAdmin: FC = () => {
       {/* Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border sticky top-0 bg-background">
+          <div className="bg-background border border-border rounded-xl w-full max-w-lg shadow-2xl max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border flex-shrink-0">
               <h3 className="text-sm font-black uppercase tracking-widest text-foreground">
                 {editingId ? "Edit Resource" : "Add Resource"}
               </h3>
@@ -259,7 +259,7 @@ const ResourcesAdmin: FC = () => {
               </button>
             </div>
 
-            <div className="px-6 py-5 space-y-4">
+            <div className="px-6 py-5 space-y-4 overflow-y-auto flex-1 min-h-0">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Title *</label>
                 <input
@@ -354,7 +354,7 @@ const ResourcesAdmin: FC = () => {
               {error && <p className="text-xs text-destructive font-medium">{error}</p>}
             </div>
 
-            <div className="flex justify-end gap-3 px-6 py-4 border-t border-border sticky bottom-0 bg-background">
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-border flex-shrink-0">
               <button
                 onClick={() => setModalOpen(false)}
                 className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 py-2"
