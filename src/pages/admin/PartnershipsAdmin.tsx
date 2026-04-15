@@ -12,6 +12,7 @@ interface Partnership {
   description: string | null;
   logo_key: string | null;
   logo_url: string | null;
+  website_url: string | null;
   redemption_url: string | null;
   promo_code: string | null;
   display_order: number;
