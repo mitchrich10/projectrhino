@@ -513,10 +513,6 @@ const ResourcesSection: FC = () => {
                         </div>
                       </div>
                     )}
-                    {/* SAFE Template (non-gated fundraising resource) */}
-                    {items
-                      .filter((r) => !r.approval_required)
-                      .map(renderCard)}
                   </div>
                 </div>
               );
