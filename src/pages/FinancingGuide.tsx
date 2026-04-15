@@ -71,7 +71,28 @@ const RESOURCE_ORDER = [
   "SAFE Template",
 ];
 
-/* ── Download helper ───────────────────────────────────────── */
+/* ── Helpers ───────────────────────────────────────────────── */
+
+const getFileUrl = (filePath: string) =>
+  supabase.storage.from("resources").getPublicUrl(filePath).data.publicUrl;
+
+const isPdf = (filePath: string | null) =>
+  filePath?.toLowerCase().endsWith(".pdf");
+
+const downloadFile = async (href: string, filename: string) => {
+  const res = await fetch(href);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/* ── Download button ───────────────────────────────────────── */
 
 const DownloadBtn: FC<{ href: string; filename: string }> = ({ href, filename }) => {
   const [loading, setLoading] = useState(false);
@@ -80,16 +101,8 @@ const DownloadBtn: FC<{ href: string; filename: string }> = ({ href, filename })
     async (e: React.MouseEvent) => {
       e.stopPropagation();
       setLoading(true);
-      console.log("[analytics] file_download", { filename });
       try {
-        const res = await fetch(href);
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(url);
+        await downloadFile(href, filename);
       } finally {
         setLoading(false);
       }
@@ -110,6 +123,114 @@ const DownloadBtn: FC<{ href: string; filename: string }> = ({ href, filename })
       )}
       Download
     </button>
+  );
+};
+
+/* ── Download All button ───────────────────────────────────── */
+
+const DownloadAllBtn: FC<{ resources: Resource[] }> = ({ resources }) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleDownloadAll = async () => {
+    setLoading(true);
+    try {
+      for (const r of resources) {
+        if (!r.file_path) continue;
+        const url = getFileUrl(r.file_path);
+        const filename = r.file_path.split("/").pop()!;
+        await downloadFile(url, filename);
+        await sleep(800);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleDownloadAll}
+      disabled={loading}
+      className="inline-flex items-center gap-2 bg-[#1A7EC8] text-white font-bold uppercase tracking-widest text-xs px-5 py-2.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50"
+    >
+      {loading ? (
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+      ) : (
+        <Download className="w-3.5 h-3.5" />
+      )}
+      {loading ? "Downloading…" : "Download All Resources"}
+    </button>
+  );
+};
+
+/* ── Slide-over preview panel ──────────────────────────────── */
+
+const PreviewPanel: FC<{
+  resource: Resource;
+  onClose: () => void;
+}> = ({ resource, onClose }) => {
+  const meta = RESOURCE_META[resource.title] ?? {
+    icon: FileText,
+    typeBadge: "Document",
+    badgeClass: "bg-[#CDD8E3] text-[#173660]",
+  };
+
+  const fileUrl = resource.file_path ? getFileUrl(resource.file_path) : null;
+  const pdf = isPdf(resource.file_path);
+  const filename = resource.file_path?.split("/").pop() ?? "file";
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+
+      {/* Panel */}
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#CDD8E3] flex-shrink-0">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-sm text-[#173660] truncate">{resource.title}</h3>
+            <span className={`inline-block mt-1 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded ${meta.badgeClass}`}>
+              {meta.typeBadge}
+            </span>
+          </div>
+          <button onClick={onClose} className="text-[#5C6B7A] hover:text-[#173660] transition-colors ml-4 flex-shrink-0">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Description */}
+        {resource.description && (
+          <div className="px-6 py-4 border-b border-[#CDD8E3]">
+            <p className="text-xs text-[#5C6B7A] leading-relaxed">{resource.description}</p>
+          </div>
+        )}
+
+        {/* PDF Viewer or info */}
+        <div className="flex-1 min-h-0 overflow-hidden">
+          {pdf && fileUrl ? (
+            <iframe
+              src={fileUrl}
+              title={resource.title}
+              className="w-full h-full border-0"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full px-6">
+              <p className="text-sm text-[#5C6B7A] text-center">
+                This file type cannot be previewed inline.<br />
+                Use the download button below.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        {fileUrl && (
+          <div className="px-6 py-4 border-t border-[#CDD8E3] flex-shrink-0">
+            <DownloadBtn href={fileUrl} filename={filename} />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
@@ -137,7 +258,6 @@ const RequestAccessBtn: FC<{ companyName: string }> = ({ companyName }) => {
 
   const handleRequest = async () => {
     setStatus("loading");
-    console.log("[analytics] request_access", { item: "Financing Process Guide Package" });
     const {
       data: { session },
     } = await supabase.auth.getSession();
@@ -197,7 +317,8 @@ const RequestAccessBtn: FC<{ companyName: string }> = ({ companyName }) => {
 const ResourceCard: FC<{
   resource: Resource;
   unlocked: boolean;
-}> = ({ resource, unlocked }) => {
+  onPreview: (r: Resource) => void;
+}> = ({ resource, unlocked, onPreview }) => {
   const meta = RESOURCE_META[resource.title] ?? {
     icon: FileText,
     typeBadge: "Document",
@@ -205,12 +326,13 @@ const ResourceCard: FC<{
   };
   const Icon = meta.icon;
 
-  const fileUrl = resource.file_path
-    ? supabase.storage.from("resources").getPublicUrl(resource.file_path).data.publicUrl
-    : null;
+  const fileUrl = resource.file_path ? getFileUrl(resource.file_path) : null;
 
   return (
-    <div className="bg-white rounded-lg border border-[#CDD8E3] overflow-hidden flex flex-col transition-shadow hover:shadow-md">
+    <div
+      onClick={() => unlocked && onPreview(resource)}
+      className={`bg-white rounded-lg border border-[#CDD8E3] overflow-hidden flex flex-col transition-shadow ${unlocked ? "cursor-pointer hover:shadow-md" : ""}`}
+    >
       {/* Navy accent bar */}
       <div className="h-1 bg-[#173660]" />
 
@@ -258,6 +380,7 @@ const FinancingGuide: FC = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [resources, setResources] = useState<Resource[]>([]);
   const [unlocked, setUnlocked] = useState(false);
+  const [previewResource, setPreviewResource] = useState<Resource | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -306,25 +429,20 @@ const FinancingGuide: FC = () => {
 
       setCompany(domainData ?? { company_name: "Partner", logo_key: null });
 
-      // Allow rhinovc admins, approved domains, and invited users
       if (!domainData && !email.endsWith("@rhinovc.com") && !inviteData) {
         navigate("/portal");
         return;
       }
 
       setIsAdmin(email.endsWith("@rhinovc.com"));
-
-      // Admins and invited users always unlocked
       setUnlocked(!!approvedData || email.endsWith("@rhinovc.com") || !!inviteData);
 
-      // Sort resources to match desired order
       const sorted = (resourceData ?? []).sort((a, b) => {
         const ai = RESOURCE_ORDER.indexOf(a.title);
         const bi = RESOURCE_ORDER.indexOf(b.title);
         return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
       });
       setResources(sorted);
-
       setLoading(false);
     };
 
@@ -349,7 +467,7 @@ const FinancingGuide: FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F7FA] text-foreground flex flex-col">
-      {/* Nav — matches portal */}
+      {/* Nav */}
       <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-[#CDD8E3]">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex-shrink-0">
@@ -364,11 +482,7 @@ const FinancingGuide: FC = () => {
               ← Back to Portal
             </Link>
             {logoSrc ? (
-              <img
-                src={logoSrc}
-                alt={company?.company_name}
-                className="h-6 w-auto object-contain"
-              />
+              <img src={logoSrc} alt={company?.company_name} className="h-6 w-auto object-contain" />
             ) : (
               <span className="text-xs font-bold uppercase tracking-widest text-[#173660]">
                 {company?.company_name}
@@ -402,10 +516,7 @@ const FinancingGuide: FC = () => {
 
         {menuOpen && (
           <div className="md:hidden border-t border-[#CDD8E3] bg-white px-6 py-4 flex flex-col gap-4">
-            <Link
-              to="/portal"
-              className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A]"
-            >
+            <Link to="/portal" className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A]">
               ← Back to Portal
             </Link>
             <button
@@ -416,10 +527,7 @@ const FinancingGuide: FC = () => {
               Sign Out
             </button>
             {isAdmin && (
-              <Link
-                to="/admin"
-                className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8]"
-              >
+              <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8]">
                 Admin
               </Link>
             )}
@@ -456,9 +564,21 @@ const FinancingGuide: FC = () => {
       {/* Resource cards */}
       <main className="flex-1 px-6 py-12">
         <div className="max-w-6xl mx-auto">
+          {/* Download All */}
+          {unlocked && resources.filter((r) => r.file_path).length > 0 && (
+            <div className="mb-8 flex justify-center">
+              <DownloadAllBtn resources={resources} />
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {resources.map((r) => (
-              <ResourceCard key={r.id} resource={r} unlocked={unlocked} />
+              <ResourceCard
+                key={r.id}
+                resource={r}
+                unlocked={unlocked}
+                onPreview={setPreviewResource}
+              />
             ))}
           </div>
         </div>
@@ -470,6 +590,14 @@ const FinancingGuide: FC = () => {
           Rhino Ventures · rhinovc.com · For informational purposes only.
         </p>
       </footer>
+
+      {/* Preview panel */}
+      {previewResource && (
+        <PreviewPanel
+          resource={previewResource}
+          onClose={() => setPreviewResource(null)}
+        />
+      )}
     </div>
   );
 };
