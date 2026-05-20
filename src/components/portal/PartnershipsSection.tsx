@@ -179,13 +179,16 @@ const PartnershipPanel: FC<{
     return `https://${url}`;
   };
 
+  const websiteHref = partnership.website_url
+    ? normalizeUrl(partnership.website_url)
+    : partnership.redemption_url
+      ? normalizeUrl(partnership.redemption_url)
+      : null;
+
   const websiteDomain = (() => {
-    if (!partnership.website_url) return null;
-
-    const normalizedUrl = normalizeUrl(partnership.website_url);
-
+    if (!websiteHref) return null;
     try {
-      return new URL(normalizedUrl).hostname.replace(/^www\./, "");
+      return new URL(websiteHref).hostname.replace(/^www\./, "");
     } catch {
       return null;
     }
