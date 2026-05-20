@@ -357,7 +357,7 @@ const ResourcesSection: FC = () => {
   /* ── Card renderer ────────────────────────────────────────────────── */
   const renderCard = (r: Resource) => {
     const isApproved = approvedIds.has(r.id);
-    const locked = r.approval_required && !isApproved;
+    const locked = r.approval_required && !isApproved && !isAutoApproved;
     const isCompBenchmarks = r.title === "Compensation Benchmarks";
     const isFile = !!r.file_path;
     const isExternal = !isFile && !!r.url && !isCompBenchmarks;
