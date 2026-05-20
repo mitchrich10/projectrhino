@@ -83,7 +83,7 @@ const PartnershipAudit: FC<{ rows: Partnership[] }> = ({ rows }) => {
       rows.map((r) => {
         const mismatches = findCtaMismatches(r.description);
         const hasPdf = !!r.detail_pdf_url;
-        const issue = !hasPdf || mismatches.length > 0 || !r.tagline || !r.redemption_url;
+        const issue = !hasPdf || mismatches.length > 0 || !r.tagline || !r.redemption_url || !r.website_url;
         return { ...r, _mismatches: mismatches, _hasPdf: hasPdf, _issue: issue };
       }),
     [rows]
@@ -121,11 +121,11 @@ const PartnershipAudit: FC<{ rows: Partnership[] }> = ({ rows }) => {
                   ) : <span className="text-destructive">—</span>}
                 </td>
                 <td className="px-3 py-2">
-                  {r.website_url && r.website_url !== r.redemption_url ? (
+                  {r.website_url ? (
                     <a href={r.website_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline inline-flex items-center gap-1">
-                      Site <ExternalLink className="w-3 h-3" />
+                      <span className="text-emerald-600">✅</span> Site <ExternalLink className="w-3 h-3" />
                     </a>
-                  ) : <span className="text-muted-foreground">—</span>}
+                  ) : <span className="text-destructive">❌ missing</span>}
                 </td>
                 <td className="px-3 py-2"><Check ok={r._hasPdf} /></td>
                 <td className="px-3 py-2 text-muted-foreground max-w-[320px]">{preview(r.description)}</td>

@@ -316,7 +316,7 @@ const PartnershipsAdmin: FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Website URL</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Partner Website (homepage)</label>
                 <input
                   type="url"
                   value={form.website_url}
