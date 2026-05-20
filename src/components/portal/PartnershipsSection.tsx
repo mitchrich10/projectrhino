@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ExternalLink, Copy, Check, Lock, Download } from "lucide-react";
+import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
@@ -278,18 +278,21 @@ const PartnershipPanel: FC<{
         </div>
 
         {/* Footer actions */}
-        {!locked && partnership.redemption_url && (
-          <div className="px-6 py-5 border-t border-[#DDE4EC]">
-            <a
-              href={normalizeUrl(partnership.redemption_url)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
-            >
-              Redeem Offer <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
-        )}
+        {!locked && partnership.redemption_url && (() => {
+          const isMailto = /^mailto:/i.test(partnership.redemption_url);
+          return (
+            <div className="px-6 py-5 border-t border-[#DDE4EC]">
+              <a
+                href={normalizeUrl(partnership.redemption_url)}
+                {...(isMailto ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+                className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+              >
+                {isMailto ? "Contact Partner" : "Redeem Offer"}{" "}
+                {isMailto ? <Mail className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
+              </a>
+            </div>
+          );
+        })()}
       </SheetContent>
     </Sheet>
   );

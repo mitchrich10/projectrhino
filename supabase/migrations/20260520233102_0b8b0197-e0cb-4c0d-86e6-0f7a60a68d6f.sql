@@ -1,0 +1,4 @@
+CREATE POLICY "Anyone can read partnership files" ON storage.objects FOR SELECT USING (bucket_id = 'partnerships');
+CREATE POLICY "RhinoVC admins can upload partnership files" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'partnerships' AND (auth.jwt() ->> 'email') LIKE '%@rhinovc.com');
+CREATE POLICY "RhinoVC admins can update partnership files" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'partnerships' AND (auth.jwt() ->> 'email') LIKE '%@rhinovc.com');
+CREATE POLICY "RhinoVC admins can delete partnership files" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'partnerships' AND (auth.jwt() ->> 'email') LIKE '%@rhinovc.com');
