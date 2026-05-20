@@ -83,7 +83,7 @@ const PartnershipAudit: FC<{ rows: Partnership[] }> = ({ rows }) => {
       rows.map((r) => {
         const mismatches = findCtaMismatches(r.description);
         const hasPdf = !!r.detail_pdf_url;
-        const issue = !hasPdf || mismatches.length > 0 || !r.tagline || !r.redemption_url;
+        const issue = !hasPdf || mismatches.length > 0 || !r.tagline || !r.redemption_url || !r.website_url;
         return { ...r, _mismatches: mismatches, _hasPdf: hasPdf, _issue: issue };
       }),
     [rows]
