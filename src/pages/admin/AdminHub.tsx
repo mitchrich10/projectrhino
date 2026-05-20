@@ -9,6 +9,7 @@ import PartnershipsAdmin from "./PartnershipsAdmin";
 import RequestsAdmin from "./RequestsAdmin";
 import OnboardingAdmin from "./OnboardingAdmin";
 import AnalyticsPanel from "./AnalyticsPanel";
+import AuditPanel from "./AuditPanel";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Resource {
