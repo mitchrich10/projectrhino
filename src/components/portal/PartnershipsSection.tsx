@@ -278,29 +278,16 @@ const PartnershipPanel: FC<{
         </div>
 
         {/* Footer actions */}
-        {!locked && (
-          <div className="px-6 py-5 border-t border-[#DDE4EC] space-y-3">
-            {websiteDomain && partnership.website_url && (
-              <a
-                href={normalizeUrl(partnership.website_url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center text-[#1A7EC8] underline"
-                style={{ fontSize: "13px" }}
-              >
-                {websiteDomain}
-              </a>
-            )}
-            {partnership.redemption_url && (
-              <a
-                href={normalizeUrl(partnership.redemption_url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
-              >
-                Redeem Offer <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            )}
+        {!locked && partnership.redemption_url && (
+          <div className="px-6 py-5 border-t border-[#DDE4EC]">
+            <a
+              href={normalizeUrl(partnership.redemption_url)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+            >
+              Redeem Offer <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
         )}
       </SheetContent>
