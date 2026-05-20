@@ -261,6 +261,7 @@ const AdminHub: FC = () => {
         {tab === "requests" && <RequestsAdmin />}
         {tab === "onboarding" && <OnboardingAdmin />}
         {tab === "analytics" && <AnalyticsPanel />}
+        {tab === "audit" && <AuditPanel />}
       </main>
     </div>
   );
