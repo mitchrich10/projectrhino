@@ -244,6 +244,17 @@ const PartnershipPanel: FC<{
             </div>
           ) : (
             <>
+              {websiteHref && websiteDomain && (
+                <a
+                  href={websiteHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block text-[#1A7EC8] underline hover:text-[#173660] transition-colors"
+                  style={{ fontSize: "13px" }}
+                >
+                  {websiteDomain}
+                </a>
+              )}
               {partnership.description && (
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[#5C6B7A] mb-2">Details</p>
