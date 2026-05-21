@@ -17,6 +17,7 @@ interface Grant {
   grantDate: string;
   vestYears: number;
   cliffMonths: number;
+  vestingStyle: "cliff-bump" | "linear-post-cliff";
 }
 
 interface VestedResult {
@@ -96,6 +97,7 @@ function calcVestedForGrant(
   todayStr: string,
   vestYears: number,
   cliffMonths: number,
+  vestingStyle: "cliff-bump" | "linear-post-cliff" = "cliff-bump",
 ): VestedResult {
   const vestMonths = vestYears * 12;
   const cliffDate = addMonthsDisplay(grantDateStr, cliffMonths);
@@ -117,6 +119,15 @@ function calcVestedForGrant(
   if (diff < cliffMonths)
     return { count: 0, pct: 0, status: "pre-cliff", cliffDate, fullyVestedDate };
 
+  if (vestingStyle === "linear-post-cliff") {
+    // 0% until cliff, then ramp linearly from 0 → 100% across the remaining period.
+    const remainingMonths = vestMonths - cliffMonths;
+    const afterCliff = Math.floor(diff - cliffMonths);
+    const count = Math.floor(Math.min(afterCliff / remainingMonths, 1) * totalOptions);
+    return { count, pct: (count / totalOptions) * 100, status: "vesting", cliffDate, fullyVestedDate };
+  }
+
+  // "cliff-bump" (default): jumps to cliffMonths/vestMonths at cliff, then monthly to 100%.
   const cliffCount = Math.round(totalOptions * (cliffMonths / vestMonths));
   const remaining = totalOptions - cliffCount;
   const remainingMonths = vestMonths - cliffMonths;
@@ -191,6 +202,7 @@ function makeDefaultGrant(overrides?: Partial<Grant>): Grant {
     grantDate: monthsAgo(18),
     vestYears: 5,
     cliffMonths: 24,
+    vestingStyle: "cliff-bump",
     ...overrides,
   };
 }
@@ -211,23 +223,35 @@ const FieldInput: FC<{
   placeholder?: string;
   readOnly?: boolean;
   hasError?: boolean;
-}> = ({ value, onChange, type = "number", prefix, placeholder = "0", readOnly, hasError }) => (
-  <div
-    className="flex items-center rounded transition-colors"
-    style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: readOnly ? OFFWHITE : "#fff" }}
-  >
-    {prefix && <span className="pl-3 text-sm select-none" style={{ color: MUTED }}>{prefix}</span>}
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      readOnly={readOnly}
-      className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
-      style={{ color: NAVY, cursor: readOnly ? "default" : "text" }}
-    />
-  </div>
-);
+  formatThousands?: boolean;
+}> = ({ value, onChange, type = "number", prefix, placeholder = "0", readOnly, hasError, formatThousands }) => {
+  const isFormatted = !!formatThousands;
+  const displayValue = isFormatted
+    ? (value === "" ? "" : (Number(value.replace(/[^0-9]/g, "")) || 0).toLocaleString("en-CA"))
+    : value;
+  const handleChange = (raw: string) => {
+    if (isFormatted) onChange(raw.replace(/[^0-9]/g, ""));
+    else onChange(raw);
+  };
+  return (
+    <div
+      className="flex items-center rounded transition-colors"
+      style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: readOnly ? OFFWHITE : "#fff" }}
+    >
+      {prefix && <span className="pl-3 text-sm select-none" style={{ color: MUTED }}>{prefix}</span>}
+      <input
+        type={isFormatted ? "text" : type}
+        inputMode={isFormatted ? "numeric" : undefined}
+        value={displayValue}
+        onChange={(e) => handleChange(e.target.value)}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+        style={{ color: NAVY, cursor: readOnly ? "default" : "text" }}
+      />
+    </div>
+  );
+};
 
 const SelectField: FC<{
   value: string;
@@ -488,7 +512,7 @@ const GrantCard: FC<{
             </div>
             <div>
               <FieldLabel>Options Granted</FieldLabel>
-              <FieldInput value={grant.totalOptions} onChange={(v) => onChange({ totalOptions: v })} placeholder="e.g. 1,000" />
+              <FieldInput value={grant.totalOptions} onChange={(v) => onChange({ totalOptions: v })} placeholder="e.g. 1,000" formatThousands />
             </div>
             <div>
               <FieldLabel>Strike Price (CAD $)</FieldLabel>
@@ -508,7 +532,7 @@ const GrantCard: FC<{
                 Diluted Shares at Grant
                 <TooltipComp text="Fully diluted shares when this grant was issued — used to show your ownership % at time of grant." />
               </FieldLabel>
-              <FieldInput value={grant.fullyDiluted} onChange={(v) => onChange({ fullyDiluted: v })} placeholder="e.g. 10,000,000" />
+              <FieldInput value={grant.fullyDiluted} onChange={(v) => onChange({ fullyDiluted: v })} placeholder="e.g. 10,000,000" formatThousands />
             </div>
             <div>
               <FieldLabel>Grant Date</FieldLabel>
@@ -541,7 +565,40 @@ const GrantCard: FC<{
                 ]}
               />
             </div>
+            {grant.cliffMonths > 0 && (
+              <div className="sm:col-span-2 lg:col-span-3">
+                <FieldLabel>
+                  Vesting Style
+                  <TooltipComp text="Cliff back-vest: at the cliff date you immediately vest the months already 'earned' (e.g. 24/60 = 40%), then monthly. Linear after cliff: 0% until the cliff, then ramps evenly from 0% to 100% across the remaining period." />
+                </FieldLabel>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {([
+                    { value: "cliff-bump", title: "Cliff back-vest (most common)", desc: `0% until cliff, then jumps to ${grant.vestYears > 0 ? Math.round((grant.cliffMonths / (grant.vestYears * 12)) * 100) : 0}%, then monthly` },
+                    { value: "linear-post-cliff", title: "Linear after cliff", desc: "0% until cliff, then ramps linearly to 100%" },
+                  ] as const).map((opt) => {
+                    const active = grant.vestingStyle === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => onChange({ vestingStyle: opt.value })}
+                        className="text-left rounded p-3 transition-all"
+                        style={{
+                          border: `1px solid ${active ? BLUE : SLATE}`,
+                          background: active ? `${BLUE}10` : "#fff",
+                          boxShadow: active ? `0 0 0 1px ${BLUE}` : "none",
+                        }}
+                      >
+                        <p className="text-xs font-semibold mb-0.5" style={{ color: active ? BLUE : NAVY }}>{opt.title}</p>
+                        <p className="text-[11px]" style={{ color: MUTED }}>{opt.desc}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
+
 
           <div className="mt-4 rounded p-3 flex flex-wrap gap-x-6 gap-y-1 text-xs" style={{ background: OFFWHITE, border: `1px solid ${SLATE}` }}>
             {vestedInfo.status === "pre-cliff" ? (
@@ -651,7 +708,7 @@ const OptionModeller: FC = () => {
       const total = parseFloat(g.totalOptions) || 0;
       const strike = parseFloat(g.strikePrice) || 0;
       const vestedInfo: VestedResultExt = {
-        ...calcVestedForGrant(total, g.grantDate, todayDate, g.vestYears, g.cliffMonths),
+        ...calcVestedForGrant(total, g.grantDate, todayDate, g.vestYears, g.cliffMonths, g.vestingStyle),
         cliffMonths: g.cliffMonths,
       };
       return { grant: g, total, strike, vestedInfo };
@@ -926,7 +983,9 @@ const OptionModeller: FC = () => {
                       onChange={setGlobalDiluted}
                       placeholder="e.g. 10,000,000"
                       hasError={!!dilutedError}
+                      formatThousands
                     />
+
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
