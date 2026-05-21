@@ -65,7 +65,8 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
     if (!subject.trim()) { setError("Please enter a subject."); return; }
     setSubmitting(true); setError(null);
 
-    const itemType = types.join(", ");
+    const itemTypeArr = types;
+    const itemTypeLabel = types.map((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(", ");
 
     const { data: inserted, error: insertError } = await supabase
       .from("partner_requests")
@@ -73,7 +74,7 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
         user_id: userId,
         user_email: userEmail,
         company_name: companyName,
-        item_type: itemType,
+        item_type: itemTypeArr,
         item_name: subject.trim(),
         notes: notes.trim() || null,
         status: "pending",
@@ -96,7 +97,7 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
         request_id: inserted?.id,
         company_name: companyName,
         user_email: userEmail,
-        item_type: itemType,
+        item_type: itemTypeLabel,
         item_name: subject.trim(),
         notes: notes.trim() || null,
       },
