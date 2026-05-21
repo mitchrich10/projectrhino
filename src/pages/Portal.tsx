@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import { Loader2, LogOut, Menu, X, BookOpen, Handshake, Link2, Copy, Check, ChevronDown } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import { companyLogos } from "@/lib/companyLogos";
@@ -78,8 +79,8 @@ const Portal: FC = () => {
         setSearchParams(searchParams, { replace: true });
       }
 
-      const [{ data: domainData }, { data: inviteData }, { data: eventsData }] = await Promise.all([
-        supabase.from("approved_domains").select("company_name, logo_key").eq("domain", domain).maybeSingle(),
+      const [domainData, { data: inviteData }, { data: eventsData }] = await Promise.all([
+        fetchApprovedDomain(domain),
         supabase.from("onboarding_invites").select("batch_id").eq("email", email.toLowerCase()).maybeSingle(),
         supabase.from("events").select("id").gte("event_date", new Date().toISOString()).limit(1),
       ]);

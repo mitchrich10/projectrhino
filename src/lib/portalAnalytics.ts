@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 
 export type PortalEventType =
   | "partnership_click"
@@ -20,12 +21,8 @@ export const trackPortalEvent = async (
     const email = session.user.email ?? "";
     const domain = email.split("@")[1] ?? "";
 
-    // Get company name
-    const { data: domainData } = await supabase
-      .from("approved_domains")
-      .select("company_name")
-      .eq("domain", domain)
-      .maybeSingle();
+    // Get company name (cached — shared with portal/page loads)
+    const domainData = await fetchApprovedDomain(domain);
 
     await supabase.from("portal_analytics").insert({
       event_type: eventType,
@@ -39,3 +36,4 @@ export const trackPortalEvent = async (
     console.error("[portal_analytics] failed to track event", e);
   }
 };
+

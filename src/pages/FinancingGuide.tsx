@@ -1,19 +1,18 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
+import SubPageHeader from "@/components/portal/SubPageHeader";
 import {
   Download,
   FileSpreadsheet,
   FileText,
   Lock,
   Loader2,
-  LogOut,
-  Menu,
   Presentation,
   X,
 } from "lucide-react";
-import rhinoLogo from "@/assets/rhino-logo-black.png";
-import { companyLogos } from "@/lib/companyLogos";
+
 
 /* ── Types ─────────────────────────────────────────────────── */
 
@@ -350,9 +349,9 @@ const ResourceCard: FC<{
         {/* Title */}
         <h3 className="font-bold text-sm text-[#173660] leading-tight">{resource.title}</h3>
 
-        {/* Description */}
+        {/* Description (clamped to keep cards aligned in the grid) */}
         {resource.description && (
-          <p className="text-xs text-[#5C6B7A] leading-relaxed">{resource.description}</p>
+          <p className="text-xs text-[#5C6B7A] leading-relaxed line-clamp-3">{resource.description}</p>
         )}
 
         {/* Action */}
@@ -376,7 +375,7 @@ const FinancingGuide: FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<CompanyInfo | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  // (menuOpen state moved into SubPageHeader)
   const [isAdmin, setIsAdmin] = useState(false);
   const [resources, setResources] = useState<Resource[]>([]);
   const [unlocked, setUnlocked] = useState(false);
@@ -401,13 +400,9 @@ const FinancingGuide: FC = () => {
       const email = session.user.email;
       const domain = email.split("@")[1]?.toLowerCase();
 
-      const [{ data: domainData }, { data: resourceData }, { data: approvedData }, { data: inviteData }] =
+      const [domainData, { data: resourceData }, { data: approvedData }, { data: inviteData }] =
         await Promise.all([
-          supabase
-            .from("approved_domains")
-            .select("company_name, logo_key")
-            .eq("domain", domain)
-            .maybeSingle(),
+          fetchApprovedDomain(domain),
           supabase
             .from("resources")
             .select("id, title, description, file_path")
@@ -455,7 +450,7 @@ const FinancingGuide: FC = () => {
     navigate("/partner-login");
   };
 
-  const logoSrc = company?.logo_key ? companyLogos[company.logo_key] : null;
+  // (company logo rendered inside SubPageHeader)
 
   if (loading) {
     return (
@@ -467,73 +462,11 @@ const FinancingGuide: FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F7FA] text-foreground flex flex-col">
-      {/* Nav */}
-      <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-[#CDD8E3]">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          <Link to="/" className="flex-shrink-0">
-            <img src={rhinoLogo} alt="Rhino Ventures" className="h-7 w-auto" />
-          </Link>
-
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/portal"
-              className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A] hover:text-[#173660] transition-colors"
-            >
-              ← Back to Portal
-            </Link>
-            {logoSrc ? (
-              <img src={logoSrc} alt={company?.company_name} className="h-6 w-auto object-contain" />
-            ) : (
-              <span className="text-xs font-bold uppercase tracking-widest text-[#173660]">
-                {company?.company_name}
-              </span>
-            )}
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#5C6B7A] hover:text-[#173660] transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Sign Out
-            </button>
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] hover:opacity-70 transition-opacity"
-              >
-                Admin
-              </Link>
-            )}
-          </div>
-
-          <button
-            className="md:hidden text-[#173660]"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-
-        {menuOpen && (
-          <div className="md:hidden border-t border-[#CDD8E3] bg-white px-6 py-4 flex flex-col gap-4">
-            <Link to="/portal" className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A]">
-              ← Back to Portal
-            </Link>
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#5C6B7A]"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Sign Out
-            </button>
-            {isAdmin && (
-              <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8]">
-                Admin
-              </Link>
-            )}
-          </div>
-        )}
-      </header>
+      <SubPageHeader
+        company={company}
+        isAdmin={isAdmin}
+        onSignOut={handleSignOut}
+      />
 
       {/* Hero */}
       <section className="pt-16">

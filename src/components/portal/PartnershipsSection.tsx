@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -384,7 +385,7 @@ const PartnershipsSection: FC = () => {
       setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
       if (session?.user?.email) {
         const domain = session.user.email.split("@")[1];
-        const { data: domainData } = await supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle();
+        const domainData = await fetchApprovedDomain(domain);
         setCompanyName(domainData?.company_name ?? domain);
       }
       setLoading(false);

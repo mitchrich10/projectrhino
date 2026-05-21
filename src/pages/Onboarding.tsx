@@ -2,6 +2,8 @@ import { FC, useEffect, useState, useRef } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
+import SubPageHeader from "@/components/portal/SubPageHeader";
 import {
   Loader2, CheckCircle2, Plus, Trash2, Upload, X,
   BookOpen, Calendar, Handshake, ArrowRight, Copy, Check, Send, Link2, UserPlus, Users
@@ -226,8 +228,8 @@ const OnboardingPage: FC = () => {
       setUserId(session.user.id);
       setUserEmail(email);
 
-      const [{ data: domainData }, { data: existingSubmission }] = await Promise.all([
-        supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle(),
+      const [domainData, { data: existingSubmission }] = await Promise.all([
+        fetchApprovedDomain(domain),
         supabase.from("onboarding_submissions").select("id").eq("user_id", session.user.id).maybeSingle(),
       ]);
 
@@ -345,20 +347,7 @@ const OnboardingPage: FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F7FA] text-foreground flex flex-col" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-[#CDD8E3]">
-        <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to="/">
-            <img src={rhinoLogo} alt="Rhino Ventures" className="h-7 w-auto" />
-          </Link>
-          <Link
-            to="/portal"
-            className="text-xs font-bold uppercase tracking-widest text-[#173660]/50 hover:text-[#173660] transition-colors"
-          >
-            Back to Portal
-          </Link>
-        </div>
-      </header>
+      <SubPageHeader maxWidth="max-w-3xl" backLabel="Back to Portal" />
 
       <main className="flex-1 pt-16 pb-20">
         <div className="max-w-3xl mx-auto px-6 py-12">
