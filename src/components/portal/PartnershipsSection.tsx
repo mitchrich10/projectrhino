@@ -377,7 +377,7 @@ const PartnershipsSection: FC = () => {
       const [{ data: partnerData }, { data: approvedData }] = await Promise.all([
         supabase.from("partnerships").select("*").order("display_order", { ascending: true }).order("name", { ascending: true }),
         session
-          ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).eq("item_type", "partnership").eq("status", "approved")
+          ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).contains("item_type", ["partnership"]).eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
       setPartnerships((partnerData as Partnership[]) ?? []);
