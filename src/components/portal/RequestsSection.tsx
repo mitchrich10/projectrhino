@@ -6,7 +6,7 @@ import { toast } from "sonner";
 interface PartnerRequest {
   id: string;
   created_at: string;
-  item_type: string;
+  item_type: string[];
   item_name: string;
   notes: string | null;
   response: string | null;
