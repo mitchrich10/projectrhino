@@ -211,10 +211,12 @@ export default function InvestmentBriefBuilder() {
                         />
                       )}
                       <Input
-                        type="number"
-                        step="0.01"
                         value={returnValues[rt]}
                         onChange={e => setReturnValue(rt, e.target.value)}
+                        onBlur={() => {
+                          const v = returnValues[rt];
+                          if (v) setReturnValue(rt, fmtCurrency(v.replace(/,/g, "")));
+                        }}
                         placeholder="0.00"
                         className="max-w-[180px] h-8 text-sm"
                       />
