@@ -350,9 +350,9 @@ const ResourceCard: FC<{
         {/* Title */}
         <h3 className="font-bold text-sm text-[#173660] leading-tight">{resource.title}</h3>
 
-        {/* Description */}
+        {/* Description (clamped to keep cards aligned in the grid) */}
         {resource.description && (
-          <p className="text-xs text-[#5C6B7A] leading-relaxed">{resource.description}</p>
+          <p className="text-xs text-[#5C6B7A] leading-relaxed line-clamp-3">{resource.description}</p>
         )}
 
         {/* Action */}
