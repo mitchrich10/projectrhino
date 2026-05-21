@@ -60,7 +60,7 @@ export default function InvestmentBriefBuilder() {
   };
   const removeSuccess = (i: number) => setSuccessRows(prev => prev.filter((_, idx) => idx !== i));
 
-  const totalReturn = Object.values(returnValues).reduce((sum, v) => sum + (parseFloat(v) || 0), 0);
+  const totalReturn = Object.values(returnValues).reduce((sum, v) => sum + (parseFloat(String(v).replace(/,/g, "")) || 0), 0);
   const costNum = parseFloat(totalAsk.replace(/,/g, "")) || 0;
   const multiple = costNum > 0 ? `${(totalReturn / costNum).toFixed(1)}x` : "—";
 
