@@ -262,18 +262,15 @@ const ResourcePanel: FC<{
               Open Tool <ExternalLink className="w-3.5 h-3.5" />
             </Link>
           ) : isCompBenchmarks ? null : resource?.file_path ? (
-            <button
-              onClick={() => {
-                const url = getFileUrl(resource.file_path!);
-                trackPortalEvent("resource_download", resource.title, resource.id);
-                onDownload(resource.id, url, resource.file_path!.split("/").pop()!);
-              }}
-              disabled={loadingId === resource?.id}
-              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors disabled:opacity-50"
+            <a
+              href={`${getFileUrl(resource.file_path)}?download=${encodeURIComponent(resource.file_path.split("/").pop()!)}`}
+              download={resource.file_path.split("/").pop()}
+              onClick={() => trackPortalEvent("resource_download", resource.title, resource.id)}
+              className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
             >
-              {loadingId === resource?.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              <Download className="w-3.5 h-3.5" />
               Download
-            </button>
+            </a>
           ) : resource?.url ? (
             <a
               href={resource.url}
