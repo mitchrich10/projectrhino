@@ -67,7 +67,7 @@ serve(async (req: Request) => {
       user_id: user.id,
       user_email: user.email!,
       company_name: company_name ?? user.email?.split("@")[1] ?? "Unknown",
-      item_type,
+      item_type: Array.isArray(item_type) ? item_type : [item_type],
       item_id,
       item_name,
       status: "pending",

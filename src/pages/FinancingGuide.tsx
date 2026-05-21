@@ -249,7 +249,7 @@ const RequestAccessBtn: FC<{ companyName: string }> = ({ companyName }) => {
         .from("partner_requests")
         .select("id")
         .eq("user_id", session.user.id)
-        .eq("item_type", "financing_guide")
+        .contains("item_type", ["financing_guide"])
         .maybeSingle();
       if (data) setStatus("requested");
     };
@@ -417,7 +417,7 @@ const FinancingGuide: FC = () => {
             .from("partner_requests")
             .select("id")
             .eq("user_id", session.user.id)
-            .eq("item_type", "financing_guide")
+            .contains("item_type", ["financing_guide"])
             .eq("status", "approved")
             .maybeSingle(),
           supabase
