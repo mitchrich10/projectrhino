@@ -156,7 +156,7 @@ function fmtValuation(n: number): string {
   return `$${n.toFixed(0)}`;
 }
 
-function fmtLargeCAD(n: number): string {
+function fmtLargeCur(n: number): string {
   if (!isFinite(n) || n <= 0) return "$0.00";
   if (n >= 1_000_000_000) {
     const v = n / 1_000_000_000;
@@ -169,7 +169,7 @@ function fmtLargeCAD(n: number): string {
   return new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 2 }).format(n);
 }
 
-function fmtCAD(n: number): string {
+function fmtCur(n: number): string {
   if (!isFinite(n) || n <= 0) return "$0.00";
   return new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 2 }).format(n);
 }
@@ -516,7 +516,7 @@ const GrantCard: FC<{
               <FieldInput value={grant.totalOptions} onChange={(v) => onChange({ totalOptions: v })} placeholder="e.g. 1,000" formatThousands />
             </div>
             <div>
-              <FieldLabel>Strike Price (CAD $)</FieldLabel>
+              <FieldLabel>Strike Price ($)</FieldLabel>
               <FieldInput
                 value={grant.strikePrice}
                 onChange={(v) => onChange({ strikePrice: v })}
@@ -1019,7 +1019,7 @@ const OptionModeller: FC = () => {
                       <tr style={{ background: NAVY }}>
                         {[
                           { label: "Scenario",                                                       align: "left"  },
-                          { label: "Company Valuation (CAD)",                                        align: "left"  },
+                          { label: "Company Valuation",                                        align: "left"  },
                           { label: "Implied Share Price",                                             align: "right" },
                           { label: grants.length > 1 ? "Wtd. Avg Gain / Option" : "Gain / Option",  align: "right" },
                           { label: "Value of Vested Options",                                         align: "right" },
@@ -1069,22 +1069,22 @@ const OptionModeller: FC = () => {
 
                               {/* Implied share price */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={{ color: MUTED }}>
-                                {hasBase ? fmtCAD(row.impliedSharePrice) : "—"}
+                                {hasBase ? fmtCur(row.impliedSharePrice) : "—"}
                               </td>
 
                               {/* Gain / option */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
-                                {hasBase ? (isInMoney ? fmtCAD(row.weightedGainPerOption) : "$0.00") : "—"}
+                                {hasBase ? (isInMoney ? fmtCur(row.weightedGainPerOption) : "$0.00") : "—"}
                               </td>
 
                               {/* Vested value */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
-                                {hasBase ? (isInMoney ? fmtLargeCAD(row.totalVestedValue) : "$0.00") : "—"}
+                                {hasBase ? (isInMoney ? fmtLargeCur(row.totalVestedValue) : "$0.00") : "—"}
                               </td>
 
                               {/* Full grant value */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
-                                {hasBase ? (isInMoney ? fmtLargeCAD(row.totalFullGrantValue) : "$0.00") : "—"}
+                                {hasBase ? (isInMoney ? fmtLargeCur(row.totalFullGrantValue) : "$0.00") : "—"}
                               </td>
 
                               {/* Multiple */}
@@ -1123,13 +1123,13 @@ const OptionModeller: FC = () => {
                                   </td>
                                   <td className="px-4 py-2 text-right text-xs" style={{ color: MUTED }}>—</td>
                                   <td className="px-4 py-2 text-right font-mono text-xs" style={{ color: pgColor }}>
-                                    {hasBase ? (pgInMoney ? fmtCAD(pg.gainPerOption) : "$0.00") : "—"}
+                                    {hasBase ? (pgInMoney ? fmtCur(pg.gainPerOption) : "$0.00") : "—"}
                                   </td>
                                   <td className="px-4 py-2 text-right font-mono text-xs" style={{ color: pgColor }}>
-                                    {hasBase ? (pgInMoney ? fmtLargeCAD(pg.vestedValue) : "$0.00") : "—"}
+                                    {hasBase ? (pgInMoney ? fmtLargeCur(pg.vestedValue) : "$0.00") : "—"}
                                   </td>
                                   <td className="px-4 py-2 text-right font-mono text-xs" style={{ color: pgColor }}>
-                                    {hasBase ? (pgInMoney ? fmtLargeCAD(pg.fullGrantValue) : "$0.00") : "—"}
+                                    {hasBase ? (pgInMoney ? fmtLargeCur(pg.fullGrantValue) : "$0.00") : "—"}
                                   </td>
                                   <td className="px-4 py-2 text-right text-xs" style={{ color: MUTED }}>—</td>
                                   <td />

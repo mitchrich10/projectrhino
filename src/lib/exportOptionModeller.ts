@@ -80,7 +80,7 @@ function fmtValuation(n: number): string {
   return `$${n.toFixed(0)}`;
 }
 
-function fmtLargeCAD(n: number): string {
+function fmtLargeCur(n: number): string {
   if (!isFinite(n) || n <= 0) return "$0.00";
   if (n >= 1_000_000_000) {
     const v = n / 1_000_000_000;
@@ -93,7 +93,7 @@ function fmtLargeCAD(n: number): string {
   return new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 2 }).format(n);
 }
 
-function fmtCAD(n: number): string {
+function fmtCur(n: number): string {
   if (!isFinite(n) || n <= 0) return "$0.00";
   return new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 2 }).format(n);
 }
@@ -370,7 +370,7 @@ function buildScenarioSheet(
   const headerRow = ws.getRow(3);
   const headers = [
     "Scenario",
-    "Company Valuation (CAD)",
+    "Company Valuation",
     "Implied Share Price",
     multiGrant ? "Wtd. Avg Gain / Option" : "Gain / Option",
     "Value of Vested Options",
@@ -419,10 +419,10 @@ function buildScenarioSheet(
     vc.border = { ...slateBorder(), left: { style: "thin", color: { argb: "FF" + YELLOW_BORDER } } };
 
     const valCells: [number, string][] = [
-      [3, hasBase ? fmtCAD(row.impliedSharePrice) : "—"],
-      [4, hasBase ? (isInMoney ? fmtCAD(row.weightedGainPerOption) : "$0.00") : "—"],
-      [5, hasBase ? (isInMoney ? fmtLargeCAD(row.totalVestedValue) : "$0.00") : "—"],
-      [6, hasBase ? (isInMoney ? fmtLargeCAD(row.totalFullGrantValue) : "$0.00") : "—"],
+      [3, hasBase ? fmtCur(row.impliedSharePrice) : "—"],
+      [4, hasBase ? (isInMoney ? fmtCur(row.weightedGainPerOption) : "$0.00") : "—"],
+      [5, hasBase ? (isInMoney ? fmtLargeCur(row.totalVestedValue) : "$0.00") : "—"],
+      [6, hasBase ? (isInMoney ? fmtLargeCur(row.totalFullGrantValue) : "$0.00") : "—"],
       [7, hasBase ? fmtMultiple(row.multiple) : "—"],
     ];
 
@@ -459,9 +459,9 @@ function buildScenarioSheet(
         subRow.getCell(3).alignment = { horizontal: "right", vertical: "middle" };
 
         const subValCells: [number, string][] = [
-          [4, hasBase ? (pg.gainPerOption > 0 ? fmtCAD(pg.gainPerOption) : "$0.00") : "—"],
-          [5, hasBase ? (pg.gainPerOption > 0 ? fmtLargeCAD(pg.vestedValue) : "$0.00") : "—"],
-          [6, hasBase ? (pg.gainPerOption > 0 ? fmtLargeCAD(pg.fullGrantValue) : "$0.00") : "—"],
+          [4, hasBase ? (pg.gainPerOption > 0 ? fmtCur(pg.gainPerOption) : "$0.00") : "—"],
+          [5, hasBase ? (pg.gainPerOption > 0 ? fmtLargeCur(pg.vestedValue) : "$0.00") : "—"],
+          [6, hasBase ? (pg.gainPerOption > 0 ? fmtLargeCur(pg.fullGrantValue) : "$0.00") : "—"],
         ];
         for (const [col, val] of subValCells) {
           const c = subRow.getCell(col);
