@@ -404,7 +404,7 @@ export type Database = {
           id: string
           item_id: string | null
           item_name: string
-          item_type: string
+          item_type: string[]
           notes: string | null
           response: string | null
           status: string
@@ -418,7 +418,7 @@ export type Database = {
           id?: string
           item_id?: string | null
           item_name: string
-          item_type: string
+          item_type?: string[]
           notes?: string | null
           response?: string | null
           status?: string
@@ -432,7 +432,7 @@ export type Database = {
           id?: string
           item_id?: string | null
           item_name?: string
-          item_type?: string
+          item_type?: string[]
           notes?: string | null
           response?: string | null
           status?: string
