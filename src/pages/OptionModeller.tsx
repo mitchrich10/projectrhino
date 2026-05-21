@@ -202,6 +202,7 @@ function makeDefaultGrant(overrides?: Partial<Grant>): Grant {
     grantDate: monthsAgo(18),
     vestYears: 5,
     cliffMonths: 24,
+    vestingStyle: "cliff-bump",
     ...overrides,
   };
 }
