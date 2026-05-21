@@ -464,73 +464,11 @@ const FinancingGuide: FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F4F7FA] text-foreground flex flex-col">
-      {/* Nav */}
-      <header className="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-[#CDD8E3]">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
-          <Link to="/" className="flex-shrink-0">
-            <img src={rhinoLogo} alt="Rhino Ventures" className="h-7 w-auto" />
-          </Link>
-
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/portal"
-              className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A] hover:text-[#173660] transition-colors"
-            >
-              ← Back to Portal
-            </Link>
-            {logoSrc ? (
-              <img src={logoSrc} alt={company?.company_name} className="h-6 w-auto object-contain" />
-            ) : (
-              <span className="text-xs font-bold uppercase tracking-widest text-[#173660]">
-                {company?.company_name}
-              </span>
-            )}
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#5C6B7A] hover:text-[#173660] transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Sign Out
-            </button>
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] hover:opacity-70 transition-opacity"
-              >
-                Admin
-              </Link>
-            )}
-          </div>
-
-          <button
-            className="md:hidden text-[#173660]"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-
-        {menuOpen && (
-          <div className="md:hidden border-t border-[#CDD8E3] bg-white px-6 py-4 flex flex-col gap-4">
-            <Link to="/portal" className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A]">
-              ← Back to Portal
-            </Link>
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#5C6B7A]"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              Sign Out
-            </button>
-            {isAdmin && (
-              <Link to="/admin" className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8]">
-                Admin
-              </Link>
-            )}
-          </div>
-        )}
-      </header>
+      <SubPageHeader
+        company={company}
+        isAdmin={isAdmin}
+        onSignOut={handleSignOut}
+      />
 
       {/* Hero */}
       <section className="pt-16">
