@@ -152,7 +152,7 @@ function buildGrantSheet(ws: ExcelJS.Worksheet, grant: GrantExport, index: numbe
   const inputRows: [string, string | number][] = [
     ["Grant Name",                         grant.label || `Grant ${index}`],
     ["Options Granted",                    grant.totalOptions],
-    ["Strike Price per Share (CAD)",       `$${grant.strikePrice.toFixed(4)}`],
+    ["Strike Price per Share",       `$${grant.strikePrice.toFixed(4)}`],
     ["Fully Diluted Shares at Grant",      grant.fullyDiluted],
     ["Ownership % at Grant",               grant.fullyDiluted > 0 ? `${((grant.totalOptions / grant.fullyDiluted) * 100).toFixed(4)}%` : "—"],
     ["Grant Date",                         grant.grantDate || "—"],
@@ -254,7 +254,7 @@ function buildSummarySheet(ws: ExcelJS.Worksheet, grants: GrantExport[], globalD
     ["Number of Grants",                  grants.length],
     ["Total Options Granted",             totalOptions],
     ["Total Vested Options Today",        totalVested],
-    ["Weighted Average Strike Price (CAD)", `$${weightedAvgStrike.toFixed(4)}`],
+    ["Weighted Average Strike Price", `$${weightedAvgStrike.toFixed(4)}`],
     ["Current Fully Diluted Shares",      globalDiluted],
     ["Current Ownership %",               globalDiluted > 0 ? `${((totalOptions / globalDiluted) * 100).toFixed(4)}%` : "—"],
   ];
