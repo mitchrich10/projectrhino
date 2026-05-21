@@ -484,11 +484,12 @@ const GrantCard: FC<{
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onDelete(); }}
-              className="p-1 rounded hover:opacity-80 transition-opacity"
-              style={{ color: isExpanded ? "rgba(255,255,255,0.6)" : RED_ERR }}
+              className="flex items-center gap-1 rounded px-2 py-1 transition-all hover:opacity-90"
+              style={{ background: isExpanded ? "rgba(255,255,255,1)" : "rgba(192,57,43,0.08)", color: isExpanded ? RED_ERR : RED_ERR }}
               title="Delete grant"
             >
               <Trash2 className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider hidden sm:inline">Delete</span>
             </button>
           )}
           {isExpanded
@@ -649,6 +650,7 @@ const OptionModeller: FC = () => {
   
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [grantToDelete, setGrantToDelete] = useState<string | null>(null);
 
   // Scenarios — dynamic, all editable
   const [scenarios, setScenarios] = useState<ScenarioRow[]>(() =>
@@ -665,9 +667,12 @@ const OptionModeller: FC = () => {
   const updateGrant = (id: string, updates: Partial<Grant>) =>
     setGrants((prev) => prev.map((g) => g.id === id ? { ...g, ...updates } : g));
 
+  const confirmDeleteGrant = (id: string) => setGrantToDelete(id);
+
   const deleteGrant = (id: string) => {
     setGrants((prev) => prev.filter((g) => g.id !== id));
     setExpandedIds((prev) => { const s = new Set(prev); s.delete(id); return s; });
+    setGrantToDelete(null);
   };
 
   const toggleExpand = (id: string) =>
@@ -853,7 +858,7 @@ const OptionModeller: FC = () => {
                       vestedInfo={gc.vestedInfo}
                       onToggle={() => toggleExpand(g.id)}
                       onChange={(updates) => updateGrant(g.id, updates)}
-                      onDelete={() => deleteGrant(g.id)}
+                      onDelete={() => confirmDeleteGrant(g.id)}
                       canDelete={grants.length > 1}
                     />
                   );
@@ -1215,6 +1220,34 @@ const OptionModeller: FC = () => {
           </section>
         </div>
       </main>
+
+      {/* ── Delete Grant Confirmation Modal ── */}
+      {grantToDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: "rgba(0,0,0,0.4)" }}>
+          <div className="rounded-xl p-6 max-w-sm w-full mx-4" style={{ background: "#fff", boxShadow: "0 20px 60px rgba(0, 0, 0, 0.2)" }}>
+            <h3 className="text-base font-bold mb-2" style={{ color: NAVY }}>Delete Grant?</h3>
+            <p className="text-sm mb-5" style={{ color: MUTED }}>
+              This will permanently remove this grant and all its data from the model.
+            </p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setGrantToDelete(null)}
+                className="text-sm font-semibold px-4 py-2 rounded transition-opacity hover:opacity-70"
+                style={{ color: MUTED }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => deleteGrant(grantToDelete)}
+                className="text-sm font-bold px-4 py-2 rounded transition-opacity hover:opacity-90"
+                style={{ background: RED_ERR, color: "#fff" }}
+              >
+                Yes, delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Footer ── */}
       <footer
