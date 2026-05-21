@@ -11,6 +11,7 @@ import { Loader2, CheckCircle, ArrowLeft } from "lucide-react";
 type Step = "email" | "sent";
 
 const PartnerLogin: FC = () => {
+  usePageTitle("Partner Portal — Sign In | Rhino");
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [step, setStep] = useState<Step>("email");

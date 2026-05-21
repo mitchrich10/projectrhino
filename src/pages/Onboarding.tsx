@@ -188,6 +188,7 @@ const ThankYou: FC<{ companyName: string; userEmail: string }> = ({ companyName,
 
 // ── Main Onboarding Page ───────────────────────────────────────────────────────
 const OnboardingPage: FC = () => {
+  usePageTitle("Onboarding | Rhino Partner Portal");
   const navigate = useNavigate();
   const [authLoading, setAuthLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);

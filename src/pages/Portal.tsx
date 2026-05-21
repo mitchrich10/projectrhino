@@ -18,6 +18,7 @@ interface CompanyInfo {
 }
 
 const Portal: FC = () => {
+  usePageTitle("Partner Portal | Rhino");
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);

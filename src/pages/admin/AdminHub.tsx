@@ -199,6 +199,7 @@ const ResourcesPanel: FC = () => {
 
 // ── Admin Hub ─────────────────────────────────────────────────────────────────
 const AdminHub: FC = () => {
+  usePageTitle("Admin | Rhino Partner Portal");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("resources");

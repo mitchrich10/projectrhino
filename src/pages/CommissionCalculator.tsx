@@ -249,6 +249,7 @@ const BlockedOverlay: FC<{ message: string }> = ({ message }) => (
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 const CommissionCalculator: FC = () => {
+  usePageTitle("Commission Calculator | Rhino Partner Portal");
   const [plan, setPlan]       = useState<PlanInputs>(DEFAULT_PLAN);
   const [rep,  setRep]        = useState<RepCalc>({ periodType: "monthly", periodQuota: "", actualOrders: "90000", psCollected: "" });
   const [planOpen, setPlanOpen] = useState(true);
