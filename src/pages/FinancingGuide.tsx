@@ -401,13 +401,9 @@ const FinancingGuide: FC = () => {
       const email = session.user.email;
       const domain = email.split("@")[1]?.toLowerCase();
 
-      const [{ data: domainData }, { data: resourceData }, { data: approvedData }, { data: inviteData }] =
+      const [domainData, { data: resourceData }, { data: approvedData }, { data: inviteData }] =
         await Promise.all([
-          supabase
-            .from("approved_domains")
-            .select("company_name, logo_key")
-            .eq("domain", domain)
-            .maybeSingle(),
+          fetchApprovedDomain(domain),
           supabase
             .from("resources")
             .select("id, title, description, file_path")

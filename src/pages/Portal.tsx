@@ -78,8 +78,8 @@ const Portal: FC = () => {
         setSearchParams(searchParams, { replace: true });
       }
 
-      const [{ data: domainData }, { data: inviteData }, { data: eventsData }] = await Promise.all([
-        supabase.from("approved_domains").select("company_name, logo_key").eq("domain", domain).maybeSingle(),
+      const [domainData, { data: inviteData }, { data: eventsData }] = await Promise.all([
+        fetchApprovedDomain(domain),
         supabase.from("onboarding_invites").select("batch_id").eq("email", email.toLowerCase()).maybeSingle(),
         supabase.from("events").select("id").gte("event_date", new Date().toISOString()).limit(1),
       ]);

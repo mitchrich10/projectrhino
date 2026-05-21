@@ -320,7 +320,7 @@ const ResourcesSection: FC = () => {
       if (session?.user?.email) {
         const email = session.user.email;
         const domain = email.split("@")[1];
-        const { data: domainData } = await supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle();
+        const domainData = await fetchApprovedDomain(domain);
         setCompanyName(domainData?.company_name ?? domain);
 
         // Auto-approve for rhino admins and invited users

@@ -226,8 +226,8 @@ const OnboardingPage: FC = () => {
       setUserId(session.user.id);
       setUserEmail(email);
 
-      const [{ data: domainData }, { data: existingSubmission }] = await Promise.all([
-        supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle(),
+      const [domainData, { data: existingSubmission }] = await Promise.all([
+        fetchApprovedDomain(domain),
         supabase.from("onboarding_submissions").select("id").eq("user_id", session.user.id).maybeSingle(),
       ]);
 

@@ -384,7 +384,7 @@ const PartnershipsSection: FC = () => {
       setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
       if (session?.user?.email) {
         const domain = session.user.email.split("@")[1];
-        const { data: domainData } = await supabase.from("approved_domains").select("company_name").eq("domain", domain).maybeSingle();
+        const domainData = await fetchApprovedDomain(domain);
         setCompanyName(domainData?.company_name ?? domain);
       }
       setLoading(false);
