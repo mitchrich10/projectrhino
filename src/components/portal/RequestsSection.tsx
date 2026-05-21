@@ -215,7 +215,7 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap mb-1">
-                        {r.item_type.split(", ").map((t) => (
+                        {(Array.isArray(r.item_type) ? r.item_type : [r.item_type]).map((t: string) => (
                           <span key={t} className="text-[10px] font-bold uppercase tracking-widest bg-secondary text-muted-foreground px-1.5 py-0.5 rounded">
                             {t}
                           </span>
