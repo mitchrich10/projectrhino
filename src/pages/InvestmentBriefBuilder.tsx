@@ -13,7 +13,6 @@ import { useToast } from "@/hooks/use-toast";
 const INVESTMENT_TYPES = ["R&D", "Hiring", "Marketing", "Capex", "Partnership", "Other"];
 const RETURN_TYPES = ["Revenue Uplift", "Cost Reduction", "Risk Mitigation", "Time Saved", "Other"];
 
-const emptyRoi = () => ({ lineItem: "", returnAmt: "", cost: "", paybackPeriod: "" });
 const emptySuccess = () => ({ metric: "", baseline: "", target: "", reviewDate: "", owner: "" });
 
 const fmtCurrency = (val: string) => {
@@ -21,6 +20,9 @@ const fmtCurrency = (val: string) => {
   if (isNaN(n)) return "";
   return n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
+
+const fmtDollar = (n: number) =>
+  "C$" + n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function InvestmentBriefBuilder() {
   const navigate = useNavigate();
@@ -35,33 +37,42 @@ export default function InvestmentBriefBuilder() {
   const [problem, setProblem] = useState("");
   const [inScope, setInScope] = useState("");
   const [outOfScope, setOutOfScope] = useState("");
-  const [roiRows, setRoiRows] = useState([emptyRoi()]);
-  const [returnTypes, setReturnTypes] = useState<string[]>([]);
+  const [returnValues, setReturnValues] = useState<Record<string, string>>({});
   const [returnTypeOther, setReturnTypeOther] = useState("");
+  const [paybackPeriod, setPaybackPeriod] = useState("");
   const [keyAssumptions, setKeyAssumptions] = useState("");
   const [successRows, setSuccessRows] = useState([emptySuccess()]);
 
   const toggleReturnType = (rt: string) => {
-    setReturnTypes(prev => prev.includes(rt) ? prev.filter(t => t !== rt) : [...prev, rt]);
+    setReturnValues(prev => {
+      const next = { ...prev };
+      if (rt in next) delete next[rt];
+      else next[rt] = "";
+      return next;
+    });
   };
-
-  const updateRoi = (i: number, field: string, val: string) => {
-    setRoiRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
+  const setReturnValue = (rt: string, val: string) => {
+    setReturnValues(prev => ({ ...prev, [rt]: val }));
   };
-  const removeRoi = (i: number) => setRoiRows(prev => prev.filter((_, idx) => idx !== i));
 
   const updateSuccess = (i: number, field: string, val: string) => {
     setSuccessRows(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: val } : r));
   };
   const removeSuccess = (i: number) => setSuccessRows(prev => prev.filter((_, idx) => idx !== i));
 
+  const totalReturn = Object.values(returnValues).reduce((sum, v) => sum + (parseFloat(v) || 0), 0);
+  const costNum = parseFloat(totalAsk.replace(/,/g, "")) || 0;
+  const multiple = costNum > 0 ? `${(totalReturn / costNum).toFixed(1)}x` : "—";
+
   const handleExport = async () => {
-    const allReturnTypes = returnTypes.includes("Other") && returnTypeOther.trim()
-      ? [...returnTypes.filter(r => r !== "Other"), returnTypeOther.trim()]
-      : returnTypes;
+    const returnTypeRows = Object.entries(returnValues).map(([type, amount]) => ({
+      type: type === "Other" && returnTypeOther.trim() ? returnTypeOther.trim() : type,
+      amount,
+    }));
     const data: BriefFormData = {
       company, owner, date, investmentType, investmentTypeOther,
-      totalAsk, problem, inScope, outOfScope, roiRows, returnTypes: allReturnTypes,
+      totalAsk, problem, inScope, outOfScope,
+      returnTypeRows, totalReturn, multiple, paybackPeriod,
       keyAssumptions, successRows,
     };
     await exportBrief(data);
@@ -71,12 +82,6 @@ export default function InvestmentBriefBuilder() {
   const handleDownloadTemplate = async () => {
     await downloadTemplate();
     toast({ title: "Template downloaded", description: "Blank template .docx has been downloaded." });
-  };
-
-  const fmtMultiple = (ret: string, cost: string) => {
-    const r = parseFloat(ret) || 0;
-    const c = parseFloat(cost) || 0;
-    return c > 0 ? `${(r / c).toFixed(1)}x` : "—";
   };
 
   const sectionClass = "border-t border-gray-100 pt-6 mt-6";
@@ -93,20 +98,10 @@ export default function InvestmentBriefBuilder() {
             <ArrowLeft className="w-4 h-4" /> Back to Portal
           </button>
           <div className="flex items-center gap-2">
-            <Button
-              variant="default"
-              size="sm"
-              className="text-xs"
-              disabled
-            >
+            <Button variant="default" size="sm" className="text-xs" disabled>
               <FileText className="w-3.5 h-3.5 mr-1" /> Fill & Export
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDownloadTemplate}
-              className="text-xs"
-            >
+            <Button variant="outline" size="sm" onClick={handleDownloadTemplate} className="text-xs">
               <FileDown className="w-3.5 h-3.5 mr-1" /> Download Template
             </Button>
           </div>
@@ -189,93 +184,77 @@ export default function InvestmentBriefBuilder() {
           </div>
         </div>
 
-        {/* Section 3 */}
+        {/* Section 3 — ROI Model */}
         <div className={sectionClass}>
           <h2 className="text-base font-semibold text-gray-800 mb-3">3. ROI Model</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-gray-50 text-gray-600">
-                  <th className="text-left p-2 font-medium border border-gray-200">Line Item</th>
-                  <th className="text-left p-2 font-medium border border-gray-200">Return (C$)</th>
-                  <th className="text-left p-2 font-medium border border-gray-200">Cost (C$)</th>
-                  <th className="text-left p-2 font-medium border border-gray-200">Multiple</th>
-                  <th className="text-left p-2 font-medium border border-gray-200">Payback Period</th>
-                  <th className="w-10 border border-gray-200"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {roiRows.map((row, i) => (
-                  <tr key={i}>
-                    <td className="p-1 border border-gray-200">
-                      <Input value={row.lineItem} onChange={e => updateRoi(i, "lineItem", e.target.value)} className="border-0 h-8 text-sm" placeholder="e.g. New SDR team" />
-                    </td>
-                    <td className="p-1 border border-gray-200">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={row.returnAmt}
-                        onChange={e => updateRoi(i, "returnAmt", e.target.value)}
-                        className="border-0 h-8 text-sm"
-                        placeholder="0.00"
-                      />
-                    </td>
-                    <td className="p-1 border border-gray-200">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={row.cost}
-                        onChange={e => updateRoi(i, "cost", e.target.value)}
-                        className="border-0 h-8 text-sm"
-                        placeholder="0.00"
-                      />
-                    </td>
-                    <td className="p-1 border border-gray-200 text-center font-medium text-gray-700">
-                      {fmtMultiple(row.returnAmt, row.cost)}
-                    </td>
-                    <td className="p-1 border border-gray-200">
-                      <Input value={row.paybackPeriod} onChange={e => updateRoi(i, "paybackPeriod", e.target.value)} className="border-0 h-8 text-sm" placeholder="e.g. 6 months" />
-                    </td>
-                    <td className="p-1 border border-gray-200 text-center">
-                      {roiRows.length > 1 && (
-                        <button onClick={() => removeRoi(i)} className="text-gray-400 hover:text-red-500 transition-colors">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => setRoiRows(prev => [...prev, emptyRoi()])} className="mt-2 text-xs">
-            <Plus className="w-3.5 h-3.5 mr-1" /> Add Row
-          </Button>
+          <p className="text-xs text-gray-500 mb-3">
+            Select each type of return this investment will generate, then enter the expected dollar value.
+          </p>
 
-          <div className="mt-5">
-            <Label className="text-xs text-gray-500 mb-2 block">Return Type</Label>
-            <div className="flex flex-wrap gap-3">
-              {RETURN_TYPES.map(rt => (
-                <label key={rt} className="flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer">
-                  <Checkbox checked={returnTypes.includes(rt)} onCheckedChange={() => toggleReturnType(rt)} />
-                  {rt}
-                </label>
-              ))}
-            </div>
-            {returnTypes.includes("Other") && (
-              <div className="mt-2">
-                <Input
-                  value={returnTypeOther}
-                  onChange={e => setReturnTypeOther(e.target.value)}
-                  placeholder="Specify return type"
-                  className="max-w-xs text-sm"
-                />
-              </div>
-            )}
-            <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-              Revenue uplift = incremental ARR or conversion lift. Cost reduction = vendor or headcount savings. Risk mitigation = churn or compliance cost avoided. Time saved = hours × fully-loaded cost rate.
-            </p>
+          <div className="space-y-2">
+            {RETURN_TYPES.map(rt => {
+              const checked = rt in returnValues;
+              return (
+                <div key={rt} className="flex items-center gap-3 p-2 rounded border border-gray-100 hover:border-gray-200 transition-colors">
+                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer min-w-[180px]">
+                    <Checkbox checked={checked} onCheckedChange={() => toggleReturnType(rt)} />
+                    {rt}
+                  </label>
+                  {checked && (
+                    <>
+                      {rt === "Other" && (
+                        <Input
+                          value={returnTypeOther}
+                          onChange={e => setReturnTypeOther(e.target.value)}
+                          placeholder="Specify"
+                          className="max-w-[180px] h-8 text-sm"
+                        />
+                      )}
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={returnValues[rt]}
+                        onChange={e => setReturnValue(rt, e.target.value)}
+                        placeholder="0.00"
+                        className="max-w-[180px] h-8 text-sm"
+                      />
+                      <span className="text-xs text-gray-400">C$</span>
+                    </>
+                  )}
+                </div>
+              );
+            })}
           </div>
+
+          {/* Totals */}
+          <div className="mt-5 grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded border border-gray-100">
+            <div>
+              <div className="text-xs text-gray-500">Total Return</div>
+              <div className="text-base font-semibold text-gray-900">{fmtDollar(totalReturn)}</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500">Total Cost</div>
+              <div className="text-base font-semibold text-gray-900">{fmtDollar(costNum)}</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500">Multiple (Return ÷ Cost)</div>
+              <div className="text-base font-semibold text-gray-900">{multiple}</div>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <Label className="text-xs text-gray-500">Payback Period</Label>
+            <Input
+              value={paybackPeriod}
+              onChange={e => setPaybackPeriod(e.target.value)}
+              placeholder="e.g. 6 months"
+              className="max-w-xs"
+            />
+          </div>
+
+          <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+            Revenue uplift = incremental ARR or conversion lift. Cost reduction = vendor or headcount savings. Risk mitigation = churn or compliance cost avoided. Time saved = hours × fully-loaded cost rate.
+          </p>
 
           <div className="mt-4">
             <Label className="text-xs text-gray-500">Key Assumptions</Label>
