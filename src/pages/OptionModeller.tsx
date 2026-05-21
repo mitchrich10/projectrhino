@@ -828,7 +828,7 @@ const OptionModeller: FC = () => {
             </p>
             <h1 className="text-2xl font-bold" style={{ color: NAVY }}>Option Modeller</h1>
             <p className="text-sm mt-1" style={{ color: MUTED }}>
-              Model the potential value of your stock option grants across exit scenarios. All figures in CAD.
+              Model the potential value of your stock option grants across exit scenarios.
             </p>
           </div>
 
