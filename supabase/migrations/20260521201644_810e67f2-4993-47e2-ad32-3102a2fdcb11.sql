@@ -1,0 +1,1 @@
+DELETE FROM public.resources WHERE id = '9dac62d8-2f7e-45b9-83ea-4f0f04176570';
