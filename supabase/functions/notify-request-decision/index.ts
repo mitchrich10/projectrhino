@@ -27,9 +27,10 @@ serve(async (req: Request) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    const email = (claimsData?.claims as any)?.email as string | undefined;
 
-    if (userError || !user?.email?.endsWith("@rhinovc.com")) {
+    if (claimsError || !email?.endsWith("@rhinovc.com")) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
