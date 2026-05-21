@@ -16,7 +16,7 @@ const OFFWHITE = "#F4F7FA";
 const GREY_MID = "#5C6B7A";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function fmtCAD(value: number): string {
+function fmtCurrency(value: number): string {
   const abs  = Math.abs(value);
   const sign = value < 0 ? "-" : "";
   if (abs >= 1_000_000_000) { const n = abs / 1e9;  return `${sign}$${n % 1 === 0 ? n.toFixed(0) : n.toFixed(1)}B`; }
@@ -417,20 +417,20 @@ const CommissionCalculator: FC = () => {
                 </div>
                 <div>
                   <FieldLabel>Annual Quota</FieldLabel>
-                  <TextInput value={plan.annualQuota} onChange={(v) => updatePlan("annualQuota", v)} prefix="CAD $" type="number" />
+                  <TextInput value={plan.annualQuota} onChange={(v) => updatePlan("annualQuota", v)} prefix="$" type="number" />
                   {!quotaOk && <div className="mt-1.5"><InlineWarn>Annual quota is required.</InlineWarn></div>}
                 </div>
                 <div>
                   <FieldLabel>Base Salary</FieldLabel>
-                  <TextInput value={plan.baseSalary} onChange={(v) => updatePlan("baseSalary", v)} prefix="CAD $" type="number" />
+                  <TextInput value={plan.baseSalary} onChange={(v) => updatePlan("baseSalary", v)} prefix="$" type="number" />
                 </div>
                 <div>
                   <FieldLabel>Target Bonus at 100%</FieldLabel>
-                  <TextInput value={plan.targetBonus} onChange={(v) => updatePlan("targetBonus", v)} prefix="CAD $" type="number" />
+                  <TextInput value={plan.targetBonus} onChange={(v) => updatePlan("targetBonus", v)} prefix="$" type="number" />
                 </div>
                 <div>
                   <FieldLabel>Equity Value <span className="normal-case font-normal tracking-normal text-[9px]">(optional)</span></FieldLabel>
-                  <TextInput value={plan.equity} onChange={(v) => updatePlan("equity", v)} prefix="CAD $" type="number" placeholder="0" />
+                  <TextInput value={plan.equity} onChange={(v) => updatePlan("equity", v)} prefix="$" type="number" placeholder="0" />
                 </div>
 
                 {/* OTE summary box */}
