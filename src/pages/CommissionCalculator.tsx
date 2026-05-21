@@ -1,4 +1,5 @@
 import { FC, useMemo, useState } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft, AlertTriangle, TrendingUp, TrendingDown,

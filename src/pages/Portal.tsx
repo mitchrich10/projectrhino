@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, LogOut, Menu, X, BookOpen, Handshake, Link2, Copy, Check, ChevronDown } from "lucide-react";

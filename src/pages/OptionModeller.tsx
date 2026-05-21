@@ -1,4 +1,5 @@
 import { FC, useMemo, useState, useRef, useCallback } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { Link } from "react-router-dom";
 import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Info, Plus, Trash2, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
