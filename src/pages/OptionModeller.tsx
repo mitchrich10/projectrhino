@@ -532,7 +532,7 @@ const GrantCard: FC<{
                 Diluted Shares at Grant
                 <TooltipComp text="Fully diluted shares when this grant was issued — used to show your ownership % at time of grant." />
               </FieldLabel>
-              <FieldInput value={grant.fullyDiluted} onChange={(v) => onChange({ fullyDiluted: v })} placeholder="e.g. 10,000,000" />
+              <FieldInput value={grant.fullyDiluted} onChange={(v) => onChange({ fullyDiluted: v })} placeholder="e.g. 10,000,000" formatThousands />
             </div>
             <div>
               <FieldLabel>Grant Date</FieldLabel>
