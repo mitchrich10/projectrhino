@@ -59,7 +59,7 @@ function dataCell(text: string, width: number, bold = false): TableCell {
 function fmtDollar(val: number | string): string {
   const n = typeof val === "number" ? val : parseFloat(val);
   if (isNaN(n)) return "—";
-  return "C$" + n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 export interface BriefFormData {
@@ -105,7 +105,7 @@ function buildDoc(data: BriefFormData, isTemplate: boolean): Document {
     children.push(labelValue("Owner: ", "________"));
     children.push(labelValue("Date: ", "________"));
     children.push(labelValue("Investment Type: ", "________"));
-    children.push(labelValue("Total Investment Ask: ", "C$ ________"));
+    children.push(labelValue("Total Investment Ask: ", "________"));
   } else {
     children.push(labelValue("Company: ", data.company));
     children.push(labelValue("Owner: ", data.owner));
@@ -140,8 +140,8 @@ function buildDoc(data: BriefFormData, isTemplate: boolean): Document {
   // ── Section 3: ROI Model ──
   children.push(sectionHeading("3. ROI Model"));
   const roiColW = [5360, 4000];
-  const roiHeader = new TableRow({
-    children: [headerCell("Return Type", roiColW[0]), headerCell("Value (C$)", roiColW[1])],
+    const roiHeader = new TableRow({
+    children: [headerCell("Return Type", roiColW[0]), headerCell("Value", roiColW[1])],
   });
 
   let roiRows: TableRow[];

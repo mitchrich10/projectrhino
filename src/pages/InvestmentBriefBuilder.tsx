@@ -22,7 +22,7 @@ const fmtCurrency = (val: string) => {
 };
 
 const fmtDollar = (n: number) =>
-  "C$" + n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function InvestmentBriefBuilder() {
   const navigate = useNavigate();
@@ -148,7 +148,7 @@ export default function InvestmentBriefBuilder() {
             </div>
           )}
           <div>
-            <Label className="text-xs text-gray-500">Total Investment Ask (C$)</Label>
+            <Label className="text-xs text-gray-500">Total Investment Ask</Label>
             <Input
               value={totalAsk}
               onChange={e => setTotalAsk(e.target.value)}
@@ -218,7 +218,7 @@ export default function InvestmentBriefBuilder() {
                         placeholder="0.00"
                         className="max-w-[180px] h-8 text-sm"
                       />
-                      <span className="text-xs text-gray-400">C$</span>
+                      <span className="text-xs text-gray-400">value</span>
                     </>
                   )}
                 </div>
