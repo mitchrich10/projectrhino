@@ -857,7 +857,7 @@ const OptionModeller: FC = () => {
                       vestedInfo={gc.vestedInfo}
                       onToggle={() => toggleExpand(g.id)}
                       onChange={(updates) => updateGrant(g.id, updates)}
-                      onDelete={() => deleteGrant(g.id)}
+                      onDelete={() => confirmDeleteGrant(g.id)}
                       canDelete={grants.length > 1}
                     />
                   );
