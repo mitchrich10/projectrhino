@@ -1,4 +1,5 @@
 import { FC, useMemo, useState, useRef, useCallback } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { Link } from "react-router-dom";
 import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Info, Plus, Trash2, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
@@ -583,6 +584,7 @@ type VestedResultExt = VestedResult & { cliffMonths: number };
 const INITIAL_BASE_VAL = 10 * 10_000_000; // default strike × default diluted
 
 const OptionModeller: FC = () => {
+  usePageTitle("Option Modeller | Rhino Partner Portal");
   const [grants, setGrants] = useState<Grant[]>([makeDefaultGrant({ id: "g_initial" })]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["g_initial"]));
   const [globalDiluted, setGlobalDiluted] = useState("10000000");

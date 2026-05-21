@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Send } from "lucide-react";
+import { toast } from "sonner";
 
 interface PartnerRequest {
   id: string;
@@ -40,6 +41,7 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [flashId, setFlashId] = useState<string | null>(null);
 
   const fetchRequests = async () => {
     const { data } = await supabase
@@ -65,36 +67,49 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
 
     const itemType = types.join(", ");
 
-    const { error: insertError } = await supabase.from("partner_requests").insert({
-      user_id: userId,
-      user_email: userEmail,
-      company_name: companyName,
-      item_type: itemType,
-      item_name: subject.trim(),
-      notes: notes.trim() || null,
-      status: "pending",
-    });
+    const { data: inserted, error: insertError } = await supabase
+      .from("partner_requests")
+      .insert({
+        user_id: userId,
+        user_email: userEmail,
+        company_name: companyName,
+        item_type: itemType,
+        item_name: subject.trim(),
+        notes: notes.trim() || null,
+        status: "pending",
+      })
+      .select("id")
+      .single();
 
     if (insertError) {
       setError(insertError.message);
       setSubmitting(false);
+      toast.error("Couldn't submit your request — please try again or email team@rhinovc.com.", {
+        duration: 6000,
+      });
       return;
     }
 
-    // Fire notification email with AI partnership matching
+    // Fire notification (email + Slack + log) — non-blocking
     supabase.functions.invoke("notify-new-request", {
       body: {
+        request_id: inserted?.id,
         company_name: companyName,
         user_email: userEmail,
         item_type: itemType,
         item_name: subject.trim(),
         notes: notes.trim() || null,
       },
-    }).catch(() => {}); // non-blocking
+    }).catch(() => {});
 
     setSubject(""); setNotes(""); setTypes(["resource"]);
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 3000);
+    toast.success("Request submitted — we'll be in touch shortly.", { duration: 4000 });
+    if (inserted?.id) {
+      setFlashId(inserted.id);
+      setTimeout(() => setFlashId(null), 1500);
+    }
     await fetchRequests();
     setSubmitting(false);
   };
@@ -190,7 +205,12 @@ const RequestsSection: FC<{ userId: string; userEmail: string; companyName: stri
           ) : (
             <div className="space-y-2">
               {requests.map((r) => (
-                <div key={r.id} className="border border-border rounded-lg p-4 bg-secondary/10">
+                <div
+                  key={r.id}
+                  className={`border border-border rounded-lg p-4 transition-colors duration-700 ${
+                    flashId === r.id ? "bg-primary/15" : "bg-secondary/10"
+                  }`}
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap mb-1">

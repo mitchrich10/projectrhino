@@ -173,7 +173,10 @@ const OnboardingSection: FC<OnboardingSectionProps> = ({ userId, userEmail, isIn
           <span className="text-xs">Loading…</span>
         </div>
       ) : steps.length === 0 ? (
-        <p className="text-xs text-muted-foreground">Onboarding steps coming soon.</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Your onboarding steps will appear here once you've completed the intake form above.
+          We'll be in touch within 1 business day to walk you through them.
+        </p>
       ) : (
         <>
           {/* Progress bar */}

@@ -119,7 +119,10 @@ const EventsSection: FC = () => {
           <span className="text-xs">Loading events…</span>
         </div>
       ) : upcoming.length === 0 && past.length === 0 ? (
-        <p className="text-xs text-muted-foreground">Events coming soon.</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Check back here for upcoming founder dinners, workshops, and portfolio gatherings.
+          We host events roughly once a quarter.
+        </p>
       ) : (
         <div className="space-y-10">
           {/* Upcoming */}

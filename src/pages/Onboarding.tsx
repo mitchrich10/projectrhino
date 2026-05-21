@@ -1,4 +1,5 @@
 import { FC, useEffect, useState, useRef } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -188,6 +189,7 @@ const ThankYou: FC<{ companyName: string; userEmail: string }> = ({ companyName,
 
 // ── Main Onboarding Page ───────────────────────────────────────────────────────
 const OnboardingPage: FC = () => {
+  usePageTitle("Onboarding | Rhino Partner Portal");
   const navigate = useNavigate();
   const [authLoading, setAuthLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);

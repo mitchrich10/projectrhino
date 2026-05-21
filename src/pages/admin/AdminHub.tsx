@@ -1,4 +1,5 @@
 import { FC, useEffect, useState, useRef } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, ArrowLeft, Plus, Pencil, Trash2, X, Upload, ExternalLink, Download } from "lucide-react";
@@ -199,6 +200,7 @@ const ResourcesPanel: FC = () => {
 
 // ── Admin Hub ─────────────────────────────────────────────────────────────────
 const AdminHub: FC = () => {
+  usePageTitle("Admin | Rhino Partner Portal");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("resources");
