@@ -49,11 +49,6 @@ const RESOURCE_META: Record<
     typeBadge: "Word Document",
     badgeClass: "bg-[#CDD8E3] text-[#173660]",
   },
-  "VC Prospecting Tracker": {
-    icon: FileSpreadsheet,
-    typeBadge: "Excel Tracker",
-    badgeClass: "bg-[#1A7EC8] text-white",
-  },
   "Fundraising Questions": {
     icon: FileText,
     typeBadge: "Reference Guide",
@@ -65,7 +60,6 @@ const RESOURCE_ORDER = [
   "Financing Process Guide",
   "Data Room Request",
   "First Meeting Prep Guide",
-  "VC Prospecting Tracker",
   "Fundraising Questions",
   "SAFE Template",
 ];
