@@ -1221,6 +1221,34 @@ const OptionModeller: FC = () => {
         </div>
       </main>
 
+      {/* ── Delete Grant Confirmation Modal ── */}
+      {grantToDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: "rgba(0,0,0,0.4)" }}>
+          <div className="rounded-xl p-6 max-w-sm w-full mx-4" style={{ background: "#fff", boxShadow: "0 20px 60px rgba(0, 0, 0, 0.2)" }}>
+            <h3 className="text-base font-bold mb-2" style={{ color: NAVY }}>Delete Grant?</h3>
+            <p className="text-sm mb-5" style={{ color: MUTED }}>
+              This will permanently remove this grant and all its data from the model.
+            </p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setGrantToDelete(null)}
+                className="text-sm font-semibold px-4 py-2 rounded transition-opacity hover:opacity-70"
+                style={{ color: MUTED }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => deleteGrant(grantToDelete)}
+                className="text-sm font-bold px-4 py-2 rounded transition-opacity hover:opacity-90"
+                style={{ background: RED_ERR, color: "#fff" }}
+              >
+                Yes, delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Footer ── */}
       <footer
         className="py-5 text-center text-[11px]"
