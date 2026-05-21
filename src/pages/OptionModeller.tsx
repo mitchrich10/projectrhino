@@ -666,9 +666,12 @@ const OptionModeller: FC = () => {
   const updateGrant = (id: string, updates: Partial<Grant>) =>
     setGrants((prev) => prev.map((g) => g.id === id ? { ...g, ...updates } : g));
 
+  const confirmDeleteGrant = (id: string) => setGrantToDelete(id);
+
   const deleteGrant = (id: string) => {
     setGrants((prev) => prev.filter((g) => g.id !== id));
     setExpandedIds((prev) => { const s = new Set(prev); s.delete(id); return s; });
+    setGrantToDelete(null);
   };
 
   const toggleExpand = (id: string) =>
