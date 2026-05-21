@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
 import { Sheet, SheetContent } from "@/components/ui/sheet";

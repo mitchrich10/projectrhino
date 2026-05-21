@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import { Loader2, LogOut, Menu, X, BookOpen, Handshake, Link2, Copy, Check, ChevronDown } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import { companyLogos } from "@/lib/companyLogos";

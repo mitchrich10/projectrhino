@@ -2,6 +2,7 @@ import { FC, useEffect, useState, useRef } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import {
   Loader2, CheckCircle2, Plus, Trash2, Upload, X,
   BookOpen, Calendar, Handshake, ArrowRight, Copy, Check, Send, Link2, UserPlus, Users
