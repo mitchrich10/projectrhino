@@ -97,6 +97,7 @@ function calcVestedForGrant(
   todayStr: string,
   vestYears: number,
   cliffMonths: number,
+  vestingStyle: "cliff-bump" | "linear-post-cliff" = "cliff-bump",
 ): VestedResult {
   const vestMonths = vestYears * 12;
   const cliffDate = addMonthsDisplay(grantDateStr, cliffMonths);
@@ -118,6 +119,15 @@ function calcVestedForGrant(
   if (diff < cliffMonths)
     return { count: 0, pct: 0, status: "pre-cliff", cliffDate, fullyVestedDate };
 
+  if (vestingStyle === "linear-post-cliff") {
+    // 0% until cliff, then ramp linearly from 0 → 100% across the remaining period.
+    const remainingMonths = vestMonths - cliffMonths;
+    const afterCliff = Math.floor(diff - cliffMonths);
+    const count = Math.floor(Math.min(afterCliff / remainingMonths, 1) * totalOptions);
+    return { count, pct: (count / totalOptions) * 100, status: "vesting", cliffDate, fullyVestedDate };
+  }
+
+  // "cliff-bump" (default): jumps to cliffMonths/vestMonths at cliff, then monthly to 100%.
   const cliffCount = Math.round(totalOptions * (cliffMonths / vestMonths));
   const remaining = totalOptions - cliffCount;
   const remainingMonths = vestMonths - cliffMonths;
