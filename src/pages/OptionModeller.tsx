@@ -649,6 +649,7 @@ const OptionModeller: FC = () => {
   
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [grantToDelete, setGrantToDelete] = useState<string | null>(null);
 
   // Scenarios — dynamic, all editable
   const [scenarios, setScenarios] = useState<ScenarioRow[]>(() =>
