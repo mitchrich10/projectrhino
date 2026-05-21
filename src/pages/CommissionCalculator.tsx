@@ -16,7 +16,7 @@ const OFFWHITE = "#F4F7FA";
 const GREY_MID = "#5C6B7A";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-function fmtCAD(value: number): string {
+function fmtCurrency(value: number): string {
   const abs  = Math.abs(value);
   const sign = value < 0 ? "-" : "";
   if (abs >= 1_000_000_000) { const n = abs / 1e9;  return `${sign}$${n % 1 === 0 ? n.toFixed(0) : n.toFixed(1)}B`; }
@@ -417,20 +417,20 @@ const CommissionCalculator: FC = () => {
                 </div>
                 <div>
                   <FieldLabel>Annual Quota</FieldLabel>
-                  <TextInput value={plan.annualQuota} onChange={(v) => updatePlan("annualQuota", v)} prefix="CAD $" type="number" />
+                  <TextInput value={plan.annualQuota} onChange={(v) => updatePlan("annualQuota", v)} prefix="$" type="number" />
                   {!quotaOk && <div className="mt-1.5"><InlineWarn>Annual quota is required.</InlineWarn></div>}
                 </div>
                 <div>
                   <FieldLabel>Base Salary</FieldLabel>
-                  <TextInput value={plan.baseSalary} onChange={(v) => updatePlan("baseSalary", v)} prefix="CAD $" type="number" />
+                  <TextInput value={plan.baseSalary} onChange={(v) => updatePlan("baseSalary", v)} prefix="$" type="number" />
                 </div>
                 <div>
                   <FieldLabel>Target Bonus at 100%</FieldLabel>
-                  <TextInput value={plan.targetBonus} onChange={(v) => updatePlan("targetBonus", v)} prefix="CAD $" type="number" />
+                  <TextInput value={plan.targetBonus} onChange={(v) => updatePlan("targetBonus", v)} prefix="$" type="number" />
                 </div>
                 <div>
                   <FieldLabel>Equity Value <span className="normal-case font-normal tracking-normal text-[9px]">(optional)</span></FieldLabel>
-                  <TextInput value={plan.equity} onChange={(v) => updatePlan("equity", v)} prefix="CAD $" type="number" placeholder="0" />
+                  <TextInput value={plan.equity} onChange={(v) => updatePlan("equity", v)} prefix="$" type="number" placeholder="0" />
                 </div>
 
                 {/* OTE summary box */}
@@ -440,11 +440,11 @@ const CommissionCalculator: FC = () => {
                   </div>
                   <div className="flex justify-between text-sm" style={{ color: GREY_MID }}>
                     <span>Base</span>
-                    <span style={{ color: NAVY }}>{fmtCAD(base)}</span>
+                    <span style={{ color: NAVY }}>{fmtCurrency(base)}</span>
                   </div>
                   <div className="flex justify-between text-sm" style={{ color: GREY_MID }}>
                     <span>+ Target bonus</span>
-                    <span style={{ color: NAVY }}>{fmtCAD(targetBonus)}</span>
+                    <span style={{ color: NAVY }}>{fmtCurrency(targetBonus)}</span>
                   </div>
                   <div
                     className="flex justify-between items-center border-t pt-2 mt-1"
@@ -453,17 +453,17 @@ const CommissionCalculator: FC = () => {
                     <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: GREY_MID }}>
                       = OTE at 100%
                     </span>
-                    <span className="text-xl font-semibold" style={{ color: BLUE }}>{fmtCAD(ote)}</span>
+                    <span className="text-xl font-semibold" style={{ color: BLUE }}>{fmtCurrency(ote)}</span>
                   </div>
                   {equity > 0 && (
                     <>
                       <div className="flex justify-between text-sm" style={{ color: GREY_MID }}>
                         <span>+ Equity</span>
-                        <span style={{ color: NAVY }}>{fmtCAD(equity)}</span>
+                        <span style={{ color: NAVY }}>{fmtCurrency(equity)}</span>
                       </div>
                       <div className="flex justify-between text-sm font-semibold" style={{ color: NAVY }}>
                         <span>= Total package</span>
-                        <span>{fmtCAD(totalPkg)}</span>
+                        <span>{fmtCurrency(totalPkg)}</span>
                       </div>
                     </>
                   )}
@@ -503,10 +503,10 @@ const CommissionCalculator: FC = () => {
                 </div>
                 {weightsOk && (
                   <div className="grid grid-cols-2 gap-2">
-                  <MetricTile label="Monthly bonus (per mo.)" value={fmtCAD(targetBonus * mw / 100 / 12)} small />
-                  <MetricTile label="Quarterly bonus (per qtr)" value={fmtCAD(targetBonus * qw / 100 / 4)} small />
-                  <MetricTile label="Annual tranche" value={fmtCAD(targetBonus * aw / 100)} small />
-                  <MetricTile label="Total annual bonus" value={fmtCAD(targetBonus)} small />
+                  <MetricTile label="Monthly bonus (per mo.)" value={fmtCurrency(targetBonus * mw / 100 / 12)} small />
+                  <MetricTile label="Quarterly bonus (per qtr)" value={fmtCurrency(targetBonus * qw / 100 / 4)} small />
+                  <MetricTile label="Annual tranche" value={fmtCurrency(targetBonus * aw / 100)} small />
+                  <MetricTile label="Total annual bonus" value={fmtCurrency(targetBonus)} small />
                   </div>
                 )}
               </div>
@@ -649,11 +649,11 @@ const CommissionCalculator: FC = () => {
                           {[r.monthlyBonus, r.quarterlyBonus, r.annualBonus, r.totalBonus].map((v, idx) => (
                             <td key={idx} className="px-4 py-2.5 font-semibold whitespace-nowrap"
                               style={{ color: rs.isZero ? GREY_MID : rs.bonusColor }}>
-                              {rs.isZero ? "$0" : fmtCAD(v)}
+                              {rs.isZero ? "$0" : fmtCurrency(v)}
                             </td>
                           ))}
                           <td className="px-4 py-2.5 font-semibold whitespace-nowrap" style={{ color: NAVY }}>
-                            {fmtCAD(r.baseBonus)}
+                            {fmtCurrency(r.baseBonus)}
                           </td>
                           <td className="px-4 py-2.5 font-semibold whitespace-nowrap"
                             style={{ color: tier === "accel" ? NAVY : tier === "at-target" ? BLUE : GREY_MID }}>
@@ -716,13 +716,13 @@ const CommissionCalculator: FC = () => {
                     <FieldLabel>
                       Period Quota{" "}
                       <span className="normal-case font-normal tracking-normal text-[9px]" style={{ color: GREY_MID }}>
-                        (auto: {fmtCAD(autoPeriodQuota)}{rep.periodQuota ? " — overridden" : ""})
+                        (auto: {fmtCurrency(autoPeriodQuota)}{rep.periodQuota ? " — overridden" : ""})
                       </span>
                     </FieldLabel>
                     <TextInput
                       value={rep.periodQuota}
                       onChange={(v) => updateRep("periodQuota", v)}
-                      prefix="CAD $"
+                      prefix="$"
                       type="number"
                       placeholder={String(Math.round(autoPeriodQuota))}
                     />
@@ -732,23 +732,23 @@ const CommissionCalculator: FC = () => {
                         style={{ color: BLUE }}
                         onClick={() => updateRep("periodQuota", "")}
                       >
-                        Reset to auto ({fmtCAD(autoPeriodQuota)})
+                        Reset to auto ({fmtCurrency(autoPeriodQuota)})
                       </button>
                     )}
                   </div>
 
                   <div>
                     <FieldLabel>Actual Orders / Revenue</FieldLabel>
-                    <TextInput value={rep.actualOrders} onChange={(v) => updateRep("actualOrders", v)} prefix="CAD $" type="number" placeholder="0" />
+                    <TextInput value={rep.actualOrders} onChange={(v) => updateRep("actualOrders", v)} prefix="$" type="number" placeholder="0" />
                   </div>
 
                   <div>
                     <FieldLabel>Professional Services Collected <span className="normal-case font-normal tracking-normal text-[9px]">(optional)</span></FieldLabel>
-                    <TextInput value={rep.psCollected} onChange={(v) => updateRep("psCollected", v)} prefix="CAD $" type="number" placeholder="0" />
+                    <TextInput value={rep.psCollected} onChange={(v) => updateRep("psCollected", v)} prefix="$" type="number" placeholder="0" />
                     {parseNum(rep.psCollected) > 0 && (
                       <p className="text-[10px] mt-1" style={{ color: GREY_MID }}>
                         PS commission at {plan.psRate || 4}%:{" "}
-                        <span className="font-semibold" style={{ color: BLUE }}>{fmtCAD(psEarned)}</span>
+                        <span className="font-semibold" style={{ color: BLUE }}>{fmtCurrency(psEarned)}</span>
                       </p>
                     )}
                   </div>
@@ -770,16 +770,16 @@ const CommissionCalculator: FC = () => {
                     <MetricTile label={`Attainment (${rep.periodType})`} value={`${(attainmentPct * 100).toFixed(1)}%`} accent />
                     <MetricTile
                       label={aboveBelow >= 0 ? "Above target" : "Below target"}
-                      value={(aboveBelow >= 0 ? "+" : "") + fmtCAD(aboveBelow)}
+                      value={(aboveBelow >= 0 ? "+" : "") + fmtCurrency(aboveBelow)}
                       accent
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <MetricTile label={`Pro-rated base (${rep.periodType})`} value={fmtCAD(proRatedBase)} small />
-                    <MetricTile label="Bonus earned this period" value={fmtCAD(periodBonus)} small />
+                    <MetricTile label={`Pro-rated base (${rep.periodType})`} value={fmtCurrency(proRatedBase)} small />
+                    <MetricTile label="Bonus earned this period" value={fmtCurrency(periodBonus)} small />
                     {parseNum(rep.psCollected) > 0 && (
-                      <MetricTile label="PS commission" value={fmtCAD(psEarned)} small />
+                      <MetricTile label="PS commission" value={fmtCurrency(psEarned)} small />
                     )}
                   </div>
 
@@ -788,7 +788,7 @@ const CommissionCalculator: FC = () => {
                       Total period earnings — base + bonus + PS
                     </div>
                     <div className="text-3xl font-semibold" style={{ color: BLUE }}>
-                      {fmtCAD(totalPeriodEarnings)}
+                      {fmtCurrency(totalPeriodEarnings)}
                     </div>
                   </div>
 
@@ -796,7 +796,7 @@ const CommissionCalculator: FC = () => {
                     <p className="text-[10px] pt-1" style={{ color: GREY_MID }}>
                       Annualised run-rate:{" "}
                       <strong style={{ color: NAVY }}>
-                        {fmtCAD(totalPeriodEarnings * (rep.periodType === "monthly" ? 12 : 4))}
+                        {fmtCurrency(totalPeriodEarnings * (rep.periodType === "monthly" ? 12 : 4))}
                       </strong>{" "}
                       if this attainment is maintained all year
                     </p>

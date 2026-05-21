@@ -60,7 +60,7 @@ function parseNum(s: string): number {
   return isNaN(n) ? 0 : n;
 }
 
-function fmtCAD(v: number): string {
+function fmtCurrency(v: number): string {
   const abs  = Math.abs(v);
   const sign = v < 0 ? "-" : "";
   if (abs >= 1_000_000_000) {
@@ -136,16 +136,16 @@ function buildPlanSheet(ws: ExcelJS.Worksheet, plan: PlanInputs, ote: number, to
 
   // ─ Section: Compensation
   addHeader("COMPENSATION");
-  addRow("Annual Quota (CAD)",       fmtCAD(parseNum(plan.annualQuota)));
-  addRow("Base Salary (CAD)",        fmtCAD(parseNum(plan.baseSalary)));
-  addRow("Target Bonus at 100%",     fmtCAD(parseNum(plan.targetBonus)));
-  addRow("Equity Value (CAD)",       plan.equity ? fmtCAD(parseNum(plan.equity)) : "—");
+  addRow("Annual Quota ",       fmtCurrency(parseNum(plan.annualQuota)));
+  addRow("Base Salary ",        fmtCurrency(parseNum(plan.baseSalary)));
+  addRow("Target Bonus at 100%",     fmtCurrency(parseNum(plan.targetBonus)));
+  addRow("Equity Value ",       plan.equity ? fmtCurrency(parseNum(plan.equity)) : "—");
   ws.addRow([]);
 
   // ─ Section: OTE (hero)
   addHeader("OTE & TOTAL PACKAGE");
-  addRow("OTE at 100% (Base + Target Bonus)",    fmtCAD(ote),      C_BLUE);
-  addRow("Total Annual Package (OTE + Equity)",  fmtCAD(totalPkg), C_BLUE);
+  addRow("OTE at 100% (Base + Target Bonus)",    fmtCurrency(ote),      C_BLUE);
+  addRow("Total Annual Package (OTE + Equity)",  fmtCurrency(totalPkg), C_BLUE);
   ws.addRow([]);
 
   // ─ Section: Bonus Weights
@@ -200,11 +200,11 @@ function buildAttainmentSheet(
 
     const dr = ws.addRow([
       label,
-      zeroBonus ? "$0" : fmtCAD(r.monthlyBonus),
-      zeroBonus ? "$0" : fmtCAD(r.quarterlyBonus),
-      zeroBonus ? "$0" : fmtCAD(r.annualBonus),
-      zeroBonus ? "$0" : fmtCAD(r.totalBonus),
-      fmtCAD(r.baseBonus),
+      zeroBonus ? "$0" : fmtCurrency(r.monthlyBonus),
+      zeroBonus ? "$0" : fmtCurrency(r.quarterlyBonus),
+      zeroBonus ? "$0" : fmtCurrency(r.annualBonus),
+      zeroBonus ? "$0" : fmtCurrency(r.totalBonus),
+      fmtCurrency(r.baseBonus),
       `${r.vsOTE.toFixed(0)}%`,
     ]);
     dr.height = 17;
@@ -248,10 +248,10 @@ function buildRepSheet(ws: ExcelJS.Worksheet, snap: RepSnapshot) {
 
   addHeader("REP CALCULATOR — PERIOD INPUTS");
   addRow("Period Type",   snap.periodType.charAt(0).toUpperCase() + snap.periodType.slice(1));
-  addRow("Period Quota",  fmtCAD(snap.periodQuota));
-  addRow("Actual Orders / Revenue", fmtCAD(snap.actual));
+  addRow("Period Quota",  fmtCurrency(snap.periodQuota));
+  addRow("Actual Orders / Revenue", fmtCurrency(snap.actual));
   if (snap.psCollected > 0)
-    addRow("Professional Services Collected", fmtCAD(snap.psCollected));
+    addRow("Professional Services Collected", fmtCurrency(snap.psCollected));
   ws.addRow([]);
 
   addHeader("STATUS");
@@ -261,15 +261,15 @@ function buildRepSheet(ws: ExcelJS.Worksheet, snap: RepSnapshot) {
   addHeader("EARNINGS BREAKDOWN");
   addRow("Attainment %",                `${(snap.attainmentPct * 100).toFixed(1)}%`);
   addRow(snap.aboveBelow >= 0 ? "Above Target" : "Below Target",
-    (snap.aboveBelow >= 0 ? "+" : "") + fmtCAD(snap.aboveBelow),
+    (snap.aboveBelow >= 0 ? "+" : "") + fmtCurrency(snap.aboveBelow),
     snap.aboveBelow >= 0 ? C_BLUE : "FFA33222");
-  addRow(`Pro-rated Base (${snap.periodType})`, fmtCAD(snap.proRatedBase));
-  addRow("Bonus Earned This Period",    fmtCAD(snap.periodBonus),       C_BLUE);
+  addRow(`Pro-rated Base (${snap.periodType})`, fmtCurrency(snap.proRatedBase));
+  addRow("Bonus Earned This Period",    fmtCurrency(snap.periodBonus),       C_BLUE);
   if (snap.psCollected > 0)
-    addRow(`PS Commission (${snap.psRate}%)`, fmtCAD(snap.psEarned), C_BLUE);
-  addRow("Total Period Earnings",       fmtCAD(snap.totalPeriodEarnings), C_BLUE);
+    addRow(`PS Commission (${snap.psRate}%)`, fmtCurrency(snap.psEarned), C_BLUE);
+  addRow("Total Period Earnings",       fmtCurrency(snap.totalPeriodEarnings), C_BLUE);
   if (snap.periodType !== "annual")
-    addRow("Annualised Run-rate",       fmtCAD(snap.annualisedRunRate),   C_NAVY);
+    addRow("Annualised Run-rate",       fmtCurrency(snap.annualisedRunRate),   C_NAVY);
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
