@@ -643,7 +643,7 @@ const INITIAL_BASE_VAL = 10 * 10_000_000; // default strike × default diluted
 
 const OptionModeller: FC = () => {
   usePageTitle("Option Modeller | Rhino Partner Portal");
-  const [grants, setGrants] = useState<Grant[]>([makeDefaultGrant({ id: "g_initial" })]);
+  const [grants, setGrants] = useState<Grant[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["g_initial"]));
   const [globalDiluted, setGlobalDiluted] = useState("10000000");
   const [todayDate] = useState(today());
@@ -859,7 +859,7 @@ const OptionModeller: FC = () => {
                       onToggle={() => toggleExpand(g.id)}
                       onChange={(updates) => updateGrant(g.id, updates)}
                       onDelete={() => confirmDeleteGrant(g.id)}
-                      canDelete={grants.length > 1}
+                      canDelete={true}
                     />
                   );
                 })}
