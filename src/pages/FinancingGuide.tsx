@@ -9,12 +9,9 @@ import {
   FileText,
   Lock,
   Loader2,
-  LogOut,
-  Menu,
   Presentation,
   X,
 } from "lucide-react";
-import rhinoLogo from "@/assets/rhino-logo-black.png";
 import { companyLogos } from "@/lib/companyLogos";
 
 /* ── Types ─────────────────────────────────────────────────── */
@@ -378,7 +375,7 @@ const FinancingGuide: FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<CompanyInfo | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  // (menuOpen state moved into SubPageHeader)
   const [isAdmin, setIsAdmin] = useState(false);
   const [resources, setResources] = useState<Resource[]>([]);
   const [unlocked, setUnlocked] = useState(false);
