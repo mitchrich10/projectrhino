@@ -512,7 +512,7 @@ const GrantCard: FC<{
             </div>
             <div>
               <FieldLabel>Options Granted</FieldLabel>
-              <FieldInput value={grant.totalOptions} onChange={(v) => onChange({ totalOptions: v })} placeholder="e.g. 1,000" />
+              <FieldInput value={grant.totalOptions} onChange={(v) => onChange({ totalOptions: v })} placeholder="e.g. 1,000" formatThousands />
             </div>
             <div>
               <FieldLabel>Strike Price (CAD $)</FieldLabel>
