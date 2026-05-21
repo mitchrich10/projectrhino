@@ -950,7 +950,9 @@ const OptionModeller: FC = () => {
                       onChange={setGlobalDiluted}
                       placeholder="e.g. 10,000,000"
                       hasError={!!dilutedError}
+                      formatThousands
                     />
+
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
