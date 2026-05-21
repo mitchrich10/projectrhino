@@ -12,7 +12,7 @@ import {
   Presentation,
   X,
 } from "lucide-react";
-import { companyLogos } from "@/lib/companyLogos";
+
 
 /* ── Types ─────────────────────────────────────────────────── */
 
@@ -450,7 +450,7 @@ const FinancingGuide: FC = () => {
     navigate("/partner-login");
   };
 
-  const logoSrc = company?.logo_key ? companyLogos[company.logo_key] : null;
+  // (company logo rendered inside SubPageHeader)
 
   if (loading) {
     return (
