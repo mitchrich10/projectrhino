@@ -573,7 +573,7 @@ const GrantCard: FC<{
                 </FieldLabel>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {([
-                    { value: "cliff-bump", title: "Cliff back-vest (most common)", desc: `0% until cliff, then jumps to ${grant.vestYears > 0 ? Math.round((grant.cliffMonths / (grant.vestYears * 12)) * 100) : 0}%, then monthly` },
+                    { value: "cliff-bump", title: "Cliff back-vest (most common)", desc: grant.vestYears > 0 ? `0% until cliff, then jumps to ${grant.cliffMonths}/${grant.vestYears * 12} = ${Math.round((grant.cliffMonths / (grant.vestYears * 12)) * 100)}%, then monthly` : "0% until cliff, then back-vests proportionally, then monthly" },
                     { value: "linear-post-cliff", title: "Linear after cliff", desc: "0% until cliff, then ramps linearly to 100%" },
                   ] as const).map((opt) => {
                     const active = grant.vestingStyle === opt.value;
