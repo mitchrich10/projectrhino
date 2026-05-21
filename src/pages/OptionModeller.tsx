@@ -484,11 +484,12 @@ const GrantCard: FC<{
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onDelete(); }}
-              className="p-1 rounded hover:opacity-80 transition-opacity"
-              style={{ color: isExpanded ? "rgba(255,255,255,0.6)" : RED_ERR }}
+              className="flex items-center gap-1 rounded px-2 py-1 transition-all hover:opacity-90"
+              style={{ background: isExpanded ? "rgba(255,255,255,1)" : "rgba(192,57,43,0.08)", color: isExpanded ? RED_ERR : RED_ERR }}
               title="Delete grant"
             >
               <Trash2 className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-bold uppercase tracking-wider hidden sm:inline">Delete</span>
             </button>
           )}
           {isExpanded
