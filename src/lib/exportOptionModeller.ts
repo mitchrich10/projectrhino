@@ -90,12 +90,12 @@ function fmtLargeCur(n: number): string {
     const v = n / 1_000_000;
     return `$${(v < 100 && v % 1 !== 0) ? v.toFixed(1) : v.toFixed(0)}M`;
   }
-  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function fmtCur(n: number): string {
   if (!isFinite(n) || n <= 0) return "$0.00";
-  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function fmtMultiple(n: number): string {

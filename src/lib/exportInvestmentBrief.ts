@@ -250,16 +250,8 @@ function buildDoc(data: BriefFormData, isTemplate: boolean): Document {
     rows: [smHeader, ...smDataRows],
   }));
 
-  // ── Disclaimers ──
-  children.push(new Paragraph({ spacing: { before: 400 }, children: [] }));
-  children.push(new Paragraph({
-    spacing: { before: 120, after: 80 },
-    children: [txt("Tax implications: ", true), txt("This proposal may have tax consequences depending on your jurisdiction and entity structure. Please discuss with your accountant or tax advisor before proceeding.")],
-  }));
-  children.push(new Paragraph({
-    spacing: { after: 80 },
-    children: [txt("Illustrative tool: ", true), txt("This is an illustrative planning tool only. Outputs may be inaccurate or incomplete. Always verify figures and assumptions directly with your company\u2019s finance team and legal counsel for full details.")],
-  }));
+
+
 
   return new Document({
     styles: {

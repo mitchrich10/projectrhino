@@ -166,12 +166,12 @@ function fmtLargeCur(n: number): string {
     const v = n / 1_000_000;
     return `$${v < 100 && v % 1 !== 0 ? v.toFixed(1) : v.toFixed(0)}M`;
   }
-  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function fmtCur(n: number): string {
   if (!isFinite(n) || n <= 0) return "$0.00";
-  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+  return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function fmtMultiple(n: number): string {
@@ -1218,8 +1218,19 @@ const OptionModeller: FC = () => {
               </div>
             </div>
           </section>
+
+          {/* Disclaimers */}
+          <div className="mt-8 p-4 bg-amber-50 border border-amber-100 rounded text-xs text-amber-800 space-y-2">
+            <p>
+              <strong>Tax implications:</strong> Exercising options and selling shares may have tax consequences depending on your jurisdiction and personal situation. Please discuss with your accountant or tax advisor before proceeding.
+            </p>
+            <p>
+              <strong>Illustrative tool:</strong> This is an illustrative planning tool only. Outputs may be inaccurate or incomplete. Always verify figures and assumptions directly with your company&apos;s finance team and legal counsel for full details.
+            </p>
+          </div>
         </div>
       </main>
+
 
       {/* ── Delete Grant Confirmation Modal ── */}
       {grantToDelete && (
