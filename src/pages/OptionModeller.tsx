@@ -708,7 +708,7 @@ const OptionModeller: FC = () => {
       const total = parseFloat(g.totalOptions) || 0;
       const strike = parseFloat(g.strikePrice) || 0;
       const vestedInfo: VestedResultExt = {
-        ...calcVestedForGrant(total, g.grantDate, todayDate, g.vestYears, g.cliffMonths),
+        ...calcVestedForGrant(total, g.grantDate, todayDate, g.vestYears, g.cliffMonths, g.vestingStyle),
         cliffMonths: g.cliffMonths,
       };
       return { grant: g, total, strike, vestedInfo };
