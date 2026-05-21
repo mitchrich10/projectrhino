@@ -254,9 +254,6 @@ export default function InvestmentBriefBuilder() {
             />
           </div>
 
-          <p className="text-xs text-gray-400 mt-3 leading-relaxed">
-            Revenue uplift = incremental ARR or conversion lift. Cost reduction = vendor or headcount savings. Risk mitigation = churn or compliance cost avoided. Time saved = hours × fully-loaded cost rate.
-          </p>
 
           <div className="mt-4">
             <Label className="text-xs text-gray-500">Key Assumptions</Label>
