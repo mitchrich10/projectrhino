@@ -859,7 +859,7 @@ const OptionModeller: FC = () => {
                       onToggle={() => toggleExpand(g.id)}
                       onChange={(updates) => updateGrant(g.id, updates)}
                       onDelete={() => confirmDeleteGrant(g.id)}
-                      canDelete={grants.length > 1}
+                      canDelete={true}
                     />
                   );
                 })}
