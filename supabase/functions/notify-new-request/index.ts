@@ -75,7 +75,7 @@ serve(async (req: Request) => {
                 },
                 {
                   role: "user",
-                  content: `Company "${company_name}" requested:\nSubject: "${item_name}"\nType(s): ${item_type}\n${notes ? `Notes: ${notes}\n` : ""}\nExisting partnerships:\n${partnershipList}\n\nAre any relevant? Name them if yes.`,
+                  content: `Company "${company_name}" requested:\nSubject: "${item_name}"\nType(s): ${itemTypeLabel}\n${notes ? `Notes: ${notes}\n` : ""}\nExisting partnerships:\n${partnershipList}\n\nAre any relevant? Name them if yes.`,
                 },
               ],
             }),
@@ -111,7 +111,7 @@ serve(async (req: Request) => {
               <table style="border-collapse:collapse;width:100%;margin-bottom:16px;">
                 <tr><td style="padding:8px 12px;border:1px solid #e5e5e5;font-weight:700;font-size:12px;background:#f9f9f9;width:140px;">Company</td><td style="padding:8px 12px;border:1px solid #e5e5e5;font-size:13px;">${company_name}</td></tr>
                 <tr><td style="padding:8px 12px;border:1px solid #e5e5e5;font-weight:700;font-size:12px;background:#f9f9f9;">Submitted by</td><td style="padding:8px 12px;border:1px solid #e5e5e5;font-size:13px;">${user_email}</td></tr>
-                <tr><td style="padding:8px 12px;border:1px solid #e5e5e5;font-weight:700;font-size:12px;background:#f9f9f9;">Type(s)</td><td style="padding:8px 12px;border:1px solid #e5e5e5;font-size:13px;text-transform:capitalize;">${item_type}</td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #e5e5e5;font-weight:700;font-size:12px;background:#f9f9f9;">Type(s)</td><td style="padding:8px 12px;border:1px solid #e5e5e5;font-size:13px;text-transform:capitalize;">${itemTypeLabel}</td></tr>
                 <tr><td style="padding:8px 12px;border:1px solid #e5e5e5;font-weight:700;font-size:12px;background:#f9f9f9;">Subject</td><td style="padding:8px 12px;border:1px solid #e5e5e5;font-size:13px;font-weight:600;">${item_name}</td></tr>
                 ${notes ? `<tr><td style="padding:8px 12px;border:1px solid #e5e5e5;font-weight:700;font-size:12px;background:#f9f9f9;">Notes</td><td style="padding:8px 12px;border:1px solid #e5e5e5;font-size:13px;font-style:italic;">${notes}</td></tr>` : ""}
                 <tr><td style="padding:8px 12px;border:1px solid #e5e5e5;font-weight:700;font-size:12px;background:#f9f9f9;">Submitted</td><td style="padding:8px 12px;border:1px solid #e5e5e5;font-size:13px;">${new Date().toLocaleString("en-CA", { timeZone: "America/Vancouver" })} PT</td></tr>
@@ -127,7 +127,7 @@ serve(async (req: Request) => {
           body: JSON.stringify({
             from: "Rhino Ventures Portal <onboarding@resend.dev>",
             to: ["candace@rhinovc.com"],
-            subject: `New portal request from ${company_name} — ${item_type}`,
+            subject: `New portal request from ${company_name} — ${itemTypeLabel}`,
             html: emailHtml,
           }),
         });
@@ -157,7 +157,7 @@ serve(async (req: Request) => {
             fields: [
               { type: "mrkdwn", text: `*Company:*\n${company_name}` },
               { type: "mrkdwn", text: `*Submitted by:*\n${user_email}` },
-              { type: "mrkdwn", text: `*Type(s):*\n${item_type}` },
+              { type: "mrkdwn", text: `*Type(s):*\n${itemTypeLabel}` },
               { type: "mrkdwn", text: `*Subject:*\n${item_name}` },
             ],
           },
