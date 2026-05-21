@@ -8,6 +8,7 @@ import {
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
+import { toast } from "sonner";
 
 interface Resource {
   id: string;
@@ -98,13 +99,19 @@ const RequestAccessButton: FC<{
     e.stopPropagation();
     setStatus("loading");
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { setStatus("error"); return; }
+    if (!session) { setStatus("error"); toast.error("Please sign in to request access."); return; }
 
     const res = await supabase.functions.invoke("request-access", {
       body: { item_type: itemType, item_id: itemId === "fundraising-toolkit" ? null : itemId, item_name: itemName, company_name: companyName },
     });
 
-    setStatus(res.error || res.data?.error === "already_requested" || res.data?.success ? "requested" : "error");
+    const ok = !res.error && (res.data?.success || res.data?.error === "already_requested");
+    setStatus(ok ? "requested" : "error");
+    if (ok) {
+      toast.success(`Access requested for "${itemName}" — we'll review and get back to you.`, { duration: 5000 });
+    } else {
+      toast.error("Couldn't submit your request — please try again or email team@rhinovc.com.", { duration: 6000 });
+    }
   };
 
   if (status === "requested") {
