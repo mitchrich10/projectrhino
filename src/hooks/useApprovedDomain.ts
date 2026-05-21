@@ -14,16 +14,19 @@ export const fetchApprovedDomain = (
 ): Promise<ApprovedDomainInfo | null> => {
   const key = domain.toLowerCase();
   if (!cache.has(key)) {
-    cache.set(
-      key,
-      supabase
-        .from("approved_domains")
-        .select("company_name, logo_key")
-        .eq("domain", key)
-        .maybeSingle()
-        .then(({ data }) => (data as ApprovedDomainInfo | null) ?? null)
-        .catch(() => null),
-    );
+    const p = (async () => {
+      try {
+        const { data } = await supabase
+          .from("approved_domains")
+          .select("company_name, logo_key")
+          .eq("domain", key)
+          .maybeSingle();
+        return (data as ApprovedDomainInfo | null) ?? null;
+      } catch {
+        return null;
+      }
+    })();
+    cache.set(key, p);
   }
   return cache.get(key)!;
 };
