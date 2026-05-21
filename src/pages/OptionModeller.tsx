@@ -223,23 +223,35 @@ const FieldInput: FC<{
   placeholder?: string;
   readOnly?: boolean;
   hasError?: boolean;
-}> = ({ value, onChange, type = "number", prefix, placeholder = "0", readOnly, hasError }) => (
-  <div
-    className="flex items-center rounded transition-colors"
-    style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: readOnly ? OFFWHITE : "#fff" }}
-  >
-    {prefix && <span className="pl-3 text-sm select-none" style={{ color: MUTED }}>{prefix}</span>}
-    <input
-      type={type}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      readOnly={readOnly}
-      className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
-      style={{ color: NAVY, cursor: readOnly ? "default" : "text" }}
-    />
-  </div>
-);
+  formatThousands?: boolean;
+}> = ({ value, onChange, type = "number", prefix, placeholder = "0", readOnly, hasError, formatThousands }) => {
+  const isFormatted = !!formatThousands;
+  const displayValue = isFormatted
+    ? (value === "" ? "" : (Number(value.replace(/[^0-9]/g, "")) || 0).toLocaleString("en-CA"))
+    : value;
+  const handleChange = (raw: string) => {
+    if (isFormatted) onChange(raw.replace(/[^0-9]/g, ""));
+    else onChange(raw);
+  };
+  return (
+    <div
+      className="flex items-center rounded transition-colors"
+      style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: readOnly ? OFFWHITE : "#fff" }}
+    >
+      {prefix && <span className="pl-3 text-sm select-none" style={{ color: MUTED }}>{prefix}</span>}
+      <input
+        type={isFormatted ? "text" : type}
+        inputMode={isFormatted ? "numeric" : undefined}
+        value={displayValue}
+        onChange={(e) => handleChange(e.target.value)}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+        style={{ color: NAVY, cursor: readOnly ? "default" : "text" }}
+      />
+    </div>
+  );
+};
 
 const SelectField: FC<{
   value: string;
