@@ -60,7 +60,7 @@ export default function InvestmentBriefBuilder() {
   };
   const removeSuccess = (i: number) => setSuccessRows(prev => prev.filter((_, idx) => idx !== i));
 
-  const totalReturn = Object.values(returnValues).reduce((sum, v) => sum + (parseFloat(v) || 0), 0);
+  const totalReturn = Object.values(returnValues).reduce((sum, v) => sum + (parseFloat(String(v).replace(/,/g, "")) || 0), 0);
   const costNum = parseFloat(totalAsk.replace(/,/g, "")) || 0;
   const multiple = costNum > 0 ? `${(totalReturn / costNum).toFixed(1)}x` : "—";
 
@@ -211,10 +211,12 @@ export default function InvestmentBriefBuilder() {
                         />
                       )}
                       <Input
-                        type="number"
-                        step="0.01"
                         value={returnValues[rt]}
                         onChange={e => setReturnValue(rt, e.target.value)}
+                        onBlur={() => {
+                          const v = returnValues[rt];
+                          if (v) setReturnValue(rt, fmtCurrency(v.replace(/,/g, "")));
+                        }}
                         placeholder="0.00"
                         className="max-w-[180px] h-8 text-sm"
                       />
@@ -252,9 +254,6 @@ export default function InvestmentBriefBuilder() {
             />
           </div>
 
-          <p className="text-xs text-gray-400 mt-3 leading-relaxed">
-            Revenue uplift = incremental ARR or conversion lift. Cost reduction = vendor or headcount savings. Risk mitigation = churn or compliance cost avoided. Time saved = hours × fully-loaded cost rate.
-          </p>
 
           <div className="mt-4">
             <Label className="text-xs text-gray-500">Key Assumptions</Label>
