@@ -17,6 +17,7 @@ interface Grant {
   grantDate: string;
   vestYears: number;
   cliffMonths: number;
+  vestingStyle: "cliff-bump" | "linear-post-cliff";
 }
 
 interface VestedResult {
