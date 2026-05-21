@@ -1,6 +1,6 @@
 import {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-  AlignmentType, BorderStyle, WidthType, ShadingType,
+  BorderStyle, WidthType, ShadingType,
 } from "docx";
 import { saveAs } from "file-saver";
 
@@ -47,19 +47,19 @@ function headerCell(text: string, width: number): TableCell {
   });
 }
 
-function dataCell(text: string, width: number): TableCell {
+function dataCell(text: string, width: number, bold = false): TableCell {
   return new TableCell({
     borders,
     width: { size: width, type: WidthType.DXA },
     margins: cellMargins,
-    children: [new Paragraph({ children: [txt(text)] })],
+    children: [new Paragraph({ children: [txt(text, bold)] })],
   });
 }
 
-function fmtDollar(val: string): string {
-  const n = parseFloat(val);
+function fmtDollar(val: number | string): string {
+  const n = typeof val === "number" ? val : parseFloat(val);
   if (isNaN(n)) return "—";
-  return "$" + n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return "C$" + n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 export interface BriefFormData {
@@ -72,8 +72,10 @@ export interface BriefFormData {
   problem: string;
   inScope: string;
   outOfScope: string;
-  roiRows: { lineItem: string; returnAmt: string; cost: string; paybackPeriod: string }[];
-  returnTypes: string[];
+  returnTypeRows: { type: string; amount: string }[];
+  totalReturn: number;
+  multiple: string;
+  paybackPeriod: string;
   keyAssumptions: string;
   successRows: { metric: string; baseline: string; target: string; reviewDate: string; owner: string }[];
 }
@@ -87,15 +89,16 @@ function buildDoc(data: BriefFormData, isTemplate: boolean): Document {
     children: [txt("Project Proposal", true, TITLE_SIZE)],
   }));
 
-  // ── Divider line ──
+  // ── Divider ──
   children.push(new Paragraph({
     spacing: { after: 200 },
     border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "CCCCCC", space: 1 } },
     children: [txt(" ")],
   }));
 
-  // ── Header info as label:value pairs ──
+  // ── Header info ──
   const type = data.investmentType === "Other" ? data.investmentTypeOther : data.investmentType;
+  const costNum = parseFloat((data.totalAsk || "").replace(/,/g, "")) || 0;
 
   if (isTemplate) {
     children.push(labelValue("Company: ", "________"));
@@ -108,17 +111,16 @@ function buildDoc(data: BriefFormData, isTemplate: boolean): Document {
     children.push(labelValue("Owner: ", data.owner));
     children.push(labelValue("Date: ", data.date));
     children.push(labelValue("Investment Type: ", type));
-    const totalAskNum = parseFloat(data.totalAsk.replace(/,/g, ""));
-    children.push(labelValue("Total Investment Ask: ", isNaN(totalAskNum) ? (data.totalAsk || "—") : ("C" + fmtDollar(String(totalAskNum)))));
+    children.push(labelValue("Total Investment Ask: ", costNum > 0 ? fmtDollar(costNum) : (data.totalAsk || "—")));
   }
 
-  // ── Section 1: The Problem ──
+  // ── Section 1 ──
   children.push(sectionHeading("1. The Problem"));
   children.push(bodyPara(isTemplate
     ? "[What's broken or underperforming? What does inaction cost you? Use numbers where possible.]"
     : data.problem));
 
-  // ── Section 2: The Investment ──
+  // ── Section 2 ──
   children.push(sectionHeading("2. The Investment"));
   const scopeW = 4680;
   children.push(new Table({
@@ -137,50 +139,89 @@ function buildDoc(data: BriefFormData, isTemplate: boolean): Document {
 
   // ── Section 3: ROI Model ──
   children.push(sectionHeading("3. ROI Model"));
-  const roiColW = [2400, 1800, 1800, 1560, 1800];
+  const roiColW = [5360, 4000];
   const roiHeader = new TableRow({
-    children: ["Line Item", "Return (C$)", "Cost (C$)", "Multiple", "Payback Period"].map((h, i) =>
-      headerCell(h, roiColW[i])
-    ),
+    children: [headerCell("Return Type", roiColW[0]), headerCell("Value (C$)", roiColW[1])],
   });
 
-  const roiDataRows = isTemplate
-    ? [new TableRow({ children: roiColW.map(w => dataCell(" ", w)) }),
-       new TableRow({ children: roiColW.map(w => dataCell(" ", w)) })]
-    : (data.roiRows.length > 0
-        ? data.roiRows.map(r => {
-            const ret = parseFloat(r.returnAmt) || 0;
-            const cost = parseFloat(r.cost) || 0;
-            const mult = cost > 0 ? (ret / cost).toFixed(1) + "x" : "—";
-            return new TableRow({
-              children: [
-                dataCell(r.lineItem || "—", roiColW[0]),
-                dataCell(r.returnAmt ? fmtDollar(r.returnAmt) : "—", roiColW[1]),
-                dataCell(r.cost ? fmtDollar(r.cost) : "—", roiColW[2]),
-                dataCell(mult, roiColW[3]),
-                dataCell(r.paybackPeriod || "—", roiColW[4]),
-              ],
-            });
-          })
-        : [new TableRow({ children: roiColW.map(w => dataCell("—", w)) })]);
+  let roiRows: TableRow[];
+  if (isTemplate) {
+    roiRows = [
+      new TableRow({ children: [dataCell("[e.g. Revenue Uplift]", roiColW[0]), dataCell(" ", roiColW[1])] }),
+      new TableRow({ children: [dataCell("[e.g. Cost Reduction]", roiColW[0]), dataCell(" ", roiColW[1])] }),
+    ];
+  } else if (data.returnTypeRows.length > 0) {
+    roiRows = data.returnTypeRows.map(r =>
+      new TableRow({
+        children: [
+          dataCell(r.type || "—", roiColW[0]),
+          dataCell(r.amount ? fmtDollar(r.amount) : "—", roiColW[1]),
+        ],
+      })
+    );
+  } else {
+    roiRows = [new TableRow({ children: [dataCell("—", roiColW[0]), dataCell("—", roiColW[1])] })];
+  }
+
+  // Totals rows
+  const totalsRows = isTemplate ? [] : [
+    new TableRow({
+      children: [
+        new TableCell({
+          borders, width: { size: roiColW[0], type: WidthType.DXA }, margins: cellMargins,
+          shading: { fill: "F9F9F9", type: ShadingType.CLEAR },
+          children: [new Paragraph({ children: [txt("Total Return", true)] })],
+        }),
+        new TableCell({
+          borders, width: { size: roiColW[1], type: WidthType.DXA }, margins: cellMargins,
+          shading: { fill: "F9F9F9", type: ShadingType.CLEAR },
+          children: [new Paragraph({ children: [txt(fmtDollar(data.totalReturn), true)] })],
+        }),
+      ],
+    }),
+    new TableRow({
+      children: [
+        new TableCell({
+          borders, width: { size: roiColW[0], type: WidthType.DXA }, margins: cellMargins,
+          shading: { fill: "F9F9F9", type: ShadingType.CLEAR },
+          children: [new Paragraph({ children: [txt("Total Cost", true)] })],
+        }),
+        new TableCell({
+          borders, width: { size: roiColW[1], type: WidthType.DXA }, margins: cellMargins,
+          shading: { fill: "F9F9F9", type: ShadingType.CLEAR },
+          children: [new Paragraph({ children: [txt(fmtDollar(costNum), true)] })],
+        }),
+      ],
+    }),
+    new TableRow({
+      children: [
+        new TableCell({
+          borders, width: { size: roiColW[0], type: WidthType.DXA }, margins: cellMargins,
+          shading: { fill: "EFEFEF", type: ShadingType.CLEAR },
+          children: [new Paragraph({ children: [txt("Multiple (Return ÷ Cost)", true)] })],
+        }),
+        new TableCell({
+          borders, width: { size: roiColW[1], type: WidthType.DXA }, margins: cellMargins,
+          shading: { fill: "EFEFEF", type: ShadingType.CLEAR },
+          children: [new Paragraph({ children: [txt(data.multiple || "—", true)] })],
+        }),
+      ],
+    }),
+  ];
 
   children.push(new Table({
     width: { size: 9360, type: WidthType.DXA },
     columnWidths: roiColW,
-    rows: [roiHeader, ...roiDataRows],
+    rows: [roiHeader, ...roiRows, ...totalsRows],
   }));
 
-  // Return Type & Key Assumptions
   children.push(new Paragraph({ spacing: { before: 200 }, children: [] }));
-  const rtLabel = isTemplate
-    ? "[Select: Revenue Uplift, Cost Reduction, Risk Mitigation, Time Saved, Other]"
-    : (data.returnTypes.length > 0 ? data.returnTypes.join(", ") : "—");
-  children.push(labelValue("Return Type: ", rtLabel));
+  children.push(labelValue("Payback Period: ", isTemplate ? "[e.g. 6 months]" : (data.paybackPeriod || "—")));
   children.push(new Paragraph({ spacing: { before: 120 }, children: [] }));
   children.push(labelValue("Key Assumptions: ", ""));
   children.push(bodyPara(isTemplate ? "[List key assumptions]" : (data.keyAssumptions || "—")));
 
-  // ── Section 4: Success Metrics ──
+  // ── Section 4 ──
   children.push(sectionHeading("4. Success Metrics"));
   const smColW = [2200, 1600, 1600, 1960, 2000];
   const smHeader = new TableRow({
@@ -212,9 +253,7 @@ function buildDoc(data: BriefFormData, isTemplate: boolean): Document {
   return new Document({
     styles: {
       default: {
-        document: {
-          run: { font: FONT, size: BODY_SIZE },
-        },
+        document: { run: { font: FONT, size: BODY_SIZE } },
       },
     },
     sections: [{
@@ -240,7 +279,8 @@ export async function downloadTemplate() {
     company: "", owner: "", date: "",
     investmentType: "", investmentTypeOther: "", totalAsk: "",
     problem: "", inScope: "", outOfScope: "",
-    roiRows: [], returnTypes: [], keyAssumptions: "",
+    returnTypeRows: [], totalReturn: 0, multiple: "—", paybackPeriod: "",
+    keyAssumptions: "",
     successRows: [],
   };
   const doc = buildDoc(emptyData, true);
