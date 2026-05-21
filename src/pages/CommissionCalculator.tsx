@@ -809,7 +809,7 @@ const CommissionCalculator: FC = () => {
 
         {/* Footer */}
         <div className="text-center py-4 text-[10px]" style={{ color: GREY_MID, borderTop: `1px solid ${SLATE}` }}>
-          Rhino Ventures · rhinovc.com · For informational purposes only. All figures in CAD.
+          Rhino Ventures · rhinovc.com · For informational purposes only.
         </div>
       </div>
     </div>
