@@ -7,7 +7,7 @@ interface PartnerRequest {
   created_at: string;
   user_email: string;
   company_name: string;
-  item_type: string;
+  item_type: string[];
   item_name: string;
   status: "pending" | "approved" | "denied";
   notes: string | null;
@@ -113,7 +113,7 @@ const RequestsAdmin: FC = () => {
                       {r.status}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-widest bg-secondary text-muted-foreground px-1.5 py-0.5 rounded">
-                      {r.item_type}
+                      {(Array.isArray(r.item_type) ? r.item_type : [r.item_type]).join(", ")}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">

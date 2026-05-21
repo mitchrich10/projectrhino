@@ -87,7 +87,7 @@ const RequestAccessButton: FC<{
         .from("partner_requests")
         .select("id")
         .eq("user_id", session.user.id)
-        .eq("item_type", itemType);
+        .contains("item_type", [itemType]);
       if (itemId) query.eq("item_id", itemId);
       const { data } = await query.maybeSingle();
       if (data) setStatus("requested");
