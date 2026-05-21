@@ -203,6 +203,33 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_log: {
+        Row: {
+          channel: string
+          created_at: string
+          error_message: string | null
+          id: string
+          request_id: string | null
+          status: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          request_id?: string | null
+          status: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          request_id?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       notification_subscriptions: {
         Row: {
           created_at: string
