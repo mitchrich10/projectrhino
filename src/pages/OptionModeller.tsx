@@ -565,7 +565,40 @@ const GrantCard: FC<{
                 ]}
               />
             </div>
+            {grant.cliffMonths > 0 && (
+              <div className="sm:col-span-2 lg:col-span-3">
+                <FieldLabel>
+                  Vesting Style
+                  <TooltipComp text="Cliff back-vest: at the cliff date you immediately vest the months already 'earned' (e.g. 24/60 = 40%), then monthly. Linear after cliff: 0% until the cliff, then ramps evenly from 0% to 100% across the remaining period." />
+                </FieldLabel>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {([
+                    { value: "cliff-bump", title: "Cliff back-vest (most common)", desc: `0% until cliff, then jumps to ${grant.vestYears > 0 ? Math.round((grant.cliffMonths / (grant.vestYears * 12)) * 100) : 0}%, then monthly` },
+                    { value: "linear-post-cliff", title: "Linear after cliff", desc: "0% until cliff, then ramps linearly to 100%" },
+                  ] as const).map((opt) => {
+                    const active = grant.vestingStyle === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => onChange({ vestingStyle: opt.value })}
+                        className="text-left rounded p-3 transition-all"
+                        style={{
+                          border: `1px solid ${active ? BLUE : SLATE}`,
+                          background: active ? `${BLUE}10` : "#fff",
+                          boxShadow: active ? `0 0 0 1px ${BLUE}` : "none",
+                        }}
+                      >
+                        <p className="text-xs font-semibold mb-0.5" style={{ color: active ? BLUE : NAVY }}>{opt.title}</p>
+                        <p className="text-[11px]" style={{ color: MUTED }}>{opt.desc}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
+
 
           <div className="mt-4 rounded p-3 flex flex-wrap gap-x-6 gap-y-1 text-xs" style={{ background: OFFWHITE, border: `1px solid ${SLATE}` }}>
             {vestedInfo.status === "pre-cliff" ? (
