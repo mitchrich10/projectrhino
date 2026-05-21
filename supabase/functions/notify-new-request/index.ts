@@ -42,6 +42,10 @@ serve(async (req: Request) => {
   try {
     const { request_id, company_name, user_email, item_type, item_name, notes } = await req.json();
     const requestId: string | null = request_id ?? null;
+    // Normalize item_type to a comma-separated capitalized label
+    const itemTypeLabel: string = Array.isArray(item_type)
+      ? item_type.map((t: string) => t.charAt(0).toUpperCase() + t.slice(1)).join(", ")
+      : String(item_type ?? "");
 
     // ---- AI partnership match (non-fatal) ----
     let aiMatchText = "";
