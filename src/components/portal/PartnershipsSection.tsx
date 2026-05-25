@@ -268,7 +268,7 @@ PartnershipTile.displayName = "PartnershipTile";
 
 // ── Coming Soon Placeholder ──
 const COMING_SOON_ITEMS = [
-  { name: "Outsourced CFO / Finance Partner", category: "Finance" },
+  { name: "Outsourced CFO + Bookkeeping", category: "Finance" },
   { name: "Marketing / Brand Agency", category: "Marketing" },
   { name: "Insurance Partner", category: "Insurance" },
   { name: "Benefits / Recruiting Partner", category: "HR & Benefits" },

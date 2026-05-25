@@ -23,7 +23,7 @@ interface Partnership {
   created_at: string;
 }
 
-const CATEGORIES = ["Cloud & Infrastructure", "Legal", "Finance", "HR & People", "Sales & Marketing", "Software Tools", "Other"];
+const CATEGORIES = ["Cloud", "Finance", "HR & Benefits", "Marketing", "Insurance", "Operations & Services", "Productivity", "Rhino Companies", "Swag & Merch", "Other"];
 
 const emptyForm = () => ({
   name: "",
@@ -290,13 +290,17 @@ const PartnershipsAdmin: FC = () => {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Category *</label>
-                <select
+                <input
+                  type="text"
+                  list="category-suggestions"
                   value={form.category}
                   onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
                   className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                >
-                  {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
+                  placeholder="e.g. Finance, Rhino Companies"
+                />
+                <datalist id="category-suggestions">
+                  {CATEGORIES.map((c) => <option key={c} value={c} />)}
+                </datalist>
               </div>
 
               <div>
