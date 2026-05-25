@@ -3,7 +3,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
-import { Loader2, LogOut, Menu, X, BookOpen, Handshake, Link2, Copy, Check, ChevronDown, Calculator } from "lucide-react";
+import { Loader2, LogOut, Menu, X, BookOpen, Handshake, Link2, Check, ChevronDown } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import { companyLogos } from "@/lib/companyLogos";
 import ResourcesSection from "@/components/portal/ResourcesSection";
