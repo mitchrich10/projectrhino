@@ -3,7 +3,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
-import { Loader2, LogOut, Menu, X, BookOpen, Handshake, Link2, Copy, Check, ChevronDown } from "lucide-react";
+import { Loader2, LogOut, Menu, X, BookOpen, Handshake, Link2, Copy, Check, ChevronDown, Calculator } from "lucide-react";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import { companyLogos } from "@/lib/companyLogos";
 import ResourcesSection from "@/components/portal/ResourcesSection";
@@ -277,8 +277,8 @@ const Portal: FC = () => {
               )}
             </div>
 
-            {/* Nav cards — only Partnerships and Resources */}
-            <div className="grid sm:grid-cols-2 gap-4 mt-8">
+            {/* Nav cards — Partnerships, Resources, Financing Guide */}
+            <div className="grid sm:grid-cols-3 gap-4 mt-8">
               <a
                 href="#partnerships"
                 className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-5 hover:bg-white/15 transition-all hover:shadow-lg group"
@@ -286,7 +286,7 @@ const Portal: FC = () => {
                 <Handshake className="w-5 h-5 text-[#1A7EC8] mb-3" />
                 <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Partnerships</p>
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Discounts, credits, and tools available to Crash companies — from cloud infrastructure to hiring platforms.
+                  Discounts, credits, and tools available to Crash companies — from cloud to hiring.
                 </p>
               </a>
               <a
@@ -296,14 +296,27 @@ const Portal: FC = () => {
                 <BookOpen className="w-5 h-5 text-[#1A7EC8] mb-3" />
                 <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Resources</p>
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Templates, guides, and vendor recommendations curated by Rhino — from legal docs to hiring frameworks.
+                  Templates, guides, and vendor recommendations curated by Rhino.
                 </p>
               </a>
+              <Link
+                to="/portal/financing-guide"
+                className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-5 hover:bg-white/15 transition-all hover:shadow-lg group"
+              >
+                <Calculator className="w-5 h-5 text-[#1A7EC8] mb-3" />
+                <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Financing Guide</p>
+                <p className="text-xs text-white/50 leading-relaxed">
+                  Tools and frameworks for raising — investor tracker, term sheet help, more.
+                </p>
+              </Link>
             </div>
           </div>
         </div>
 
         <div className="max-w-6xl mx-auto px-6 py-12 space-y-20">
+          {/* Notification banner — TOP of portal (J-017) */}
+          {userId && <NotificationBanner userId={userId} email={userEmail} />}
+
           {/* Onboarding — only for invited users or admins */}
           {showOnboarding && userId && (
             <FounderOnboardingWizard
@@ -315,9 +328,6 @@ const Portal: FC = () => {
               targetStep={shareTargetStep}
             />
           )}
-
-          {/* Notification banner — below onboarding, above partnerships */}
-          {userId && <NotificationBanner userId={userId} email={userEmail} />}
 
           <div id="partnerships">
             <PartnershipsSection />

@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigation } from "@/components/Navigation";
 import { Input } from "@/components/ui/input";
@@ -14,13 +14,15 @@ const RequestAccess: FC<Props> = ({ email }) => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
+  const [role, setRole] = useState("");
+  const [usageIntent, setUsageIntent] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !companyName.trim()) {
+    if (!name.trim() || !companyName.trim() || !role.trim() || !usageIntent.trim()) {
       setError("All fields are required.");
       return;
     }
@@ -28,19 +30,26 @@ const RequestAccess: FC<Props> = ({ email }) => {
     setError(null);
 
     try {
-      // Send notification email via edge function
-      await supabase.functions.invoke("request-access", {
+      const domain = email.split("@")[1];
+      const notes = [
+        `Name: ${name.trim()}`,
+        `Role: ${role.trim()}`,
+        `Intended use: ${usageIntent.trim()}`,
+      ].join("\n");
+
+      const res = await supabase.functions.invoke("request-access", {
         body: {
-          item_type: "domain_access",
+          item_type: ["access_request"],
           item_id: null,
-          item_name: `Domain access: ${email.split("@")[1]}`,
+          item_name: `Portal access: ${domain}`,
           company_name: companyName.trim(),
-          requester_name: name.trim(),
-          requester_email: email,
+          notes,
         },
       });
+      if (res.error) throw res.error;
       setSubmitted(true);
-    } catch {
+    } catch (err) {
+      console.error(err);
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -82,14 +91,10 @@ const RequestAccess: FC<Props> = ({ email }) => {
       <main className="flex-1 flex items-center justify-center px-6 py-32">
         <div className="w-full max-w-md">
           <div className="mb-8">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] mb-3">
-              Crash Portal
-            </p>
-            <h1 className="text-3xl font-bold text-[#173660] mb-3">
-              Request Access
-            </h1>
+            <p className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] mb-3">Crash Portal</p>
+            <h1 className="text-3xl font-bold text-[#173660] mb-3">Request Access</h1>
             <p className="text-sm text-[#5C6B7A] leading-relaxed">
-              Your domain isn't currently registered. If you're a Crash company and your team's domain has changed, request access below.
+              Your domain isn't currently registered. Tell us a bit about you and we'll review your request.
             </p>
           </div>
 
@@ -101,25 +106,29 @@ const RequestAccess: FC<Props> = ({ email }) => {
 
             <div className="space-y-2">
               <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A]">Your Name</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Jane Smith"
-                required
-                className="bg-white border-[#DDE4EC] focus:border-[#1A7EC8]"
-              />
+              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Smith" required className="bg-white border-[#DDE4EC] focus:border-[#1A7EC8]" />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="company" className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A]">Company Name</Label>
-              <Input
-                id="company"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                placeholder="Acme Inc."
+              <Input id="company" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Acme Inc." required className="bg-white border-[#DDE4EC] focus:border-[#1A7EC8]" />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="role" className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A]">Your Role</Label>
+              <Input id="role" value={role} onChange={(e) => setRole(e.target.value)} placeholder="Founder / CEO / Ops Lead" required className="bg-white border-[#DDE4EC] focus:border-[#1A7EC8]" />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="intent" className="text-xs font-bold uppercase tracking-widest text-[#5C6B7A]">How will you use the portal?</Label>
+              <textarea
+                id="intent"
+                value={usageIntent}
+                onChange={(e) => setUsageIntent(e.target.value)}
+                placeholder="e.g. Access AWS credits, browse fundraising templates, RSVP to events…"
                 required
-                className="bg-white border-[#DDE4EC] focus:border-[#1A7EC8]"
+                rows={3}
+                className="w-full bg-white border border-[#DDE4EC] focus:border-[#1A7EC8] rounded-md px-3 py-2 text-sm text-[#173660] focus:outline-none focus:ring-2 focus:ring-[#1A7EC8]/20"
               />
             </div>
 

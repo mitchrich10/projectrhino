@@ -20,16 +20,19 @@ const PartnerLogin: FC = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // If already logged in, redirect to portal
+  // If already logged in, redirect — admins to /admin, everyone else to /portal
   useEffect(() => {
+    const routeFor = (sessionEmail?: string | null) =>
+      sessionEmail?.toLowerCase().endsWith("@rhinovc.com") ? "/admin" : "/portal";
+
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate("/portal");
+      if (session) navigate(routeFor(session.user?.email));
     });
 
-    // Listen for magic link callback
+    // Listen for magic link / OAuth callback
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
-        navigate("/portal");
+        navigate(routeFor(session.user?.email));
       }
     });
 

@@ -1,10 +1,10 @@
 import { FC, useMemo, useState, useRef, useCallback } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { Link } from "react-router-dom";
-import { ArrowLeft, CalendarIcon, ChevronDown, ChevronUp, Info, Plus, Trash2, RotateCcw } from "lucide-react";
+import { CalendarIcon, ChevronDown, ChevronUp, Info, Plus, Trash2, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import SubPageHeader from "@/components/portal/SubPageHeader";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -794,28 +794,7 @@ const OptionModeller: FC = () => {
       style={{ background: OFFWHITE, fontFamily: "'Inter', 'DM Sans', system-ui, sans-serif" }}
     >
       {/* ── Header ── */}
-      <header className="fixed top-0 w-full z-50 border-b" style={{ background: "#fff", borderColor: SLATE }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
-          <Link to="/" className="flex items-center gap-2 select-none flex-shrink-0">
-            <span className="text-sm font-bold tracking-[0.2em] uppercase" style={{ color: NAVY }}>
-              Rhino Ventures
-            </span>
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <span className="hidden sm:block text-[11px] font-semibold uppercase tracking-widest" style={{ color: MUTED }}>
-              Option Modeller
-            </span>
-            <Link
-              to="/portal"
-              className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest transition-opacity hover:opacity-70"
-              style={{ color: BLUE }}
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Back to Portal</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <SubPageHeader maxWidth="max-w-7xl" />
 
       {/* ── Main ── */}
       <main className="flex-1 pt-20 pb-16 px-4 sm:px-6">
