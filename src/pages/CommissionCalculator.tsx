@@ -1,11 +1,11 @@
 import { FC, useMemo, useState } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { Link } from "react-router-dom";
 import {
-  ArrowLeft, AlertTriangle, TrendingUp, TrendingDown,
+  AlertTriangle, TrendingUp, TrendingDown,
   Minus, Download, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { downloadCommissionXLSX } from "@/lib/exportCommissionCalculator";
+import SubPageHeader from "@/components/portal/SubPageHeader";
 
 // ── Brand tokens ──────────────────────────────────────────────────────────────
 const NAVY     = "#173660";
@@ -352,31 +352,22 @@ const CommissionCalculator: FC = () => {
     <div className="min-h-screen" style={{ background: OFFWHITE, fontFamily: "'DM Sans','Inter',sans-serif" }}>
 
       {/* ── Top header ──────────────────────────────────────────────────────── */}
-      <header className="border-b" style={{ background: "#fff", borderColor: SLATE }}>
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <Link to="/" className="transition-opacity hover:opacity-70 flex-shrink-0" style={{ color: NAVY }}>
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
-            <div className="h-5 w-px flex-shrink-0" style={{ background: SLATE }} />
-            <span className="text-sm font-semibold uppercase tracking-[0.22em] truncate" style={{ color: NAVY }}>
-              Rhino Ventures
-            </span>
-          </div>
-          <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block" style={{ color: GREY_MID }}>
-            Commission Calculator
-          </span>
-          <button
-            onClick={handleDownload}
-            className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full transition-opacity hover:opacity-90 active:opacity-75 flex-shrink-0"
-            style={{ background: BLUE, color: "#fff" }}
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Download Excel</span>
-            <span className="sm:hidden">Excel</span>
-          </button>
-        </div>
-      </header>
+      <SubPageHeader maxWidth="max-w-7xl" />
+      <div className="h-16" />
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-end gap-3">
+        <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block" style={{ color: GREY_MID }}>
+          Commission Calculator
+        </span>
+        <button
+          onClick={handleDownload}
+          className="flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-full transition-opacity hover:opacity-90 active:opacity-75 flex-shrink-0"
+          style={{ background: BLUE, color: "#fff" }}
+        >
+          <Download className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Download Excel</span>
+          <span className="sm:hidden">Excel</span>
+        </button>
+      </div>
 
       <div className="max-w-[1400px] mx-auto p-4 sm:p-6 space-y-5">
 
