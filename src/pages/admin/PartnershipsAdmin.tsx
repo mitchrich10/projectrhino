@@ -81,6 +81,7 @@ const PartnershipsAdmin: FC = () => {
       description: p.description ?? "",
       logo_key: p.logo_key ?? "",
       logo_url: p.logo_url ?? "",
+      logo_path: p.logo_path ?? "",
       website_url: p.website_url ?? "",
       redemption_url: p.redemption_url ?? "",
       promo_code: p.promo_code ?? "",
