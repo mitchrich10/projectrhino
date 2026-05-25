@@ -312,11 +312,15 @@ const ResourcesSection: FC = () => {
       ]);
 
       setResources(data ?? []);
-      const approved = (approvedData ?? []) as { item_id: string; item_type: string }[];
-      setApprovedIds(new Set(approved.filter(r => r.item_type === "resource").map(r => r.item_id)));
+      const approved = (approvedData ?? []) as { item_id: string; item_type: string[] | string }[];
+      const itemTypesOf = (r: { item_type: string[] | string }): string[] =>
+        Array.isArray(r.item_type) ? r.item_type : r.item_type ? [r.item_type] : [];
+      setApprovedIds(new Set(approved.filter(r => itemTypesOf(r).includes("resource")).map(r => r.item_id)));
 
       // Check fundraising toolkit access
-      const hasFundraisingAccess = approved.some(r => r.item_type === "financing_guide");
+      const hasFundraisingAccess = approved.some(r =>
+        itemTypesOf(r).some(t => t === "financing_guide" || t === "fundraising")
+      );
 
       if (session?.user?.email) {
         const email = session.user.email;
