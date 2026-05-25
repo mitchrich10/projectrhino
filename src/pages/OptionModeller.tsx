@@ -795,7 +795,6 @@ const OptionModeller: FC = () => {
     >
       {/* ── Header ── */}
       <SubPageHeader maxWidth="max-w-7xl" />
-      {void ArrowLeft}
 
       {/* ── Main ── */}
       <main className="flex-1 pt-20 pb-16 px-4 sm:px-6">
