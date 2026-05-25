@@ -51,7 +51,9 @@ const PartnershipsAdmin: FC = () => {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const pdfInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { fetchPartnerships(); }, []);
 
@@ -189,7 +191,7 @@ const PartnershipsAdmin: FC = () => {
               <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">{category}</h3>
               <div className="space-y-2">
                 {items.map((p) => {
-                  const logoSrc = p.logo_key ? companyLogos[p.logo_key] : p.logo_url ?? null;
+                  const logoSrc = resolvePartnershipLogo(p);
                   return (
                     <div key={p.id} className="flex items-center gap-4 border border-border rounded-lg p-4 bg-secondary/10">
                       <div className="w-10 h-10 border border-border rounded flex items-center justify-center bg-background flex-shrink-0 p-1">
