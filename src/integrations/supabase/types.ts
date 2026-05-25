@@ -453,6 +453,7 @@ export type Database = {
           display_order: number
           id: string
           logo_key: string | null
+          logo_path: string | null
           logo_url: string | null
           name: string
           promo_code: string | null
@@ -471,6 +472,7 @@ export type Database = {
           display_order?: number
           id?: string
           logo_key?: string | null
+          logo_path?: string | null
           logo_url?: string | null
           name: string
           promo_code?: string | null
@@ -489,6 +491,7 @@ export type Database = {
           display_order?: number
           id?: string
           logo_key?: string | null
+          logo_path?: string | null
           logo_url?: string | null
           name?: string
           promo_code?: string | null

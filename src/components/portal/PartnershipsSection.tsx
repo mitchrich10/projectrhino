@@ -1,24 +1,11 @@
-import { FC, useEffect, useState } from "react";
+import { FC, memo, startTransition, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide-react";
-import { companyLogos } from "@/lib/companyLogos";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-import { generatePartnershipPdf } from "@/lib/generatePartnershipPdf";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
-
-import logoAws from "@/assets/logo-aws-activate.png";
-import logoMicrosoftStartups from "@/assets/logo-microsoft-startups.png";
-import logoGoogleCloud from "@/assets/logo-google-cloud.png";
-import logoCarta from "@/assets/logo-carta.png";
-import logoFloat from "@/assets/logo-float.png";
-import logoNotion from "@/assets/logo-notion.png";
-import logoDocsend from "@/assets/logo-docsend.png";
-import logoBoldhouse from "@/assets/logo-boldhouse.jpg";
-import logoPromosapien from "@/assets/logo-promosapien.jpg";
-import logoCmg from "@/assets/logo-cmg.webp";
-import logoStripe from "@/assets/logo-stripe.png";
+import PartnerLogoOrBadge from "@/components/portal/PartnerLogoOrBadge";
 
 interface Partnership {
   id: string;
@@ -28,6 +15,7 @@ interface Partnership {
   description: string | null;
   logo_key: string | null;
   logo_url: string | null;
+  logo_path: string | null;
   redemption_url: string | null;
   promo_code: string | null;
   display_order: number;
@@ -36,67 +24,6 @@ interface Partnership {
   applies_to: string | null;
   website_url: string | null;
 }
-
-const PARTNER_LOGOS: Record<string, string> = {
-  "AWS Activate": logoAws,
-  "Microsoft for Startups": logoMicrosoftStartups,
-  "Google Cloud": logoGoogleCloud,
-  Stripe: logoStripe,
-  Carta: logoCarta,
-  Float: logoFloat,
-  Notion: logoNotion,
-  DocSend: logoDocsend,
-  BoldHouse: logoBoldhouse,
-  Promosapien: logoPromosapien,
-  "CMG Inc.": logoCmg,
-  "Stem Health": companyLogos["stem-health"],
-  Article: companyLogos["article"],
-  "Twig Fertility": companyLogos["twig"],
-};
-
-// ── Logo renderer ──
-const PartnerLogo: FC<{
-  name: string;
-  logoKey?: string | null;
-  size?: "sm" | "lg";
-  onError?: () => void;
-}> = ({ name, logoKey, size = "sm", onError }) => {
-  const localLogo = logoKey ? companyLogos[logoKey] : null;
-  const partnerLogo = PARTNER_LOGOS[name];
-  const logoSrc = localLogo || partnerLogo;
-
-  if (logoSrc) {
-    const isCloudPartner = ["AWS Activate", "Microsoft for Startups", "Google Cloud"].includes(name);
-
-    return (
-      <img
-        src={logoSrc}
-        alt={name}
-        className="object-contain block mx-auto"
-        style={{
-          width: "100%",
-          maxHeight: size === "lg" ? "56px" : "48px",
-          maxWidth: "180px",
-          objectFit: "contain",
-        }}
-        onLoad={(event) => {
-          if (!isCloudPartner) return;
-          const img = event.currentTarget;
-          const rendered = img.getBoundingClientRect();
-          console.log("[PartnershipLogoMetrics]", {
-            partner: name,
-            naturalWidth: img.naturalWidth,
-            naturalHeight: img.naturalHeight,
-            renderedWidth: Math.round(rendered.width),
-            renderedHeight: Math.round(rendered.height),
-          });
-        }}
-        onError={onError}
-      />
-    );
-  }
-  return null;
-};
 
 // ── Request Access Button ──
 const RequestAccessButton: FC<{
@@ -156,15 +83,16 @@ const RequestAccessButton: FC<{
   );
 };
 
-// ── Slide-over Panel ──
+// ── Slide-over Panel (memoized) ──
 const PartnershipPanel: FC<{
   partnership: Partnership;
   companyName: string;
   isApproved: boolean;
   open: boolean;
   onClose: () => void;
-}> = ({ partnership, companyName, isApproved, open, onClose }) => {
+}> = memo(({ partnership, companyName, isApproved, open, onClose }) => {
   const [copied, setCopied] = useState(false);
+  const [downloading, setDownloading] = useState(false);
 
   const copyCode = async () => {
     if (!partnership.promo_code) return;
@@ -195,37 +123,47 @@ const PartnershipPanel: FC<{
     }
   })();
 
-  const handleDownload = () => {
+  // F-004: lazy-load jsPDF only when user actually clicks Download
+  const handleDownload = async () => {
     trackPortalEvent("partnership_download", partnership.name, partnership.id);
     if (partnership.detail_pdf_url) {
       window.open(partnership.detail_pdf_url, "_blank");
-    } else {
+      return;
+    }
+    setDownloading(true);
+    try {
+      const { generatePartnershipPdf } = await import("@/lib/generatePartnershipPdf");
       generatePartnershipPdf(partnership);
+    } finally {
+      setDownloading(false);
     }
   };
 
   return (
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-        {/* Header */}
         <div className="relative px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
           {!locked && (
             <button
               type="button"
               onClick={handleDownload}
-              className="absolute top-4 right-12 text-[#5C6B7A] hover:text-[#1A7EC8] transition-colors"
+              disabled={downloading}
+              className="absolute top-4 right-12 text-[#5C6B7A] hover:text-[#1A7EC8] transition-colors disabled:opacity-50"
               title="Download details"
               aria-label="Download details"
             >
-              <Download className="w-4 h-4" />
+              {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             </button>
           )}
           <div className="flex flex-col items-start gap-3">
-            <PartnerLogo name={partnership.name} logoKey={partnership.logo_key} size="lg" />
-            {/* Show name only if no logo */}
-            {!PARTNER_LOGOS[partnership.name] && !(partnership.logo_key && companyLogos[partnership.logo_key]) && (
-              <h2 className="text-xl font-semibold text-[#173660]">{partnership.name}</h2>
-            )}
+            <PartnerLogoOrBadge
+              name={partnership.name}
+              logo_path={partnership.logo_path}
+              logo_url={partnership.logo_url}
+              logo_key={partnership.logo_key}
+              size="lg"
+            />
+            <h2 className="text-xl font-semibold text-[#173660]">{partnership.name}</h2>
             <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
               {partnership.category}
             </Badge>
@@ -235,7 +173,6 @@ const PartnershipPanel: FC<{
           )}
         </div>
 
-        {/* Body */}
         <div className="px-6 py-6 space-y-6">
           {locked ? (
             <div className="border border-[#DDE4EC] rounded-lg p-5 bg-[#F4F7FA] text-center space-y-3">
@@ -278,7 +215,6 @@ const PartnershipPanel: FC<{
           )}
         </div>
 
-        {/* Footer actions */}
         {!locked && partnership.redemption_url && (() => {
           const isMailto = /^mailto:/i.test(partnership.redemption_url);
           return (
@@ -297,50 +233,42 @@ const PartnershipPanel: FC<{
       </SheetContent>
     </Sheet>
   );
-};
+});
+PartnershipPanel.displayName = "PartnershipPanel";
 
-// ── Partnership Tile ──
-const PartnershipTile: FC<{ partnership: Partnership; onClick: () => void }> = ({ partnership, onClick }) => {
-  const [logoFailed, setLogoFailed] = useState(false);
-  const hasLogo = !!(
-    (partnership.logo_key && companyLogos[partnership.logo_key]) ||
-    PARTNER_LOGOS[partnership.name]
-  );
-
-  return (
-    <button
-      onClick={onClick}
-      className="group relative flex flex-col items-center justify-center rounded-lg bg-white border border-[#DDE4EC] hover:border-[#1A7EC8] transition-all duration-200 w-full"
-      style={{
-        height: "140px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-        fontFamily: "'DM Sans', sans-serif",
-      }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 12px rgba(0,0,0,0.12)"; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.08)"; }}
-    >
-      <div className="h-[100px] w-full flex items-center justify-center px-4">
-        {hasLogo && !logoFailed ? (
-          <PartnerLogo
+// ── Partnership Tile (memoized) ──
+const PartnershipTile = memo<{ partnership: Partnership; onClick: () => void }>(
+  ({ partnership, onClick }) => {
+    return (
+      <button
+        onClick={onClick}
+        className="group relative flex flex-col items-center justify-center rounded-lg bg-white border border-[#DDE4EC] hover:border-[#1A7EC8] hover:shadow-md transition-all duration-200 w-full"
+        style={{
+          height: 140,
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+          fontFamily: "'DM Sans', sans-serif",
+        }}
+      >
+        <div className="h-[100px] w-full flex items-center justify-center px-4">
+          <PartnerLogoOrBadge
             name={partnership.name}
-            logoKey={partnership.logo_key}
-            onError={() => setLogoFailed(true)}
+            logo_path={partnership.logo_path}
+            logo_url={partnership.logo_url}
+            logo_key={partnership.logo_key}
           />
-        ) : (
-          <span className="text-base font-semibold text-[#173660]">{partnership.name}</span>
+        </div>
+        {partnership.approval_required && (
+          <Lock className="w-3 h-3 text-[#5C6B7A]/40 absolute top-3 right-3" />
         )}
-      </div>
+      </button>
+    );
+  }
+);
+PartnershipTile.displayName = "PartnershipTile";
 
-      {partnership.approval_required && (
-        <Lock className="w-3 h-3 text-[#5C6B7A]/40 absolute top-3 right-3" />
-      )}
-    </button>
-  );
-};
-
-// ── Coming Soon Placeholder Tile ──
+// ── Coming Soon Placeholder ──
 const COMING_SOON_ITEMS = [
-  { name: "Outsourced CFO / Finance Partner", category: "Finance & Accounting" },
+  { name: "Outsourced CFO / Finance Partner", category: "Finance" },
   { name: "Marketing / Brand Agency", category: "Marketing" },
   { name: "Insurance Partner", category: "Insurance" },
   { name: "Benefits Partner", category: "HR & Benefits" },
@@ -349,10 +277,7 @@ const COMING_SOON_ITEMS = [
 const ComingSoonTile: FC<{ name: string }> = ({ name }) => (
   <div
     className="relative flex flex-col items-center justify-center rounded-lg bg-[#F4F7FA] border border-dashed border-[#CDD8E3] w-full"
-    style={{
-      height: "140px",
-      fontFamily: "'DM Sans', sans-serif",
-    }}
+    style={{ height: 140, fontFamily: "'DM Sans', sans-serif" }}
   >
     <span className="text-sm font-semibold text-[#5C6B7A] text-center px-4 mb-2">{name}</span>
     <span className="text-[9px] font-bold uppercase tracking-widest text-[#5C6B7A]/60 bg-[#CDD8E3]/40 px-2 py-0.5 rounded">
@@ -361,7 +286,6 @@ const ComingSoonTile: FC<{ name: string }> = ({ name }) => (
   </div>
 );
 
-// ── Grid helper ──
 const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
 // ── Main Section ──
@@ -393,11 +317,20 @@ const PartnershipsSection: FC = () => {
     init();
   }, []);
 
-  const grouped = partnerships.reduce<Record<string, Partnership[]>>((acc, p) => {
-    (acc[p.category] = acc[p.category] ?? []).push(p);
-    return acc;
-  }, {});
-  const categories = Object.keys(grouped).sort();
+  const { grouped, categories, extraComingSoonByCategory } = useMemo(() => {
+    const grouped = partnerships.reduce<Record<string, Partnership[]>>((acc, p) => {
+      (acc[p.category] = acc[p.category] ?? []).push(p);
+      return acc;
+    }, {});
+    const categories = Object.keys(grouped).sort();
+    const extra: Record<string, { name: string }[]> = {};
+    for (const cs of COMING_SOON_ITEMS) {
+      if (!categories.includes(cs.category)) {
+        (extra[cs.category] = extra[cs.category] ?? []).push({ name: cs.name });
+      }
+    }
+    return { grouped, categories, extraComingSoonByCategory: extra };
+  }, [partnerships]);
 
   return (
     <section id="partnerships">
@@ -416,7 +349,6 @@ const PartnershipsSection: FC = () => {
         <div className="space-y-8">
           {categories.map((category) => {
             const items = grouped[category];
-            // Find coming soon items for this category
             const comingSoon = COMING_SOON_ITEMS.filter((cs) => cs.category === category);
             return (
               <div key={category}>
@@ -426,10 +358,15 @@ const PartnershipsSection: FC = () => {
                 </div>
                 <div className={GRID_CLASSES}>
                   {items.map((p) => (
-                    <PartnershipTile key={p.id} partnership={p} onClick={() => {
-                      trackPortalEvent("partnership_click", p.name, p.id);
-                      setSelected(p);
-                    }} />
+                    <PartnershipTile
+                      key={p.id}
+                      partnership={p}
+                      onClick={() => {
+                        trackPortalEvent("partnership_click", p.name, p.id);
+                        // F-004: defer the state update so the click handler returns immediately
+                        startTransition(() => setSelected(p));
+                      }}
+                    />
                   ))}
                   {comingSoon.map((cs) => (
                     <ComingSoonTile key={cs.name} name={cs.name} />
@@ -438,28 +375,19 @@ const PartnershipsSection: FC = () => {
               </div>
             );
           })}
-          {/* Render coming-soon categories that don't have any existing partnerships */}
-          {COMING_SOON_ITEMS
-            .filter((cs) => !categories.includes(cs.category))
-            .reduce<{ category: string; items: typeof COMING_SOON_ITEMS }[]>((acc, cs) => {
-              const existing = acc.find((g) => g.category === cs.category);
-              if (existing) existing.items.push(cs);
-              else acc.push({ category: cs.category, items: [cs] });
-              return acc;
-            }, [])
-            .map(({ category, items }) => (
-              <div key={category}>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-1 h-5 rounded-full bg-[#1A7EC8]" />
-                  <p className="text-sm font-bold uppercase tracking-widest text-[#173660]">{category}</p>
-                </div>
-                <div className={GRID_CLASSES}>
-                  {items.map((cs) => (
-                    <ComingSoonTile key={cs.name} name={cs.name} />
-                  ))}
-                </div>
+          {Object.entries(extraComingSoonByCategory).map(([category, items]) => (
+            <div key={category}>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-1 h-5 rounded-full bg-[#1A7EC8]" />
+                <p className="text-sm font-bold uppercase tracking-widest text-[#173660]">{category}</p>
               </div>
-            ))}
+              <div className={GRID_CLASSES}>
+                {items.map((cs) => (
+                  <ComingSoonTile key={cs.name} name={cs.name} />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

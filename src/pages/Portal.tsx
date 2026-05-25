@@ -300,13 +300,13 @@ const Portal: FC = () => {
                 </p>
               </a>
               <Link
-                to="/portal/financing-guide"
+                to="/fundraising"
                 className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-5 hover:bg-white/15 transition-all hover:shadow-lg group"
               >
                 <Calculator className="w-5 h-5 text-[#1A7EC8] mb-3" />
-                <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Financing Guide</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Fundraising</p>
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Tools and frameworks for raising — investor tracker, term sheet help, more.
+                  Guides, trackers, and templates for founders preparing for a financing round.
                 </p>
               </Link>
             </div>
