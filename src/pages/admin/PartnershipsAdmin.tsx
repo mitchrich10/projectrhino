@@ -321,9 +321,56 @@ const PartnershipsAdmin: FC = () => {
                 />
               </div>
 
+              {/* Self-hosted Logo Upload (preferred) */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">
+                  Logo Upload (PNG / SVG / JPG)
+                </label>
+                <div className="flex items-center gap-3">
+                  <div className="w-16 h-16 border border-border rounded-lg flex items-center justify-center bg-background flex-shrink-0 overflow-hidden">
+                    {resolvePartnershipLogo({ logo_path: form.logo_path, logo_url: form.logo_url, logo_key: form.logo_key }) ? (
+                      <img
+                        src={resolvePartnershipLogo({ logo_path: form.logo_path, logo_url: form.logo_url, logo_key: form.logo_key })!}
+                        alt="preview"
+                        className="max-h-14 max-w-[56px] object-contain"
+                      />
+                    ) : (
+                      <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <input ref={logoInputRef} type="file" accept=".png,.svg,.jpg,.jpeg,.webp" onChange={handleLogoUpload} className="hidden" />
+                    <button
+                      type="button"
+                      onClick={() => logoInputRef.current?.click()}
+                      disabled={uploadingLogo}
+                      className="flex items-center gap-2 text-xs font-semibold text-muted-foreground border border-border rounded-lg px-3 py-2 hover:bg-secondary/30 transition-colors disabled:opacity-50"
+                    >
+                      {uploadingLogo ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                      {uploadingLogo ? "Uploading…" : form.logo_path ? "Replace logo" : "Upload logo"}
+                    </button>
+                    {form.logo_path && (
+                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                        <span className="truncate flex-1">{form.logo_path}</span>
+                        <button
+                          type="button"
+                          onClick={() => setForm((f) => ({ ...f, logo_path: "" }))}
+                          className="text-red-500 hover:text-red-700 flex-shrink-0"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1.5">
+                  Self-hosted via the partnership-logos bucket. Falls back to a circular letter badge if none provided.
+                </p>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Logo Key</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Logo Key (Rhino portfolio)</label>
                   <select
                     value={form.logo_key}
                     onChange={(e) => setForm((f) => ({ ...f, logo_key: e.target.value }))}
@@ -334,7 +381,7 @@ const PartnershipsAdmin: FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Or Logo URL</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">External Logo URL (fallback)</label>
                   <input
                     type="url"
                     value={form.logo_url}
