@@ -62,7 +62,8 @@ serve(async (req: Request) => {
 
     // Send notification email to the partner
     if (RESEND_API_KEY) {
-      const section = request.item_type === "resource" ? "resources" : request.item_type === "partnership" ? "partnerships" : "resources";
+      const types: string[] = Array.isArray(request.item_type) ? request.item_type : request.item_type ? [request.item_type] : [];
+      const section = types.includes("partnership") ? "partnerships" : "resources";
       const portalUrl = `https://projectrhino.lovable.app/portal#${section}`;
       const approved = status === "approved";
 
