@@ -1,8 +1,9 @@
 import { FC, useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Plus, Pencil, Trash2, X, Upload, ExternalLink, Lock } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, X, Upload, ExternalLink, Lock, Image as ImageIcon } from "lucide-react";
 import { companyLogos } from "@/lib/companyLogos";
 import { Switch } from "@/components/ui/switch";
+import { resolvePartnershipLogo } from "@/lib/partnershipLogo";
 
 interface Partnership {
   id: string;
@@ -12,6 +13,7 @@ interface Partnership {
   description: string | null;
   logo_key: string | null;
   logo_url: string | null;
+  logo_path: string | null;
   website_url: string | null;
   redemption_url: string | null;
   promo_code: string | null;
