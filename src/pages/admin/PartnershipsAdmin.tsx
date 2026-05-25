@@ -121,6 +121,7 @@ const PartnershipsAdmin: FC = () => {
       description: form.description?.trim() || null,
       logo_key: form.logo_key?.trim() || null,
       logo_url: form.logo_url?.trim() || null,
+      logo_path: form.logo_path?.trim() || null,
       website_url: form.website_url?.trim() || null,
       redemption_url: form.redemption_url?.trim() || null,
       promo_code: form.promo_code?.trim() || null,
