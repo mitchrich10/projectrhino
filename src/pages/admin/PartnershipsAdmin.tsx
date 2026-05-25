@@ -111,6 +111,29 @@ const PartnershipsAdmin: FC = () => {
     setUploading(false);
   };
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!/\.(png|jpe?g|svg|webp)$/i.test(file.name)) {
+      setError("Logo must be PNG, JPG, SVG, or WebP.");
+      return;
+    }
+    setUploadingLogo(true);
+    setError(null);
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    const filePath = `${Date.now()}-${safeName}`;
+    const { error: uploadError } = await supabase.storage
+      .from("partnership-logos")
+      .upload(filePath, file, { upsert: true, contentType: file.type });
+    if (uploadError) {
+      setError(`Logo upload failed: ${uploadError.message}`);
+      setUploadingLogo(false);
+      return;
+    }
+    setForm((f) => ({ ...f, logo_path: filePath, logo_url: "" }));
+    setUploadingLogo(false);
+  };
+
   const handleSave = async () => {
     if (!form.name.trim()) { setError("Name is required."); return; }
     setSaving(true);
