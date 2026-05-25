@@ -277,8 +277,8 @@ const Portal: FC = () => {
               )}
             </div>
 
-            {/* Nav cards — Partnerships, Resources, Financing Guide */}
-            <div className="grid sm:grid-cols-3 gap-4 mt-8">
+            {/* Nav cards — Partnerships, Resources */}
+            <div className="grid sm:grid-cols-2 gap-4 mt-8">
               <a
                 href="#partnerships"
                 className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-5 hover:bg-white/15 transition-all hover:shadow-lg group"
@@ -296,19 +296,9 @@ const Portal: FC = () => {
                 <BookOpen className="w-5 h-5 text-[#1A7EC8] mb-3" />
                 <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Resources</p>
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Templates, guides, and vendor recommendations curated by Rhino.
+                  Templates, guides, and vendor recommendations curated by Rhino. Includes the Fundraising toolkit.
                 </p>
               </a>
-              <Link
-                to="/fundraising"
-                className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl p-5 hover:bg-white/15 transition-all hover:shadow-lg group"
-              >
-                <Calculator className="w-5 h-5 text-[#1A7EC8] mb-3" />
-                <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Fundraising</p>
-                <p className="text-xs text-white/50 leading-relaxed">
-                  Guides, trackers, and templates for founders preparing for a financing round.
-                </p>
-              </Link>
             </div>
           </div>
         </div>
