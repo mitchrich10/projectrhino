@@ -425,16 +425,11 @@ const PartnershipsAdmin: FC = () => {
                 <p className="text-[10px] text-muted-foreground mt-1">Displayed as the domain link in the detail panel.</p>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Redemption URL</label>
-                <input
-                  type="url"
-                  value={form.redemption_url}
-                  onChange={(e) => setForm((f) => ({ ...f, redemption_url: e.target.value }))}
-                  className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                  placeholder="https://partner.com/redeem"
-                />
-              </div>
+              <RedemptionField
+                value={form.redemption_url}
+                onChange={(v) => setForm((f) => ({ ...f, redemption_url: v }))}
+              />
+
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Promo Code</label>
