@@ -27,7 +27,7 @@ const CATEGORIES = ["Cloud", "Finance", "HR & Benefits", "Marketing", "Insurance
 
 const emptyForm = () => ({
   name: "",
-  category: "Cloud & Infrastructure",
+  category: "Cloud",
   tagline: "",
   description: "",
   logo_key: "",
@@ -40,6 +40,98 @@ const emptyForm = () => ({
   approval_required: false,
   detail_pdf_url: "",
 });
+
+const DEFAULT_MAIL_SUBJECT = "Rhino Portfolio Partnership Inquiry";
+
+const parseMailto = (url: string): { email: string; subject: string } | null => {
+  if (!url || !/^mailto:/i.test(url)) return null;
+  const rest = url.replace(/^mailto:/i, "");
+  const [email, query = ""] = rest.split("?");
+  const params = new URLSearchParams(query);
+  return { email: decodeURIComponent(email || ""), subject: params.get("subject") ?? "" };
+};
+
+const buildMailto = (email: string, subject: string): string => {
+  const trimmedEmail = email.trim();
+  if (!trimmedEmail) return "";
+  const subj = (subject || DEFAULT_MAIL_SUBJECT).trim();
+  return `mailto:${trimmedEmail}?subject=${encodeURIComponent(subj)}`;
+};
+
+const RedemptionField: FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
+  const parsed = parseMailto(value);
+  const [mode, setMode] = useState<"url" | "email">(parsed ? "email" : "url");
+  const [email, setEmail] = useState(parsed?.email ?? "");
+  const [subject, setSubject] = useState(parsed?.subject ?? DEFAULT_MAIL_SUBJECT);
+
+  const switchMode = (next: "url" | "email") => {
+    setMode(next);
+    if (next === "url") {
+      // clear mailto so URL field starts blank if it was a mailto
+      if (/^mailto:/i.test(value)) onChange("");
+    } else {
+      onChange(buildMailto(email, subject));
+    }
+  };
+
+  const updateEmail = (v: string) => {
+    setEmail(v);
+    onChange(buildMailto(v, subject));
+  };
+  const updateSubject = (v: string) => {
+    setSubject(v);
+    onChange(buildMailto(email, v));
+  };
+
+  return (
+    <div>
+      <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Redemption Method</label>
+      <div className="flex gap-2 mb-2">
+        {(["url", "email"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => switchMode(m)}
+            className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded border transition-colors ${
+              mode === m
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-background text-muted-foreground border-border hover:bg-secondary/30"
+            }`}
+          >
+            {m === "url" ? "URL Link" : "Email"}
+          </button>
+        ))}
+      </div>
+      {mode === "url" ? (
+        <input
+          type="url"
+          value={/^mailto:/i.test(value) ? "" : value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          placeholder="https://partner.com/redeem"
+        />
+      ) : (
+        <div className="space-y-2">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => updateEmail(e.target.value)}
+            className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="lisa@partner.com"
+          />
+          <input
+            type="text"
+            value={subject}
+            onChange={(e) => updateSubject(e.target.value)}
+            className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="Email subject line"
+          />
+          <p className="text-[10px] text-muted-foreground">Portal button will open the user's mail client with this address and subject pre-filled.</p>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const PartnershipsAdmin: FC = () => {
   const [partnerships, setPartnerships] = useState<Partnership[]>([]);
@@ -408,16 +500,11 @@ const PartnershipsAdmin: FC = () => {
                 <p className="text-[10px] text-muted-foreground mt-1">Displayed as the domain link in the detail panel.</p>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Redemption URL</label>
-                <input
-                  type="url"
-                  value={form.redemption_url}
-                  onChange={(e) => setForm((f) => ({ ...f, redemption_url: e.target.value }))}
-                  className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                  placeholder="https://partner.com/redeem"
-                />
-              </div>
+              <RedemptionField
+                value={form.redemption_url}
+                onChange={(v) => setForm((f) => ({ ...f, redemption_url: v }))}
+              />
+
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Promo Code</label>
