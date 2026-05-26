@@ -2,6 +2,7 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import SubPageHeader from "@/components/portal/SubPageHeader";
 import {
   Download,
