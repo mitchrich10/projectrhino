@@ -58,6 +58,81 @@ const buildMailto = (email: string, subject: string): string => {
   return `mailto:${trimmedEmail}?subject=${encodeURIComponent(subj)}`;
 };
 
+const RedemptionField: FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
+  const parsed = parseMailto(value);
+  const [mode, setMode] = useState<"url" | "email">(parsed ? "email" : "url");
+  const [email, setEmail] = useState(parsed?.email ?? "");
+  const [subject, setSubject] = useState(parsed?.subject ?? DEFAULT_MAIL_SUBJECT);
+
+  const switchMode = (next: "url" | "email") => {
+    setMode(next);
+    if (next === "url") {
+      // clear mailto so URL field starts blank if it was a mailto
+      if (/^mailto:/i.test(value)) onChange("");
+    } else {
+      onChange(buildMailto(email, subject));
+    }
+  };
+
+  const updateEmail = (v: string) => {
+    setEmail(v);
+    onChange(buildMailto(v, subject));
+  };
+  const updateSubject = (v: string) => {
+    setSubject(v);
+    onChange(buildMailto(email, v));
+  };
+
+  return (
+    <div>
+      <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Redemption Method</label>
+      <div className="flex gap-2 mb-2">
+        {(["url", "email"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => switchMode(m)}
+            className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded border transition-colors ${
+              mode === m
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-background text-muted-foreground border-border hover:bg-secondary/30"
+            }`}
+          >
+            {m === "url" ? "URL Link" : "Email"}
+          </button>
+        ))}
+      </div>
+      {mode === "url" ? (
+        <input
+          type="url"
+          value={/^mailto:/i.test(value) ? "" : value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          placeholder="https://partner.com/redeem"
+        />
+      ) : (
+        <div className="space-y-2">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => updateEmail(e.target.value)}
+            className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="lisa@partner.com"
+          />
+          <input
+            type="text"
+            value={subject}
+            onChange={(e) => updateSubject(e.target.value)}
+            className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            placeholder="Email subject line"
+          />
+          <p className="text-[10px] text-muted-foreground">Portal button will open the user's mail client with this address and subject pre-filled.</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const PartnershipsAdmin: FC = () => {
   const [partnerships, setPartnerships] = useState<Partnership[]>([]);
   const [loading, setLoading] = useState(true);
