@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import PartnerLogoOrBadge from "@/components/portal/PartnerLogoOrBadge";
 
