@@ -9,6 +9,7 @@ import { Plus, Trash2, FileDown, FileText, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { exportBrief, downloadTemplate, type BriefFormData } from "@/lib/exportInvestmentBrief";
 import { useToast } from "@/hooks/use-toast";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const INVESTMENT_TYPES = ["R&D", "Hiring", "Marketing", "Capex", "Partnership", "Other"];
 const RETURN_TYPES = ["Revenue Uplift", "Cost Reduction", "Risk Mitigation", "Time Saved", "Other"];
@@ -25,6 +26,7 @@ const fmtDollar = (n: number) =>
   n.toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function InvestmentBriefBuilder() {
+  usePageTitle("Project Proposal Builder | Rhino Partner Portal");
   const navigate = useNavigate();
   const { toast } = useToast();
 

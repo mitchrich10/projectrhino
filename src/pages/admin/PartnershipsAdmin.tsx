@@ -41,7 +41,7 @@ const emptyForm = () => ({
   detail_pdf_url: "",
 });
 
-const DEFAULT_MAIL_SUBJECT = "Rhino Portfolio Partnership Inquiry";
+const DEFAULT_MAIL_SUBJECT = "Rhino Ventures Partnership Inquiry";
 
 const parseMailto = (url: string): { email: string; subject: string } | null => {
   if (!url || !/^mailto:/i.test(url)) return null;
@@ -228,6 +228,19 @@ const PartnershipsAdmin: FC = () => {
 
   const handleSave = async () => {
     if (!form.name.trim()) { setError("Name is required."); return; }
+
+    // Safety net: detect an email-looking value saved into the URL field.
+    // Mailto links are fine; bare-host URLs with `@` (e.g. "https://name@domain.com")
+    // get parsed as basic-auth credentials by browsers and silently break the redeem button.
+    const redemption = form.redemption_url?.trim() ?? "";
+    if (redemption && !/^mailto:/i.test(redemption) && redemption.includes("@")) {
+      setError(
+        'This redemption URL contains "@", which looks like an email. ' +
+        'Switch the Redemption Method to "Email", or remove the "@" to save as a URL.'
+      );
+      return;
+    }
+
     setSaving(true);
     setError(null);
 
