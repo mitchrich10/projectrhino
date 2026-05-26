@@ -27,7 +27,7 @@ const CATEGORIES = ["Cloud", "Finance", "HR & Benefits", "Marketing", "Insurance
 
 const emptyForm = () => ({
   name: "",
-  category: "Cloud & Infrastructure",
+  category: "Cloud",
   tagline: "",
   description: "",
   logo_key: "",
@@ -40,6 +40,23 @@ const emptyForm = () => ({
   approval_required: false,
   detail_pdf_url: "",
 });
+
+const DEFAULT_MAIL_SUBJECT = "Rhino Portfolio Partnership Inquiry";
+
+const parseMailto = (url: string): { email: string; subject: string } | null => {
+  if (!url || !/^mailto:/i.test(url)) return null;
+  const rest = url.replace(/^mailto:/i, "");
+  const [email, query = ""] = rest.split("?");
+  const params = new URLSearchParams(query);
+  return { email: decodeURIComponent(email || ""), subject: params.get("subject") ?? "" };
+};
+
+const buildMailto = (email: string, subject: string): string => {
+  const trimmedEmail = email.trim();
+  if (!trimmedEmail) return "";
+  const subj = (subject || DEFAULT_MAIL_SUBJECT).trim();
+  return `mailto:${trimmedEmail}?subject=${encodeURIComponent(subj)}`;
+};
 
 const PartnershipsAdmin: FC = () => {
   const [partnerships, setPartnerships] = useState<Partnership[]>([]);
