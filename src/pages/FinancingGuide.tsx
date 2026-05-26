@@ -367,6 +367,7 @@ const ResourceCard: FC<{
 /* ── Main Page ─────────────────────────────────────────────── */
 
 const FinancingGuide: FC = () => {
+  usePageTitle("Fundraising Toolkit | Rhino Partner Portal");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<CompanyInfo | null>(null);
