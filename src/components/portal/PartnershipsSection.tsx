@@ -139,6 +139,9 @@ const PartnershipPanel: FC<{
     }
   };
 
+  const isMailto = partnership.redemption_url ? /^mailto:/i.test(partnership.redemption_url) : false;
+  const actionLabel = isMailto ? `Email ${partnership.name} for an Intro` : "Redeem Offer";
+
   return (
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
@@ -163,25 +166,39 @@ const PartnershipPanel: FC<{
               logo_key={partnership.logo_key}
               size="lg"
             />
-            <h2 className="text-xl font-semibold text-[#173660]">{partnership.name}</h2>
-            <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
-              {partnership.category}
-            </Badge>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#5C6B7A]" aria-label={partnership.name}>
+              {partnership.name} · {partnership.category}
+            </p>
           </div>
           {partnership.tagline && (
-            <p className="text-sm text-[#5C6B7A] mt-3">{partnership.tagline}</p>
+            <p className="text-base font-semibold text-[#173660] mt-3 leading-snug">{partnership.tagline}</p>
           )}
         </div>
 
-        <div className="px-6 py-6 space-y-6">
-          {locked ? (
+        {locked ? (
+          <div className="px-6 py-6">
             <div className="border border-[#DDE4EC] rounded-lg p-5 bg-[#F4F7FA] text-center space-y-3">
               <Lock className="w-5 h-5 text-[#5C6B7A] mx-auto" />
               <p className="text-sm text-[#5C6B7A]">Access to this partnership requires approval from the Rhino Ventures team.</p>
               <RequestAccessButton itemId={partnership.id} itemName={partnership.name} itemType="partnership" companyName={companyName} />
             </div>
-          ) : (
-            <>
+          </div>
+        ) : (
+          <>
+            {partnership.redemption_url && (
+              <div className="px-6 pt-5">
+                <a
+                  href={normalizeUrl(partnership.redemption_url)}
+                  {...(isMailto ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+                  className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+                >
+                  {actionLabel}{" "}
+                  {isMailto ? <Mail className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
+                </a>
+              </div>
+            )}
+
+            <div className="px-6 py-6 space-y-6">
               {websiteHref && websiteDomain && (
                 <a
                   href={websiteHref}
@@ -211,25 +228,9 @@ const PartnershipPanel: FC<{
                   </div>
                 </div>
               )}
-            </>
-          )}
-        </div>
-
-        {!locked && partnership.redemption_url && (() => {
-          const isMailto = /^mailto:/i.test(partnership.redemption_url);
-          return (
-            <div className="px-6 py-5 border-t border-[#DDE4EC]">
-              <a
-                href={normalizeUrl(partnership.redemption_url)}
-                {...(isMailto ? {} : { target: "_blank", rel: "noopener noreferrer" })}
-                className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
-              >
-                {isMailto ? "Contact Partner" : "Redeem Offer"}{" "}
-                {isMailto ? <Mail className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
-              </a>
             </div>
-          );
-        })()}
+          </>
+        )}
       </SheetContent>
     </Sheet>
   );
