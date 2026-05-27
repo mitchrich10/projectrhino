@@ -118,10 +118,9 @@ serve(async (req: Request) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          // BAND-AID: rhinovc.com domain not yet verified in Resend; route all sends to mitch@ until verified.
-          from: "Rhino Ventures <onboarding@resend.dev>",
-          to: ["mitch@rhinovc.com"],
-          subject: `(intended: ${trimmedEmails.join(", ")}) Welcome to the Crash — Rhino Ventures`,
+          from: "Rhino Ventures Portal <portal@rhinovc.com>",
+          to: trimmedEmails,
+          subject: `Welcome to the Crash — Rhino Ventures`,
           html: emailHtml,
         }),
       });

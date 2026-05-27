@@ -108,15 +108,13 @@ serve(async (req) => {
       </ul>
     `;
 
-    const intendedRecipients = recipients.join(", ");
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Authorization": `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        // BAND-AID: rhinovc.com domain not yet verified in Resend; route to mitch@ until verified.
-        from: "Rhino Ventures <onboarding@resend.dev>",
-        to: ["mitch@rhinovc.com"],
-        subject: `(intended: ${intendedRecipients}) Onboarding Submission: ${companyName}`,
+        from: "Rhino Ventures Portal <portal@rhinovc.com>",
+        to: recipients,
+        subject: `Onboarding Submission: ${companyName}`,
         html,
       }),
     });
