@@ -22,6 +22,7 @@ interface Partnership {
   detail_pdf_url: string | null;
   applies_to: string | null;
   website_url: string | null;
+  partnership_pdf_path: string | null;
 }
 
 // ── Request Access Button ──
