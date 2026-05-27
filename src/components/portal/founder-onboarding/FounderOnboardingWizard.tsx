@@ -40,6 +40,14 @@ const EMPTY_DATA: FounderOnboardingData = {
   completed: false,
 };
 
+const RHINO_CONTACT_NAMES: Record<string, string> = {
+  "candace@rhinovc.com": "Candace Hobin",
+  "jay@rhinovc.com": "Jay Rhind",
+  "mitch@rhinovc.com": "Mitch Richardson",
+  "nicholas@rhinovc.com": "Nicholas Hyldelund",
+  "fraser@rhinovc.com": "Fraser Hall",
+};
+
 const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batchId, companyName, targetStep }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<FounderOnboardingData>({ ...EMPTY_DATA, batch_id: batchId });
@@ -47,6 +55,7 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
   const [currentStep, setCurrentStep] = useState(targetStep ?? 1);
   const [collapsed, setCollapsed] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [rhinoContacts, setRhinoContacts] = useState<string[]>([]);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
