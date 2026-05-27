@@ -60,9 +60,10 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
 
   useEffect(() => {
     const load = async () => {
-      const [{ data: onbData }, { data: compData }] = await Promise.all([
+      const [{ data: onbData }, { data: compData }, { data: inviteData }] = await Promise.all([
         supabase.from("founder_onboarding" as any).select("*").eq("batch_id", batchId).maybeSingle(),
         supabase.from("founder_onboarding_step_completions" as any).select("*").eq("batch_id", batchId),
+        supabase.from("onboarding_invites").select("assigned_rhino_contacts").eq("batch_id", batchId).maybeSingle(),
       ]);
 
       if (onbData) {
