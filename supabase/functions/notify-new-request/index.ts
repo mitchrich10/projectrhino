@@ -126,8 +126,12 @@ serve(async (req: Request) => {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
           body: JSON.stringify({
             from: "Rhino Ventures Portal <onboarding@resend.dev>",
-            to: ["candace@rhinovc.com"],
-            subject: `New portal request from ${company_name} — ${itemTypeLabel}`,
+            // NOTE: rhinovc.com is not verified in Resend, so Resend test mode
+            // only permits sending to the account owner (mitch@rhinovc.com).
+            // Once rhinovc.com is verified at https://resend.com/domains, restore
+            // candace@rhinovc.com (and add any other recipients) here.
+            to: ["mitch@rhinovc.com"],
+            subject: `New portal request from ${company_name} — ${itemTypeLabel} (intended: candace@rhinovc.com)`,
             html: emailHtml,
           }),
         });
