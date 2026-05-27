@@ -189,7 +189,7 @@ const ResourcePanel: FC<{
 
   return (
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
-      <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      <SheetContent side="right" className="w-full sm:max-w-2xl p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         {/* Header */}
         <div className="px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
           <div className="w-12 h-12 rounded-lg bg-[#1A7EC8]/10 flex items-center justify-center mb-4">
