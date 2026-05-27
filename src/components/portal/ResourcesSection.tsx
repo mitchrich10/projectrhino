@@ -216,12 +216,13 @@ const ResourcePanel: FC<{
             <p className="text-sm text-[#173660]/80 leading-[1.7] whitespace-pre-line">{description}</p>
           )}
 
-          {/* PDF inline viewer */}
+          {/* PDF inline viewer — full-width within slide-out, tall enough to actually read */}
           {resource?.file_path?.toLowerCase().endsWith(".pdf") && !isSpecial && (
-            <div className="w-full" style={{ height: "400px" }}>
+            <div className="w-full -mx-6 px-0 sm:mx-0 sm:px-0">
               <iframe
-                src={getFileUrl(resource.file_path)}
-                className="w-full h-full rounded border border-[#DDE4EC]"
+                src={`${getFileUrl(resource.file_path)}#view=FitH`}
+                className="w-full rounded border border-[#DDE4EC] bg-[#F4F7FA]"
+                style={{ height: "min(75vh, 800px)", minHeight: 600 }}
                 title={title}
               />
             </div>
