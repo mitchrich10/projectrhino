@@ -293,6 +293,34 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
         />
       </div>
 
+      {/* Your Rhino Team */}
+      {rhinoContacts.length > 0 && (
+        <div className="px-6 pt-4">
+          <div className="p-4 bg-[#F4F7FA] border border-[#CDD8E3] rounded-lg">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-3">Your Rhino Team</p>
+            <div className="flex flex-wrap gap-4">
+              {rhinoContacts.map((email) => (
+                <a
+                  key={email}
+                  href={`mailto:${email}`}
+                  className="flex items-center gap-2 group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#173660] text-white flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#173660] group-hover:text-[#1A7EC8] transition-colors">
+                      {RHINO_CONTACT_NAMES[email] || email}
+                    </p>
+                    <p className="text-xs text-[#173660]/50">{email}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Step content */}
       <div className="px-6 py-8 min-h-[320px]">
         {currentStep === 1 && <BrandAssetsStep data={data} onChange={handleChange} batchId={batchId} />}
