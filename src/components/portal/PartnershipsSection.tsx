@@ -217,6 +217,19 @@ const PartnershipPanel: FC<{
                 </div>
               )}
 
+              {partnership.partnership_pdf_path && (
+                <a
+                  href={partnership.partnership_pdf_path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackPortalEvent("partnership_pdf_download", partnership.name, partnership.id)}
+                  className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#1A7EC8] hover:text-[#173660] transition-colors border border-[#DDE4EC] rounded-lg px-4 py-2.5"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Download Partnership Details PDF
+                </a>
+              )}
+
               {partnership.promo_code && (
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[#5C6B7A] mb-2">Promo Code</p>
