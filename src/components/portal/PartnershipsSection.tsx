@@ -140,7 +140,7 @@ const PartnershipPanel: FC<{
   };
 
   const isMailto = partnership.redemption_url ? /^mailto:/i.test(partnership.redemption_url) : false;
-  const actionLabel = isMailto ? `Email ${partnership.name} for an Intro` : "Redeem Offer";
+  const actionLabel = isMailto ? `Email ${partnership.name} to Redeem` : "Redeem Offer";
 
   return (
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
