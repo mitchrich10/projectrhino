@@ -1,7 +1,7 @@
 import { FC, useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
-import { Loader2, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp, CheckCircle2, Mail } from "lucide-react";
 import StepIndicator from "./StepIndicator";
 import BrandAssetsStep from "./BrandAssetsStep";
 import KeyContactsStep from "./KeyContactsStep";
@@ -60,9 +60,10 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
 
   useEffect(() => {
     const load = async () => {
-      const [{ data: onbData }, { data: compData }] = await Promise.all([
+      const [{ data: onbData }, { data: compData }, { data: inviteData }] = await Promise.all([
         supabase.from("founder_onboarding" as any).select("*").eq("batch_id", batchId).maybeSingle(),
         supabase.from("founder_onboarding_step_completions" as any).select("*").eq("batch_id", batchId),
+        supabase.from("onboarding_invites").select("assigned_rhino_contacts").eq("batch_id", batchId).maybeSingle(),
       ]);
 
       if (onbData) {
@@ -94,6 +95,7 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
       }
 
       setCompletions((compData as any[]) ?? []);
+      setRhinoContacts((inviteData as any)?.assigned_rhino_contacts ?? []);
 
       const storedCollapsed = localStorage.getItem(`onboarding-collapsed-${batchId}`);
       if (storedCollapsed === "true") setCollapsed(true);
@@ -290,6 +292,34 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
           onStepClick={(step) => goToStep(step)}
         />
       </div>
+
+      {/* Your Rhino Team */}
+      {rhinoContacts.length > 0 && (
+        <div className="px-6 pt-4">
+          <div className="p-4 bg-[#F4F7FA] border border-[#CDD8E3] rounded-lg">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-3">Your Rhino Team</p>
+            <div className="flex flex-wrap gap-4">
+              {rhinoContacts.map((email) => (
+                <a
+                  key={email}
+                  href={`mailto:${email}`}
+                  className="flex items-center gap-2 group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#173660] text-white flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[#173660] group-hover:text-[#1A7EC8] transition-colors">
+                      {RHINO_CONTACT_NAMES[email] || email}
+                    </p>
+                    <p className="text-xs text-[#173660]/50">{email}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Step content */}
       <div className="px-6 py-8 min-h-[320px]">
