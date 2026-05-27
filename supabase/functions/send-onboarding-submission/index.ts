@@ -113,7 +113,7 @@ serve(async (req) => {
       headers: { "Authorization": `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: "Candace Hobin <candace@rhinovc.com>",
-        to: ["candace@rhinovc.com"],
+        to: recipients,
         subject: `Onboarding Submission: ${companyName}`,
         html,
       }),
