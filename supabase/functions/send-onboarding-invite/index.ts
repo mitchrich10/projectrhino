@@ -35,7 +35,11 @@ serve(async (req: Request) => {
       });
     }
 
-    const { emails, note } = await req.json() as { emails: string[]; note?: string };
+    const { emails, note, assignedRhinoContacts } = await req.json() as {
+      emails: string[];
+      note?: string;
+      assignedRhinoContacts?: string[];
+    };
 
     if (!emails?.length) {
       return new Response(JSON.stringify({ error: "No emails provided" }), {
@@ -50,6 +54,12 @@ serve(async (req: Request) => {
       });
     }
 
+    // Always include candace; dedupe
+    const rhinoContacts = Array.from(new Set([
+      "candace@rhinovc.com",
+      ...(assignedRhinoContacts ?? []).map((e) => e.trim().toLowerCase()).filter(Boolean),
+    ]));
+
     const portalUrl = "https://projectrhino.lovable.app/partner-login";
 
     // All emails in this batch share the same batch_id so progress is shared between them
@@ -61,6 +71,7 @@ serve(async (req: Request) => {
       invited_by: user.email!,
       note: note ?? null,
       batch_id: batchId,
+      assigned_rhino_contacts: rhinoContacts,
     }));
 
     await supabase.from("onboarding_invites").upsert(inviteRows, { onConflict: "email" });
