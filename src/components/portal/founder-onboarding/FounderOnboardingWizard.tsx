@@ -95,6 +95,7 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
       }
 
       setCompletions((compData as any[]) ?? []);
+      setRhinoContacts((inviteData as any)?.assigned_rhino_contacts ?? []);
 
       const storedCollapsed = localStorage.getItem(`onboarding-collapsed-${batchId}`);
       if (storedCollapsed === "true") setCollapsed(true);
