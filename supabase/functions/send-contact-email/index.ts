@@ -153,11 +153,10 @@ const handler = async (req: Request): Promise<Response> => {
     `;
 
     const emailPayload: Record<string, unknown> = {
-      // BAND-AID: rhinovc.com domain not yet verified in Resend; route to mitch@ until verified.
-      from: "Rhino Ventures <onboarding@resend.dev>",
-      to: ["mitch@rhinovc.com"],
+      from: "Rhino Ventures Portal <portal@rhinovc.com>",
+      to: ["candace@rhinovc.com"],
       reply_to: email,
-      subject: `(intended: candace@rhinovc.com) Contact Form: ${escapeHtml(name)}`,
+      subject: `Contact Form: ${escapeHtml(name)}`,
       html: emailHtml,
     };
 
