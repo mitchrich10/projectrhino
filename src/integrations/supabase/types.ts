@@ -256,6 +256,7 @@ export type Database = {
       }
       onboarding_invites: {
         Row: {
+          assigned_rhino_contacts: string[]
           batch_id: string
           created_at: string
           email: string
@@ -264,6 +265,7 @@ export type Database = {
           note: string | null
         }
         Insert: {
+          assigned_rhino_contacts?: string[]
           batch_id?: string
           created_at?: string
           email: string
@@ -272,6 +274,7 @@ export type Database = {
           note?: string | null
         }
         Update: {
+          assigned_rhino_contacts?: string[]
           batch_id?: string
           created_at?: string
           email?: string
@@ -456,6 +459,7 @@ export type Database = {
           logo_path: string | null
           logo_url: string | null
           name: string
+          partnership_pdf_path: string | null
           promo_code: string | null
           redemption_url: string | null
           tagline: string | null
@@ -475,6 +479,7 @@ export type Database = {
           logo_path?: string | null
           logo_url?: string | null
           name: string
+          partnership_pdf_path?: string | null
           promo_code?: string | null
           redemption_url?: string | null
           tagline?: string | null
@@ -494,6 +499,7 @@ export type Database = {
           logo_path?: string | null
           logo_url?: string | null
           name?: string
+          partnership_pdf_path?: string | null
           promo_code?: string | null
           redemption_url?: string | null
           tagline?: string | null

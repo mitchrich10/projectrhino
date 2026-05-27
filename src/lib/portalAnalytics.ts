@@ -6,6 +6,7 @@ export type PortalEventType =
   | "resource_click"
   | "resource_download"
   | "partnership_download"
+  | "partnership_pdf_download"
   | "onboarding_started"
   | "onboarding_completed";
 

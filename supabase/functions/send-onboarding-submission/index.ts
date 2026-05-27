@@ -18,7 +18,29 @@ serve(async (req) => {
     } = await req.json();
 
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY not set");
+
+    // Look up assigned Rhino contacts for this submitter
+    let recipients: string[] = ["candace@rhinovc.com"];
+    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY && userEmail) {
+      try {
+        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+        const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+        const { data: invite } = await sb
+          .from("onboarding_invites")
+          .select("assigned_rhino_contacts")
+          .eq("email", String(userEmail).toLowerCase())
+          .maybeSingle();
+        const assigned = (invite as { assigned_rhino_contacts?: string[] } | null)?.assigned_rhino_contacts;
+        if (assigned && assigned.length) {
+          recipients = Array.from(new Set(["candace@rhinovc.com", ...assigned]));
+        }
+      } catch (e) {
+        console.error("Failed to look up assigned contacts, falling back to candace only", e);
+      }
+    }
 
     const teamHtml = (teamMembers ?? [])
       .map((m: { name: string; role?: string; title?: string; email: string }) =>
@@ -91,7 +113,7 @@ serve(async (req) => {
       headers: { "Authorization": `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: "Candace Hobin <candace@rhinovc.com>",
-        to: ["candace@rhinovc.com"],
+        to: recipients,
         subject: `Onboarding Submission: ${companyName}`,
         html,
       }),

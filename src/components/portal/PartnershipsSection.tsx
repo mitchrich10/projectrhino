@@ -22,6 +22,7 @@ interface Partnership {
   detail_pdf_url: string | null;
   applies_to: string | null;
   website_url: string | null;
+  partnership_pdf_path: string | null;
 }
 
 // ── Request Access Button ──
@@ -139,7 +140,7 @@ const PartnershipPanel: FC<{
   };
 
   const isMailto = partnership.redemption_url ? /^mailto:/i.test(partnership.redemption_url) : false;
-  const actionLabel = isMailto ? `Email ${partnership.name} for an Intro` : "Redeem Offer";
+  const actionLabel = isMailto ? `Email ${partnership.name} to Redeem` : "Redeem Offer";
 
   return (
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
@@ -214,6 +215,19 @@ const PartnershipPanel: FC<{
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[#5C6B7A] mb-2">Details</p>
                   <p className="text-sm text-[#173660]/80 leading-relaxed whitespace-pre-line">{partnership.description}</p>
                 </div>
+              )}
+
+              {partnership.partnership_pdf_path && (
+                <a
+                  href={partnership.partnership_pdf_path}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackPortalEvent("partnership_pdf_download", partnership.name, partnership.id)}
+                  className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#1A7EC8] hover:text-[#173660] transition-colors border border-[#DDE4EC] rounded-lg px-4 py-2.5"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Download Partnership Details PDF
+                </a>
               )}
 
               {partnership.promo_code && (

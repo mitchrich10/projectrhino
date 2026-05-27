@@ -16,7 +16,16 @@ interface Invite {
   invited_by: string;
   created_at: string;
   note: string | null;
+  assigned_rhino_contacts?: string[] | null;
 }
+
+const RHINO_CONTACTS: { email: string; name: string; required?: boolean }[] = [
+  { email: "candace@rhinovc.com", name: "Candace Hobin", required: true },
+  { email: "jay@rhinovc.com", name: "Jay Rhind" },
+  { email: "mitch@rhinovc.com", name: "Mitch Richardson" },
+  { email: "nicholas@rhinovc.com", name: "Nicholas Hyldelund" },
+  { email: "fraser@rhinovc.com", name: "Fraser Hall" },
+];
 
 interface Subscriber {
   id: string;
@@ -174,6 +183,7 @@ const StepsPanel: FC = () => {
 const InvitePanel: FC = () => {
   const [emailInput, setEmailInput] = useState("");
   const [note, setNote] = useState("");
+  const [assignedContacts, setAssignedContacts] = useState<string[]>(["candace@rhinovc.com"]);
   const [sending, setSending] = useState(false);
   const [results, setResults] = useState<{ email: string; success: boolean; error?: string }[] | null>(null);
   const [invites, setInvites] = useState<Invite[]>([]);
@@ -183,16 +193,28 @@ const InvitePanel: FC = () => {
 
   const fetchInvites = async () => {
     const { data } = await supabase.from("onboarding_invites").select("*").order("created_at", { ascending: false });
-    setInvites(data ?? []);
+    setInvites((data as Invite[]) ?? []);
     setLoadingInvites(false);
+  };
+
+  const toggleContact = (email: string, required?: boolean) => {
+    if (required) return;
+    setAssignedContacts((prev) =>
+      prev.includes(email) ? prev.filter((e) => e !== email) : [...prev, email]
+    );
   };
 
   const handleSend = async () => {
     const emails = emailInput.split(/[\n,;]+/).map((e) => e.trim()).filter(Boolean);
     if (!emails.length) return;
     setSending(true); setResults(null);
+    const finalContacts = Array.from(new Set(["candace@rhinovc.com", ...assignedContacts]));
     const { data, error } = await supabase.functions.invoke("send-onboarding-invite", {
-      body: { emails, note: note.trim() || undefined },
+      body: {
+        emails,
+        note: note.trim() || undefined,
+        assignedRhinoContacts: finalContacts,
+      },
     });
     if (error) {
       setResults([{ email: "all", success: false, error: error.message }]);
@@ -221,6 +243,40 @@ const InvitePanel: FC = () => {
             />
             <p className="text-[10px] text-muted-foreground mt-1">Separate by new line, comma, or semicolon.</p>
           </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Assigned Rhino Contacts</label>
+            <p className="text-[10px] text-muted-foreground mb-2.5">
+              These reps will be shown to the portco during onboarding and CC'd on the submission summary email.
+            </p>
+            <div className="space-y-1.5">
+              {RHINO_CONTACTS.map((c) => {
+                const checked = c.required || assignedContacts.includes(c.email);
+                return (
+                  <label
+                    key={c.email}
+                    className={`flex items-center gap-3 border border-border rounded-lg px-3 py-2 bg-secondary/10 ${c.required ? "opacity-90 cursor-default" : "cursor-pointer hover:bg-secondary/20"}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      disabled={c.required}
+                      onChange={() => toggleContact(c.email, c.required)}
+                      className="w-4 h-4"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-foreground">{c.name}</p>
+                      <p className="text-[10px] font-mono text-muted-foreground truncate">{c.email}</p>
+                    </div>
+                    {c.required && (
+                      <span className="text-[9px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-1.5 py-0.5 rounded">Always</span>
+                    )}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Personal Note (optional)</label>
             <textarea
@@ -265,7 +321,14 @@ const InvitePanel: FC = () => {
           <div className="space-y-1.5">
             {invites.map((inv) => (
               <div key={inv.id} className="flex items-center gap-4 border border-border rounded-lg px-4 py-3 bg-secondary/10">
-                <p className="text-xs font-mono text-foreground flex-1">{inv.email}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-mono text-foreground truncate">{inv.email}</p>
+                  {inv.assigned_rhino_contacts && inv.assigned_rhino_contacts.length > 0 && (
+                    <p className="text-[10px] text-muted-foreground truncate mt-0.5">
+                      Rhino team: {inv.assigned_rhino_contacts.map((e) => e.split("@")[0]).join(", ")}
+                    </p>
+                  )}
+                </div>
                 <p className="text-[10px] text-muted-foreground flex-shrink-0">
                   {new Date(inv.created_at).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" })}
                 </p>
@@ -277,6 +340,7 @@ const InvitePanel: FC = () => {
     </div>
   );
 };
+
 
 // ── Subscribers Panel ──────────────────────────────────────────────────────────
 const SubscribersPanel: FC = () => {

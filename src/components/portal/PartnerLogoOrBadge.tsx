@@ -7,12 +7,25 @@ interface Props extends PartnershipLogoSource {
 }
 
 /**
+ * logo_keys whose source asset is a JPG / PNG with a baked-in white background.
+ * On white card surfaces we use `mix-blend-mode: multiply` so the white drops away
+ * visually and the logo doesn't appear inside a hard white rectangle.
+ * (Re-upload as transparent PNG via /admin to remove the need for this list.)
+ */
+const WHITE_BG_LOGO_KEYS = new Set([
+  "promosapien",
+  "boldhouse",
+  "cmg",
+]);
+
+/**
  * Renders a partnership logo if available, otherwise a circular fallback badge
  * with the first letter and a brand-tinted background.
  */
 const PartnerLogoOrBadge: FC<Props> = ({ name, size = "sm", ...source }) => {
   const [failed, setFailed] = useState(false);
   const url = failed ? null : resolvePartnershipLogo(source);
+  const needsBlend = !!source.logo_key && WHITE_BG_LOGO_KEYS.has(source.logo_key);
 
   if (url) {
     return (
@@ -26,6 +39,7 @@ const PartnerLogoOrBadge: FC<Props> = ({ name, size = "sm", ...source }) => {
           width: "100%",
           maxHeight: size === "lg" ? 56 : 48,
           maxWidth: 180,
+          mixBlendMode: needsBlend ? "multiply" : undefined,
         }}
         onError={() => setFailed(true)}
       />
@@ -51,3 +65,4 @@ const PartnerLogoOrBadge: FC<Props> = ({ name, size = "sm", ...source }) => {
 };
 
 export default PartnerLogoOrBadge;
+
