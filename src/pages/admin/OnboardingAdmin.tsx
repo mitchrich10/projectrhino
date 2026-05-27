@@ -19,13 +19,13 @@ interface Invite {
   assigned_rhino_contacts?: string[] | null;
 }
 
-const RHINO_CONTACTS = [
+const RHINO_CONTACTS: { email: string; name: string; required?: boolean }[] = [
   { email: "candace@rhinovc.com", name: "Candace Hobin", required: true },
   { email: "jay@rhinovc.com", name: "Jay Rhind" },
   { email: "mitch@rhinovc.com", name: "Mitch Richardson" },
   { email: "nicholas@rhinovc.com", name: "Nicholas Hyldelund" },
   { email: "fraser@rhinovc.com", name: "Fraser Hall" },
-] as const;
+];
 
 interface Subscriber {
   id: string;
