@@ -198,11 +198,12 @@ serve(async (req: Request) => {
     // Send ONE personalized email per recipient (each has a unique sign-in token)
     const results: { email: string; success: boolean; error?: string }[] = [];
 
-    for (const row of upserted as { email: string; invitee_name: string | null; invite_token: string }[]) {
+    for (const row of upserted as { email: string; invitee_name: string | null; invitee_company: string | null; invite_token: string }[]) {
       try {
         const portalUrl = `${PORTAL_BASE_URL}/portal?invite_token=${row.invite_token}`;
         const emailHtml = buildEmailHtml({
           greetingName: row.invitee_name ?? undefined,
+          greetingCompany: row.invitee_company ?? undefined,
           inviterName,
           note: note,
           portalUrl,
