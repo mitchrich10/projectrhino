@@ -63,11 +63,11 @@ export const TECH_CATEGORIES: { key: keyof TechStack; label: string; options: st
 ];
 
 export const PRIORITY_OPTIONS: { value: string; contextPrompt: string }[] = [
-  { value: "Hiring key roles", contextPrompt: "What roles are you looking to fill?" },
-  { value: "Setting up or improving board reporting", contextPrompt: "Where are you at today? (e.g., no current reporting, informal updates, looking to formalize)" },
-  { value: "Exploring cloud/AI credits", contextPrompt: "Which platforms are you most interested in? (e.g., AWS, GCP, Azure, OpenAI)" },
-  { value: "Financial modelling or forecasting", contextPrompt: "What are you trying to model? (e.g., unit economics, fundraising projections, pricing)" },
-  { value: "Fundraising prep (next round)", contextPrompt: "What stage and timeline are you thinking? (e.g., Series A in 12 months)" },
-  { value: "Legal/compliance structuring", contextPrompt: "What's the focus? (e.g., corporate restructuring, employment law, IP protection)" },
-  { value: "Sales/marketing infrastructure", contextPrompt: "What are you looking to build or improve? (e.g., CRM setup, demand gen, brand strategy)" },
+  { value: "Growth / GTM", contextPrompt: "What are you focused on? (e.g., demand gen, sales motion, expansion)" },
+  { value: "Capital introductions", contextPrompt: "What stage and timeline? (e.g., Series A in 12 months)" },
+  { value: "Hiring", contextPrompt: "What roles are you looking to fill?" },
+  { value: "Legal", contextPrompt: "What's the focus? (e.g., contracts, IP, corporate structuring)" },
+  { value: "Customer intros", contextPrompt: "What kind of customers are you looking to meet?" },
+  { value: "Finance / accounting", contextPrompt: "What do you need help with? (e.g., bookkeeping, modelling, reporting)" },
+  { value: "PR / marketing", contextPrompt: "What are you looking to build or improve? (e.g., brand, press, content)" },
 ];
