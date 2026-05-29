@@ -209,25 +209,39 @@ const InvitePanel: FC = () => {
   //   email@company.com
   //   email@company.com, Jane Doe
   //   Jane Doe <email@company.com>
-  const parseRecipients = (raw: string): { email: string; name?: string }[] => {
+  //   Jane Doe, email@company.com, Acme Inc        (name, email, company)
+  //   Acme Inc - Jane Doe <email@company.com>       (company - name <email>)
+  const parseRecipients = (raw: string): { email: string; name?: string; company?: string }[] => {
     return raw
       .split(/\n+/)
       .map((line) => line.trim())
       .filter(Boolean)
       .map((line) => {
-        // "Name <email>" format
+        // "Name <email>" or "Company - Name <email>" format
         const angle = line.match(/^(.*?)<([^>]+)>$/);
         if (angle) {
-          const name = angle[1].trim().replace(/[",]/g, "").trim();
-          return { email: angle[2].trim().toLowerCase(), name: name || undefined };
+          const email = angle[2].trim().toLowerCase();
+          let prefix = angle[1].trim().replace(/[",]/g, "").trim();
+          let company: string | undefined;
+          let name: string | undefined;
+          if (prefix.includes(" - ")) {
+            const [co, nm] = prefix.split(/\s+-\s+/);
+            company = co?.trim() || undefined;
+            name = nm?.trim() || undefined;
+          } else {
+            name = prefix || undefined;
+          }
+          return { email, name, company };
         }
-        // "email, Name" or "email Name" / comma / semicolon separated
+        // comma / semicolon separated: any order, email detected by "@".
+        // Non-email parts: first = name, second = company.
         const parts = line.split(/[,;]+/).map((p) => p.trim()).filter(Boolean);
         const emailPart = parts.find((p) => p.includes("@"));
-        const namePart = parts.find((p) => !p.includes("@"));
+        const nonEmail = parts.filter((p) => !p.includes("@"));
         return {
           email: (emailPart ?? line).toLowerCase(),
-          name: namePart || undefined,
+          name: nonEmail[0] || undefined,
+          company: nonEmail[1] || undefined,
         };
       })
       .filter((r) => r.email.includes("@"));
