@@ -46,9 +46,13 @@ serve(async (req: Request) => {
 
     const itemTypeArr: string[] = Array.isArray(item_type) ? item_type : [item_type];
     const isAccessRequest = itemTypeArr.includes("access_request");
+    // Toolkit-level requests (e.g. the Fundraising Toolkit) have no specific
+    // item_id — they grant access to a whole category. Dedupe these by item_type.
+    const TOOLKIT_TYPES = ["financing_guide", "fundraising"];
+    const isToolkitRequest = itemTypeArr.some((t) => TOOLKIT_TYPES.includes(t));
 
-    // For non-access requests, item_id is required and we dedupe per user+item
-    if (!isAccessRequest) {
+    if (!isAccessRequest && !isToolkitRequest) {
+      // Item-specific request: item_id is required and we dedupe per user+item
       if (!item_id) {
         return new Response(JSON.stringify({ error: "Missing item_id" }), {
           status: 400,
@@ -60,6 +64,20 @@ serve(async (req: Request) => {
         .select("id, status")
         .eq("user_id", user.id)
         .eq("item_id", item_id)
+        .maybeSingle();
+      if (existing) {
+        return new Response(
+          JSON.stringify({ error: "already_requested", status: existing.status }),
+          { status: 409, headers: { "Content-Type": "application/json", ...corsHeaders } },
+        );
+      }
+    } else if (isToolkitRequest) {
+      // Dedupe toolkit requests per user + toolkit type (no item_id involved).
+      const { data: existing } = await supabase
+        .from("partner_requests")
+        .select("id, status")
+        .eq("user_id", user.id)
+        .overlaps("item_type", TOOLKIT_TYPES)
         .maybeSingle();
       if (existing) {
         return new Response(
