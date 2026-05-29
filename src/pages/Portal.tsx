@@ -179,8 +179,8 @@ const Portal: FC = () => {
     );
   }
 
-  // Show request access page for unrecognized domains
-  const domainApproved = company?.company_name !== "Partner" || isAdmin;
+  // Show request access page for unrecognized domains (invited users always allowed)
+  const domainApproved = company?.company_name !== "Partner" || isAdmin || isInvited;
   if (!domainApproved && userEmail) {
     return <RequestAccess email={userEmail} />;
   }
