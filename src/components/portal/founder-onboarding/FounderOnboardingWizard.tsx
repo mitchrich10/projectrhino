@@ -1,7 +1,7 @@
 import { FC, useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
-import { Loader2, ChevronDown, ChevronUp, CheckCircle2, Mail } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
 import StepIndicator from "./StepIndicator";
 import BrandAssetsStep from "./BrandAssetsStep";
 import KeyContactsStep from "./KeyContactsStep";
