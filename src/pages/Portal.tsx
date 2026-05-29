@@ -136,7 +136,18 @@ const Portal: FC = () => {
       setUserName(fullName);
 
       setIsInvited(hasInvite);
-      setBatchId((inviteData as { batch_id?: string } | null)?.batch_id ?? null);
+      const inviteBatchId = (inviteData as { batch_id?: string } | null)?.batch_id ?? null;
+      setBatchId(inviteBatchId);
+
+      // Check if the founder already submitted their onboarding (so we can hide the wizard)
+      if (inviteBatchId) {
+        const { data: onb } = await supabase
+          .from("founder_onboarding" as any)
+          .select("completed")
+          .eq("batch_id", inviteBatchId)
+          .maybeSingle();
+        setOnboardingCompleted(!!(onb as { completed?: boolean } | null)?.completed);
+      }
 
       // Load admin preview companies
       if (adminUser) {
