@@ -16,6 +16,7 @@ interface Invite {
   invited_by: string;
   created_at: string;
   note: string | null;
+  invitee_name?: string | null;
   assigned_rhino_contacts?: string[] | null;
 }
 
@@ -204,14 +205,42 @@ const InvitePanel: FC = () => {
     );
   };
 
+  // Parse one recipient per line. Supported formats per line:
+  //   email@company.com
+  //   email@company.com, Jane Doe
+  //   Jane Doe <email@company.com>
+  const parseRecipients = (raw: string): { email: string; name?: string }[] => {
+    return raw
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        // "Name <email>" format
+        const angle = line.match(/^(.*?)<([^>]+)>$/);
+        if (angle) {
+          const name = angle[1].trim().replace(/[",]/g, "").trim();
+          return { email: angle[2].trim().toLowerCase(), name: name || undefined };
+        }
+        // "email, Name" or "email Name" / comma / semicolon separated
+        const parts = line.split(/[,;]+/).map((p) => p.trim()).filter(Boolean);
+        const emailPart = parts.find((p) => p.includes("@"));
+        const namePart = parts.find((p) => !p.includes("@"));
+        return {
+          email: (emailPart ?? line).toLowerCase(),
+          name: namePart || undefined,
+        };
+      })
+      .filter((r) => r.email.includes("@"));
+  };
+
   const handleSend = async () => {
-    const emails = emailInput.split(/[\n,;]+/).map((e) => e.trim()).filter(Boolean);
-    if (!emails.length) return;
+    const recipients = parseRecipients(emailInput);
+    if (!recipients.length) return;
     setSending(true); setResults(null);
     const finalContacts = Array.from(new Set(["candace@rhinovc.com", ...assignedContacts]));
     const { data, error } = await supabase.functions.invoke("send-onboarding-invite", {
       body: {
-        emails,
+        recipients,
         note: note.trim() || undefined,
         assignedRhinoContacts: finalContacts,
       },
@@ -233,15 +262,16 @@ const InvitePanel: FC = () => {
         <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">Send Onboarding Invites</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Email Addresses</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Recipients</label>
             <textarea
               value={emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
               rows={4}
               className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none font-mono"
-              placeholder="one@company.com&#10;two@company.com&#10;&#10;(one per line, or comma-separated)"
+              placeholder="jane@company.com, Jane Doe&#10;john@company.com, John Smith&#10;mark@company.com&#10;&#10;(one recipient per line)"
             />
-            <p className="text-[10px] text-muted-foreground mt-1">Separate by new line, comma, or semicolon.</p>
+            <p className="text-[10px] text-muted-foreground mt-1">One recipient per line. Add a name after the email to personalize the greeting — e.g. <span className="font-mono">jane@company.com, Jane Doe</span>. Name is optional.</p>
+
           </div>
 
           <div>
@@ -322,7 +352,9 @@ const InvitePanel: FC = () => {
             {invites.map((inv) => (
               <div key={inv.id} className="flex items-center gap-4 border border-border rounded-lg px-4 py-3 bg-secondary/10">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-foreground truncate">{inv.email}</p>
+                  <p className="text-xs font-mono text-foreground truncate">
+                    {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name} · </span> : null}{inv.email}
+                  </p>
                   {inv.assigned_rhino_contacts && inv.assigned_rhino_contacts.length > 0 && (
                     <p className="text-[10px] text-muted-foreground truncate mt-0.5">
                       Rhino team: {inv.assigned_rhino_contacts.map((e) => e.split("@")[0]).join(", ")}

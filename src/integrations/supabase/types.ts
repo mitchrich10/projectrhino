@@ -261,8 +261,12 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          invite_token: string
           invited_by: string
+          invitee_name: string | null
           note: string | null
+          token_expires_at: string | null
+          token_redeemed_at: string | null
         }
         Insert: {
           assigned_rhino_contacts?: string[]
@@ -270,8 +274,12 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          invite_token?: string
           invited_by: string
+          invitee_name?: string | null
           note?: string | null
+          token_expires_at?: string | null
+          token_redeemed_at?: string | null
         }
         Update: {
           assigned_rhino_contacts?: string[]
@@ -279,8 +287,12 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          invite_token?: string
           invited_by?: string
+          invitee_name?: string | null
           note?: string | null
+          token_expires_at?: string | null
+          token_redeemed_at?: string | null
         }
         Relationships: []
       }
