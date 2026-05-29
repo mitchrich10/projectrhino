@@ -17,6 +17,7 @@ interface Invite {
   created_at: string;
   note: string | null;
   invitee_name?: string | null;
+  invitee_company?: string | null;
   assigned_rhino_contacts?: string[] | null;
 }
 
