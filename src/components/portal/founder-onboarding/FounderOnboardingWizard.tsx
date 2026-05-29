@@ -50,7 +50,37 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
   const [currentStep, setCurrentStep] = useState(targetStep ?? 1);
   const [collapsed, setCollapsed] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [skippedSteps, setSkippedSteps] = useState<Set<number>>(new Set());
+  const [showStepError, setShowStepError] = useState(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Per-step minimum-input validation. A step is "valid" once at least one
+  // meaningful input has been provided.
+  const isStepValid = (step: number, d: FounderOnboardingData): boolean => {
+    switch (step) {
+      case 1:
+        return !!d.logo_path || !!d.brand_guidelines_path;
+      case 2:
+        return (d.additional_contacts ?? []).some(
+          (c) => c.name?.trim() && c.email?.trim() && c.role?.trim()
+        );
+      case 3:
+        return Object.entries(d.tech_stack ?? {}).some(
+          ([, v]) => Array.isArray(v) && v.length > 0
+        );
+      case 4:
+        return (d.priorities ?? []).length > 0;
+      default:
+        return false;
+    }
+  };
+
+  const STEP_REQUIREMENTS: Record<number, string> = {
+    1: "Upload your logo or a brand guidelines document, or choose Skip.",
+    2: "Add at least one contact (name, email, and role), or choose Skip.",
+    3: "Select at least one tool, or choose Skip.",
+    4: "Select at least one short-term need, or choose Skip.",
+  };
 
   useEffect(() => {
     const load = async () => {
