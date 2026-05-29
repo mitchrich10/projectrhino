@@ -261,15 +261,16 @@ const InvitePanel: FC = () => {
         <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">Send Onboarding Invites</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Email Addresses</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Recipients</label>
             <textarea
               value={emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
               rows={4}
               className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none font-mono"
-              placeholder="one@company.com&#10;two@company.com&#10;&#10;(one per line, or comma-separated)"
+              placeholder="jane@company.com, Jane Doe&#10;john@company.com, John Smith&#10;mark@company.com&#10;&#10;(one recipient per line)"
             />
-            <p className="text-[10px] text-muted-foreground mt-1">Separate by new line, comma, or semicolon.</p>
+            <p className="text-[10px] text-muted-foreground mt-1">One recipient per line. Add a name after the email to personalize the greeting — e.g. <span className="font-mono">jane@company.com, Jane Doe</span>. Name is optional.</p>
+
           </div>
 
           <div>
