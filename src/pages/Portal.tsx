@@ -372,6 +372,23 @@ const Portal: FC = () => {
           <div id="resources">
             <ResourcesSection />
           </div>
+
+          {/* Collaborate — share portal access with teammates */}
+          <section id="collaborate">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Collaborate</p>
+            <p className="text-sm text-[#173660]/70 max-w-2xl leading-relaxed mb-4">
+              Share the portal with your team — they'll have access to most of what's here.
+              Some resources are visible only to founders.
+            </p>
+            <button
+              onClick={handleCopyPortalLink}
+              className="flex items-center gap-2 text-xs font-semibold text-[#1A7EC8] border border-[#1A7EC8]/30 rounded-lg px-4 py-2.5 hover:bg-[#1A7EC8]/5 hover:border-[#1A7EC8] transition-colors"
+            >
+              {copiedPortal ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
+              {copiedPortal ? "Link copied!" : "Copy portal link"}
+            </button>
+          </section>
+
           {/* Events — only render if events exist */}
           {hasEvents && (
             <div id="events">
