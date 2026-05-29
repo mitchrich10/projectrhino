@@ -31,6 +31,7 @@ const Portal: FC = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [batchId, setBatchId] = useState<string | null>(null);
+  const [inviteCompany, setInviteCompany] = useState<string | null>(null);
   const [isInvited, setIsInvited] = useState(false);
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
   const [shareTargetStep, setShareTargetStep] = useState<number | null>(null);
