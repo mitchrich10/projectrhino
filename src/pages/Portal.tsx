@@ -183,8 +183,9 @@ const Portal: FC = () => {
 
   const logoSrc = company?.logo_key ? companyLogos[company.logo_key] : null;
 
-  // Onboarding visibility: only for invited users or admins
-  const showOnboarding = (isInvited && batchId) || isAdmin;
+  // Onboarding visibility: only for invited founders who haven't submitted yet.
+  // Hidden for admins, approved-domain users without an invite, and completed invitees.
+  const showOnboarding = isInvited && !!batchId && !onboardingCompleted;
 
   if (loading) {
     return (
