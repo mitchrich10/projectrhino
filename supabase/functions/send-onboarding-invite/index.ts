@@ -39,11 +39,22 @@ const inviterDisplayName = (email?: string | null): string => {
 
 const buildEmailHtml = (opts: {
   greetingName?: string;
+  greetingCompany?: string;
   inviterName: string;
   note?: string;
   portalUrl: string;
 }) => {
-  const greeting = opts.greetingName ? `Hi ${opts.greetingName},` : "Hi there,";
+  // "Hi Jane, welcome to the Crash on behalf of Acme Inc," when both are present.
+  let greeting: string;
+  if (opts.greetingName && opts.greetingCompany) {
+    greeting = `Hi ${opts.greetingName}, welcome to the Crash on behalf of ${opts.greetingCompany},`;
+  } else if (opts.greetingName) {
+    greeting = `Hi ${opts.greetingName},`;
+  } else if (opts.greetingCompany) {
+    greeting = `Hi ${opts.greetingCompany} team,`;
+  } else {
+    greeting = "Hi there,";
+  }
   // One font stack used everywhere. Declared inline on EVERY element because
   // most email clients (Gmail, Outlook) strip <style> blocks and fall back to
   // their own default font otherwise.
