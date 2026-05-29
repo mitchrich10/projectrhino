@@ -329,14 +329,11 @@ const ResourcesSection: FC = () => {
         const domainData = await fetchApprovedDomain(domain);
         setCompanyName(domainData?.company_name ?? domain);
 
-        // Auto-approve for rhino admins and invited users
+        // Auto-approve ONLY for rhino admins. Invited portcos must explicitly
+        // request access to the Fundraising Toolkit (and be approved) before it
+        // unlocks — being invited to the portal does not grant fundraising access.
         const isRhino = email.endsWith("@rhinovc.com");
-        const { data: inviteData } = await supabase
-          .from("onboarding_invites")
-          .select("id")
-          .eq("email", email.toLowerCase())
-          .maybeSingle();
-        const autoApprove = isRhino || !!inviteData;
+        const autoApprove = isRhino;
         setIsAutoApproved(autoApprove);
         setFundraisingUnlocked(hasFundraisingAccess || autoApprove);
       }
