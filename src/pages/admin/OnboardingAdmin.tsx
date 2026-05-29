@@ -284,7 +284,7 @@ const InvitePanel: FC = () => {
               className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none font-mono"
               placeholder="jane@company.com, Jane Doe&#10;john@company.com, John Smith&#10;mark@company.com&#10;&#10;(one recipient per line)"
             />
-            <p className="text-[10px] text-muted-foreground mt-1">One recipient per line. Add a name after the email to personalize the greeting — e.g. <span className="font-mono">jane@company.com, Jane Doe</span>. Name is optional.</p>
+            <p className="text-[10px] text-muted-foreground mt-1">One recipient per line. Add a name and (optionally) company to personalize the greeting — e.g. <span className="font-mono">Jane Doe, jane@company.com, Acme Inc</span> or <span className="font-mono">Acme Inc - Jane Doe &lt;jane@company.com&gt;</span>. Name and company are optional.</p>
 
           </div>
 
