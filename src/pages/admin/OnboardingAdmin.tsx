@@ -368,7 +368,7 @@ const InvitePanel: FC = () => {
               <div key={inv.id} className="flex items-center gap-4 border border-border rounded-lg px-4 py-3 bg-secondary/10">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-mono text-foreground truncate">
-                    {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name} · </span> : null}{inv.email}
+                    {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name}{inv.invitee_company ? ` (${inv.invitee_company})` : ""} · </span> : inv.invitee_company ? <span className="font-sans font-bold not-italic">{inv.invitee_company} · </span> : null}{inv.email}
                   </p>
                   {inv.assigned_rhino_contacts && inv.assigned_rhino_contacts.length > 0 && (
                     <p className="text-[10px] text-muted-foreground truncate mt-0.5">
