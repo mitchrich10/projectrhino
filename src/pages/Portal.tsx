@@ -137,6 +137,7 @@ const Portal: FC = () => {
       setUserName(fullName);
 
       setIsInvited(hasInvite);
+      setInviteCompany((inviteData as { invitee_company?: string | null } | null)?.invitee_company ?? null);
       const inviteBatchId = (inviteData as { batch_id?: string } | null)?.batch_id ?? null;
       setBatchId(inviteBatchId);
 
