@@ -29,6 +29,7 @@ const corsHeaders = {
 interface Recipient {
   email: string;
   name?: string;
+  company?: string;
 }
 
 const inviterDisplayName = (email?: string | null): string => {
