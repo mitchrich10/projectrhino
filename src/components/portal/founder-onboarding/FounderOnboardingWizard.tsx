@@ -122,6 +122,14 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
       const storedCollapsed = localStorage.getItem(`onboarding-collapsed-${batchId}`);
       if (storedCollapsed === "true") setCollapsed(true);
 
+      const storedSkipped = localStorage.getItem(`onboarding-skipped-${batchId}`);
+      if (storedSkipped) {
+        try {
+          const arr = JSON.parse(storedSkipped) as number[];
+          if (Array.isArray(arr)) setSkippedSteps(new Set(arr));
+        } catch { /* ignore malformed */ }
+      }
+
       setLoading(false);
     };
     load();
