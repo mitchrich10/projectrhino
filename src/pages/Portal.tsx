@@ -361,7 +361,7 @@ const Portal: FC = () => {
               userEmail={userEmail}
               userName={userName}
               batchId={batchId ?? userId}
-              companyName={displayCompanyName ?? "Your Company"}
+              companyName={inviteCompany ?? (displayCompanyName && displayCompanyName !== "Partner" ? displayCompanyName : "Your Company")}
               targetStep={shareTargetStep}
             />
           )}
