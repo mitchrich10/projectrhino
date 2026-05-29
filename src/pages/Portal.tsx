@@ -51,6 +51,32 @@ const Portal: FC = () => {
     });
 
     const init = async () => {
+      // One-click sign-in: if an invite_token is present and the user isn't
+      // already signed in, redeem it for a session before anything else.
+      const inviteToken = searchParams.get("invite_token");
+      if (inviteToken) {
+        const { data: { session: existing } } = await supabase.auth.getSession();
+        if (!existing) {
+          try {
+            const { data: redeem, error: redeemErr } = await supabase.functions.invoke(
+              "redeem-invite-token",
+              { body: { token: inviteToken } }
+            );
+            if (!redeemErr && redeem?.token_hash) {
+              await supabase.auth.verifyOtp({
+                token_hash: redeem.token_hash,
+                type: "magiclink",
+              });
+            }
+          } catch (e) {
+            console.error("Invite token sign-in failed", e);
+          }
+        }
+        // Clean the token out of the URL regardless of outcome
+        searchParams.delete("invite_token");
+        setSearchParams(searchParams, { replace: true });
+      }
+
       const {
         data: { session },
       } = await supabase.auth.getSession();
