@@ -1,15 +1,16 @@
 import { FC } from "react";
-import { Check } from "lucide-react";
+import { Check, Minus } from "lucide-react";
 import { STEP_LABELS, StepCompletion } from "./types";
 
 interface StepIndicatorProps {
   currentStep: number;
   completedSteps: Set<number>;
+  skippedSteps: Set<number>;
   completions: StepCompletion[];
   onStepClick: (step: number) => void;
 }
 
-const StepIndicator: FC<StepIndicatorProps> = ({ currentStep, completedSteps, completions, onStepClick }) => {
+const StepIndicator: FC<StepIndicatorProps> = ({ currentStep, completedSteps, skippedSteps, completions, onStepClick }) => {
   const getInitials = (stepNumber: number) => {
     const stepCompletions = completions.filter((c) => c.step_number === stepNumber);
     return stepCompletions.map((c) => {
@@ -25,6 +26,7 @@ const StepIndicator: FC<StepIndicatorProps> = ({ currentStep, completedSteps, co
         const stepNum = i + 1;
         const isActive = currentStep === stepNum;
         const isDone = completedSteps.has(stepNum);
+        const isSkipped = !isDone && skippedSteps.has(stepNum);
         const initials = getInitials(stepNum);
 
         return (
@@ -39,14 +41,22 @@ const StepIndicator: FC<StepIndicatorProps> = ({ currentStep, completedSteps, co
             <div
               className={`
                 w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all flex-shrink-0
-                ${isDone ? "bg-[#a3d7c2] text-[#173660]" : isActive ? "bg-[#1A7EC8] text-white" : "bg-[#CDD8E3] text-[#173660]"}
+                ${
+                  isDone
+                    ? "bg-[#a3d7c2] text-[#173660]"
+                    : isSkipped
+                    ? "bg-[#E2E8F0] text-[#94A3B8]"
+                    : isActive
+                    ? "bg-[#1A7EC8] text-white"
+                    : "bg-[#CDD8E3] text-[#173660]"
+                }
               `}
             >
-              {isDone ? <Check className="w-4 h-4" /> : stepNum}
+              {isDone ? <Check className="w-4 h-4" /> : isSkipped ? <Minus className="w-4 h-4" /> : stepNum}
             </div>
             <span
               className={`text-[11px] font-medium leading-tight truncate w-full ${
-                isActive ? "text-[#1A7EC8]" : "text-[#173660]/70"
+                isActive ? "text-[#1A7EC8]" : isSkipped ? "text-[#173660]/40" : "text-[#173660]/70"
               }`}
               style={{ fontFamily: "'DM Sans', sans-serif" }}
             >

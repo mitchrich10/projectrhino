@@ -122,6 +122,14 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
       const storedCollapsed = localStorage.getItem(`onboarding-collapsed-${batchId}`);
       if (storedCollapsed === "true") setCollapsed(true);
 
+      const storedSkipped = localStorage.getItem(`onboarding-skipped-${batchId}`);
+      if (storedSkipped) {
+        try {
+          const arr = JSON.parse(storedSkipped) as number[];
+          if (Array.isArray(arr)) setSkippedSteps(new Set(arr));
+        } catch { /* ignore malformed */ }
+      }
+
       setLoading(false);
     };
     load();
@@ -248,7 +256,13 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
   };
 
   const handleComplete = async () => {
+    if (!isStepValid(currentStep, data) && !skippedSteps.has(currentStep)) {
+      setShowStepError(true);
+      return;
+    }
+    setShowStepError(false);
     await markStepComplete(currentStep);
+    const next = new Set(skippedSteps); next.delete(currentStep); persistSkipped(next);
     const newData = { ...data, completed: true };
     setData(newData);
     await saveData(newData);
@@ -333,13 +347,11 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
         <StepIndicator
           currentStep={currentStep}
           completedSteps={completedSteps}
+          skippedSteps={skippedSteps}
           completions={completions}
           onStepClick={(step) => goToStep(step)}
         />
       </div>
-
-
-
 
       {/* Step content */}
       <div className="px-6 py-8 min-h-[320px]">
@@ -349,45 +361,57 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
         )}
         {currentStep === 3 && <TechStackStep data={data} onChange={handleChange} />}
         {currentStep === 4 && <PrioritiesStep data={data} onChange={handleChange} />}
+
+        {showStepError && STEP_REQUIREMENTS[currentStep] && (
+          <div className="mt-6 flex items-start gap-2 text-sm text-[#b91c1c] bg-[#fef2f2] border border-[#fecaca] rounded-lg px-4 py-3">
+            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <span>{STEP_REQUIREMENTS[currentStep]}</span>
+          </div>
+        )}
       </div>
 
-      {/* Footer */}
-      <div className="px-6 py-4 border-t border-[#CDD8E3]/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <ShareButton batchId={batchId} userId={userId} userEmail={userEmail} companyName={companyName} />
-
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          {currentStep > 1 && (
+      {/* Navigation footer */}
+      <div className="px-6 py-4 border-t border-[#CDD8E3]/50 flex items-center justify-end gap-3">
+        {currentStep > 1 && (
+          <button
+            onClick={handleBack}
+            className="h-10 px-5 text-sm font-semibold text-[#173660] border border-[#CDD8E3] rounded-lg hover:bg-[#F4F7FA] transition-colors"
+          >
+            Back
+          </button>
+        )}
+        {currentStep < 4 ? (
+          <>
             <button
-              onClick={handleBack}
-              className="h-10 px-5 text-sm font-semibold text-[#173660] border border-[#CDD8E3] rounded-lg hover:bg-[#F4F7FA] transition-colors"
+              onClick={handleSkip}
+              className="h-10 px-5 text-sm font-semibold text-[#173660]/50 hover:text-[#173660] transition-colors"
             >
-              Back
+              Skip
             </button>
-          )}
-          {currentStep < 4 ? (
-            <>
-              <button
-                onClick={handleNext}
-                className="h-10 px-5 text-sm font-semibold text-[#173660]/50 hover:text-[#173660] transition-colors"
-              >
-                Skip
-              </button>
-              <button
-                onClick={handleNext}
-                className="h-10 px-6 text-sm font-semibold text-white bg-[#1A7EC8] rounded-lg hover:bg-[#173660] transition-colors"
-              >
-                Next
-              </button>
-            </>
-          ) : (
             <button
-              onClick={handleComplete}
+              onClick={handleNext}
               className="h-10 px-6 text-sm font-semibold text-white bg-[#1A7EC8] rounded-lg hover:bg-[#173660] transition-colors"
             >
-              Finish
+              Next
             </button>
-          )}
-        </div>
+          </>
+        ) : (
+          <button
+            onClick={handleComplete}
+            className="h-10 px-6 text-sm font-semibold text-white bg-[#1A7EC8] rounded-lg hover:bg-[#173660] transition-colors"
+          >
+            Finish
+          </button>
+        )}
+      </div>
+
+      {/* Share / invite CTA — dedicated section */}
+      <div className="px-6 py-5 border-t border-[#CDD8E3]/50 bg-[#F4F7FA]/50">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#173660]/50 mb-1">Collaborate</p>
+        <p className="text-sm text-[#173660]/70 mb-3">
+          Need a teammate to fill in part of this? Invite them or share portal access.
+        </p>
+        <ShareButton batchId={batchId} userId={userId} userEmail={userEmail} companyName={companyName} />
       </div>
     </div>
   );
