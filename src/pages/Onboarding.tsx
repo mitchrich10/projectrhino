@@ -40,10 +40,10 @@ const WelcomeOverview: FC = () => (
         <img src={rhinoLogoWhite} alt="Rhino" className="h-8 w-auto opacity-80" />
       </div>
       <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-2">
-        The Crash
+        The Crash Portal
       </p>
       <h1 className="text-3xl font-bold text-white mb-3 leading-tight">
-        Welcome to the Crash
+        Welcome to The Crash Portal
       </h1>
       <p className="text-sm text-white/60 max-w-xl leading-relaxed">
         Your team's home base for Rhino partnerships, resources, and events. Get set up below so we can make sure you're plugged into everything that's relevant to you.
