@@ -176,13 +176,36 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
     setCompletions((prev) => [...prev, { ...completion, completed_at: new Date().toISOString() }]);
   };
 
+  const persistSkipped = (next: Set<number>) => {
+    setSkippedSteps(next);
+    localStorage.setItem(`onboarding-skipped-${batchId}`, JSON.stringify([...next]));
+  };
+
+  // Navigate without changing completion/skip state (used by step indicator + Back).
   const goToStep = (step: number) => {
     saveData(data);
-    markStepComplete(currentStep);
+    setShowStepError(false);
     setCurrentStep(step);
   };
 
-  const handleNext = () => { if (currentStep < 4) goToStep(currentStep + 1); };
+  const advance = (step: number) => {
+    saveData(data);
+    setShowStepError(false);
+    setCurrentStep(step);
+  };
+
+  const handleNext = () => {
+    if (!isStepValid(currentStep, data)) { setShowStepError(true); return; }
+    markStepComplete(currentStep);
+    const next = new Set(skippedSteps); next.delete(currentStep); persistSkipped(next);
+    if (currentStep < 4) advance(currentStep + 1);
+  };
+
+  const handleSkip = () => {
+    const next = new Set(skippedSteps); next.add(currentStep); persistSkipped(next);
+    if (currentStep < 4) advance(currentStep + 1);
+  };
+
   const handleBack = () => { if (currentStep > 1) goToStep(currentStep - 1); };
 
   const sendCompletionEmail = async (finalData: FounderOnboardingData) => {
