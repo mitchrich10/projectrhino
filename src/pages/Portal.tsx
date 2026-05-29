@@ -187,7 +187,7 @@ const Portal: FC = () => {
 
   // Onboarding visibility: only for invited founders who haven't submitted yet.
   // Hidden for admins, approved-domain users without an invite, and completed invitees.
-  const showOnboarding = isInvited && !!batchId && !onboardingCompleted;
+  const showOnboarding = isInvited && !!batchId && !onboardingCompleted && !isAdmin;
 
   if (loading) {
     return (
