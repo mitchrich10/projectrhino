@@ -115,7 +115,11 @@ const Portal: FC = () => {
       setHasEvents((eventsData?.length ?? 0) > 0);
       setUserEmail(email);
 
-      if (!domainData && !email.endsWith("@rhinovc.com")) {
+      // A valid invite row grants portal access regardless of approved_domains
+      // (most invitees are on gmail / their own company domains, not rhinovc.com).
+      const hasInvite = !!(inviteData as { batch_id?: string } | null)?.batch_id;
+
+      if (!domainData && !email.endsWith("@rhinovc.com") && !hasInvite) {
         // Show request access page instead of signing out
         setLoading(false);
         return;
@@ -127,7 +131,6 @@ const Portal: FC = () => {
       setUserEmail(email);
       setUserName(fullName);
 
-      const hasInvite = !!(inviteData as { batch_id?: string } | null)?.batch_id;
       setIsInvited(hasInvite);
       setBatchId((inviteData as { batch_id?: string } | null)?.batch_id ?? null);
 
