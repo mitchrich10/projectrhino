@@ -260,6 +260,9 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
       setShowStepError(true);
       return;
     }
+    setShowStepError(false);
+    await markStepComplete(currentStep);
+    const next = new Set(skippedSteps); next.delete(currentStep); persistSkipped(next);
     const newData = { ...data, completed: true };
     setData(newData);
     await saveData(newData);
