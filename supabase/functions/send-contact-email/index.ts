@@ -154,7 +154,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailPayload: Record<string, unknown> = {
       from: "Rhino Ventures Portal <portal@rhinovc.com>",
-      to: ["candace@rhinovc.com"],
+      to: ["mitch@rhinovc.com"],
       reply_to: email,
       subject: `Contact Form: ${escapeHtml(name)}`,
       html: emailHtml,
