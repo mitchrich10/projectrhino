@@ -549,7 +549,10 @@ const SubmissionsPanel: FC = () => {
 };
 
 // ── Main ───────────────────────────────────────────────────────────────────────
-type OnboardingTab = "submissions" | "steps" | "invites" | "subscribers";
+// NOTE: The legacy "Steps" tab (custom onboarding_steps) was removed from the nav.
+// It predated the current 4-step founder onboarding wizard and was unused/confusing.
+// StepsPanel is left defined but unrendered in case the data is needed later.
+type OnboardingTab = "submissions" | "invites" | "subscribers";
 
 const OnboardingAdmin: FC = () => {
   const [tab, setTab] = useState<OnboardingTab>("submissions");
@@ -557,7 +560,7 @@ const OnboardingAdmin: FC = () => {
   return (
     <div>
       <div className="flex gap-1 mb-8 border-b border-border">
-        {(["submissions", "steps", "invites", "subscribers"] as OnboardingTab[]).map((t) => (
+        {(["submissions", "invites", "subscribers"] as OnboardingTab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -570,7 +573,6 @@ const OnboardingAdmin: FC = () => {
         ))}
       </div>
       {tab === "submissions" && <SubmissionsPanel />}
-      {tab === "steps" && <StepsPanel />}
       {tab === "invites" && <InvitePanel />}
       {tab === "subscribers" && <SubscribersPanel />}
     </div>
