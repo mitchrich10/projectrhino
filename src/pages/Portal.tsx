@@ -62,11 +62,14 @@ const Portal: FC = () => {
               "redeem-invite-token",
               { body: { token: inviteToken } }
             );
-            if (!redeemErr && redeem?.token_hash) {
-              await supabase.auth.verifyOtp({
+            if (redeemErr) {
+              console.error("redeem-invite-token failed", redeemErr);
+            } else if (redeem?.token_hash) {
+              const { error: otpErr } = await supabase.auth.verifyOtp({
                 token_hash: redeem.token_hash,
                 type: "magiclink",
               });
+              if (otpErr) console.error("verifyOtp failed", otpErr);
             }
           } catch (e) {
             console.error("Invite token sign-in failed", e);
