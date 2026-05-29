@@ -364,43 +364,48 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
         )}
       </div>
 
-      {/* Footer */}
-      <div className="px-6 py-4 border-t border-[#CDD8E3]/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <ShareButton batchId={batchId} userId={userId} userEmail={userEmail} companyName={companyName} />
-
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          {currentStep > 1 && (
+      {/* Navigation footer */}
+      <div className="px-6 py-4 border-t border-[#CDD8E3]/50 flex items-center justify-end gap-3">
+        {currentStep > 1 && (
+          <button
+            onClick={handleBack}
+            className="h-10 px-5 text-sm font-semibold text-[#173660] border border-[#CDD8E3] rounded-lg hover:bg-[#F4F7FA] transition-colors"
+          >
+            Back
+          </button>
+        )}
+        {currentStep < 4 ? (
+          <>
             <button
-              onClick={handleBack}
-              className="h-10 px-5 text-sm font-semibold text-[#173660] border border-[#CDD8E3] rounded-lg hover:bg-[#F4F7FA] transition-colors"
+              onClick={handleSkip}
+              className="h-10 px-5 text-sm font-semibold text-[#173660]/50 hover:text-[#173660] transition-colors"
             >
-              Back
+              Skip
             </button>
-          )}
-          {currentStep < 4 ? (
-            <>
-              <button
-                onClick={handleNext}
-                className="h-10 px-5 text-sm font-semibold text-[#173660]/50 hover:text-[#173660] transition-colors"
-              >
-                Skip
-              </button>
-              <button
-                onClick={handleNext}
-                className="h-10 px-6 text-sm font-semibold text-white bg-[#1A7EC8] rounded-lg hover:bg-[#173660] transition-colors"
-              >
-                Next
-              </button>
-            </>
-          ) : (
             <button
-              onClick={handleComplete}
+              onClick={handleNext}
               className="h-10 px-6 text-sm font-semibold text-white bg-[#1A7EC8] rounded-lg hover:bg-[#173660] transition-colors"
             >
-              Finish
+              Next
             </button>
-          )}
-        </div>
+          </>
+        ) : (
+          <button
+            onClick={handleComplete}
+            className="h-10 px-6 text-sm font-semibold text-white bg-[#1A7EC8] rounded-lg hover:bg-[#173660] transition-colors"
+          >
+            Finish
+          </button>
+        )}
+      </div>
+
+      {/* Share / invite CTA — dedicated section */}
+      <div className="px-6 py-5 border-t border-[#CDD8E3]/50 bg-[#F4F7FA]/50">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#173660]/50 mb-1">Collaborate</p>
+        <p className="text-sm text-[#173660]/70 mb-3">
+          Need a teammate to fill in part of this? Invite them or share portal access.
+        </p>
+        <ShareButton batchId={batchId} userId={userId} userEmail={userEmail} companyName={companyName} />
       </div>
     </div>
   );
