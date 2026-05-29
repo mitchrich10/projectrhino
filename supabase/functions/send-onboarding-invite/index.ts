@@ -173,6 +173,7 @@ serve(async (req: Request) => {
     const inviteRows = recipients.map((r) => ({
       email: r.email,
       invitee_name: r.name ?? null,
+      invitee_company: r.company ?? null,
       invited_by: user.email!,
       note: note ?? null,
       batch_id: batchId,
@@ -185,7 +186,7 @@ serve(async (req: Request) => {
     const { data: upserted, error: upsertError } = await supabase
       .from("onboarding_invites")
       .upsert(inviteRows, { onConflict: "email" })
-      .select("email, invitee_name, invite_token");
+      .select("email, invitee_name, invitee_company, invite_token");
 
     if (upsertError || !upserted) {
       console.error("Upsert failed:", upsertError);
