@@ -50,7 +50,6 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
   const [currentStep, setCurrentStep] = useState(targetStep ?? 1);
   const [collapsed, setCollapsed] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [rhinoContacts, setRhinoContacts] = useState<string[]>([]);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
