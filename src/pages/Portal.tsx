@@ -62,11 +62,14 @@ const Portal: FC = () => {
               "redeem-invite-token",
               { body: { token: inviteToken } }
             );
-            if (!redeemErr && redeem?.token_hash) {
-              await supabase.auth.verifyOtp({
+            if (redeemErr) {
+              console.error("redeem-invite-token failed", redeemErr);
+            } else if (redeem?.token_hash) {
+              const { error: otpErr } = await supabase.auth.verifyOtp({
                 token_hash: redeem.token_hash,
                 type: "magiclink",
               });
+              if (otpErr) console.error("verifyOtp failed", otpErr);
             }
           } catch (e) {
             console.error("Invite token sign-in failed", e);
@@ -115,7 +118,11 @@ const Portal: FC = () => {
       setHasEvents((eventsData?.length ?? 0) > 0);
       setUserEmail(email);
 
-      if (!domainData && !email.endsWith("@rhinovc.com")) {
+      // A valid invite row grants portal access regardless of approved_domains
+      // (most invitees are on gmail / their own company domains, not rhinovc.com).
+      const hasInvite = !!(inviteData as { batch_id?: string } | null)?.batch_id;
+
+      if (!domainData && !email.endsWith("@rhinovc.com") && !hasInvite) {
         // Show request access page instead of signing out
         setLoading(false);
         return;
@@ -127,7 +134,6 @@ const Portal: FC = () => {
       setUserEmail(email);
       setUserName(fullName);
 
-      const hasInvite = !!(inviteData as { batch_id?: string } | null)?.batch_id;
       setIsInvited(hasInvite);
       setBatchId((inviteData as { batch_id?: string } | null)?.batch_id ?? null);
 
@@ -176,8 +182,8 @@ const Portal: FC = () => {
     );
   }
 
-  // Show request access page for unrecognized domains
-  const domainApproved = company?.company_name !== "Partner" || isAdmin;
+  // Show request access page for unrecognized domains (invited users always allowed)
+  const domainApproved = company?.company_name !== "Partner" || isAdmin || isInvited;
   if (!domainApproved && userEmail) {
     return <RequestAccess email={userEmail} />;
   }

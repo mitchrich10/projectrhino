@@ -43,33 +43,35 @@ const buildEmailHtml = (opts: {
   portalUrl: string;
 }) => {
   const greeting = opts.greetingName ? `Hi ${opts.greetingName},` : "Hi there,";
+  // One font stack used everywhere for consistent rendering across clients.
+  const FONT = "Arial, Helvetica, sans-serif";
   return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <div style="font-family: ${FONT}; max-width: 600px; margin: 0 auto;">
       <div style="background: #173660; padding: 24px 32px;">
-        <h1 style="color: #fff; font-size: 22px; font-weight: 900; letter-spacing: -1px; margin: 0; text-transform: uppercase;">RHINO</h1>
-        <p style="color: #aaa; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin: 2px 0 0;">Partner Portal</p>
+        <h1 style="font-family: ${FONT}; color: #fff; font-size: 22px; font-weight: bold; letter-spacing: -1px; margin: 0; text-transform: uppercase;">RHINO</h1>
+        <p style="font-family: ${FONT}; color: #aaa; font-size: 10px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; margin: 2px 0 0;">Partner Portal</p>
       </div>
       <div style="padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
-        <p style="color: #173660; font-size: 14px; font-weight: 700; margin: 0 0 20px;">
+        <p style="font-family: ${FONT}; color: #173660; font-size: 14px; font-weight: bold; margin: 0 0 20px;">
           ${opts.inviterName} from Rhino Ventures invited you to the Crash.
         </p>
-        <p style="color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 8px;">${greeting}</p>
-        <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
+        <p style="font-family: ${FONT}; color: #333; font-size: 15px; line-height: 1.6; margin: 0 0 8px;">${greeting}</p>
+        <p style="font-family: ${FONT}; color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
           Welcome to the Crash — Rhino's portfolio company portal. Inside you'll find:
         </p>
-        <ul style="color: #555; font-size: 14px; line-height: 1.7; margin: 0 0 16px; padding-left: 20px;">
-          <li>Curated partnerships and discounts (Stripe, Carta, Notion, AWS, and 10+ more)</li>
-          <li>A library of founder resources (financing playbook, board meeting templates, options compensation tools)</li>
+        <ul style="font-family: ${FONT}; color: #555; font-size: 14px; line-height: 1.7; margin: 0 0 16px; padding-left: 20px;">
+          <li>Curated partnerships and discounts across cloud, finance, hiring, and productivity tools</li>
+          <li>A library of founder resources covering fundraising, governance, compensation, and hiring</li>
           <li>A request channel for intros, partnerships, and anything else you need from the Rhino team</li>
         </ul>
-        <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
+        <p style="font-family: ${FONT}; color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
           To get started, click below to sign in. There's a brief onboarding flow to share your brand assets, key contacts, tech stack, and current priorities — so we can make sure you're plugged into everything relevant.
         </p>
-        ${opts.note ? `<p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px; padding: 12px 16px; background: #f4f7fa; border-left: 3px solid #1A7EC8;">${opts.note}</p>` : ""}
-        <a href="${opts.portalUrl}" style="display: inline-block; background: #1A7EC8; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 14px 28px; text-decoration: none; border-radius: 4px; margin: 8px 0 0;">
+        ${opts.note ? `<p style="font-family: ${FONT}; color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px; padding: 12px 16px; background: #f4f7fa; border-left: 3px solid #1A7EC8;">${opts.note}</p>` : ""}
+        <a href="${opts.portalUrl}" style="font-family: ${FONT}; display: inline-block; background: #1A7EC8; color: #fff; font-size: 12px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; padding: 14px 28px; text-decoration: none; border-radius: 4px; margin: 8px 0 0;">
           Access the Portal →
         </a>
-        <p style="color: #999; font-size: 11px; margin: 24px 0 0;">
+        <p style="font-family: ${FONT}; color: #999; font-size: 11px; margin: 24px 0 0;">
           This sign-in link is unique to you and expires in ${TOKEN_TTL_HOURS} hours. If you didn't expect this email, you can safely ignore it.
         </p>
       </div>
