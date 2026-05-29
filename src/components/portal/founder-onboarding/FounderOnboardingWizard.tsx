@@ -341,13 +341,11 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
         <StepIndicator
           currentStep={currentStep}
           completedSteps={completedSteps}
+          skippedSteps={skippedSteps}
           completions={completions}
           onStepClick={(step) => goToStep(step)}
         />
       </div>
-
-
-
 
       {/* Step content */}
       <div className="px-6 py-8 min-h-[320px]">
@@ -357,6 +355,13 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
         )}
         {currentStep === 3 && <TechStackStep data={data} onChange={handleChange} />}
         {currentStep === 4 && <PrioritiesStep data={data} onChange={handleChange} />}
+
+        {showStepError && STEP_REQUIREMENTS[currentStep] && (
+          <div className="mt-6 flex items-start gap-2 text-sm text-[#b91c1c] bg-[#fef2f2] border border-[#fecaca] rounded-lg px-4 py-3">
+            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <span>{STEP_REQUIREMENTS[currentStep]}</span>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
