@@ -204,14 +204,42 @@ const InvitePanel: FC = () => {
     );
   };
 
+  // Parse one recipient per line. Supported formats per line:
+  //   email@company.com
+  //   email@company.com, Jane Doe
+  //   Jane Doe <email@company.com>
+  const parseRecipients = (raw: string): { email: string; name?: string }[] => {
+    return raw
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        // "Name <email>" format
+        const angle = line.match(/^(.*?)<([^>]+)>$/);
+        if (angle) {
+          const name = angle[1].trim().replace(/[",]/g, "").trim();
+          return { email: angle[2].trim().toLowerCase(), name: name || undefined };
+        }
+        // "email, Name" or "email Name" / comma / semicolon separated
+        const parts = line.split(/[,;]+/).map((p) => p.trim()).filter(Boolean);
+        const emailPart = parts.find((p) => p.includes("@"));
+        const namePart = parts.find((p) => !p.includes("@"));
+        return {
+          email: (emailPart ?? line).toLowerCase(),
+          name: namePart || undefined,
+        };
+      })
+      .filter((r) => r.email.includes("@"));
+  };
+
   const handleSend = async () => {
-    const emails = emailInput.split(/[\n,;]+/).map((e) => e.trim()).filter(Boolean);
-    if (!emails.length) return;
+    const recipients = parseRecipients(emailInput);
+    if (!recipients.length) return;
     setSending(true); setResults(null);
     const finalContacts = Array.from(new Set(["candace@rhinovc.com", ...assignedContacts]));
     const { data, error } = await supabase.functions.invoke("send-onboarding-invite", {
       body: {
-        emails,
+        recipients,
         note: note.trim() || undefined,
         assignedRhinoContacts: finalContacts,
       },
