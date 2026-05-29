@@ -44,17 +44,9 @@ const buildEmailHtml = (opts: {
   note?: string;
   portalUrl: string;
 }) => {
-  // "Hi Jane, welcome to the Crash on behalf of Acme Inc," when both are present.
-  let greeting: string;
-  if (opts.greetingName && opts.greetingCompany) {
-    greeting = `Hi ${opts.greetingName}, welcome to the Crash on behalf of ${opts.greetingCompany},`;
-  } else if (opts.greetingName) {
-    greeting = `Hi ${opts.greetingName},`;
-  } else if (opts.greetingCompany) {
-    greeting = `Hi ${opts.greetingCompany} team,`;
-  } else {
-    greeting = "Hi there,";
-  }
+  // Greeting is by name only. The recipient's own company name is NOT used here
+  // ("on behalf of [Company]" doesn't parse) — it appears in the wizard heading.
+  const greeting = opts.greetingName ? `Hi ${opts.greetingName},` : "Hi there,";
   // One font stack used everywhere. Declared inline on EVERY element because
   // most email clients (Gmail, Outlook) strip <style> blocks and fall back to
   // their own default font otherwise.
@@ -71,11 +63,11 @@ const buildEmailHtml = (opts: {
       </div>
       <div style="${base} padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
         <p style="${base} color: #173660; font-size: 14px; font-weight: bold; line-height: 1.6; margin: 0 0 20px;">
-          ${opts.inviterName} from Rhino Ventures invited you to the Crash.
+          ${opts.inviterName} from Rhino Ventures invited you to The Crash Portal.
         </p>
         <p style="${body} margin: 0 0 8px;">${greeting}</p>
         <p style="${body} margin: 0 0 16px;">
-          Welcome to the Crash — Rhino's portfolio company portal. Inside you'll find:
+          Welcome to The Crash Portal — Rhino's home for portfolio companies. Inside you'll find:
         </p>
         <ul style="${body} margin: 0 0 16px; padding-left: 20px;">
           <li style="${body} margin: 0 0 6px;">Curated partnerships and discounts across cloud, finance, hiring, and productivity tools</li>
@@ -218,7 +210,7 @@ serve(async (req: Request) => {
           body: JSON.stringify({
             from: "Rhino Ventures Portal <portal@rhinovc.com>",
             to: [row.email],
-            subject: `${inviterName} invited you to the Crash — Rhino Ventures`,
+            subject: `${inviterName} invited you to The Crash Portal | Rhino Ventures`,
             html: emailHtml,
           }),
         });
