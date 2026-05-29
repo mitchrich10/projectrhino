@@ -141,6 +141,7 @@ serve(async (req: Request) => {
       .map((r) => ({
         email: (r.email ?? "").trim().toLowerCase(),
         name: r.name?.trim() || undefined,
+        company: r.company?.trim() || undefined,
       }))
       .filter((r) => r.email.includes("@"));
 
