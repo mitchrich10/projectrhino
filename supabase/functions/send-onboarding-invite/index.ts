@@ -29,6 +29,7 @@ const corsHeaders = {
 interface Recipient {
   email: string;
   name?: string;
+  company?: string;
 }
 
 const inviterDisplayName = (email?: string | null): string => {
@@ -38,11 +39,22 @@ const inviterDisplayName = (email?: string | null): string => {
 
 const buildEmailHtml = (opts: {
   greetingName?: string;
+  greetingCompany?: string;
   inviterName: string;
   note?: string;
   portalUrl: string;
 }) => {
-  const greeting = opts.greetingName ? `Hi ${opts.greetingName},` : "Hi there,";
+  // "Hi Jane, welcome to the Crash on behalf of Acme Inc," when both are present.
+  let greeting: string;
+  if (opts.greetingName && opts.greetingCompany) {
+    greeting = `Hi ${opts.greetingName}, welcome to the Crash on behalf of ${opts.greetingCompany},`;
+  } else if (opts.greetingName) {
+    greeting = `Hi ${opts.greetingName},`;
+  } else if (opts.greetingCompany) {
+    greeting = `Hi ${opts.greetingCompany} team,`;
+  } else {
+    greeting = "Hi there,";
+  }
   // One font stack used everywhere. Declared inline on EVERY element because
   // most email clients (Gmail, Outlook) strip <style> blocks and fall back to
   // their own default font otherwise.
@@ -129,6 +141,7 @@ serve(async (req: Request) => {
       .map((r) => ({
         email: (r.email ?? "").trim().toLowerCase(),
         name: r.name?.trim() || undefined,
+        company: r.company?.trim() || undefined,
       }))
       .filter((r) => r.email.includes("@"));
 
@@ -160,6 +173,7 @@ serve(async (req: Request) => {
     const inviteRows = recipients.map((r) => ({
       email: r.email,
       invitee_name: r.name ?? null,
+      invitee_company: r.company ?? null,
       invited_by: user.email!,
       note: note ?? null,
       batch_id: batchId,
@@ -172,7 +186,7 @@ serve(async (req: Request) => {
     const { data: upserted, error: upsertError } = await supabase
       .from("onboarding_invites")
       .upsert(inviteRows, { onConflict: "email" })
-      .select("email, invitee_name, invite_token");
+      .select("email, invitee_name, invitee_company, invite_token");
 
     if (upsertError || !upserted) {
       console.error("Upsert failed:", upsertError);
@@ -184,11 +198,12 @@ serve(async (req: Request) => {
     // Send ONE personalized email per recipient (each has a unique sign-in token)
     const results: { email: string; success: boolean; error?: string }[] = [];
 
-    for (const row of upserted as { email: string; invitee_name: string | null; invite_token: string }[]) {
+    for (const row of upserted as { email: string; invitee_name: string | null; invitee_company: string | null; invite_token: string }[]) {
       try {
         const portalUrl = `${PORTAL_BASE_URL}/portal?invite_token=${row.invite_token}`;
         const emailHtml = buildEmailHtml({
           greetingName: row.invitee_name ?? undefined,
+          greetingCompany: row.invitee_company ?? undefined,
           inviterName,
           note: note,
           portalUrl,

@@ -17,6 +17,7 @@ interface Invite {
   created_at: string;
   note: string | null;
   invitee_name?: string | null;
+  invitee_company?: string | null;
   assigned_rhino_contacts?: string[] | null;
 }
 
@@ -209,25 +210,39 @@ const InvitePanel: FC = () => {
   //   email@company.com
   //   email@company.com, Jane Doe
   //   Jane Doe <email@company.com>
-  const parseRecipients = (raw: string): { email: string; name?: string }[] => {
+  //   Jane Doe, email@company.com, Acme Inc        (name, email, company)
+  //   Acme Inc - Jane Doe <email@company.com>       (company - name <email>)
+  const parseRecipients = (raw: string): { email: string; name?: string; company?: string }[] => {
     return raw
       .split(/\n+/)
       .map((line) => line.trim())
       .filter(Boolean)
       .map((line) => {
-        // "Name <email>" format
+        // "Name <email>" or "Company - Name <email>" format
         const angle = line.match(/^(.*?)<([^>]+)>$/);
         if (angle) {
-          const name = angle[1].trim().replace(/[",]/g, "").trim();
-          return { email: angle[2].trim().toLowerCase(), name: name || undefined };
+          const email = angle[2].trim().toLowerCase();
+          let prefix = angle[1].trim().replace(/[",]/g, "").trim();
+          let company: string | undefined;
+          let name: string | undefined;
+          if (prefix.includes(" - ")) {
+            const [co, nm] = prefix.split(/\s+-\s+/);
+            company = co?.trim() || undefined;
+            name = nm?.trim() || undefined;
+          } else {
+            name = prefix || undefined;
+          }
+          return { email, name, company };
         }
-        // "email, Name" or "email Name" / comma / semicolon separated
+        // comma / semicolon separated: any order, email detected by "@".
+        // Non-email parts: first = name, second = company.
         const parts = line.split(/[,;]+/).map((p) => p.trim()).filter(Boolean);
         const emailPart = parts.find((p) => p.includes("@"));
-        const namePart = parts.find((p) => !p.includes("@"));
+        const nonEmail = parts.filter((p) => !p.includes("@"));
         return {
           email: (emailPart ?? line).toLowerCase(),
-          name: namePart || undefined,
+          name: nonEmail[0] || undefined,
+          company: nonEmail[1] || undefined,
         };
       })
       .filter((r) => r.email.includes("@"));
@@ -270,7 +285,7 @@ const InvitePanel: FC = () => {
               className="w-full bg-secondary/30 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none font-mono"
               placeholder="jane@company.com, Jane Doe&#10;john@company.com, John Smith&#10;mark@company.com&#10;&#10;(one recipient per line)"
             />
-            <p className="text-[10px] text-muted-foreground mt-1">One recipient per line. Add a name after the email to personalize the greeting — e.g. <span className="font-mono">jane@company.com, Jane Doe</span>. Name is optional.</p>
+            <p className="text-[10px] text-muted-foreground mt-1">One recipient per line. Add a name and (optionally) company to personalize the greeting — e.g. <span className="font-mono">Jane Doe, jane@company.com, Acme Inc</span> or <span className="font-mono">Acme Inc - Jane Doe &lt;jane@company.com&gt;</span>. Name and company are optional.</p>
 
           </div>
 
@@ -353,7 +368,7 @@ const InvitePanel: FC = () => {
               <div key={inv.id} className="flex items-center gap-4 border border-border rounded-lg px-4 py-3 bg-secondary/10">
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-mono text-foreground truncate">
-                    {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name} · </span> : null}{inv.email}
+                    {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name}{inv.invitee_company ? ` (${inv.invitee_company})` : ""} · </span> : inv.invitee_company ? <span className="font-sans font-bold not-italic">{inv.invitee_company} · </span> : null}{inv.email}
                   </p>
                   {inv.assigned_rhino_contacts && inv.assigned_rhino_contacts.length > 0 && (
                     <p className="text-[10px] text-muted-foreground truncate mt-0.5">
@@ -549,7 +564,10 @@ const SubmissionsPanel: FC = () => {
 };
 
 // ── Main ───────────────────────────────────────────────────────────────────────
-type OnboardingTab = "submissions" | "steps" | "invites" | "subscribers";
+// NOTE: The legacy "Steps" tab (custom onboarding_steps) was removed from the nav.
+// It predated the current 4-step founder onboarding wizard and was unused/confusing.
+// StepsPanel is left defined but unrendered in case the data is needed later.
+type OnboardingTab = "submissions" | "invites" | "subscribers";
 
 const OnboardingAdmin: FC = () => {
   const [tab, setTab] = useState<OnboardingTab>("submissions");
@@ -557,7 +575,7 @@ const OnboardingAdmin: FC = () => {
   return (
     <div>
       <div className="flex gap-1 mb-8 border-b border-border">
-        {(["submissions", "steps", "invites", "subscribers"] as OnboardingTab[]).map((t) => (
+        {(["submissions", "invites", "subscribers"] as OnboardingTab[]).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -570,7 +588,6 @@ const OnboardingAdmin: FC = () => {
         ))}
       </div>
       {tab === "submissions" && <SubmissionsPanel />}
-      {tab === "steps" && <StepsPanel />}
       {tab === "invites" && <InvitePanel />}
       {tab === "subscribers" && <SubscribersPanel />}
     </div>
