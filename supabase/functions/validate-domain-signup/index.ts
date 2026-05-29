@@ -49,6 +49,26 @@ Deno.serve(async (req) => {
     }
 
     if (!data) {
+      // No approved domain — but an actively invited user (e.g. a portco founder
+      // on gmail / their own domain) should still be able to sign in. Check for
+      // an unredeemed onboarding invite before rejecting.
+      const { data: invite } = await supabase
+        .from("onboarding_invites")
+        .select("email, token_expires_at, token_redeemed_at")
+        .eq("email", email.toLowerCase())
+        .maybeSingle();
+
+      const inviteActive = !!invite &&
+        !invite.token_redeemed_at &&
+        (!invite.token_expires_at || new Date(invite.token_expires_at) > new Date());
+
+      if (inviteActive) {
+        return new Response(
+          JSON.stringify({ allowed: true, company_name: "Partner" }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       return new Response(
         JSON.stringify({
           allowed: false,
