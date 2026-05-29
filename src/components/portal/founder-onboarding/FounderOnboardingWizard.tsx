@@ -256,7 +256,10 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
   };
 
   const handleComplete = async () => {
-    await markStepComplete(currentStep);
+    if (!isStepValid(currentStep, data) && !skippedSteps.has(currentStep)) {
+      setShowStepError(true);
+      return;
+    }
     const newData = { ...data, completed: true };
     setData(newData);
     await saveData(newData);
