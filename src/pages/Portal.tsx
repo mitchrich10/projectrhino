@@ -32,6 +32,7 @@ const Portal: FC = () => {
   const [userName, setUserName] = useState("");
   const [batchId, setBatchId] = useState<string | null>(null);
   const [isInvited, setIsInvited] = useState(false);
+  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
   const [shareTargetStep, setShareTargetStep] = useState<number | null>(null);
   const [hasEvents, setHasEvents] = useState(false);
   const [copiedPortal, setCopiedPortal] = useState(false);
@@ -135,7 +136,18 @@ const Portal: FC = () => {
       setUserName(fullName);
 
       setIsInvited(hasInvite);
-      setBatchId((inviteData as { batch_id?: string } | null)?.batch_id ?? null);
+      const inviteBatchId = (inviteData as { batch_id?: string } | null)?.batch_id ?? null;
+      setBatchId(inviteBatchId);
+
+      // Check if the founder already submitted their onboarding (so we can hide the wizard)
+      if (inviteBatchId) {
+        const { data: onb } = await supabase
+          .from("founder_onboarding" as any)
+          .select("completed")
+          .eq("batch_id", inviteBatchId)
+          .maybeSingle();
+        setOnboardingCompleted(!!(onb as { completed?: boolean } | null)?.completed);
+      }
 
       // Load admin preview companies
       if (adminUser) {
@@ -171,8 +183,9 @@ const Portal: FC = () => {
 
   const logoSrc = company?.logo_key ? companyLogos[company.logo_key] : null;
 
-  // Onboarding visibility: only for invited users or admins
-  const showOnboarding = (isInvited && batchId) || isAdmin;
+  // Onboarding visibility: only for invited founders who haven't submitted yet.
+  // Hidden for admins, approved-domain users without an invite, and completed invitees.
+  const showOnboarding = isInvited && !!batchId && !onboardingCompleted;
 
   if (loading) {
     return (
