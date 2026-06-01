@@ -36,8 +36,9 @@ const PartnerLogoOrBadge: FC<Props> = ({ name, size = "sm", ...source }) => {
         decoding="async"
         className="object-contain block mx-auto"
         style={{
-          width: "100%",
-          maxHeight: size === "lg" ? 56 : 48,
+          width: "auto",
+          height: "auto",
+          maxHeight: size === "lg" ? 80 : 68,
           maxWidth: 180,
           mixBlendMode: needsBlend ? "multiply" : undefined,
         }}
