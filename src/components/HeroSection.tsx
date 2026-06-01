@@ -45,8 +45,8 @@ const HeroSection: FC = () => {
         <div className="max-w-3xl">
           <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9] mb-8 text-white">
             Scaling{" "}
-            <span 
-              className={`text-primary inline-block transition-all duration-300 ${
+            <span
+              className={`text-primary inline-block transition-[opacity,transform] duration-300 ease-out [will-change:opacity,transform] [backface-visibility:hidden] [transform:translateZ(0)] ${
                 isAnimating ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
               }`}
             >
