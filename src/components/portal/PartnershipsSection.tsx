@@ -285,7 +285,7 @@ const COMING_SOON_ITEMS = [
   { name: "Outsourced Finance & Bookkeeping", category: "Finance" },
   { name: "Marketing / Brand Agency", category: "Marketing" },
   { name: "Insurance Partner", category: "Insurance" },
-  { name: "Benefits / Recruiting Partner", category: "HR & Benefits" },
+  { name: "Benefits Partner", category: "HR & Benefits" },
 ];
 
 const ComingSoonTile: FC<{ name: string }> = ({ name }) => (
