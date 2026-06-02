@@ -114,7 +114,7 @@ export default function InvestmentBriefBuilder() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
         <h1 className="text-2xl font-semibold text-gray-900 mb-1">Project Proposal Template</h1>
         <p className="text-sm text-gray-500 mb-8 max-w-2xl leading-relaxed">
-          We highly recommend all investors at your companies be tied to hypotheses on the impact to the business. Use this as a simple guide to structure company project proposals.
+          We highly recommend all investments at your companies be tied to hypotheses on the impact to the business. Use this as a simple guide to structure company project proposals.
         </p>
 
         {/* Header fields */}
