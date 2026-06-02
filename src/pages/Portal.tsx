@@ -333,7 +333,7 @@ const Portal: FC = () => {
                 <Handshake className="w-5 h-5 text-[#1A7EC8] mb-3" />
                 <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Partnerships</p>
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Discounts, credits, and tools available to Crash companies — from cloud to hiring.
+                  Discounts, credits, and tools available to Crash companies.
                 </p>
               </a>
               <a
