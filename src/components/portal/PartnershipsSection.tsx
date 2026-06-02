@@ -348,7 +348,7 @@ const PartnershipsSection: FC = () => {
           ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).contains("item_type", ["partnership"]).eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
-      setPartnerships((partnerData as Partnership[]) ?? []);
+      setPartnerships(((partnerData as unknown) as Partnership[]) ?? []);
       setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
       if (session?.user?.email) {
         const domain = session.user.email.split("@")[1];
