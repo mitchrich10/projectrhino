@@ -309,7 +309,7 @@ const Portal: FC = () => {
                   Crash Portal
                 </h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
-                  Partnerships, resources, and tools for Crash companies.
+                  Partnerships, resources, and tools for Rhino portfolio companies.
                 </p>
                 {/* Share with your team button */}
                 <button
@@ -338,7 +338,7 @@ const Portal: FC = () => {
                 <Handshake className="w-5 h-5 text-[#1A7EC8] mb-3" />
                 <p className="text-xs font-bold uppercase tracking-widest text-white mb-1">Partnerships</p>
                 <p className="text-xs text-white/50 leading-relaxed">
-                  Discounts, credits, and tools available to Crash companies.
+                  Discounts, credits, and tools available to Rhino portfolio companies.
                 </p>
               </a>
               <a

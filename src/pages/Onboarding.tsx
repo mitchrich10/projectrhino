@@ -55,7 +55,7 @@ const WelcomeOverview: FC = () => (
       <div className="bg-white border border-[#CDD8E3] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-shadow">
         <Handshake className="w-5 h-5 text-[#1A7EC8] mb-3" />
         <p className="text-xs font-bold uppercase tracking-widest text-[#173660] mb-1">Partnerships</p>
-        <p className="text-xs text-[#173660]/50 leading-relaxed">Discounts, credits, and tools available to Crash companies — from cloud infrastructure to hiring platforms.</p>
+        <p className="text-xs text-[#173660]/50 leading-relaxed">Discounts, credits, and tools available to Rhino portfolio companies — from cloud infrastructure to hiring platforms.</p>
       </div>
       <div className="bg-white border border-[#CDD8E3] rounded-xl p-5 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-shadow">
         <BookOpen className="w-5 h-5 text-[#1A7EC8] mb-3" />
