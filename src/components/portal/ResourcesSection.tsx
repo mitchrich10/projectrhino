@@ -161,7 +161,7 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
   // Financing guide is now handled by Fundraising Toolkit card
   "Governance:project-proposal": {
     title: "Project Proposal Template",
-    description: "All company investments should be tied to hypotheses on the impact to the business. Use this guided form to structure proposals and export a clean Word document, or download a blank template.",
+    description: "We highly recommend all investors at your companies be tied to hypotheses on the impact to the business. Use this as a simple guide to structure company project proposals.",
     icon: FileText,
     to: "/investment-brief",
     fileType: "Interactive Tool",
