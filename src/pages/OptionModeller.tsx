@@ -1100,11 +1100,9 @@ const OptionModeller: FC = () => {
                                     {hasBase ? (pgInMoney ? fmtCur(pg.gainPerOption) : "$0.00") : "—"}
                                   </td>
                                   <td className="px-4 py-2 text-right font-mono text-xs" style={{ color: pgColor }}>
-                                    {hasBase ? (pgInMoney ? fmtLargeCur(pg.vestedValue) : "$0.00") : "—"}
-                                  </td>
-                                  <td className="px-4 py-2 text-right font-mono text-xs" style={{ color: pgColor }}>
                                     {hasBase ? (pgInMoney ? fmtLargeCur(pg.fullGrantValue) : "$0.00") : "—"}
                                   </td>
+
                                   <td className="px-4 py-2 text-right text-xs" style={{ color: MUTED }}>—</td>
                                   <td />
                                 </tr>
