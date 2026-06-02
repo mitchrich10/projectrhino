@@ -158,6 +158,13 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     to: "/option-modeller",
     fileType: "Interactive Tool",
   },
+  "Compensation & Equity:commission-calculator": {
+    title: "Sales Commission Model",
+    description: "Interactive tool to design and stress-test sales commission plans across quotas, accelerators, and attainment scenarios.",
+    icon: Calculator,
+    to: "/commission-calculator",
+    fileType: "Interactive Tool",
+  },
   // Financing guide is now handled by Fundraising Toolkit card
   "Governance:project-proposal": {
     title: "Project Proposal Template",
