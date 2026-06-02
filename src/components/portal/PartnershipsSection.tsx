@@ -302,6 +302,34 @@ const ComingSoonTile: FC<{ name: string }> = ({ name }) => (
 
 const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
+// ── Skeleton placeholder (matches PartnershipTile dimensions) ──
+const SkeletonTile: FC = () => (
+  <div
+    className="relative flex flex-col items-center justify-center rounded-lg bg-white border border-[#DDE4EC] w-full overflow-hidden"
+    style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
+  >
+    <div className="h-9 w-28 rounded-md bg-[#E8EEF4] animate-pulse" />
+  </div>
+);
+
+const PartnershipsSkeleton: FC = () => (
+  <div className="space-y-8" aria-busy="true" aria-label="Loading partnerships">
+    {[0, 1].map((group) => (
+      <div key={group}>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-5 rounded-full bg-[#CDD8E3]" />
+          <div className="h-3 w-32 rounded bg-[#E8EEF4] animate-pulse" />
+        </div>
+        <div className={GRID_CLASSES}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonTile key={i} />
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 // ── Main Section ──
 const PartnershipsSection: FC = () => {
   const [partnerships, setPartnerships] = useState<Partnership[]>([]);
