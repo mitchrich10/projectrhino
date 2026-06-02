@@ -979,6 +979,17 @@ const OptionModeller: FC = () => {
                 </div>
               </div>
 
+              {/* Full-vesting assumption flag */}
+              <div
+                className="px-5 py-2.5 text-[11px] flex items-start gap-2"
+                style={{ background: "#FFFACD", borderBottom: `1px solid ${SLATE}`, color: NAVY }}
+              >
+                <span style={{ fontWeight: 700 }}>Assumption:</span>
+                <span style={{ color: MUTED }}>
+                  All scenario values assume your options are <strong style={{ color: NAVY }}>fully vested</strong> — they show the value of your entire grant at exit, not just the portion vested today.
+                </span>
+              </div>
+
               {/* Table */}
               <div className="relative">
                 {!tableReady && (
