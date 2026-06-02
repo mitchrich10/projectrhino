@@ -342,7 +342,7 @@ const PartnershipsSection: FC = () => {
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const [{ data: partnerData }, { data: approvedData }] = await Promise.all([
-        supabase.from("partnerships").select("*").order("display_order", { ascending: true }).order("name", { ascending: true }),
+        prefetchPartnerships(),
         session
           ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).contains("item_type", ["partnership"]).eq("status", "approved")
           : Promise.resolve({ data: [] }),
