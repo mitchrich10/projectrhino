@@ -304,7 +304,7 @@ const Portal: FC = () => {
                   Crash Portal
                 </h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
-                  Partnerships, resources, and tools for Rhino companies.
+                  Partnerships, resources, and tools for Crash companies.
                 </p>
                 {/* Share with your team button */}
                 <button

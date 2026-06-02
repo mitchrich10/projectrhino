@@ -41,7 +41,7 @@ const emptyForm = () => ({
   detail_pdf_url: "",
 });
 
-const DEFAULT_MAIL_SUBJECT = "Rhino Ventures Partnership Inquiry";
+const DEFAULT_MAIL_SUBJECT = "Rhino Portfolio Partnership Inquiry";
 
 const parseMailto = (url: string): { email: string; subject: string } | null => {
   if (!url || !/^mailto:/i.test(url)) return null;
