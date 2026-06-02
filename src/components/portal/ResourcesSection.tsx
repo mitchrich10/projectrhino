@@ -176,6 +176,31 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
   },
 };
 
+/* ── Loading skeleton (matches resource card grid) ──────────────────────── */
+const ResourcesSkeleton: FC = () => (
+  <div className="space-y-12" aria-busy="true" aria-label="Loading resources">
+    {[0, 1].map((group) => (
+      <div key={group}>
+        <div className="h-3 w-40 rounded bg-[#E8EEF4] animate-pulse mb-5 ml-3" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="relative bg-white border border-[#DDE4EC] rounded-lg p-5 flex flex-col gap-3"
+              style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
+            >
+              <div className="h-5 w-5 rounded bg-[#E8EEF4] animate-pulse" />
+              <div className="h-4 w-3/4 rounded bg-[#E8EEF4] animate-pulse" />
+              <div className="h-3 w-full rounded bg-[#EEF2F6] animate-pulse" />
+              <div className="h-3 w-2/3 rounded bg-[#EEF2F6] animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 /* ── Resource Detail Panel ──────────────────────────────────────────────── */
 const ResourcePanel: FC<{
   resource: Resource | null;
