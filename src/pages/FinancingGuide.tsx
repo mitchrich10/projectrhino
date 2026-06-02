@@ -495,14 +495,16 @@ const FinancingGuide: FC = () => {
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resources.map((r) => (
-              <ResourceCard
-                key={r.id}
-                resource={r}
-                unlocked={unlocked}
-                onPreview={setPreviewResource}
-              />
-            ))}
+            {resources
+              .filter((r) => r.title !== "Fundraising Questions")
+              .map((r) => (
+                <ResourceCard
+                  key={r.id}
+                  resource={r}
+                  unlocked={unlocked}
+                  onPreview={setPreviewResource}
+                />
+              ))}
           </div>
         </div>
       </main>
