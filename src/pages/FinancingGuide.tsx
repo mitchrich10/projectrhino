@@ -426,7 +426,7 @@ const FinancingGuide: FC = () => {
       }
 
       setIsAdmin(email.endsWith("@rhinovc.com"));
-      setUnlocked(!!approvedData || email.endsWith("@rhinovc.com") || !!inviteData);
+      setUnlocked(!!approvedData || email.endsWith("@rhinovc.com"));
 
       const sorted = (resourceData ?? []).sort((a, b) => {
         const ai = RESOURCE_ORDER.indexOf(a.title);
