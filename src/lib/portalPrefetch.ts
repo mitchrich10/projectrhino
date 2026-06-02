@@ -17,24 +17,26 @@ let resourcesPromise: Promise<PrefetchResult<Record<string, unknown>>> | null = 
 
 export function prefetchPartnerships() {
   if (!partnershipsPromise) {
-    partnershipsPromise = supabase
-      .from("partnerships")
-      .select("*")
-      .order("display_order", { ascending: true })
-      .order("name", { ascending: true })
-      .then((res) => ({ data: res.data as Record<string, unknown>[] | null }));
+    partnershipsPromise = Promise.resolve(
+      supabase
+        .from("partnerships")
+        .select("*")
+        .order("display_order", { ascending: true })
+        .order("name", { ascending: true })
+    ).then((res) => ({ data: res.data as Record<string, unknown>[] | null }));
   }
   return partnershipsPromise;
 }
 
 export function prefetchResources() {
   if (!resourcesPromise) {
-    resourcesPromise = supabase
-      .from("resources")
-      .select("id, title, description, url, file_path, category, approval_required")
-      .order("category")
-      .order("title")
-      .then((res) => ({ data: res.data as Record<string, unknown>[] | null }));
+    resourcesPromise = Promise.resolve(
+      supabase
+        .from("resources")
+        .select("id, title, description, url, file_path, category, approval_required")
+        .order("category")
+        .order("title")
+    ).then((res) => ({ data: res.data as Record<string, unknown>[] | null }));
   }
   return resourcesPromise;
 }
