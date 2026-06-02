@@ -22,7 +22,7 @@ interface Resource {
 }
 
 /* ── Category display order ─────────────────────────────────────────────── */
-const CATEGORY_ORDER = ["Fundraising", "Governance", "Compensation & Equity", "Hiring"];
+const CATEGORY_ORDER = ["Fundraising", "Governance", "Compensation & Equity"];
 
 /* ── Icon resolver ──────────────────────────────────────────────────────── */
 const getResourceIcon = (title: string, filePath: string | null) => {
