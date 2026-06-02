@@ -5,6 +5,7 @@ import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import PartnerLogoOrBadge from "@/components/portal/PartnerLogoOrBadge";
+import { prefetchPartnerships } from "@/lib/portalPrefetch";
 
 interface Partnership {
   id: string;
