@@ -15,6 +15,7 @@ const Onboarding = lazy(() => import("./pages/Onboarding"));
 const AdminHub = lazy(() => import("./pages/admin/AdminHub"));
 const OptionModeller = lazy(() => import("./pages/OptionModeller"));
 const FinancingGuide = lazy(() => import("./pages/FinancingGuide"));
+const CommissionCalculator = lazy(() => import("./pages/CommissionCalculator"));
 const InvestmentBriefBuilder = lazy(() => import("./pages/InvestmentBriefBuilder"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/admin/resources" element={<AdminHub />} />
             <Route path="/admin" element={<AdminHub />} />
             <Route path="/option-modeller" element={<OptionModeller />} />
+            <Route path="/commission-calculator" element={<CommissionCalculator />} />
             <Route path="/portal/financing-guide" element={<FinancingGuide />} />
             <Route path="/fundraising" element={<FinancingGuide />} />
             <Route path="/investment-brief" element={<InvestmentBriefBuilder />} />
