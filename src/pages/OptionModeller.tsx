@@ -1001,7 +1001,6 @@ const OptionModeller: FC = () => {
                           { label: "Company Valuation",                                        align: "left"  },
                           { label: "Implied Share Price",                                             align: "right" },
                           { label: grants.length > 1 ? "Wtd. Avg Gain / Option" : "Gain / Option",  align: "right" },
-                          { label: "Value of Vested Options",                                         align: "right" },
                           { label: "Value of Full Grant",                                             align: "right" },
                           { label: "Multiple on Strike",                                              align: "right" },
                           { label: "",                                                                align: "right" },
