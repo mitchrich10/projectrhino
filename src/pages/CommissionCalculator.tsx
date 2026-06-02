@@ -61,13 +61,27 @@ interface RepCalc {
 
 // ── Calculation helpers ───────────────────────────────────────────────────────
 //
+// bonusFraction: the canonical commission curve. Returns the fraction of the
+// full target bonus earned at a given attainment ratio `a` (1 = 100%).
+//   - a < cliff:            0 (no bonus below cliff)
+//   - cliff ≤ a ≤ 1:        linear ramp from 0 at cliff to 1.0 at 100%
+//                           f = (a - cliff) / (1 - cliff)
+//   - 1 < a ≤ accel:        linear above target at base rate, f = a
+//   - a > accel:            above-threshold portion gets the multiplier
+//                           f = accel + (a - accel) * mult
+//
+function bonusFraction(a: number, cliff: number, accel: number, mult: number): number {
+  if (a < cliff) return 0;
+  if (a <= 1)    return cliff < 1 ? (a - cliff) / (1 - cliff) : 1;
+  if (a <= accel) return a;
+  return accel + (a - accel) * mult;
+}
+
 // calcAnnualTranche: returns the ANNUALISED value for one bonus tranche.
 //   e.g. monthly tranche (w=0.25, target=$100K) at 100% attainment → $25K/yr
 //
 function calcAnnualTranche(tb: number, w: number, a: number, cliff: number, accel: number, mult: number): number {
-  if (a < cliff) return 0;
-  if (a >= accel) return tb * w * mult;
-  return tb * w * a;
+  return tb * w * bonusFraction(a, cliff, accel, mult);
 }
 
 // ── Attainment ────────────────────────────────────────────────────────────────
