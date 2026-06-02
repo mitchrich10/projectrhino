@@ -979,6 +979,17 @@ const OptionModeller: FC = () => {
                 </div>
               </div>
 
+              {/* Full-vesting assumption flag */}
+              <div
+                className="px-5 py-2.5 text-[11px] flex items-start gap-2"
+                style={{ background: "#FFFACD", borderBottom: `1px solid ${SLATE}`, color: NAVY }}
+              >
+                <span style={{ fontWeight: 700 }}>Assumption:</span>
+                <span style={{ color: MUTED }}>
+                  All scenario values assume your options are <strong style={{ color: NAVY }}>fully vested</strong> — they show the value of your entire grant at exit, not just the portion vested today.
+                </span>
+              </div>
+
               {/* Table */}
               <div className="relative">
                 {!tableReady && (
@@ -1001,7 +1012,6 @@ const OptionModeller: FC = () => {
                           { label: "Company Valuation",                                        align: "left"  },
                           { label: "Implied Share Price",                                             align: "right" },
                           { label: grants.length > 1 ? "Wtd. Avg Gain / Option" : "Gain / Option",  align: "right" },
-                          { label: "Value of Vested Options",                                         align: "right" },
                           { label: "Value of Full Grant",                                             align: "right" },
                           { label: "Multiple on Strike",                                              align: "right" },
                           { label: "",                                                                align: "right" },
@@ -1056,15 +1066,11 @@ const OptionModeller: FC = () => {
                                 {hasBase ? (isInMoney ? fmtCur(row.weightedGainPerOption) : "$0.00") : "—"}
                               </td>
 
-                              {/* Vested value */}
-                              <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
-                                {hasBase ? (isInMoney ? fmtLargeCur(row.totalVestedValue) : "$0.00") : "—"}
-                              </td>
-
-                              {/* Full grant value */}
+                              {/* Full grant value (assumes all options fully vested) */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
                                 {hasBase ? (isInMoney ? fmtLargeCur(row.totalFullGrantValue) : "$0.00") : "—"}
                               </td>
+
 
                               {/* Multiple */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
@@ -1105,11 +1111,9 @@ const OptionModeller: FC = () => {
                                     {hasBase ? (pgInMoney ? fmtCur(pg.gainPerOption) : "$0.00") : "—"}
                                   </td>
                                   <td className="px-4 py-2 text-right font-mono text-xs" style={{ color: pgColor }}>
-                                    {hasBase ? (pgInMoney ? fmtLargeCur(pg.vestedValue) : "$0.00") : "—"}
-                                  </td>
-                                  <td className="px-4 py-2 text-right font-mono text-xs" style={{ color: pgColor }}>
                                     {hasBase ? (pgInMoney ? fmtLargeCur(pg.fullGrantValue) : "$0.00") : "—"}
                                   </td>
+
                                   <td className="px-4 py-2 text-right text-xs" style={{ color: MUTED }}>—</td>
                                   <td />
                                 </tr>
