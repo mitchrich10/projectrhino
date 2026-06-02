@@ -355,11 +355,13 @@ const ResourcesSection: FC = () => {
   }, {});
 
   /* Sort categories by defined order */
-  const sortedCategories = Object.keys(grouped).sort((a, b) => {
-    const ai = CATEGORY_ORDER.indexOf(a);
-    const bi = CATEGORY_ORDER.indexOf(b);
-    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
-  });
+  const sortedCategories = Object.keys(grouped)
+    .filter((c) => c !== "Hiring")
+    .sort((a, b) => {
+      const ai = CATEGORY_ORDER.indexOf(a);
+      const bi = CATEGORY_ORDER.indexOf(b);
+      return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+    });
 
   /* ── Card renderer ────────────────────────────────────────────────── */
   const renderCard = (r: Resource) => {
