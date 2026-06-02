@@ -382,10 +382,7 @@ const PartnershipsSection: FC = () => {
       </h2>
 
       {loading ? (
-        <div className="flex items-center gap-2 text-[#5C6B7A]">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-xs">Loading partnerships…</span>
-        </div>
+        <PartnershipsSkeleton />
       ) : partnerships.length === 0 ? (
         <p className="text-xs text-[#5C6B7A]">No partnerships available.</p>
       ) : (
