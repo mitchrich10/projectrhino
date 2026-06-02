@@ -1055,15 +1055,11 @@ const OptionModeller: FC = () => {
                                 {hasBase ? (isInMoney ? fmtCur(row.weightedGainPerOption) : "$0.00") : "—"}
                               </td>
 
-                              {/* Vested value */}
-                              <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
-                                {hasBase ? (isInMoney ? fmtLargeCur(row.totalVestedValue) : "$0.00") : "—"}
-                              </td>
-
-                              {/* Full grant value */}
+                              {/* Full grant value (assumes all options fully vested) */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
                                 {hasBase ? (isInMoney ? fmtLargeCur(row.totalFullGrantValue) : "$0.00") : "—"}
                               </td>
+
 
                               {/* Multiple */}
                               <td className="px-4 py-3 text-right font-mono text-xs" style={vStyle}>
