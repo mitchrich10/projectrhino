@@ -501,10 +501,7 @@ const ResourcesSection: FC = () => {
       </h2>
 
       {loading ? (
-        <div className="flex items-center gap-2 text-[#5C6B7A]">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-xs">Loading resources…</span>
-        </div>
+        <ResourcesSkeleton />
       ) : (
         <div className="space-y-12">
           {sortedCategories.map((category) => {
