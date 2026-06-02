@@ -50,12 +50,12 @@ const RESOURCE_META: Record<
     typeBadge: "Word Document",
     badgeClass: "bg-[#CDD8E3] text-[#173660]",
   },
+};
 
 const RESOURCE_ORDER = [
   "Financing Process Guide",
   "Data Room Request",
   "First Meeting Prep Guide",
-  "Fundraising Questions",
   "SAFE Template",
 ];
 
