@@ -10,6 +10,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import { toast } from "sonner";
+import { prefetchResources } from "@/lib/portalPrefetch";
 
 interface Resource {
   id: string;
