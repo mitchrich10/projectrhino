@@ -470,7 +470,7 @@ const FinancingGuide: FC = () => {
             </h1>
             <p className="text-sm md:text-base text-white/70 max-w-2xl mx-auto mb-8 leading-relaxed">
               A complete package of frameworks, templates, and tools for founders preparing for a
-              Series A or growth-stage financing round.
+              financing round.
             </p>
             {!unlocked && (
               <RequestAccessBtn companyName={company?.company_name ?? "Partner"} />
