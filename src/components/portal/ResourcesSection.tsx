@@ -10,6 +10,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import { toast } from "sonner";
+import { prefetchResources } from "@/lib/portalPrefetch";
 
 interface Resource {
   id: string;
@@ -158,6 +159,13 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     to: "/option-modeller",
     fileType: "Interactive Tool",
   },
+  "Compensation & Equity:commission-calculator": {
+    title: "Sales Commission Model",
+    description: "Interactive tool to design and stress-test sales commission plans across quotas, accelerators, and attainment scenarios.",
+    icon: Calculator,
+    to: "/commission-calculator",
+    fileType: "Interactive Tool",
+  },
   // Financing guide is now handled by Fundraising Toolkit card
   "Governance:project-proposal": {
     title: "Project Proposal Template",
@@ -167,6 +175,31 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     fileType: "Interactive Tool",
   },
 };
+
+/* ── Loading skeleton (matches resource card grid) ──────────────────────── */
+const ResourcesSkeleton: FC = () => (
+  <div className="space-y-12" aria-busy="true" aria-label="Loading resources">
+    {[0, 1].map((group) => (
+      <div key={group}>
+        <div className="h-3 w-40 rounded bg-[#E8EEF4] animate-pulse mb-5 ml-3" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="relative bg-white border border-[#DDE4EC] rounded-lg p-5 flex flex-col gap-3"
+              style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)", borderRadius: 8 }}
+            >
+              <div className="h-5 w-5 rounded bg-[#E8EEF4] animate-pulse" />
+              <div className="h-4 w-3/4 rounded bg-[#E8EEF4] animate-pulse" />
+              <div className="h-3 w-full rounded bg-[#EEF2F6] animate-pulse" />
+              <div className="h-3 w-2/3 rounded bg-[#EEF2F6] animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
 
 /* ── Resource Detail Panel ──────────────────────────────────────────────── */
 const ResourcePanel: FC<{
@@ -306,13 +339,13 @@ const ResourcesSection: FC = () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       const [{ data }, { data: approvedData }] = await Promise.all([
-        supabase.from("resources").select("id, title, description, url, file_path, category, approval_required").order("category").order("title"),
+        prefetchResources(),
         session
           ? supabase.from("partner_requests").select("item_id, item_type").eq("user_id", session.user.id).eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
 
-      setResources(data ?? []);
+      setResources(((data as unknown) as Resource[]) ?? []);
       const approved = (approvedData ?? []) as { item_id: string; item_type: string[] | string }[];
       const itemTypesOf = (r: { item_type: string[] | string }): string[] =>
         Array.isArray(r.item_type) ? r.item_type : r.item_type ? [r.item_type] : [];
@@ -468,10 +501,7 @@ const ResourcesSection: FC = () => {
       </h2>
 
       {loading ? (
-        <div className="flex items-center gap-2 text-[#5C6B7A]">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-xs">Loading resources…</span>
-        </div>
+        <ResourcesSkeleton />
       ) : (
         <div className="space-y-12">
           {sortedCategories.map((category) => {

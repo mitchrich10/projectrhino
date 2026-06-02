@@ -13,6 +13,11 @@ import { NotificationBanner, NotificationSettingsLink } from "@/components/porta
 import RequestsSection from "@/components/portal/RequestsSection";
 import FounderOnboardingWizard from "@/components/portal/founder-onboarding/FounderOnboardingWizard";
 import RequestAccess from "@/pages/RequestAccess";
+import { prefetchPortalData } from "@/lib/portalPrefetch";
+
+// Kick off public portal data fetches as soon as this route chunk loads,
+// before the section components mount (route-level prefetch).
+prefetchPortalData();
 
 interface CompanyInfo {
   company_name: string;
@@ -304,7 +309,7 @@ const Portal: FC = () => {
                   Crash Portal
                 </h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
-                  Partnerships, resources, and tools for Rhino companies.
+                  Partnerships, resources, and tools for Crash companies.
                 </p>
                 {/* Share with your team button */}
                 <button

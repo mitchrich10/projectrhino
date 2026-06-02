@@ -5,6 +5,7 @@ import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import PartnerLogoOrBadge from "@/components/portal/PartnerLogoOrBadge";
+import { prefetchPartnerships } from "@/lib/portalPrefetch";
 
 interface Partnership {
   id: string;
@@ -302,6 +303,34 @@ const ComingSoonTile: FC<{ name: string }> = ({ name }) => (
 
 const GRID_CLASSES = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 
+// ── Skeleton placeholder (matches PartnershipTile dimensions) ──
+const SkeletonTile: FC = () => (
+  <div
+    className="relative flex flex-col items-center justify-center rounded-lg bg-white border border-[#DDE4EC] w-full overflow-hidden"
+    style={{ height: 140, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
+  >
+    <div className="h-9 w-28 rounded-md bg-[#E8EEF4] animate-pulse" />
+  </div>
+);
+
+const PartnershipsSkeleton: FC = () => (
+  <div className="space-y-8" aria-busy="true" aria-label="Loading partnerships">
+    {[0, 1].map((group) => (
+      <div key={group}>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-5 rounded-full bg-[#CDD8E3]" />
+          <div className="h-3 w-32 rounded bg-[#E8EEF4] animate-pulse" />
+        </div>
+        <div className={GRID_CLASSES}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonTile key={i} />
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 // ── Main Section ──
 const PartnershipsSection: FC = () => {
   const [partnerships, setPartnerships] = useState<Partnership[]>([]);
@@ -314,12 +343,12 @@ const PartnershipsSection: FC = () => {
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const [{ data: partnerData }, { data: approvedData }] = await Promise.all([
-        supabase.from("partnerships").select("*").order("display_order", { ascending: true }).order("name", { ascending: true }),
+        prefetchPartnerships(),
         session
           ? supabase.from("partner_requests").select("item_id").eq("user_id", session.user.id).contains("item_type", ["partnership"]).eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
-      setPartnerships((partnerData as Partnership[]) ?? []);
+      setPartnerships(((partnerData as unknown) as Partnership[]) ?? []);
       setApprovedIds(new Set((approvedData ?? []).map((r: { item_id: string }) => r.item_id)));
       if (session?.user?.email) {
         const domain = session.user.email.split("@")[1];
@@ -353,10 +382,7 @@ const PartnershipsSection: FC = () => {
       </h2>
 
       {loading ? (
-        <div className="flex items-center gap-2 text-[#5C6B7A]">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-xs">Loading partnerships…</span>
-        </div>
+        <PartnershipsSkeleton />
       ) : partnerships.length === 0 ? (
         <p className="text-xs text-[#5C6B7A]">No partnerships available.</p>
       ) : (
