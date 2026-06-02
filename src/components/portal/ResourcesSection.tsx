@@ -314,13 +314,13 @@ const ResourcesSection: FC = () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       const [{ data }, { data: approvedData }] = await Promise.all([
-        supabase.from("resources").select("id, title, description, url, file_path, category, approval_required").order("category").order("title"),
+        prefetchResources(),
         session
           ? supabase.from("partner_requests").select("item_id, item_type").eq("user_id", session.user.id).eq("status", "approved")
           : Promise.resolve({ data: [] }),
       ]);
 
-      setResources(data ?? []);
+      setResources(((data as unknown) as Resource[]) ?? []);
       const approved = (approvedData ?? []) as { item_id: string; item_type: string[] | string }[];
       const itemTypesOf = (r: { item_type: string[] | string }): string[] =>
         Array.isArray(r.item_type) ? r.item_type : r.item_type ? [r.item_type] : [];
