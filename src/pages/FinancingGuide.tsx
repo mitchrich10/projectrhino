@@ -50,12 +50,6 @@ const RESOURCE_META: Record<
     typeBadge: "Word Document",
     badgeClass: "bg-[#CDD8E3] text-[#173660]",
   },
-  "Fundraising Questions": {
-    icon: FileText,
-    typeBadge: "Reference Guide",
-    badgeClass: "bg-[#173660] text-white",
-  },
-};
 
 const RESOURCE_ORDER = [
   "Financing Process Guide",
