@@ -384,8 +384,7 @@ const Portal: FC = () => {
           <section id="collaborate">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Collaborate</p>
             <p className="text-sm text-[#173660]/70 max-w-2xl leading-relaxed mb-4">
-              Invite your team to the portal. They'll have full access to all partnerships and most resources.
-              A small set of resources are reserved for founders only — they'll still see them on the homepage but won't be able to download or open them.
+              Invite your team to the portal — give them access to partnerships, resources, and tools.
             </p>
             <button
               onClick={handleCopyPortalLink}
