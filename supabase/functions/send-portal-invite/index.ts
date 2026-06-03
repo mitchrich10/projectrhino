@@ -42,7 +42,7 @@ serve(async (req) => {
         body: JSON.stringify({
           from: "Rhino Ventures <portal@rhinovc.com>",
           to: [email],
-          subject: `${companyName} invited you to the Rhino Partner Portal`,
+          subject: `${companyName} invited you to the Rhino Portal`,
           html,
         }),
       });
