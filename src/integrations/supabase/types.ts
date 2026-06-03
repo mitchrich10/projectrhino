@@ -332,6 +332,7 @@ export type Database = {
           invitee_company: string | null
           invitee_name: string | null
           note: string | null
+          skip_wizard: boolean
           token_expires_at: string | null
           token_redeemed_at: string | null
         }
@@ -346,6 +347,7 @@ export type Database = {
           invitee_company?: string | null
           invitee_name?: string | null
           note?: string | null
+          skip_wizard?: boolean
           token_expires_at?: string | null
           token_redeemed_at?: string | null
         }
@@ -360,6 +362,7 @@ export type Database = {
           invitee_company?: string | null
           invitee_name?: string | null
           note?: string | null
+          skip_wizard?: boolean
           token_expires_at?: string | null
           token_redeemed_at?: string | null
         }
