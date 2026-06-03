@@ -387,10 +387,15 @@ const InvitePanel: FC = () => {
             {invites.map((inv) => (
               <div key={inv.id} className="flex items-center gap-4 border border-border rounded-lg px-4 py-3 bg-secondary/10">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-foreground truncate">
-                    {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name}{inv.invitee_company ? ` (${inv.invitee_company})` : ""} · </span> : inv.invitee_company ? <span className="font-sans font-bold not-italic">{inv.invitee_company} · </span> : null}{inv.email}
+                  <p className="text-xs font-mono text-foreground truncate flex items-center gap-2">
+                    <span className={`text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded flex-shrink-0 ${inv.skip_wizard ? "text-[#1A7EC8] bg-[#1A7EC8]/10" : "text-muted-foreground bg-muted-foreground/10"}`}>
+                      {inv.skip_wizard ? "Portal Access" : "Onboarding"}
+                    </span>
+                    <span className="truncate">
+                      {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name}{inv.invitee_company ? ` (${inv.invitee_company})` : ""} · </span> : inv.invitee_company ? <span className="font-sans font-bold not-italic">{inv.invitee_company} · </span> : null}{inv.email}
+                    </span>
                   </p>
-                  {inv.assigned_rhino_contacts && inv.assigned_rhino_contacts.length > 0 && (
+                  {!inv.skip_wizard && inv.assigned_rhino_contacts && inv.assigned_rhino_contacts.length > 0 && (
                     <p className="text-[10px] text-muted-foreground truncate mt-0.5">
                       Rhino team: {inv.assigned_rhino_contacts.map((e) => e.split("@")[0]).join(", ")}
                     </p>
