@@ -260,6 +260,7 @@ const InvitePanel: FC = () => {
         recipients,
         note: note.trim() || undefined,
         assignedRhinoContacts: finalContacts,
+        skipWizard,
       },
     });
     if (error) {
@@ -267,7 +268,7 @@ const InvitePanel: FC = () => {
     } else {
       setResults(data.results);
       await fetchInvites();
-      setEmailInput(""); setNote("");
+      setEmailInput(""); setNote(""); setSkipWizard(false);
     }
     setSending(false);
   };
