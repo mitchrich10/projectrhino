@@ -43,6 +43,7 @@ const buildEmailHtml = (opts: {
   inviterName: string;
   note?: string;
   portalUrl: string;
+  skipWizard?: boolean;
 }) => {
   // Greeting is by name only. The recipient's own company name is NOT used here
   // ("on behalf of [Company]" doesn't parse) — it appears in the wizard heading.
@@ -75,7 +76,9 @@ const buildEmailHtml = (opts: {
           <li style="${body} margin: 0;">A request channel for intros, partnerships, and anything else you need from the Rhino team</li>
         </ul>
         <p style="${body} margin: 0 0 16px;">
-          To get started, click below to sign in. There's a brief onboarding flow to share your brand assets, key contacts, tech stack, and current priorities — so we can make sure you're plugged into everything relevant.
+          ${opts.skipWizard
+            ? "Click below to sign in and explore — you'll have access to partnerships, resources, and tools available to Rhino portfolio companies."
+            : "To get started, click below to sign in. There's a brief onboarding flow to share your brand assets, key contacts, tech stack, and current priorities — so we can make sure you're plugged into everything relevant."}
         </p>
         ${opts.note ? `<p style="${body} margin: 0 0 16px; padding: 12px 16px; background: #f4f7fa; border-left: 3px solid #1A7EC8;">${opts.note}</p>` : ""}
         <a href="${opts.portalUrl}" style="${base} display: inline-block; background: #1A7EC8; color: #ffffff; font-size: 12px; font-weight: bold; letter-spacing: 2px; line-height: 1.2; text-transform: uppercase; padding: 14px 28px; text-decoration: none; border-radius: 4px; margin: 8px 0 0;">
