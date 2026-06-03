@@ -57,10 +57,7 @@ const buildDigestHtml = (items: QueueItem[]): string => {
 
   return `
   <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
-    <div style="background:#173660;padding:32px;">
-      <h1 style="color:#ffffff;font-size:22px;font-weight:800;letter-spacing:-0.5px;margin:0;">Rhino Portal</h1>
-      <p style="color:#a3d7c2;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:6px 0 0;">What's New</p>
-    </div>
+    ${emailHeader()}
     <div style="padding:32px;">
       <p style="font-size:15px;color:#475569;margin:0 0 24px;line-height:1.6;">Here's the latest from Rhino Ventures — new partnerships, resources, and events for your company.</p>
       ${sections}
