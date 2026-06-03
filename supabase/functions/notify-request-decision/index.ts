@@ -76,7 +76,7 @@ serve(async (req: Request) => {
             </h2>
             <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
               ${approved
-                ? `Your request to access <strong>${request.item_name}</strong> has been approved. You can now access it in the Partner Portal.`
+                ? `Your request to access <strong>${request.item_name}</strong> has been approved. You can now access it in the Rhino Portal.`
                 : `Your request to access <strong>${request.item_name}</strong> was not approved at this time. Please reach out to your Rhino contact if you have questions.`
               }
             </p>
