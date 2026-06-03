@@ -183,6 +183,7 @@ const PartnershipsAdmin: FC = () => {
       display_order: p.display_order,
       approval_required: p.approval_required,
       detail_pdf_url: p.detail_pdf_url ?? "",
+      notify_on_save: false,
     });
     setError(null);
     setModalOpen(true);
