@@ -121,8 +121,10 @@ serve(async (req: Request) => {
       emails?: string[]; // backward compatibility
       note?: string;
       assignedRhinoContacts?: string[];
+      skipWizard?: boolean;
     };
     const { note, assignedRhinoContacts } = body;
+    const skipWizard = body.skipWizard === true;
 
     // Normalize recipients (support legacy `emails` array)
     let recipients: Recipient[] = [];
@@ -171,6 +173,7 @@ serve(async (req: Request) => {
       invitee_company: r.company ?? null,
       invited_by: user.email!,
       note: note ?? null,
+      skip_wizard: skipWizard,
       batch_id: batchId,
       assigned_rhino_contacts: rhinoContacts,
       invite_token: crypto.randomUUID(),
@@ -202,6 +205,7 @@ serve(async (req: Request) => {
           inviterName,
           note: note,
           portalUrl,
+          skipWizard,
         });
 
         const res = await fetch("https://api.resend.com/emails", {
