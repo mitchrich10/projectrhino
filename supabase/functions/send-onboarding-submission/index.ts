@@ -69,6 +69,9 @@ serve(async (req) => {
       : "";
 
     const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      ${emailHeader("Partner Portal — Onboarding")}
+      <div style="padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
       <h2>Onboarding Submission: ${companyName}</h2>
       <p><strong>Submitted by:</strong> ${userEmail}</p>
 
