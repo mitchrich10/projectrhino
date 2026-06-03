@@ -279,6 +279,21 @@ const InvitePanel: FC = () => {
       <div>
         <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">Send Onboarding Invites</h3>
         <div className="space-y-4">
+          <label className="flex items-start gap-3 border border-border rounded-lg px-3 py-3 bg-secondary/10 cursor-pointer hover:bg-secondary/20">
+            <input
+              type="checkbox"
+              checked={skipWizard}
+              onChange={(e) => setSkipWizard(e.target.checked)}
+              className="w-4 h-4 mt-0.5"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-foreground">Skip onboarding wizard — portal access only</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">
+                Use this for portfolio company team members who don't need to fill out the onboarding flow themselves.
+              </p>
+            </div>
+          </label>
+
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Recipients</label>
             <textarea
