@@ -91,7 +91,7 @@ const RequestAccess: FC<Props> = ({ email }) => {
       <main className="flex-1 flex items-center justify-center px-6 py-32">
         <div className="w-full max-w-md">
           <div className="mb-8">
-            <p className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] mb-3">Crash Portal</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-[#1A7EC8] mb-3">Rhino Portal</p>
             <h1 className="text-3xl font-bold text-[#173660] mb-3">Request Access</h1>
             <p className="text-sm text-[#5C6B7A] leading-relaxed">
               Your domain isn't currently registered. Tell us a bit about you and we'll review your request.

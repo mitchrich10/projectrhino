@@ -308,7 +308,7 @@ const Portal: FC = () => {
             <div className="flex items-start justify-between gap-6">
               <div>
                 <h1 className="text-3xl font-bold text-white mb-3">
-                  Crash Portal
+                  Rhino Portal
                 </h1>
                 <p className="text-sm text-white/60 max-w-xl leading-relaxed">
                   Partnerships, resources, and tools for Rhino portfolio companies.
@@ -384,8 +384,8 @@ const Portal: FC = () => {
           <section id="collaborate">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Collaborate</p>
             <p className="text-sm text-[#173660]/70 max-w-2xl leading-relaxed mb-4">
-              Share the portal with your team — they'll have access to most of what's here.
-              Some resources are visible only to founders.
+              Invite your team to the portal. They'll have full access to all partnerships and most resources.
+              A small set of resources are reserved for founders only — they'll still see them on the homepage but won't be able to download or open them.
             </p>
             <button
               onClick={handleCopyPortalLink}
