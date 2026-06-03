@@ -39,6 +39,7 @@ const emptyForm = () => ({
   display_order: 0,
   approval_required: false,
   detail_pdf_url: "",
+  notify_on_save: false,
 });
 
 const DEFAULT_MAIL_SUBJECT = "Rhino Portfolio Partnership Inquiry";
