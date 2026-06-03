@@ -30,7 +30,7 @@ serve(async (req) => {
     // Look up the invite by token
     const { data: invite, error: inviteErr } = await supabase
       .from("onboarding_invites")
-      .select("email, token_expires_at")
+      .select("email")
       .eq("invite_token", token)
       .maybeSingle();
 
@@ -40,13 +40,7 @@ serve(async (req) => {
       });
     }
 
-    // Expiry check (rows created before this feature have no expiry — treat as expired)
-    const expiresAt = (invite as { token_expires_at: string | null }).token_expires_at;
-    if (!expiresAt || new Date(expiresAt).getTime() < Date.now()) {
-      return new Response(JSON.stringify({ error: "This sign-in link has expired. Please request a new invite." }), {
-        status: 410, headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
+    // No expiry check — invite links remain valid indefinitely and are reusable.
 
     const email = (invite as { email: string }).email.toLowerCase();
 

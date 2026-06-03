@@ -318,7 +318,7 @@ const FounderOnboardingWizard: FC<Props> = ({ userId, userEmail, userName, batch
       <div className="bg-[#173660] px-6 py-5 flex items-center justify-between">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1A7EC8] mb-1">Onboarding</p>
-          <h2 className="text-white text-lg font-semibold">Welcome to The Crash Portal{companyName && companyName !== "Your Company" ? `, ${companyName}` : ""}</h2>
+          <h2 className="text-white text-lg font-semibold">Welcome to The Crash{companyName && companyName !== "Your Company" ? `, ${companyName}` : ""}</h2>
         </div>
         <div className="flex items-center gap-3">
           {saving && (

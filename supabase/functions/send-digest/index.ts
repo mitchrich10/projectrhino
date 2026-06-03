@@ -34,7 +34,7 @@ const anchorFor = (entityType: string): string => {
 const monthDay = (d: Date) =>
   d.toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "America/New_York" });
 
-const buildSubject = () => `What's new on The Crash Portal — ${monthDay(new Date())}`;
+const buildSubject = () => `What's new on the Rhino Portal — ${monthDay(new Date())}`;
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -58,7 +58,7 @@ const buildDigestHtml = (items: QueueItem[]): string => {
   return `
   <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
     <div style="background:#173660;padding:32px;">
-      <h1 style="color:#ffffff;font-size:22px;font-weight:800;letter-spacing:-0.5px;margin:0;">The Crash Portal</h1>
+      <h1 style="color:#ffffff;font-size:22px;font-weight:800;letter-spacing:-0.5px;margin:0;">Rhino Portal</h1>
       <p style="color:#a3d7c2;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:6px 0 0;">What's New</p>
     </div>
     <div style="padding:32px;">
@@ -168,7 +168,7 @@ serve(async (req: Request) => {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
           body: JSON.stringify({
-            from: "The Crash Portal <portal@rhinovc.com>",
+            from: "Rhino Portal <portal@rhinovc.com>",
             to: [to],
             subject,
             html,
