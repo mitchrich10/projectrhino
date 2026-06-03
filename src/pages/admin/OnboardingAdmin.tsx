@@ -19,6 +19,7 @@ interface Invite {
   invitee_name?: string | null;
   invitee_company?: string | null;
   assigned_rhino_contacts?: string[] | null;
+  skip_wizard?: boolean | null;
 }
 
 const RHINO_CONTACTS: { email: string; name: string; required?: boolean }[] = [
