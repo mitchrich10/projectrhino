@@ -39,6 +39,7 @@ const Portal: FC = () => {
   const [inviteCompany, setInviteCompany] = useState<string | null>(null);
   const [isInvited, setIsInvited] = useState(false);
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
+  const [skipWizard, setSkipWizard] = useState(false);
   const [shareTargetStep, setShareTargetStep] = useState<number | null>(null);
   const [hasEvents, setHasEvents] = useState(false);
   const [copiedPortal, setCopiedPortal] = useState(false);
