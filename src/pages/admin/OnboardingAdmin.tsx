@@ -307,10 +307,12 @@ const InvitePanel: FC = () => {
 
           </div>
 
-          <div>
+          <div className={skipWizard ? "opacity-50 pointer-events-none select-none" : ""}>
             <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Assigned Rhino Contacts</label>
             <p className="text-[10px] text-muted-foreground mb-2.5">
-              These reps will be shown to the portco during onboarding and CC'd on the submission summary email.
+              {skipWizard
+                ? "Rhino contacts selection only applies to onboarding-flow invites."
+                : "These reps will be shown to the portco during onboarding and CC'd on the submission summary email."}
             </p>
             <div className="space-y-1.5">
               {RHINO_CONTACTS.map((c) => {
@@ -323,7 +325,7 @@ const InvitePanel: FC = () => {
                     <input
                       type="checkbox"
                       checked={checked}
-                      disabled={c.required}
+                      disabled={c.required || skipWizard}
                       onChange={() => toggleContact(c.email, c.required)}
                       className="w-4 h-4"
                     />
