@@ -109,6 +109,8 @@ serve(async (req) => {
         <li><strong>Announcing raise:</strong> ${announcingRaise ?? "<em>Not answered</em>"}</li>
         <li><strong>Rhino assistance requested:</strong> ${wantsRhinoSupport ?? "<em>Not answered</em>"}</li>
       </ul>
+      </div>
+      </div>
     `;
 
     const res = await fetch("https://api.resend.com/emails", {
