@@ -185,6 +185,7 @@ const StepsPanel: FC = () => {
 // ── Invite Panel ───────────────────────────────────────────────────────────────
 const InvitePanel: FC = () => {
   const [emailInput, setEmailInput] = useState("");
+  const [skipWizard, setSkipWizard] = useState(false);
   const [note, setNote] = useState("");
   const [assignedContacts, setAssignedContacts] = useState<string[]>(["candace@rhinovc.com"]);
   const [sending, setSending] = useState(false);
