@@ -19,6 +19,7 @@ interface Invite {
   invitee_name?: string | null;
   invitee_company?: string | null;
   assigned_rhino_contacts?: string[] | null;
+  skip_wizard?: boolean | null;
 }
 
 const RHINO_CONTACTS: { email: string; name: string; required?: boolean }[] = [
@@ -184,6 +185,7 @@ const StepsPanel: FC = () => {
 // ── Invite Panel ───────────────────────────────────────────────────────────────
 const InvitePanel: FC = () => {
   const [emailInput, setEmailInput] = useState("");
+  const [skipWizard, setSkipWizard] = useState(false);
   const [note, setNote] = useState("");
   const [assignedContacts, setAssignedContacts] = useState<string[]>(["candace@rhinovc.com"]);
   const [sending, setSending] = useState(false);
@@ -258,6 +260,7 @@ const InvitePanel: FC = () => {
         recipients,
         note: note.trim() || undefined,
         assignedRhinoContacts: finalContacts,
+        skipWizard,
       },
     });
     if (error) {
@@ -265,7 +268,7 @@ const InvitePanel: FC = () => {
     } else {
       setResults(data.results);
       await fetchInvites();
-      setEmailInput(""); setNote("");
+      setEmailInput(""); setNote(""); setSkipWizard(false);
     }
     setSending(false);
   };
@@ -276,6 +279,21 @@ const InvitePanel: FC = () => {
       <div>
         <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">Send Onboarding Invites</h3>
         <div className="space-y-4">
+          <label className="flex items-start gap-3 border border-border rounded-lg px-3 py-3 bg-secondary/10 cursor-pointer hover:bg-secondary/20">
+            <input
+              type="checkbox"
+              checked={skipWizard}
+              onChange={(e) => setSkipWizard(e.target.checked)}
+              className="w-4 h-4 mt-0.5"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-foreground">Skip onboarding wizard — portal access only</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">
+                Use this for portfolio company team members who don't need to fill out the onboarding flow themselves.
+              </p>
+            </div>
+          </label>
+
           <div>
             <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Recipients</label>
             <textarea
@@ -289,10 +307,12 @@ const InvitePanel: FC = () => {
 
           </div>
 
-          <div>
+          <div className={skipWizard ? "opacity-50 pointer-events-none select-none" : ""}>
             <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Assigned Rhino Contacts</label>
             <p className="text-[10px] text-muted-foreground mb-2.5">
-              These reps will be shown to the portco during onboarding and CC'd on the submission summary email.
+              {skipWizard
+                ? "Rhino contacts selection only applies to onboarding-flow invites."
+                : "These reps will be shown to the portco during onboarding and CC'd on the submission summary email."}
             </p>
             <div className="space-y-1.5">
               {RHINO_CONTACTS.map((c) => {
@@ -305,7 +325,7 @@ const InvitePanel: FC = () => {
                     <input
                       type="checkbox"
                       checked={checked}
-                      disabled={c.required}
+                      disabled={c.required || skipWizard}
                       onChange={() => toggleContact(c.email, c.required)}
                       className="w-4 h-4"
                     />
@@ -367,10 +387,15 @@ const InvitePanel: FC = () => {
             {invites.map((inv) => (
               <div key={inv.id} className="flex items-center gap-4 border border-border rounded-lg px-4 py-3 bg-secondary/10">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-foreground truncate">
-                    {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name}{inv.invitee_company ? ` (${inv.invitee_company})` : ""} · </span> : inv.invitee_company ? <span className="font-sans font-bold not-italic">{inv.invitee_company} · </span> : null}{inv.email}
+                  <p className="text-xs font-mono text-foreground truncate flex items-center gap-2">
+                    <span className={`text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded flex-shrink-0 ${inv.skip_wizard ? "text-[#1A7EC8] bg-[#1A7EC8]/10" : "text-muted-foreground bg-muted-foreground/10"}`}>
+                      {inv.skip_wizard ? "Portal Access" : "Onboarding"}
+                    </span>
+                    <span className="truncate">
+                      {inv.invitee_name ? <span className="font-sans font-bold not-italic">{inv.invitee_name}{inv.invitee_company ? ` (${inv.invitee_company})` : ""} · </span> : inv.invitee_company ? <span className="font-sans font-bold not-italic">{inv.invitee_company} · </span> : null}{inv.email}
+                    </span>
                   </p>
-                  {inv.assigned_rhino_contacts && inv.assigned_rhino_contacts.length > 0 && (
+                  {!inv.skip_wizard && inv.assigned_rhino_contacts && inv.assigned_rhino_contacts.length > 0 && (
                     <p className="text-[10px] text-muted-foreground truncate mt-0.5">
                       Rhino team: {inv.assigned_rhino_contacts.map((e) => e.split("@")[0]).join(", ")}
                     </p>

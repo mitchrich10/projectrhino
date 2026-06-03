@@ -1,0 +1,1 @@
+ALTER TABLE public.onboarding_invites ADD COLUMN skip_wizard BOOLEAN NOT NULL DEFAULT false;

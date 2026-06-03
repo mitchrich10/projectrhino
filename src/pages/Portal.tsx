@@ -39,6 +39,7 @@ const Portal: FC = () => {
   const [inviteCompany, setInviteCompany] = useState<string | null>(null);
   const [isInvited, setIsInvited] = useState(false);
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
+  const [skipWizard, setSkipWizard] = useState(false);
   const [shareTargetStep, setShareTargetStep] = useState<number | null>(null);
   const [hasEvents, setHasEvents] = useState(false);
   const [copiedPortal, setCopiedPortal] = useState(false);
@@ -117,7 +118,7 @@ const Portal: FC = () => {
 
       const [domainData, { data: inviteData }, { data: eventsData }] = await Promise.all([
         fetchApprovedDomain(domain),
-        supabase.from("onboarding_invites").select("batch_id, invitee_company").eq("email", email.toLowerCase()).maybeSingle(),
+        supabase.from("onboarding_invites").select("batch_id, invitee_company, skip_wizard").eq("email", email.toLowerCase()).maybeSingle(),
         supabase.from("events").select("id").gte("event_date", new Date().toISOString()).limit(1),
       ]);
 
@@ -142,6 +143,7 @@ const Portal: FC = () => {
       setUserName(fullName);
 
       setIsInvited(hasInvite);
+      setSkipWizard(!!(inviteData as { skip_wizard?: boolean } | null)?.skip_wizard);
       setInviteCompany((inviteData as { invitee_company?: string | null } | null)?.invitee_company ?? null);
       const inviteBatchId = (inviteData as { batch_id?: string } | null)?.batch_id ?? null;
       setBatchId(inviteBatchId);
@@ -192,7 +194,7 @@ const Portal: FC = () => {
 
   // Onboarding visibility: only for invited founders who haven't submitted yet.
   // Hidden for admins, approved-domain users without an invite, and completed invitees.
-  const showOnboarding = isInvited && !!batchId && !onboardingCompleted && !isAdmin;
+  const showOnboarding = isInvited && !!batchId && !onboardingCompleted && !skipWizard && !isAdmin;
 
   if (loading) {
     return (
