@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { emailHeader } from "../_shared/email-header.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -69,17 +70,14 @@ serve(async (req: Request) => {
 
       const emailHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: #000; padding: 24px 32px;">
-            <h1 style="color: #fff; font-size: 22px; font-weight: 900; letter-spacing: -1px; margin: 0; text-transform: uppercase;">Rhino Ventures</h1>
-            <p style="color: #aaa; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin: 4px 0 0;">Partner Portal</p>
-          </div>
+          ${emailHeader()}
           <div style="padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
             <h2 style="font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin: 0 0 16px;">
               ${approved ? "✅ Access Approved" : "Access Request Update"}
             </h2>
             <p style="color: #555; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
               ${approved
-                ? `Your request to access <strong>${request.item_name}</strong> has been approved. You can now access it in the Partner Portal.`
+                ? `Your request to access <strong>${request.item_name}</strong> has been approved. You can now access it in the Rhino Portal.`
                 : `Your request to access <strong>${request.item_name}</strong> was not approved at this time. Please reach out to your Rhino contact if you have questions.`
               }
             </p>

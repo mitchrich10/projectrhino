@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { emailHeader } from "../_shared/email-header.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
@@ -145,11 +146,16 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailHtml = `
-      <h2>New Contact Form Submission</h2>
-      <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-      <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-      <h3>Message:</h3>
-      <p>${escapeHtml(message).replace(/\n/g, "<br>")}</p>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        ${emailHeader("Partner Portal — Contact Form")}
+        <div style="padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
+          <h2 style="font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin: 0 0 16px;">New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+          <h3>Message:</h3>
+          <p>${escapeHtml(message).replace(/\n/g, "<br>")}</p>
+        </div>
+      </div>
     `;
 
     const emailPayload: Record<string, unknown> = {

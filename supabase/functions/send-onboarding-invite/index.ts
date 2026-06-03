@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { emailHeader } from "../_shared/email-header.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -58,10 +59,7 @@ const buildEmailHtml = (opts: {
 
   return `
     <div style="${base} background: #ffffff; max-width: 600px; margin: 0 auto;">
-      <div style="background: #173660; padding: 24px 32px;">
-        <h1 style="${base} color: #ffffff; font-size: 22px; font-weight: bold; letter-spacing: -1px; line-height: 1.2; margin: 0; text-transform: uppercase;">RHINO</h1>
-        <p style="${base} color: #aaaaaa; font-size: 10px; font-weight: bold; letter-spacing: 3px; line-height: 1.4; text-transform: uppercase; margin: 2px 0 0;">Partner Portal</p>
-      </div>
+      ${emailHeader()}
       <div style="${base} padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
         <p style="${base} color: #173660; font-size: 14px; font-weight: bold; line-height: 1.6; margin: 0 0 20px;">
           ${opts.inviterName} from Rhino Ventures invited you to the Rhino Portal.
