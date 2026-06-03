@@ -260,6 +260,7 @@ const PartnershipsAdmin: FC = () => {
       display_order: form.display_order,
       approval_required: form.approval_required,
       detail_pdf_url: form.detail_pdf_url?.trim() || null,
+      notify_on_save: form.notify_on_save,
     };
 
     if (editingId) {
