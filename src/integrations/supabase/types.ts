@@ -38,6 +38,72 @@ export type Database = {
         }
         Relationships: []
       }
+      digest_queue: {
+        Row: {
+          digest_batch_id: string | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          queued_at: string
+          sent_at: string | null
+          summary: string | null
+          title: string
+        }
+        Insert: {
+          digest_batch_id?: string | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          queued_at?: string
+          sent_at?: string | null
+          summary?: string | null
+          title: string
+        }
+        Update: {
+          digest_batch_id?: string | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          queued_at?: string
+          sent_at?: string | null
+          summary?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      digests_sent: {
+        Row: {
+          batch_id: string
+          id: string
+          item_count: number
+          item_ids: string[]
+          sent_at: string
+          sent_by_admin_id: string | null
+          subject: string | null
+          subscriber_count: number
+        }
+        Insert: {
+          batch_id: string
+          id?: string
+          item_count?: number
+          item_ids?: string[]
+          sent_at?: string
+          sent_by_admin_id?: string | null
+          subject?: string | null
+          subscriber_count?: number
+        }
+        Update: {
+          batch_id?: string
+          id?: string
+          item_count?: number
+          item_ids?: string[]
+          sent_at?: string
+          sent_by_admin_id?: string | null
+          subject?: string | null
+          subscriber_count?: number
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string
@@ -474,6 +540,7 @@ export type Database = {
           logo_path: string | null
           logo_url: string | null
           name: string
+          notify_on_save: boolean
           partnership_pdf_path: string | null
           promo_code: string | null
           redemption_url: string | null
@@ -494,6 +561,7 @@ export type Database = {
           logo_path?: string | null
           logo_url?: string | null
           name: string
+          notify_on_save?: boolean
           partnership_pdf_path?: string | null
           promo_code?: string | null
           redemption_url?: string | null
@@ -514,6 +582,7 @@ export type Database = {
           logo_path?: string | null
           logo_url?: string | null
           name?: string
+          notify_on_save?: boolean
           partnership_pdf_path?: string | null
           promo_code?: string | null
           redemption_url?: string | null

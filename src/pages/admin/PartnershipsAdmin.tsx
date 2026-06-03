@@ -39,6 +39,7 @@ const emptyForm = () => ({
   display_order: 0,
   approval_required: false,
   detail_pdf_url: "",
+  notify_on_save: false,
 });
 
 const DEFAULT_MAIL_SUBJECT = "Rhino Portfolio Partnership Inquiry";
@@ -182,6 +183,7 @@ const PartnershipsAdmin: FC = () => {
       display_order: p.display_order,
       approval_required: p.approval_required,
       detail_pdf_url: p.detail_pdf_url ?? "",
+      notify_on_save: false,
     });
     setError(null);
     setModalOpen(true);
@@ -258,6 +260,7 @@ const PartnershipsAdmin: FC = () => {
       display_order: form.display_order,
       approval_required: form.approval_required,
       detail_pdf_url: form.detail_pdf_url?.trim() || null,
+      notify_on_save: form.notify_on_save,
     };
 
     if (editingId) {
@@ -578,6 +581,22 @@ const PartnershipsAdmin: FC = () => {
                   onCheckedChange={(v) => setForm((f) => ({ ...f, approval_required: v }))}
                 />
               </div>
+
+              {/* Notify subscribers (updates only — new partnerships always queue) */}
+              {editingId && (
+                <div className="flex items-center justify-between border border-border rounded-lg px-4 py-3 bg-secondary/10">
+                  <div>
+                    <p className="text-xs font-bold text-foreground">Notify subscribers about this update</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">Queues this change for the next digest. Leave off for minor edits.</p>
+                  </div>
+                  <Switch
+                    checked={form.notify_on_save}
+                    onCheckedChange={(v) => setForm((f) => ({ ...f, notify_on_save: v }))}
+                  />
+                </div>
+              )}
+
+
 
               {error && <p className="text-xs text-destructive font-medium">{error}</p>}
             </div>
