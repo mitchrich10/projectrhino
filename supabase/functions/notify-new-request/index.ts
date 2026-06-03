@@ -102,10 +102,7 @@ serve(async (req: Request) => {
       try {
         const emailHtml = `
           <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-            <div style="background:#000;padding:24px 32px;">
-              <h1 style="color:#fff;font-size:22px;font-weight:900;letter-spacing:-1px;margin:0;text-transform:uppercase;">Rhino Ventures</h1>
-              <p style="color:#aaa;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:4px 0 0;">Partner Portal — New Request</p>
-            </div>
+            ${emailHeader("Partner Portal — New Request")}
             <div style="padding:32px;border:1px solid #e5e5e5;border-top:none;">
               <h2 style="font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:-0.5px;margin:0 0 20px;">New Request from ${company_name}</h2>
               <table style="border-collapse:collapse;width:100%;margin-bottom:16px;">
