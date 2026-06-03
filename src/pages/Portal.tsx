@@ -143,6 +143,7 @@ const Portal: FC = () => {
       setUserName(fullName);
 
       setIsInvited(hasInvite);
+      setSkipWizard(!!(inviteData as { skip_wizard?: boolean } | null)?.skip_wizard);
       setInviteCompany((inviteData as { invitee_company?: string | null } | null)?.invitee_company ?? null);
       const inviteBatchId = (inviteData as { batch_id?: string } | null)?.batch_id ?? null;
       setBatchId(inviteBatchId);
@@ -193,7 +194,7 @@ const Portal: FC = () => {
 
   // Onboarding visibility: only for invited founders who haven't submitted yet.
   // Hidden for admins, approved-domain users without an invite, and completed invitees.
-  const showOnboarding = isInvited && !!batchId && !onboardingCompleted && !isAdmin;
+  const showOnboarding = isInvited && !!batchId && !onboardingCompleted && !skipWizard && !isAdmin;
 
   if (loading) {
     return (
