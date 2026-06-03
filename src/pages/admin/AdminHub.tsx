@@ -11,6 +11,7 @@ import RequestsAdmin from "./RequestsAdmin";
 import OnboardingAdmin from "./OnboardingAdmin";
 import AnalyticsPanel from "./AnalyticsPanel";
 import AuditPanel from "./AuditPanel";
+import NotificationsPanel from "./NotificationsPanel";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Resource {
