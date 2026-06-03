@@ -64,11 +64,11 @@ const buildEmailHtml = (opts: {
       </div>
       <div style="${base} padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
         <p style="${base} color: #173660; font-size: 14px; font-weight: bold; line-height: 1.6; margin: 0 0 20px;">
-          ${opts.inviterName} from Rhino Ventures invited you to The Crash Portal.
+          ${opts.inviterName} from Rhino Ventures invited you to the Rhino Portal.
         </p>
         <p style="${body} margin: 0 0 8px;">${greeting}</p>
         <p style="${body} margin: 0 0 16px;">
-          Welcome to The Crash Portal — Rhino's home for portfolio companies. Inside you'll find:
+          Welcome to the Rhino Portal — Rhino's home for portfolio companies. Inside you'll find:
         </p>
         <ul style="${body} margin: 0 0 16px; padding-left: 20px;">
           <li style="${body} margin: 0 0 6px;">Curated partnerships and discounts across cloud, finance, hiring, and productivity tools</li>
@@ -77,15 +77,15 @@ const buildEmailHtml = (opts: {
         </ul>
         <p style="${body} margin: 0 0 16px;">
           ${opts.skipWizard
-            ? "Click below to sign in and explore — you'll have access to partnerships, resources, and tools available to Rhino portfolio companies."
-            : "To get started, click below to sign in. There's a brief onboarding flow to share your brand assets, key contacts, tech stack, and current priorities — so we can make sure you're plugged into everything relevant."}
+            ? "Click below to sign in."
+            : "Click below to sign in. There's a brief onboarding flow to share your brand assets, key contacts, tech stack, and current priorities — so we can make sure you're plugged into everything relevant."}
         </p>
         ${opts.note ? `<p style="${body} margin: 0 0 16px; padding: 12px 16px; background: #f4f7fa; border-left: 3px solid #1A7EC8;">${opts.note}</p>` : ""}
         <a href="${opts.portalUrl}" style="${base} display: inline-block; background: #1A7EC8; color: #ffffff; font-size: 12px; font-weight: bold; letter-spacing: 2px; line-height: 1.2; text-transform: uppercase; padding: 14px 28px; text-decoration: none; border-radius: 4px; margin: 8px 0 0;">
           Access the Portal →
         </a>
         <p style="${base} color: #999999; font-size: 11px; font-weight: 400; line-height: 1.5; margin: 24px 0 0;">
-          This sign-in link is unique to you and expires in ${TOKEN_TTL_HOURS} hours. If you didn't expect this email, you can safely ignore it.
+          This sign-in link is unique to you. If you didn't expect this email, you can safely ignore it.
         </p>
       </div>
     </div>
@@ -217,7 +217,7 @@ serve(async (req: Request) => {
           body: JSON.stringify({
             from: "Rhino Ventures Portal <portal@rhinovc.com>",
             to: [row.email],
-            subject: `${inviterName} invited you to The Crash Portal | Rhino Ventures`,
+            subject: `${inviterName} invited you to the Rhino Portal | Rhino Ventures`,
             html: emailHtml,
           }),
         });
