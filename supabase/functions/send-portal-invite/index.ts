@@ -18,16 +18,21 @@ serve(async (req) => {
 
     for (const email of (emails as string[])) {
       const html = `
-        <p>Hi there,</p>
-        <p><strong>${senderName || companyName}</strong> has invited you to access the <strong>Rhino Ventures Partner Portal</strong> — your home base for resources, events, partnerships, and more.</p>
-        <p>Sign in with your work email at the link below:</p>
-        <p style="margin: 24px 0;">
-          <a href="${portalUrl}" style="background:#171717;color:#fff;padding:12px 24px;text-decoration:none;font-weight:bold;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;border-radius:4px;">
-            Access the Portal →
-          </a>
-        </p>
-        <p style="color:#888;font-size:12px;">You'll need to sign in with your <strong>${email.split("@")[1]}</strong> work email. If you have any trouble, reply to this email.</p>
-        <p style="color:#888;font-size:12px;">— The Rhino Ventures Team</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          ${emailHeader()}
+          <div style="padding: 32px; border: 1px solid #e5e5e5; border-top: none;">
+            <p>Hi there,</p>
+            <p><strong>${senderName || companyName}</strong> has invited you to access the <strong>Rhino Portal</strong> — your home base for resources, events, partnerships, and more.</p>
+            <p>Sign in with your work email at the link below:</p>
+            <p style="margin: 24px 0;">
+              <a href="${portalUrl}" style="background:#1A7EC8;color:#fff;padding:12px 24px;text-decoration:none;font-weight:bold;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;border-radius:4px;">
+                Access the Portal →
+              </a>
+            </p>
+            <p style="color:#888;font-size:12px;">You'll need to sign in with your <strong>${email.split("@")[1]}</strong> work email. If you have any trouble, reply to this email.</p>
+            <p style="color:#888;font-size:12px;">— The Rhino Ventures Team</p>
+          </div>
+        </div>
       `;
 
       const res = await fetch("https://api.resend.com/emails", {
