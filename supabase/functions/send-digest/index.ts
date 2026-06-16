@@ -25,12 +25,8 @@ const TYPE_LABEL: Record<string, string> = {
   event_added: "New Event",
 };
 
-const anchorFor = (entityType: string): string => {
-  if (entityType.startsWith("partnership")) return "partnerships";
-  if (entityType.startsWith("resource")) return "resources";
-  if (entityType.startsWith("event")) return "events";
-  return "";
-};
+
+
 
 const monthDay = (d: Date) =>
   d.toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "America/New_York" });
