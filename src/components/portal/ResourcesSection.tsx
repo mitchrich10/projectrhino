@@ -25,6 +25,15 @@ interface Resource {
 /* ── Category display order ─────────────────────────────────────────────── */
 const CATEGORY_ORDER = ["Fundraising", "Governance", "Compensation & Equity"];
 
+/* ── Hardcoded gating fallback ──────────────────────────────────────────────
+ * Resources that must always gate even if approval_required is somehow unset.
+ * Primary gating is driven by the DB `approval_required` flag (toggled in
+ * /admin → Resources); this list only guarantees no regression for the
+ * originally hardcoded founder-only resources. */
+const GATED_FALLBACK_TITLES = new Set(["Board Meeting Best Practices"]);
+
+
+
 /* ── Icon resolver ──────────────────────────────────────────────────────── */
 const getResourceIcon = (title: string, filePath: string | null) => {
   const t = title.toLowerCase();
@@ -402,7 +411,8 @@ const ResourcesSection: FC = () => {
     // Auto-approval is intentionally scoped to the Fundraising Toolkit (handled separately
     // above). General gated resources (e.g. Board Meeting Best Practices) require an
     // explicit per-resource approval recorded in partner_requests.
-    const locked = r.approval_required && !isApproved;
+    const requiresAccess = r.approval_required || GATED_FALLBACK_TITLES.has(r.title);
+    const locked = requiresAccess && !isApproved;
     const isCompBenchmarks = r.title === "Compensation Benchmarks";
     const isFile = !!r.file_path;
     const isExternal = !isFile && !!r.url && !isCompBenchmarks;
