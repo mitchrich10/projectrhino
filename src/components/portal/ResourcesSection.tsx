@@ -411,7 +411,8 @@ const ResourcesSection: FC = () => {
     // Auto-approval is intentionally scoped to the Fundraising Toolkit (handled separately
     // above). General gated resources (e.g. Board Meeting Best Practices) require an
     // explicit per-resource approval recorded in partner_requests.
-    const locked = r.approval_required && !isApproved;
+    const requiresAccess = r.approval_required || GATED_FALLBACK_TITLES.has(r.title);
+    const locked = requiresAccess && !isApproved;
     const isCompBenchmarks = r.title === "Compensation Benchmarks";
     const isFile = !!r.file_path;
     const isExternal = !isFile && !!r.url && !isCompBenchmarks;
