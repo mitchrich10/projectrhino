@@ -669,7 +669,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      short_teaser: { Args: { _text: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
