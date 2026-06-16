@@ -40,18 +40,25 @@ const buildSubject = () => `What's new on the Rhino Portal — ${monthDay(new Da
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+// Safety net: keep summaries short even if a queue row still holds a long body.
+const teaser = (s: string): string => {
+  const clean = s.replace(/\s+/g, " ").trim();
+  if (clean.length <= 150) return clean;
+  const slice = clean.slice(0, 150);
+  const lastStop = Math.max(slice.lastIndexOf(". "), slice.lastIndexOf("! "), slice.lastIndexOf("? "));
+  if (lastStop > 60) return slice.slice(0, lastStop + 1);
+  return slice.replace(/\s+\S*$/, "") + "…";
+};
+
 const buildDigestHtml = (items: QueueItem[]): string => {
   const sections = items
     .map((it) => {
-      const anchor = anchorFor(it.entity_type);
-      const link = anchor ? `${PORTAL_URL}#${anchor}` : PORTAL_URL;
       const label = TYPE_LABEL[it.entity_type] ?? "Update";
       return `
         <div style="border:1px solid #e2e8f0;border-radius:10px;padding:20px 22px;margin:0 0 16px;">
           <p style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1A7EC8;margin:0 0 8px;">${label}</p>
-          <h3 style="font-size:17px;font-weight:700;color:#173660;margin:0 0 8px;line-height:1.3;">${escapeHtml(it.title)}</h3>
-          ${it.summary ? `<p style="font-size:14px;color:#475569;margin:0 0 14px;line-height:1.6;">${escapeHtml(it.summary)}</p>` : ""}
-          <a href="${link}" style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1A7EC8;text-decoration:none;">View on the portal →</a>
+          <h3 style="font-size:17px;font-weight:700;color:#173660;margin:0;line-height:1.3;">${escapeHtml(it.title)}</h3>
+          ${it.summary ? `<p style="font-size:14px;color:#475569;margin:8px 0 0;line-height:1.6;">${escapeHtml(teaser(it.summary))}</p>` : ""}
         </div>`;
     })
     .join("");
