@@ -124,20 +124,14 @@ const PartnershipPanel: FC<{
     }
   })();
 
-  // F-004: lazy-load jsPDF only when user actually clicks Download
-  const handleDownload = async () => {
+  // Only a real, manually-uploaded PDF is offered for download.
+  // On-the-fly PDF generation was removed — no fallback is produced.
+  const uploadedPdfUrl = partnership.detail_pdf_url || partnership.partnership_pdf_path || null;
+
+  const handleDownload = () => {
+    if (!uploadedPdfUrl) return;
     trackPortalEvent("partnership_download", partnership.name, partnership.id);
-    if (partnership.detail_pdf_url) {
-      window.open(partnership.detail_pdf_url, "_blank");
-      return;
-    }
-    setDownloading(true);
-    try {
-      const { generatePartnershipPdf } = await import("@/lib/generatePartnershipPdf");
-      generatePartnershipPdf(partnership);
-    } finally {
-      setDownloading(false);
-    }
+    window.open(uploadedPdfUrl, "_blank");
   };
 
   const isMailto = partnership.redemption_url ? /^mailto:/i.test(partnership.redemption_url) : false;
