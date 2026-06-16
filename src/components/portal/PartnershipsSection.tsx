@@ -141,16 +141,15 @@ const PartnershipPanel: FC<{
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <SheetContent side="right" className="w-full sm:max-w-md p-0 border-l border-[#DDE4EC] shadow-xl overflow-y-auto" style={{ fontFamily: "'DM Sans', sans-serif" }}>
         <div className="relative px-6 pt-8 pb-5 border-b border-[#DDE4EC]">
-          {!locked && (
+          {!locked && uploadedPdfUrl && (
             <button
               type="button"
               onClick={handleDownload}
-              disabled={downloading}
-              className="absolute top-4 right-12 text-[#5C6B7A] hover:text-[#1A7EC8] transition-colors disabled:opacity-50"
-              title="Download details"
-              aria-label="Download details"
+              className="absolute top-4 right-12 text-[#5C6B7A] hover:text-[#1A7EC8] transition-colors"
+              title="Download partnership details"
+              aria-label="Download partnership details"
             >
-              {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              <Download className="w-4 h-4" />
             </button>
           )}
           <div className="flex flex-col items-start gap-3">
