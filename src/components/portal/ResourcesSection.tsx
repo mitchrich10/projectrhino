@@ -25,6 +25,15 @@ interface Resource {
 /* ── Category display order ─────────────────────────────────────────────── */
 const CATEGORY_ORDER = ["Fundraising", "Governance", "Compensation & Equity"];
 
+/* ── Hardcoded gating fallback ──────────────────────────────────────────────
+ * Resources that must always gate even if approval_required is somehow unset.
+ * Primary gating is driven by the DB `approval_required` flag (toggled in
+ * /admin → Resources); this list only guarantees no regression for the
+ * originally hardcoded founder-only resources. */
+const GATED_FALLBACK_TITLES = new Set(["Board Meeting Best Practices"]);
+
+
+
 /* ── Icon resolver ──────────────────────────────────────────────────────── */
 const getResourceIcon = (title: string, filePath: string | null) => {
   const t = title.toLowerCase();
