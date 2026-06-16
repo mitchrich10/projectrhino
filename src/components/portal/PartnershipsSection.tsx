@@ -93,7 +93,7 @@ const PartnershipPanel: FC<{
   onClose: () => void;
 }> = memo(({ partnership, companyName, isApproved, open, onClose }) => {
   const [copied, setCopied] = useState(false);
-  const [downloading, setDownloading] = useState(false);
+  
 
   const copyCode = async () => {
     if (!partnership.promo_code) return;
