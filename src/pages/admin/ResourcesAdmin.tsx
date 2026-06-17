@@ -295,6 +295,7 @@ const ResourcesAdmin: FC = () => {
 
               <div className="flex items-start gap-3">
                 <input
+                  data-testid="approval-required-checkbox"
                   type="checkbox"
                   checked={form.approval_required}
                   onChange={(e) => setForm((f) => ({ ...f, approval_required: e.target.checked }))}
