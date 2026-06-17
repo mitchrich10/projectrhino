@@ -267,7 +267,10 @@ const ComboField: FC<{
   suffix?: string;
 }> = ({ value, onChange, options, placeholder, hasError, suffix }) => {
   const [open, setOpen] = useState(false);
-  const filtered = value.trim() === ""
+  const [typing, setTyping] = useState(false);
+  // Only filter while the user is actively typing. Clicking the arrow / focusing
+  // shows the full preset list regardless of the current value.
+  const filtered = !typing || value.trim() === ""
     ? options
     : options.filter(
         (o) =>
@@ -284,10 +287,11 @@ const ComboField: FC<{
           <input
             value={value}
             onChange={(e) => {
+              setTyping(true);
               onChange(e.target.value.replace(/[^0-9]/g, ""));
               if (!open) setOpen(true);
             }}
-            onFocus={() => setOpen(true)}
+            onFocus={() => { setTyping(false); setOpen(true); }}
             placeholder={placeholder}
             inputMode="numeric"
             className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
@@ -297,7 +301,7 @@ const ComboField: FC<{
           <button
             type="button"
             tabIndex={-1}
-            onClick={() => setOpen((o) => !o)}
+            onClick={() => { setTyping(false); setOpen((o) => !o); }}
             className="px-2 py-2.5 flex items-center"
             aria-label="Toggle preset options"
           >
@@ -1104,7 +1108,7 @@ const OptionModeller: FC = () => {
                   <div className="sm:w-72">
                     <FieldLabel>
                       Company Fully Diluted Shares Outstanding (FDSO)
-                      <TooltipComp text="The total number of shares the company would have if every option, warrant, and convertible were exercised — typically 10–50M for early-stage companies. Find this on your cap table, in your most recent financing agreement, or by asking your CFO/founder. Implied share price across all exit scenarios is calculated as (company valuation) ÷ (this number)." />
+                      <TooltipComp text="The total shares outstanding if every option, warrant, and convertible were exercised." />
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
