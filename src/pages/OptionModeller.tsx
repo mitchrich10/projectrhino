@@ -1108,7 +1108,7 @@ const OptionModeller: FC = () => {
                   <div className="sm:w-72">
                     <FieldLabel>
                       Company Fully Diluted Shares Outstanding (FDSO)
-                      <TooltipComp text="The total number of shares the company would have if every option, warrant, and convertible were exercised — typically 10–50M for early-stage companies. Find this on your cap table, in your most recent financing agreement, or by asking your CFO/founder. Implied share price across all exit scenarios is calculated as (company valuation) ÷ (this number)." />
+                      <TooltipComp text="The total shares outstanding if every option, warrant, and convertible were exercised." />
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
