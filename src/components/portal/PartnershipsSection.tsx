@@ -1,8 +1,9 @@
 import { FC, memo, startTransition, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
-import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide-react";
+import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import PartnerLogoOrBadge from "@/components/portal/PartnerLogoOrBadge";
 import { prefetchPartnerships } from "@/lib/portalPrefetch";
