@@ -2,7 +2,7 @@ import { FC, useEffect, useState, useRef } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, ArrowLeft, Plus, Pencil, Trash2, X, Upload, ExternalLink, Download } from "lucide-react";
+import { Loader2, ArrowLeft, Plus, Pencil, Trash2, X, Upload, ExternalLink, Download, Lock } from "lucide-react";
 import { exportActivePortfolioToCSV } from "@/lib/exportPortfolio";
 import rhinoLogo from "@/assets/rhino-logo-black.png";
 import EventsAdmin from "./EventsAdmin";
@@ -21,13 +21,14 @@ interface Resource {
   url: string | null;
   file_path: string | null;
   category: string;
+  approval_required: boolean;
   created_at: string;
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const CATEGORIES = ["Fundraising", "Governance", "Compensation & Equity", "Hiring"];
 const emptyResource = (): Omit<Resource, "id" | "created_at"> => ({
-  title: "", description: "", url: "", file_path: null, category: "Legal",
+  title: "", description: "", url: "", file_path: null, category: "Legal", approval_required: false,
 });
 
 type Tab = "resources" | "events" | "partnerships" | "requests" | "onboarding" | "analytics" | "notifications" | "audit";
@@ -56,7 +57,7 @@ const ResourcesPanel: FC = () => {
   const openCreate = () => { setEditingId(null); setForm(emptyResource()); setError(null); setModalOpen(true); };
   const openEdit = (r: Resource) => {
     setEditingId(r.id);
-    setForm({ title: r.title, description: r.description ?? "", url: r.url ?? "", file_path: r.file_path, category: r.category });
+    setForm({ title: r.title, description: r.description ?? "", url: r.url ?? "", file_path: r.file_path, category: r.category, approval_required: Boolean(r.approval_required) });
     setError(null); setModalOpen(true);
   };
 
@@ -74,7 +75,7 @@ const ResourcesPanel: FC = () => {
     if (!form.title.trim()) { setError("Title is required."); return; }
     if (!form.url && !form.file_path) { setError("Provide a URL or upload a file."); return; }
     setSaving(true); setError(null);
-    const payload = { title: form.title.trim(), description: form.description?.trim() || null, url: form.url?.trim() || null, file_path: form.file_path || null, category: form.category };
+    const payload = { title: form.title.trim(), description: form.description?.trim() || null, url: form.url?.trim() || null, file_path: form.file_path || null, category: form.category, approval_required: form.approval_required };
     if (editingId) {
       const { error: e } = await supabase.from("resources").update(payload).eq("id", editingId);
       if (e) { setError(e.message); setSaving(false); return; }
@@ -124,6 +125,11 @@ const ResourcesPanel: FC = () => {
                           <a href={r.file_path ? getFileUrl(r.file_path) : r.url!} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><ExternalLink className="w-3 h-3" /></a>
                         )}
                         {r.file_path && <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-1.5 py-0.5 rounded">PDF</span>}
+                        {r.approval_required && (
+                          <span className="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-1.5 py-0.5 rounded flex items-center gap-1">
+                            <Lock className="w-2.5 h-2.5" /> Approval Required
+                          </span>
+                        )}
                       </div>
                       {r.description && <p className="text-xs text-muted-foreground">{r.description}</p>}
                     </div>
