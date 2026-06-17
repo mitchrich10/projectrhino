@@ -98,43 +98,35 @@ interface AttainmentRow {
 }
 
 /**
- * Returns exactly 5 attainment levels derived from the user's cliff and
- * accelerator thresholds:
- *   Row 1 — below cliff:  cliffPct - 10  (illustrates $0 zone)
- *   Row 2 — at cliff:     exactly cliffPct (first row that earns a bonus)
- *   Row 3 — at target:    exactly 100%
- *   Row 4 — at accel:     exactly accelPct (where multiplier kicks in)
- *   Row 5 — above accel:  accelPct + 15   (strong performance)
+ * Generates a full set of attainment levels so the linear cliff ramp and the
+ * progressive accelerator are both visible:
+ *   - one row 10pts below the cliff (the $0 zone)
+ *   - the cliff itself (start of the ramp, still $0)
+ *   - rows every 5pts from cliff → 100% (the ramp made visible)
+ *   - rows every 5pts from 100% → accelerator (above-target at base rate)
+ *   - the accelerator threshold itself
+ *   - three rows every 10pts above the accelerator (progressive multiplier)
  *
- * All five values update immediately when the user changes any threshold.
+ * All values regenerate immediately when the user changes any threshold.
  */
 function getDynamicAttainmentLevels(cliffPct: number, accelPct: number): number[] {
-  const belowCliff = Math.max(5, cliffPct - 10);
-  const atCliff    = cliffPct;
-  const atTarget   = 100;
-  const atAccel    = accelPct;
-  const aboveAccel = accelPct + 15;
+  const levels = new Set<number>();
 
-  // Build ordered list, collapsing any accidental duplicates gracefully
-  const ordered = [belowCliff, atCliff, atTarget, atAccel, aboveAccel];
+  // Below-cliff illustration
+  levels.add(Math.max(5, cliffPct - 10));
 
-  // Deduplicate while preserving order
-  const seen = new Set<number>();
-  const deduped: number[] = [];
-  for (const v of ordered) {
-    if (!seen.has(v)) { seen.add(v); deduped.push(v); }
-  }
+  // Cliff → 100% ramp, every 5 points
+  for (let p = cliffPct; p < 100; p += 5) levels.add(p);
+  levels.add(100);
 
-  // If we lost rows due to deduplication (e.g. cliff === 100 or accel === 100)
-  // pad at the top end to always return 5 rows
-  while (deduped.length < 5) {
-    const last = deduped[deduped.length - 1];
-    const next = last + 10;
-    if (!seen.has(next)) { seen.add(next); deduped.push(next); }
-    else deduped.push(last + deduped.length * 5);
-  }
+  // 100% → accelerator, every 5 points
+  for (let p = 100; p < accelPct; p += 5) levels.add(p);
+  levels.add(accelPct);
 
-  return deduped.sort((a, b) => a - b);
+  // Above accelerator: three rows every 10 points (progressive accelerator)
+  for (let i = 1; i <= 3; i++) levels.add(accelPct + i * 10);
+
+  return Array.from(levels).sort((a, b) => a - b);
 }
 
 function buildAttainmentRows(plan: PlanInputs, ote: number): AttainmentRow[] {

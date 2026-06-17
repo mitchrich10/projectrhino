@@ -1,9 +1,10 @@
-import { FC, useMemo, useState, useRef, useCallback } from "react";
+import { FC, useMemo, useState, useRef, useCallback, useEffect } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { CalendarIcon, ChevronDown, ChevronUp, Info, Plus, Trash2, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SubPageHeader from "@/components/portal/SubPageHeader";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -253,20 +254,42 @@ const FieldInput: FC<{
   );
 };
 
-const SelectField: FC<{
+
+
+// ── ComboField — preset suggestions + free-text custom entry ───────────────────
+let _comboCounter = 0;
+const ComboField: FC<{
   value: string;
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
-}> = ({ value, onChange, options }) => (
-  <select
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    className="w-full rounded px-3 py-2.5 text-sm outline-none appearance-none"
-    style={{ border: `1px solid ${SLATE}`, background: "#fff", color: NAVY, cursor: "pointer" }}
-  >
-    {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-  </select>
-);
+  placeholder?: string;
+  hasError?: boolean;
+  suffix?: string;
+}> = ({ value, onChange, options, placeholder, hasError, suffix }) => {
+  const listId = useRef(`combo_${_comboCounter++}`).current;
+  return (
+    <>
+      <div
+        className="flex items-center rounded transition-colors"
+        style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: "#fff" }}
+      >
+        <input
+          list={listId}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          inputMode="numeric"
+          className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+          style={{ color: NAVY }}
+        />
+        {suffix && <span className="pr-3 text-sm select-none" style={{ color: MUTED }}>{suffix}</span>}
+      </div>
+      <datalist id={listId}>
+        {options.map((o) => <option key={o.value} value={o.value} label={o.label} />)}
+      </datalist>
+    </>
+  );
+};
 
 const DatePickerField: FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
   const selected = value ? new Date(value + "T12:00:00") : undefined;
@@ -296,16 +319,26 @@ const DatePickerField: FC<{ value: string; onChange: (v: string) => void }> = ({
 };
 
 const TooltipComp: FC<{ text: string }> = ({ text }) => (
-  <span className="group relative ml-1 inline-flex align-middle">
-    <Info className="w-3 h-3 inline cursor-help" style={{ color: MUTED }} />
-    <span
-      className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-5 w-56 rounded text-[10px] px-2 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-50 leading-snug text-center"
-      style={{ background: NAVY, color: "#fff" }}
-    >
-      {text}
-    </span>
-  </span>
+  <TooltipProvider delayDuration={100}>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="ml-1 inline-flex align-middle cursor-help">
+          <Info className="w-3 h-3 inline" style={{ color: MUTED }} />
+        </span>
+      </TooltipTrigger>
+      <TooltipContent
+        side="top"
+        align="center"
+        collisionPadding={12}
+        className="max-w-[220px] text-[10px] leading-snug text-center border-0"
+        style={{ background: NAVY, color: "#fff" }}
+      >
+        {text}
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 );
+
 
 // ── ValuationCell — editable with M/B display on blur ─────────────────────────
 
@@ -538,31 +571,45 @@ const GrantCard: FC<{
             <div>
               <FieldLabel>Grant Date</FieldLabel>
               <DatePickerField value={grant.grantDate} onChange={(v) => onChange({ grantDate: v })} />
+              {grant.grantDate !== "" && isNaN(new Date(grant.grantDate + "T12:00:00").getTime()) && (
+                <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>Enter a valid date</p>
+              )}
             </div>
             <div>
-              <FieldLabel>Total Vest Period</FieldLabel>
-              <SelectField
-                value={grant.vestYears.toString()}
-                onChange={(v) => onChange({ vestYears: parseInt(v) })}
+              <FieldLabel>Total Vest Period (years)</FieldLabel>
+              <ComboField
+                value={grant.vestYears > 0 ? grant.vestYears.toString() : ""}
+                onChange={(v) => onChange({ vestYears: parseInt(v.replace(/[^0-9]/g, "")) || 0 })}
+                placeholder="e.g. 4"
+                suffix="yrs"
+                hasError={!(grant.vestYears > 0)}
                 options={[
                   { value: "2", label: "2 years" },
                   { value: "3", label: "3 years" },
                   { value: "4", label: "4 years" },
                   { value: "5", label: "5 years" },
+                  { value: "6", label: "6 years" },
                 ]}
               />
+              {!(grant.vestYears > 0) && (
+                <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>Must be a positive number</p>
+              )}
             </div>
             <div>
-              <FieldLabel>Cliff</FieldLabel>
-              <SelectField
-                value={grant.cliffMonths.toString()}
-                onChange={(v) => onChange({ cliffMonths: parseInt(v) })}
+              <FieldLabel>Cliff (months)</FieldLabel>
+              <ComboField
+                value={grant.cliffMonths > 0 ? grant.cliffMonths.toString() : "0"}
+                onChange={(v) => onChange({ cliffMonths: parseInt(v.replace(/[^0-9]/g, "")) || 0 })}
+                placeholder="e.g. 12"
+                suffix="mo"
+                hasError={grant.cliffMonths < 0}
                 options={[
                   { value: "0",  label: "No cliff (linear)" },
                   { value: "6",  label: "6-month cliff" },
                   { value: "12", label: "12-month cliff" },
                   { value: "18", label: "18-month cliff" },
                   { value: "24", label: "24-month cliff" },
+                  { value: "36", label: "36-month cliff" },
                 ]}
               />
             </div>
@@ -646,6 +693,8 @@ const OptionModeller: FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["g_initial"]));
   const [globalDiluted, setGlobalDiluted] = useState("10000000");
+  // Whether the user manually overrode the auto-derived FDSO total.
+  const [dilutedOverridden, setDilutedOverridden] = useState(false);
   const [todayDate] = useState(today());
   
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -727,6 +776,14 @@ const OptionModeller: FC = () => {
   const weightedAvgStrike = totalOptionsAll > 0
     ? grantCalcs.reduce((s, g) => s + g.strike * g.total, 0) / totalOptionsAll
     : 0;
+
+  // Auto-derive Fully Diluted Shares Outstanding from the sum of all grant
+  // option counts, unless the user has manually overridden the field.
+  useEffect(() => {
+    if (!dilutedOverridden && totalOptionsAll > 0) {
+      setGlobalDiluted(String(totalOptionsAll));
+    }
+  }, [totalOptionsAll, dilutedOverridden]);
 
   const globalDilutedNum = parseFloat(globalDiluted) || 0;
   const dilutedError     = globalDiluted !== "" && globalDilutedNum <= 0 ? "Must be greater than 0" : "";
@@ -964,13 +1021,31 @@ const OptionModeller: FC = () => {
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
-                      onChange={setGlobalDiluted}
+                      onChange={(v) => { setDilutedOverridden(true); setGlobalDiluted(v); }}
                       placeholder="e.g. 10,000,000"
                       hasError={!!dilutedError}
                       formatThousands
                     />
 
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
+                    {dilutedOverridden ? (
+                      totalOptionsAll > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => { setDilutedOverridden(false); setGlobalDiluted(String(totalOptionsAll)); }}
+                          className="text-[10px] mt-1 underline decoration-dotted underline-offset-2"
+                          style={{ color: BLUE }}
+                        >
+                          Reset to auto ({totalOptionsAll.toLocaleString()} — sum of grants)
+                        </button>
+                      )
+                    ) : (
+                      totalOptionsAll > 0 && (
+                        <p className="text-[10px] mt-1" style={{ color: BLUE }}>
+                          Auto-derived from sum of all grant options.
+                        </p>
+                      )
+                    )}
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
                     Combined total across all grants.{" "}
