@@ -29,6 +29,7 @@ serve(async (req) => {
     const bucket = url.searchParams.get("bucket") ?? "";
     const path = url.searchParams.get("path") ?? "";
     const download = url.searchParams.get("download");
+    const filenameOverride = url.searchParams.get("filename");
 
     if (!ALLOWED_BUCKETS.has(bucket) || !path) {
       return new Response(JSON.stringify({ error: "Invalid bucket or path" }), {
