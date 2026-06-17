@@ -248,14 +248,22 @@ const PartnershipPanel: FC<{
           <>
             {partnership.redemption_url && (
               <div className="px-6 pt-5">
-                <a
-                  href={normalizeUrl(partnership.redemption_url)}
-                  {...(isMailto ? {} : { target: "_blank", rel: "noopener noreferrer" })}
-                  className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
-                >
-                  {actionLabel}{" "}
-                  {isMailto ? <Mail className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
-                </a>
+                {isMailto ? (
+                  <MailtoRedeemButton
+                    mailto={normalizeUrl(partnership.redemption_url)}
+                    label={actionLabel}
+                    onRedeem={() => trackPortalEvent("partnership_redeem", partnership.name, partnership.id)}
+                  />
+                ) : (
+                  <a
+                    href={normalizeUrl(partnership.redemption_url)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+                  >
+                    {actionLabel} <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
               </div>
             )}
 
