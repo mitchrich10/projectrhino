@@ -193,7 +193,10 @@ const PartnershipPanel: FC<{
 
   // Only a real, manually-uploaded PDF is offered for download.
   // On-the-fly PDF generation was removed — no fallback is produced.
-  const uploadedPdfUrl = partnership.detail_pdf_url || partnership.partnership_pdf_path || null;
+  // Served via the storage-proxy edge function so ad/privacy blockers don't
+  // block the Supabase /storage/ URL pattern (ERR_BLOCKED_BY_CLIENT).
+  const rawPdfUrl = partnership.detail_pdf_url || partnership.partnership_pdf_path || null;
+  const uploadedPdfUrl = proxiedStorageUrl(rawPdfUrl, { download: true });
 
   const handleDownload = () => {
     if (!uploadedPdfUrl) return;
