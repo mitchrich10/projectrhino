@@ -188,9 +188,10 @@ const PreviewPanel: FC<{
     badgeClass: "bg-[#CDD8E3] text-[#173660]",
   };
 
-  const fileUrl = resource.file_path ? getFileUrl(resource.file_path) : null;
+  const fileUrl = resource.file_path ? getProxiedUrl(resource.file_path) : null;
+  const downloadUrl = resource.file_path ? getProxiedUrl(resource.file_path, true) : null;
   const pdf = isPdf(resource.file_path);
-  const filename = resource.file_path?.split("/").pop() ?? "file";
+  const filename = resource.file_path ? cleanFilename(resource.file_path) : "file";
 
   return (
     <>
