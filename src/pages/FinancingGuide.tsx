@@ -65,17 +65,33 @@ const RESOURCE_ORDER = [
 const getFileUrl = (filePath: string) =>
   supabase.storage.from("resources").getPublicUrl(filePath).data.publicUrl;
 
+/** Strip a leading timestamp/UUID prefix from a storage path's filename. */
+const cleanFilename = (filePath: string) =>
+  (filePath.split("/").pop() ?? "file")
+    .replace(/^\d+-/, "")
+    .replace(/^[0-9a-f-]{16,}-/i, "");
+
+/** Public URL routed through the storage-proxy with a clean download filename. */
+const getProxiedUrl = (filePath: string, download = false) =>
+  proxiedStorageUrl(getFileUrl(filePath), {
+    download,
+    filename: cleanFilename(filePath),
+  }) ?? getFileUrl(filePath);
+
 const isPdf = (filePath: string | null) =>
   filePath?.toLowerCase().endsWith(".pdf");
 
 const downloadFile = async (href: string, filename: string) => {
   const res = await fetch(href);
+  if (!res.ok) throw new Error(`Download failed (${res.status}) for ${filename}`);
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  document.body.appendChild(a);
   a.click();
+  a.remove();
   URL.revokeObjectURL(url);
 };
 
