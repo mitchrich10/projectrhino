@@ -257,8 +257,7 @@ const FieldInput: FC<{
 
 
 
-// ── ComboField — preset suggestions + free-text custom entry ───────────────────
-let _comboCounter = 0;
+// ── ComboField — clickable preset dropdown + free-text custom entry ────────────
 const ComboField: FC<{
   value: string;
   onChange: (v: string) => void;
@@ -267,55 +266,140 @@ const ComboField: FC<{
   hasError?: boolean;
   suffix?: string;
 }> = ({ value, onChange, options, placeholder, hasError, suffix }) => {
-  const listId = useRef(`combo_${_comboCounter++}`).current;
+  const [open, setOpen] = useState(false);
+  const filtered = value.trim() === ""
+    ? options
+    : options.filter(
+        (o) =>
+          o.label.toLowerCase().includes(value.toLowerCase()) ||
+          o.value.startsWith(value),
+      );
   return (
-    <>
-      <div
-        className="flex items-center rounded transition-colors"
-        style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: "#fff" }}
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverPrimitive.Anchor asChild>
+        <div
+          className="flex items-center rounded transition-colors"
+          style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: "#fff" }}
+        >
+          <input
+            value={value}
+            onChange={(e) => {
+              onChange(e.target.value.replace(/[^0-9]/g, ""));
+              if (!open) setOpen(true);
+            }}
+            onFocus={() => setOpen(true)}
+            placeholder={placeholder}
+            inputMode="numeric"
+            className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+            style={{ color: NAVY }}
+          />
+          {suffix && <span className="pr-1 text-sm select-none" style={{ color: MUTED }}>{suffix}</span>}
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setOpen((o) => !o)}
+            className="px-2 py-2.5 flex items-center"
+            aria-label="Toggle preset options"
+          >
+            <ChevronDown className="w-4 h-4" style={{ color: MUTED }} />
+          </button>
+        </div>
+      </PopoverPrimitive.Anchor>
+      <PopoverContent
+        align="start"
+        sideOffset={4}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="p-1 w-[var(--radix-popover-trigger-width)] min-w-[200px]"
       >
-        <input
-          list={listId}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          inputMode="numeric"
-          className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
-          style={{ color: NAVY }}
-        />
-        {suffix && <span className="pr-3 text-sm select-none" style={{ color: MUTED }}>{suffix}</span>}
-      </div>
-      <datalist id={listId}>
-        {options.map((o) => <option key={o.value} value={o.value} label={o.label} />)}
-      </datalist>
-    </>
+        {filtered.length === 0 ? (
+          <p className="px-2 py-1.5 text-xs" style={{ color: MUTED }}>
+            Custom value — keep typing to use it
+          </p>
+        ) : (
+          filtered.map((o) => (
+            <button
+              key={o.value}
+              type="button"
+              onClick={() => { onChange(o.value); setOpen(false); }}
+              className="w-full text-left rounded px-2 py-1.5 text-sm hover:bg-gray-100"
+              style={{ color: NAVY, background: o.value === value ? `${BLUE}10` : "transparent" }}
+            >
+              {o.label}
+            </button>
+          ))
+        )}
+      </PopoverContent>
+    </Popover>
   );
 };
 
 const DatePickerField: FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
   const selected = value ? new Date(value + "T12:00:00") : undefined;
+  const [text, setText] = useState(selected ? format(selected, "MMM d, yyyy") : "");
+
+  useEffect(() => {
+    const d = value ? new Date(value + "T12:00:00") : undefined;
+    setText(d && !isNaN(d.getTime()) ? format(d, "MMM d, yyyy") : "");
+  }, [value]);
+
+  const commitText = (raw: string) => {
+    const trimmed = raw.trim();
+    if (trimmed === "") return;
+    const parsed = new Date(trimmed);
+    if (!isNaN(parsed.getTime())) {
+      onChange(
+        `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, "0")}-${String(parsed.getDate()).padStart(2, "0")}`,
+      );
+    }
+  };
+
+  const currentYear = new Date().getFullYear();
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="w-full flex items-center gap-2 rounded px-3 py-2.5 text-sm text-left transition-colors hover:bg-gray-50"
-          style={{ border: `1px solid ${SLATE}`, background: "#fff", color: selected ? NAVY : MUTED }}
-        >
-          <CalendarIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: MUTED }} />
-          <span>{selected ? format(selected, "MMM d, yyyy") : "Pick a date"}</span>
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={selected}
-          onSelect={(date) => date && onChange(date.toISOString().slice(0, 10))}
-          initialFocus
-          className="p-3 pointer-events-auto"
-        />
-      </PopoverContent>
-    </Popover>
+    <div
+      className="flex items-center rounded transition-colors"
+      style={{ border: `1px solid ${SLATE}`, background: "#fff" }}
+    >
+      <input
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={() => commitText(text)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") { commitText(text); (e.target as HTMLInputElement).blur(); }
+        }}
+        placeholder="e.g. Mar 15, 2020"
+        className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+        style={{ color: NAVY }}
+      />
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button type="button" className="px-2.5 py-2.5 flex items-center" aria-label="Open calendar">
+            <CalendarIcon className="w-3.5 h-3.5" style={{ color: MUTED }} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="end">
+          <Calendar
+            mode="single"
+            selected={selected}
+            onSelect={(date) => {
+              if (date) {
+                onChange(
+                  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
+                );
+                setOpen(false);
+              }
+            }}
+            defaultMonth={selected}
+            captionLayout="dropdown-buttons"
+            fromYear={1990}
+            toYear={currentYear}
+            initialFocus
+            className="p-3 pointer-events-auto"
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 };
 
