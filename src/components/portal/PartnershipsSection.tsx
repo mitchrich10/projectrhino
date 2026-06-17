@@ -252,7 +252,7 @@ const PartnershipPanel: FC<{
                   <MailtoRedeemButton
                     mailto={normalizeUrl(partnership.redemption_url)}
                     label={actionLabel}
-                    onRedeem={() => trackPortalEvent("partnership_redeem", partnership.name, partnership.id)}
+                    onRedeem={() => trackPortalEvent("partnership_click", partnership.name, partnership.id)}
                   />
                 ) : (
                   <a
