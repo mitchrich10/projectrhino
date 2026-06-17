@@ -292,7 +292,7 @@ const PartnershipPanel: FC<{
 
               {partnership.partnership_pdf_path && (
                 <a
-                  href={partnership.partnership_pdf_path}
+                  href={proxiedStorageUrl(partnership.partnership_pdf_path, { download: true })!}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackPortalEvent("partnership_pdf_download", partnership.name, partnership.id)}
