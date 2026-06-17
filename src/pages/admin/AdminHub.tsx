@@ -170,6 +170,21 @@ const ResourcesPanel: FC = () => {
                   {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
+              <div className="flex items-start gap-3">
+                <input
+                  data-testid="approval-required-checkbox"
+                  type="checkbox"
+                  checked={form.approval_required}
+                  onChange={(e) => setForm((f) => ({ ...f, approval_required: e.target.checked }))}
+                  className="w-4 h-4 mt-0.5 flex-shrink-0"
+                />
+                <div>
+                  <label className="text-xs font-bold text-foreground">Requires Request Access</label>
+                  <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">
+                    Founders see this card on /portal but must click Request Access (sends Slack + email to Candace) before they can open or download. Use for founder-only resources.
+                  </p>
+                </div>
+              </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Link or File *</label>
                 {form.file_path ? (
