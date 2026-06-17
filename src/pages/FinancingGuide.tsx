@@ -138,13 +138,22 @@ const DownloadAllBtn: FC<{ resources: Resource[] }> = ({ resources }) => {
 
   const handleDownloadAll = async () => {
     setLoading(true);
+    const downloadable = resources.filter((r) => r.file_path);
+    const skipped = resources.filter((r) => !r.file_path);
+    if (skipped.length) {
+      console.warn("[DownloadAll] skipped resources without file_path:", skipped.map((r) => r.title));
+    }
     try {
-      for (const r of resources) {
-        if (!r.file_path) continue;
-        const url = getFileUrl(r.file_path);
-        const filename = r.file_path.split("/").pop()!;
-        await downloadFile(url, filename);
-        await sleep(800);
+      for (const r of downloadable) {
+        const url = getProxiedUrl(r.file_path!, true);
+        const filename = cleanFilename(r.file_path!);
+        try {
+          await downloadFile(url, filename);
+          console.log("[DownloadAll] downloaded:", filename);
+        } catch (err) {
+          console.error("[DownloadAll] failed:", filename, err);
+        }
+        await sleep(400);
       }
     } finally {
       setLoading(false);
