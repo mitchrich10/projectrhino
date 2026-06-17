@@ -267,7 +267,10 @@ const ComboField: FC<{
   suffix?: string;
 }> = ({ value, onChange, options, placeholder, hasError, suffix }) => {
   const [open, setOpen] = useState(false);
-  const filtered = value.trim() === ""
+  const [typing, setTyping] = useState(false);
+  // Only filter while the user is actively typing. Clicking the arrow / focusing
+  // shows the full preset list regardless of the current value.
+  const filtered = !typing || value.trim() === ""
     ? options
     : options.filter(
         (o) =>
