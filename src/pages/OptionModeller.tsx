@@ -584,31 +584,45 @@ const GrantCard: FC<{
             <div>
               <FieldLabel>Grant Date</FieldLabel>
               <DatePickerField value={grant.grantDate} onChange={(v) => onChange({ grantDate: v })} />
+              {grant.grantDate !== "" && isNaN(new Date(grant.grantDate + "T12:00:00").getTime()) && (
+                <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>Enter a valid date</p>
+              )}
             </div>
             <div>
-              <FieldLabel>Total Vest Period</FieldLabel>
-              <SelectField
-                value={grant.vestYears.toString()}
-                onChange={(v) => onChange({ vestYears: parseInt(v) })}
+              <FieldLabel>Total Vest Period (years)</FieldLabel>
+              <ComboField
+                value={grant.vestYears > 0 ? grant.vestYears.toString() : ""}
+                onChange={(v) => onChange({ vestYears: parseInt(v.replace(/[^0-9]/g, "")) || 0 })}
+                placeholder="e.g. 4"
+                suffix="yrs"
+                hasError={!(grant.vestYears > 0)}
                 options={[
                   { value: "2", label: "2 years" },
                   { value: "3", label: "3 years" },
                   { value: "4", label: "4 years" },
                   { value: "5", label: "5 years" },
+                  { value: "6", label: "6 years" },
                 ]}
               />
+              {!(grant.vestYears > 0) && (
+                <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>Must be a positive number</p>
+              )}
             </div>
             <div>
-              <FieldLabel>Cliff</FieldLabel>
-              <SelectField
-                value={grant.cliffMonths.toString()}
-                onChange={(v) => onChange({ cliffMonths: parseInt(v) })}
+              <FieldLabel>Cliff (months)</FieldLabel>
+              <ComboField
+                value={grant.cliffMonths > 0 ? grant.cliffMonths.toString() : "0"}
+                onChange={(v) => onChange({ cliffMonths: parseInt(v.replace(/[^0-9]/g, "")) || 0 })}
+                placeholder="e.g. 12"
+                suffix="mo"
+                hasError={grant.cliffMonths < 0}
                 options={[
                   { value: "0",  label: "No cliff (linear)" },
                   { value: "6",  label: "6-month cliff" },
                   { value: "12", label: "12-month cliff" },
                   { value: "18", label: "18-month cliff" },
                   { value: "24", label: "24-month cliff" },
+                  { value: "36", label: "36-month cliff" },
                 ]}
               />
             </div>
