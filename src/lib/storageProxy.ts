@@ -41,5 +41,3 @@ export function proxiedBucketUrl(bucket: string, path: string | null | undefined
   if (opts?.download) params.set("download", "1");
   return `${PROXY_BASE}?${params.toString()}`;
 }
-
-export { supabase };
