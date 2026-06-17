@@ -56,7 +56,9 @@ serve(async (req) => {
       });
     }
 
-    const fileName = path.split("/").pop() ?? "file";
+    const rawName = path.split("/").pop() ?? "file";
+    // Strip a leading timestamp/UUID prefix (e.g. "1781644415102-Name.pdf")
+    const fileName = filenameOverride || rawName.replace(/^\d+-/, "").replace(/^[0-9a-f-]{16,}-/i, "");
     const contentType = data.type || "application/octet-stream";
 
     const headers: Record<string, string> = {
