@@ -1,6 +1,7 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { proxiedStorageUrl } from "@/lib/storageProxy";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import SubPageHeader from "@/components/portal/SubPageHeader";
@@ -64,17 +65,33 @@ const RESOURCE_ORDER = [
 const getFileUrl = (filePath: string) =>
   supabase.storage.from("resources").getPublicUrl(filePath).data.publicUrl;
 
+/** Strip a leading timestamp/UUID prefix from a storage path's filename. */
+const cleanFilename = (filePath: string) =>
+  (filePath.split("/").pop() ?? "file")
+    .replace(/^\d+-/, "")
+    .replace(/^[0-9a-f-]{16,}-/i, "");
+
+/** Public URL routed through the storage-proxy with a clean download filename. */
+const getProxiedUrl = (filePath: string, download = false) =>
+  proxiedStorageUrl(getFileUrl(filePath), {
+    download,
+    filename: cleanFilename(filePath),
+  }) ?? getFileUrl(filePath);
+
 const isPdf = (filePath: string | null) =>
   filePath?.toLowerCase().endsWith(".pdf");
 
 const downloadFile = async (href: string, filename: string) => {
   const res = await fetch(href);
+  if (!res.ok) throw new Error(`Download failed (${res.status}) for ${filename}`);
   const blob = await res.blob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  document.body.appendChild(a);
   a.click();
+  a.remove();
   URL.revokeObjectURL(url);
 };
 
@@ -121,13 +138,22 @@ const DownloadAllBtn: FC<{ resources: Resource[] }> = ({ resources }) => {
 
   const handleDownloadAll = async () => {
     setLoading(true);
+    const downloadable = resources.filter((r) => r.file_path);
+    const skipped = resources.filter((r) => !r.file_path);
+    if (skipped.length) {
+      console.warn("[DownloadAll] skipped resources without file_path:", skipped.map((r) => r.title));
+    }
     try {
-      for (const r of resources) {
-        if (!r.file_path) continue;
-        const url = getFileUrl(r.file_path);
-        const filename = r.file_path.split("/").pop()!;
-        await downloadFile(url, filename);
-        await sleep(800);
+      for (const r of downloadable) {
+        const url = getProxiedUrl(r.file_path!, true);
+        const filename = cleanFilename(r.file_path!);
+        try {
+          await downloadFile(url, filename);
+          console.log("[DownloadAll] downloaded:", filename);
+        } catch (err) {
+          console.error("[DownloadAll] failed:", filename, err);
+        }
+        await sleep(400);
       }
     } finally {
       setLoading(false);
@@ -162,9 +188,10 @@ const PreviewPanel: FC<{
     badgeClass: "bg-[#CDD8E3] text-[#173660]",
   };
 
-  const fileUrl = resource.file_path ? getFileUrl(resource.file_path) : null;
+  const fileUrl = resource.file_path ? getProxiedUrl(resource.file_path) : null;
+  const downloadUrl = resource.file_path ? getProxiedUrl(resource.file_path, true) : null;
   const pdf = isPdf(resource.file_path);
-  const filename = resource.file_path?.split("/").pop() ?? "file";
+  const filename = resource.file_path ? cleanFilename(resource.file_path) : "file";
 
   return (
     <>
@@ -212,9 +239,9 @@ const PreviewPanel: FC<{
         </div>
 
         {/* Footer */}
-        {fileUrl && (
+        {downloadUrl && (
           <div className="px-6 py-4 border-t border-[#CDD8E3] flex-shrink-0">
-            <DownloadBtn href={fileUrl} filename={filename} />
+            <DownloadBtn href={downloadUrl} filename={filename} />
           </div>
         )}
       </div>
@@ -314,7 +341,7 @@ const ResourceCard: FC<{
   };
   const Icon = meta.icon;
 
-  const fileUrl = resource.file_path ? getFileUrl(resource.file_path) : null;
+  const fileUrl = resource.file_path ? getProxiedUrl(resource.file_path, true) : null;
 
   return (
     <div
@@ -346,7 +373,7 @@ const ResourceCard: FC<{
         {/* Action */}
         <div className="mt-auto pt-2">
           {unlocked && fileUrl ? (
-            <DownloadBtn href={fileUrl} filename={resource.file_path!.split("/").pop()!} />
+            <DownloadBtn href={fileUrl} filename={cleanFilename(resource.file_path!)} />
           ) : (
             <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#5C6B7A]">
               <Lock className="w-3 h-3" /> Locked

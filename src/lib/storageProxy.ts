@@ -13,7 +13,7 @@ const STORAGE_RE = /\/storage\/v1\/object\/public\/([^/]+)\/(.+)$/;
  *
  * Non-storage URLs (external logos, static /public files) are returned as-is.
  */
-export function proxiedStorageUrl(url: string | null | undefined, opts?: { download?: boolean }): string | null {
+export function proxiedStorageUrl(url: string | null | undefined, opts?: { download?: boolean; filename?: string }): string | null {
   if (!url) return null;
   const match = url.match(STORAGE_RE);
   if (!match) return url; // not a Supabase storage URL — leave untouched
@@ -28,6 +28,7 @@ export function proxiedStorageUrl(url: string | null | undefined, opts?: { downl
   }
   const params = new URLSearchParams({ bucket, path });
   if (opts?.download) params.set("download", "1");
+  if (opts?.filename) params.set("filename", opts.filename);
   return `${PROXY_BASE}?${params.toString()}`;
 }
 

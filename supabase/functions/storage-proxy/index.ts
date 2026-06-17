@@ -29,6 +29,7 @@ serve(async (req) => {
     const bucket = url.searchParams.get("bucket") ?? "";
     const path = url.searchParams.get("path") ?? "";
     const download = url.searchParams.get("download");
+    const filenameOverride = url.searchParams.get("filename");
 
     if (!ALLOWED_BUCKETS.has(bucket) || !path) {
       return new Response(JSON.stringify({ error: "Invalid bucket or path" }), {
@@ -55,7 +56,9 @@ serve(async (req) => {
       });
     }
 
-    const fileName = path.split("/").pop() ?? "file";
+    const rawName = path.split("/").pop() ?? "file";
+    // Strip a leading timestamp/UUID prefix (e.g. "1781644415102-Name.pdf")
+    const fileName = filenameOverride || rawName.replace(/^\d+-/, "").replace(/^[0-9a-f-]{16,}-/i, "");
     const contentType = data.type || "application/octet-stream";
 
     const headers: Record<string, string> = {
