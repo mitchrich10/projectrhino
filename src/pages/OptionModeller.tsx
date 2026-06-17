@@ -4,6 +4,7 @@ import { CalendarIcon, ChevronDown, ChevronUp, Info, Plus, Trash2, RotateCcw } f
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SubPageHeader from "@/components/portal/SubPageHeader";
 
@@ -256,8 +257,7 @@ const FieldInput: FC<{
 
 
 
-// ── ComboField — preset suggestions + free-text custom entry ───────────────────
-let _comboCounter = 0;
+// ── ComboField — clickable preset dropdown + free-text custom entry ────────────
 const ComboField: FC<{
   value: string;
   onChange: (v: string) => void;
@@ -266,55 +266,149 @@ const ComboField: FC<{
   hasError?: boolean;
   suffix?: string;
 }> = ({ value, onChange, options, placeholder, hasError, suffix }) => {
-  const listId = useRef(`combo_${_comboCounter++}`).current;
+  const [open, setOpen] = useState(false);
+  const filtered = value.trim() === ""
+    ? options
+    : options.filter(
+        (o) =>
+          o.label.toLowerCase().includes(value.toLowerCase()) ||
+          o.value.startsWith(value),
+      );
   return (
-    <>
-      <div
-        className="flex items-center rounded transition-colors"
-        style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: "#fff" }}
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverPrimitive.Anchor asChild>
+        <div
+          className="flex items-center rounded transition-colors"
+          style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: "#fff" }}
+        >
+          <input
+            value={value}
+            onChange={(e) => {
+              onChange(e.target.value.replace(/[^0-9]/g, ""));
+              if (!open) setOpen(true);
+            }}
+            onFocus={() => setOpen(true)}
+            placeholder={placeholder}
+            inputMode="numeric"
+            className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+            style={{ color: NAVY }}
+          />
+          {suffix && <span className="pr-1 text-sm select-none" style={{ color: MUTED }}>{suffix}</span>}
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setOpen((o) => !o)}
+            className="px-2 py-2.5 flex items-center"
+            aria-label="Toggle preset options"
+          >
+            <ChevronDown className="w-4 h-4" style={{ color: MUTED }} />
+          </button>
+        </div>
+      </PopoverPrimitive.Anchor>
+      <PopoverContent
+        align="start"
+        sideOffset={4}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="p-1 w-[var(--radix-popover-trigger-width)] min-w-[200px]"
       >
-        <input
-          list={listId}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          inputMode="numeric"
-          className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
-          style={{ color: NAVY }}
-        />
-        {suffix && <span className="pr-3 text-sm select-none" style={{ color: MUTED }}>{suffix}</span>}
-      </div>
-      <datalist id={listId}>
-        {options.map((o) => <option key={o.value} value={o.value} label={o.label} />)}
-      </datalist>
-    </>
+        {filtered.length === 0 ? (
+          <p className="px-2 py-1.5 text-xs" style={{ color: MUTED }}>
+            Custom value — keep typing to use it
+          </p>
+        ) : (
+          filtered.map((o) => (
+            <button
+              key={o.value}
+              type="button"
+              onClick={() => { onChange(o.value); setOpen(false); }}
+              className="w-full text-left rounded px-2 py-1.5 text-sm hover:bg-gray-100"
+              style={{ color: NAVY, background: o.value === value ? `${BLUE}10` : "transparent" }}
+            >
+              {o.label}
+            </button>
+          ))
+        )}
+      </PopoverContent>
+    </Popover>
   );
 };
 
 const DatePickerField: FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
   const selected = value ? new Date(value + "T12:00:00") : undefined;
+  const [text, setText] = useState(selected ? format(selected, "MMM d, yyyy") : "");
+
+  useEffect(() => {
+    const d = value ? new Date(value + "T12:00:00") : undefined;
+    setText(d && !isNaN(d.getTime()) ? format(d, "MMM d, yyyy") : "");
+  }, [value]);
+
+  const commitText = (raw: string) => {
+    const trimmed = raw.trim();
+    if (trimmed === "") return;
+    const parsed = new Date(trimmed);
+    if (!isNaN(parsed.getTime())) {
+      onChange(
+        `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, "0")}-${String(parsed.getDate()).padStart(2, "0")}`,
+      );
+    }
+  };
+
+  const currentYear = new Date().getFullYear();
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="w-full flex items-center gap-2 rounded px-3 py-2.5 text-sm text-left transition-colors hover:bg-gray-50"
-          style={{ border: `1px solid ${SLATE}`, background: "#fff", color: selected ? NAVY : MUTED }}
-        >
-          <CalendarIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: MUTED }} />
-          <span>{selected ? format(selected, "MMM d, yyyy") : "Pick a date"}</span>
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={selected}
-          onSelect={(date) => date && onChange(date.toISOString().slice(0, 10))}
-          initialFocus
-          className="p-3 pointer-events-auto"
-        />
-      </PopoverContent>
-    </Popover>
+    <div
+      className="flex items-center rounded transition-colors"
+      style={{ border: `1px solid ${SLATE}`, background: "#fff" }}
+    >
+      <input
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={() => commitText(text)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") { commitText(text); (e.target as HTMLInputElement).blur(); }
+        }}
+        placeholder="e.g. Mar 15, 2020"
+        className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+        style={{ color: NAVY }}
+      />
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button type="button" className="px-2.5 py-2.5 flex items-center" aria-label="Open calendar">
+            <CalendarIcon className="w-3.5 h-3.5" style={{ color: MUTED }} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="end">
+          <Calendar
+            mode="single"
+            selected={selected}
+            onSelect={(date) => {
+              if (date) {
+                onChange(
+                  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
+                );
+                setOpen(false);
+              }
+            }}
+            defaultMonth={selected}
+            captionLayout="dropdown-buttons"
+            fromYear={1990}
+            toYear={currentYear}
+            initialFocus
+            className="p-3 pointer-events-auto"
+            classNames={{
+              caption_label: "hidden",
+              caption_dropdowns: "flex gap-1 items-center justify-center",
+              dropdown:
+                "rounded border bg-background px-1 py-0.5 text-sm outline-none focus:ring-2 focus:ring-ring",
+              dropdown_month: "relative",
+              dropdown_year: "relative",
+              vhidden: "hidden",
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 };
 
@@ -693,8 +787,6 @@ const OptionModeller: FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["g_initial"]));
   const [globalDiluted, setGlobalDiluted] = useState("10000000");
-  // Whether the user manually overrode the auto-derived FDSO total.
-  const [dilutedOverridden, setDilutedOverridden] = useState(false);
   const [todayDate] = useState(today());
   
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -777,13 +869,8 @@ const OptionModeller: FC = () => {
     ? grantCalcs.reduce((s, g) => s + g.strike * g.total, 0) / totalOptionsAll
     : 0;
 
-  // Auto-derive Fully Diluted Shares Outstanding from the sum of all grant
-  // option counts, unless the user has manually overridden the field.
-  useEffect(() => {
-    if (!dilutedOverridden && totalOptionsAll > 0) {
-      setGlobalDiluted(String(totalOptionsAll));
-    }
-  }, [totalOptionsAll, dilutedOverridden]);
+
+
 
   const globalDilutedNum = parseFloat(globalDiluted) || 0;
   const dilutedError     = globalDiluted !== "" && globalDilutedNum <= 0 ? "Must be greater than 0" : "";
@@ -1016,39 +1103,24 @@ const OptionModeller: FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
                   <div className="sm:w-72">
                     <FieldLabel>
-                      Current Fully Diluted Shares Outstanding
-                      <TooltipComp text="The current total number of shares, options, warrants, and convertibles. Used to calculate implied share price across all scenarios." />
+                      Company Fully Diluted Shares Outstanding (FDSO)
+                      <TooltipComp text="The total number of shares the company would have if every option, warrant, and convertible were exercised — typically 10–50M for early-stage companies. Find this on your cap table, in your most recent financing agreement, or by asking your CFO/founder. Implied share price across all exit scenarios is calculated as (company valuation) ÷ (this number)." />
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
-                      onChange={(v) => { setDilutedOverridden(true); setGlobalDiluted(v); }}
+                      onChange={(v) => setGlobalDiluted(v)}
                       placeholder="e.g. 10,000,000"
                       hasError={!!dilutedError}
                       formatThousands
                     />
 
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
-                    {dilutedOverridden ? (
-                      totalOptionsAll > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => { setDilutedOverridden(false); setGlobalDiluted(String(totalOptionsAll)); }}
-                          className="text-[10px] mt-1 underline decoration-dotted underline-offset-2"
-                          style={{ color: BLUE }}
-                        >
-                          Reset to auto ({totalOptionsAll.toLocaleString()} — sum of grants)
-                        </button>
-                      )
-                    ) : (
-                      totalOptionsAll > 0 && (
-                        <p className="text-[10px] mt-1" style={{ color: BLUE }}>
-                          Auto-derived from sum of all grant options.
-                        </p>
-                      )
-                    )}
+                    <p className="text-[10px] mt-1" style={{ color: MUTED }}>
+                      Replace with your company's actual FDSO.
+                    </p>
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
-                    Combined total across all grants.{" "}
+                    The company's total — not the sum of your grants.{" "}
                     <span style={{ fontStyle: "italic" }}>Each grant's gain is calculated using its own strike price.</span>
                   </p>
                 </div>
