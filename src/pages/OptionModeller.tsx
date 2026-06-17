@@ -1134,7 +1134,7 @@ const OptionModeller: FC = () => {
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
-                      onChange={(v) => setGlobalDiluted(v)}
+                      onChange={(v) => { setDilutedOverridden(true); setGlobalDiluted(v); }}
                       placeholder="e.g. 10,000,000"
                       hasError={!!dilutedError}
                       formatThousands
@@ -1142,8 +1142,18 @@ const OptionModeller: FC = () => {
 
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
                     <p className="text-[10px] mt-1" style={{ color: MUTED }}>
-                      Replace with your company's actual FDSO.
+                      Defaults to the diluted shares from your most recent grant. Update if your company has issued more shares or raised a round since then.
                     </p>
+                    {dilutedOverridden && mostRecentGrantFdso && (
+                      <button
+                        type="button"
+                        onClick={resetDilutedToRecent}
+                        className="text-[10px] mt-1 inline-flex items-center gap-1 underline"
+                        style={{ color: BLUE }}
+                      >
+                        <RotateCcw className="w-2.5 h-2.5" /> Reset to most recent grant
+                      </button>
+                    )}
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
                     The company's total — not the sum of your grants.{" "}
