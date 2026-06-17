@@ -791,7 +791,29 @@ const OptionModeller: FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["g_initial"]));
   const [globalDiluted, setGlobalDiluted] = useState("10000000");
+  // When the user manually edits FDSO we stop auto-deriving it from grants.
+  const [dilutedOverridden, setDilutedOverridden] = useState(false);
   const [todayDate] = useState(today());
+
+  // FDSO snapshot from the user's MOST RECENT grant (latest by Grant Date).
+  // The other grants' values are not summed/averaged — just the latest snapshot.
+  const mostRecentGrantFdso = useMemo(() => {
+    const dated = grants
+      .filter((g) => g.grantDate && parseFloat(g.fullyDiluted) > 0)
+      .sort((a, b) => new Date(b.grantDate).getTime() - new Date(a.grantDate).getTime());
+    return dated.length > 0 ? dated[0].fullyDiluted.replace(/[^0-9]/g, "") : "";
+  }, [grants]);
+
+  // Default FDSO to the most recent grant's snapshot unless the user overrode it.
+  useEffect(() => {
+    if (dilutedOverridden) return;
+    setGlobalDiluted(mostRecentGrantFdso || "10000000");
+  }, [mostRecentGrantFdso, dilutedOverridden]);
+
+  const resetDilutedToRecent = () => {
+    setDilutedOverridden(false);
+    setGlobalDiluted(mostRecentGrantFdso || "10000000");
+  };
   
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -1112,7 +1134,7 @@ const OptionModeller: FC = () => {
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
-                      onChange={(v) => setGlobalDiluted(v)}
+                      onChange={(v) => { setDilutedOverridden(true); setGlobalDiluted(v); }}
                       placeholder="e.g. 10,000,000"
                       hasError={!!dilutedError}
                       formatThousands
@@ -1120,8 +1142,18 @@ const OptionModeller: FC = () => {
 
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
                     <p className="text-[10px] mt-1" style={{ color: MUTED }}>
-                      Replace with your company's actual FDSO.
+                      Defaults to the diluted shares from your most recent grant. Update if your company has issued more shares or raised a round since then.
                     </p>
+                    {dilutedOverridden && mostRecentGrantFdso && (
+                      <button
+                        type="button"
+                        onClick={resetDilutedToRecent}
+                        className="text-[10px] mt-1 inline-flex items-center gap-1 underline"
+                        style={{ color: BLUE }}
+                      >
+                        <RotateCcw className="w-2.5 h-2.5" /> Reset to most recent grant
+                      </button>
+                    )}
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
                     The company's total — not the sum of your grants.{" "}
