@@ -332,16 +332,26 @@ const DatePickerField: FC<{ value: string; onChange: (v: string) => void }> = ({
 };
 
 const TooltipComp: FC<{ text: string }> = ({ text }) => (
-  <span className="group relative ml-1 inline-flex align-middle">
-    <Info className="w-3 h-3 inline cursor-help" style={{ color: MUTED }} />
-    <span
-      className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-5 w-56 rounded text-[10px] px-2 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-50 leading-snug text-center"
-      style={{ background: NAVY, color: "#fff" }}
-    >
-      {text}
-    </span>
-  </span>
+  <TooltipProvider delayDuration={100}>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="ml-1 inline-flex align-middle cursor-help">
+          <Info className="w-3 h-3 inline" style={{ color: MUTED }} />
+        </span>
+      </TooltipTrigger>
+      <TooltipContent
+        side="top"
+        align="center"
+        collisionPadding={12}
+        className="max-w-[220px] text-[10px] leading-snug text-center border-0"
+        style={{ background: NAVY, color: "#fff" }}
+      >
+        {text}
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 );
+
 
 // ── ValuationCell — editable with M/B display on blur ─────────────────────────
 
