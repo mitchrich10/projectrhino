@@ -790,6 +790,14 @@ const OptionModeller: FC = () => {
     ? grantCalcs.reduce((s, g) => s + g.strike * g.total, 0) / totalOptionsAll
     : 0;
 
+  // Auto-derive Fully Diluted Shares Outstanding from the sum of all grant
+  // option counts, unless the user has manually overridden the field.
+  useEffect(() => {
+    if (!dilutedOverridden && totalOptionsAll > 0) {
+      setGlobalDiluted(String(totalOptionsAll));
+    }
+  }, [totalOptionsAll, dilutedOverridden]);
+
   const globalDilutedNum = parseFloat(globalDiluted) || 0;
   const dilutedError     = globalDiluted !== "" && globalDilutedNum <= 0 ? "Must be greater than 0" : "";
   const tableReady       = globalDilutedNum > 0 && grantCalcs.some((g) => g.strike > 0);
