@@ -396,6 +396,15 @@ const DatePickerField: FC<{ value: string; onChange: (v: string) => void }> = ({
             toYear={currentYear}
             initialFocus
             className="p-3 pointer-events-auto"
+            classNames={{
+              caption_label: "hidden",
+              caption_dropdowns: "flex gap-1 items-center justify-center",
+              dropdown:
+                "rounded border bg-background px-1 py-0.5 text-sm outline-none focus:ring-2 focus:ring-ring",
+              dropdown_month: "relative",
+              dropdown_year: "relative",
+              vhidden: "hidden",
+            }}
           />
         </PopoverContent>
       </Popover>
