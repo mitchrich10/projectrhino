@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import PartnerLogoOrBadge from "@/components/portal/PartnerLogoOrBadge";
 import { prefetchPartnerships } from "@/lib/portalPrefetch";
+import { proxiedStorageUrl } from "@/lib/storageProxy";
 
 interface Partnership {
   id: string;
