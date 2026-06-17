@@ -254,20 +254,7 @@ const FieldInput: FC<{
   );
 };
 
-const SelectField: FC<{
-  value: string;
-  onChange: (v: string) => void;
-  options: { value: string; label: string }[];
-}> = ({ value, onChange, options }) => (
-  <select
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    className="w-full rounded px-3 py-2.5 text-sm outline-none appearance-none"
-    style={{ border: `1px solid ${SLATE}`, background: "#fff", color: NAVY, cursor: "pointer" }}
-  >
-    {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-  </select>
-);
+
 
 // ── ComboField — preset suggestions + free-text custom entry ───────────────────
 let _comboCounter = 0;
