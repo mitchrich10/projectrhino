@@ -239,9 +239,9 @@ const PreviewPanel: FC<{
         </div>
 
         {/* Footer */}
-        {fileUrl && (
+        {downloadUrl && (
           <div className="px-6 py-4 border-t border-[#CDD8E3] flex-shrink-0">
-            <DownloadBtn href={fileUrl} filename={filename} />
+            <DownloadBtn href={downloadUrl} filename={filename} />
           </div>
         )}
       </div>
