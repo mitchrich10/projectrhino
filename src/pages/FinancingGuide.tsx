@@ -341,7 +341,7 @@ const ResourceCard: FC<{
   };
   const Icon = meta.icon;
 
-  const fileUrl = resource.file_path ? getFileUrl(resource.file_path) : null;
+  const fileUrl = resource.file_path ? getProxiedUrl(resource.file_path, true) : null;
 
   return (
     <div
