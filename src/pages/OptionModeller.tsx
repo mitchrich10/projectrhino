@@ -1,9 +1,10 @@
-import { FC, useMemo, useState, useRef, useCallback } from "react";
+import { FC, useMemo, useState, useRef, useCallback, useEffect } from "react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { CalendarIcon, ChevronDown, ChevronUp, Info, Plus, Trash2, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SubPageHeader from "@/components/portal/SubPageHeader";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
