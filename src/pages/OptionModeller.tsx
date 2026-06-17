@@ -269,6 +269,41 @@ const SelectField: FC<{
   </select>
 );
 
+// ── ComboField — preset suggestions + free-text custom entry ───────────────────
+let _comboCounter = 0;
+const ComboField: FC<{
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  placeholder?: string;
+  hasError?: boolean;
+  suffix?: string;
+}> = ({ value, onChange, options, placeholder, hasError, suffix }) => {
+  const listId = useRef(`combo_${_comboCounter++}`).current;
+  return (
+    <>
+      <div
+        className="flex items-center rounded transition-colors"
+        style={{ border: `1px solid ${hasError ? RED_ERR : SLATE}`, background: "#fff" }}
+      >
+        <input
+          list={listId}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          inputMode="numeric"
+          className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
+          style={{ color: NAVY }}
+        />
+        {suffix && <span className="pr-3 text-sm select-none" style={{ color: MUTED }}>{suffix}</span>}
+      </div>
+      <datalist id={listId}>
+        {options.map((o) => <option key={o.value} value={o.value} label={o.label} />)}
+      </datalist>
+    </>
+  );
+};
+
 const DatePickerField: FC<{ value: string; onChange: (v: string) => void }> = ({ value, onChange }) => {
   const selected = value ? new Date(value + "T12:00:00") : undefined;
   return (
