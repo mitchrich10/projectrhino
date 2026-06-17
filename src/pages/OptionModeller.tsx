@@ -791,7 +791,29 @@ const OptionModeller: FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["g_initial"]));
   const [globalDiluted, setGlobalDiluted] = useState("10000000");
+  // When the user manually edits FDSO we stop auto-deriving it from grants.
+  const [dilutedOverridden, setDilutedOverridden] = useState(false);
   const [todayDate] = useState(today());
+
+  // FDSO snapshot from the user's MOST RECENT grant (latest by Grant Date).
+  // The other grants' values are not summed/averaged — just the latest snapshot.
+  const mostRecentGrantFdso = useMemo(() => {
+    const dated = grants
+      .filter((g) => g.grantDate && parseFloat(g.fullyDiluted) > 0)
+      .sort((a, b) => new Date(b.grantDate).getTime() - new Date(a.grantDate).getTime());
+    return dated.length > 0 ? dated[0].fullyDiluted.replace(/[^0-9]/g, "") : "";
+  }, [grants]);
+
+  // Default FDSO to the most recent grant's snapshot unless the user overrode it.
+  useEffect(() => {
+    if (dilutedOverridden) return;
+    setGlobalDiluted(mostRecentGrantFdso || "10000000");
+  }, [mostRecentGrantFdso, dilutedOverridden]);
+
+  const resetDilutedToRecent = () => {
+    setDilutedOverridden(false);
+    setGlobalDiluted(mostRecentGrantFdso || "10000000");
+  };
   
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
