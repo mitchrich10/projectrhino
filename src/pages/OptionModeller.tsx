@@ -693,8 +693,6 @@ const OptionModeller: FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["g_initial"]));
   const [globalDiluted, setGlobalDiluted] = useState("10000000");
-  // Whether the user manually overrode the auto-derived FDSO total.
-  const [dilutedOverridden, setDilutedOverridden] = useState(false);
   const [todayDate] = useState(today());
   
   const [showBreakdown, setShowBreakdown] = useState(false);
