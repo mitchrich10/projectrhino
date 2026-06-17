@@ -373,7 +373,7 @@ const ResourceCard: FC<{
         {/* Action */}
         <div className="mt-auto pt-2">
           {unlocked && fileUrl ? (
-            <DownloadBtn href={fileUrl} filename={resource.file_path!.split("/").pop()!} />
+            <DownloadBtn href={fileUrl} filename={cleanFilename(resource.file_path!)} />
           ) : (
             <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#5C6B7A]">
               <Lock className="w-3 h-3" /> Locked
