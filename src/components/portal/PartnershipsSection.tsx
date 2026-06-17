@@ -7,6 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import PartnerLogoOrBadge from "@/components/portal/PartnerLogoOrBadge";
 import { prefetchPartnerships } from "@/lib/portalPrefetch";
+import { proxiedStorageUrl } from "@/lib/storageProxy";
 
 interface Partnership {
   id: string;
@@ -193,7 +194,10 @@ const PartnershipPanel: FC<{
 
   // Only a real, manually-uploaded PDF is offered for download.
   // On-the-fly PDF generation was removed — no fallback is produced.
-  const uploadedPdfUrl = partnership.detail_pdf_url || partnership.partnership_pdf_path || null;
+  // Served via the storage-proxy edge function so ad/privacy blockers don't
+  // block the Supabase /storage/ URL pattern (ERR_BLOCKED_BY_CLIENT).
+  const rawPdfUrl = partnership.detail_pdf_url || partnership.partnership_pdf_path || null;
+  const uploadedPdfUrl = proxiedStorageUrl(rawPdfUrl, { download: true });
 
   const handleDownload = () => {
     if (!uploadedPdfUrl) return;
@@ -288,7 +292,7 @@ const PartnershipPanel: FC<{
 
               {partnership.partnership_pdf_path && (
                 <a
-                  href={partnership.partnership_pdf_path}
+                  href={proxiedStorageUrl(partnership.partnership_pdf_path, { download: true })!}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackPortalEvent("partnership_pdf_download", partnership.name, partnership.id)}
