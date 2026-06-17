@@ -1,8 +1,9 @@
 import { FC, memo, startTransition, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
-import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail } from "lucide-react";
+import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { trackPortalEvent } from "@/lib/portalAnalytics";
 import PartnerLogoOrBadge from "@/components/portal/PartnerLogoOrBadge";
 import { prefetchPartnerships } from "@/lib/portalPrefetch";
@@ -84,7 +85,73 @@ const RequestAccessButton: FC<{
   );
 };
 
-// ── Slide-over Panel (memoized) ──
+// ── Mailto Redeem Button with email-provider picker ──
+const parseMailto = (mailto: string) => {
+  // strip "mailto:" prefix
+  const raw = mailto.replace(/^mailto:/i, "");
+  const [addressPart, queryPart] = raw.split("?");
+  const to = decodeURIComponent(addressPart || "");
+  const params = new URLSearchParams(queryPart || "");
+  return {
+    to,
+    subject: params.get("subject") ?? "",
+    body: params.get("body") ?? "",
+    cc: params.get("cc") ?? "",
+    bcc: params.get("bcc") ?? "",
+  };
+};
+
+const MailtoRedeemButton: FC<{ mailto: string; label: string; onRedeem: () => void }> = ({ mailto, label, onRedeem }) => {
+  const { to, subject, body, cc, bcc } = parseMailto(mailto);
+
+  const open = (provider: "default" | "gmail" | "outlook") => {
+    onRedeem();
+    if (provider === "default") {
+      window.location.href = mailto;
+      return;
+    }
+    if (provider === "gmail") {
+      const url = new URL("https://mail.google.com/mail/");
+      url.searchParams.set("view", "cm");
+      url.searchParams.set("fs", "1");
+      url.searchParams.set("to", to);
+      if (subject) url.searchParams.set("su", subject);
+      if (body) url.searchParams.set("body", body);
+      if (cc) url.searchParams.set("cc", cc);
+      if (bcc) url.searchParams.set("bcc", bcc);
+      window.open(url.toString(), "_blank", "noopener,noreferrer");
+      return;
+    }
+    // outlook web
+    const url = new URL("https://outlook.office.com/mail/deeplink/compose");
+    url.searchParams.set("to", to);
+    if (subject) url.searchParams.set("subject", subject);
+    if (body) url.searchParams.set("body", body);
+    if (cc) url.searchParams.set("cc", cc);
+    if (bcc) url.searchParams.set("bcc", bcc);
+    window.open(url.toString(), "_blank", "noopener,noreferrer");
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+        >
+          {label} <Mail className="w-3.5 h-3.5" /> <ChevronDown className="w-3.5 h-3.5" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="center" className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[12rem]">
+        <DropdownMenuItem onClick={() => open("gmail")} className="cursor-pointer">Open in Gmail</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => open("outlook")} className="cursor-pointer">Open in Outlook</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => open("default")} className="cursor-pointer">Default mail app</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+
 const PartnershipPanel: FC<{
   partnership: Partnership;
   companyName: string;
@@ -181,14 +248,22 @@ const PartnershipPanel: FC<{
           <>
             {partnership.redemption_url && (
               <div className="px-6 pt-5">
-                <a
-                  href={normalizeUrl(partnership.redemption_url)}
-                  {...(isMailto ? {} : { target: "_blank", rel: "noopener noreferrer" })}
-                  className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
-                >
-                  {actionLabel}{" "}
-                  {isMailto ? <Mail className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
-                </a>
+                {isMailto ? (
+                  <MailtoRedeemButton
+                    mailto={normalizeUrl(partnership.redemption_url)}
+                    label={actionLabel}
+                    onRedeem={() => trackPortalEvent("partnership_click", partnership.name, partnership.id)}
+                  />
+                ) : (
+                  <a
+                    href={normalizeUrl(partnership.redemption_url)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-[#1A7EC8] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3 rounded-lg hover:bg-[#173660] transition-colors"
+                  >
+                    {actionLabel} <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
               </div>
             )}
 
