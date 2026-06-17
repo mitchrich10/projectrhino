@@ -287,10 +287,11 @@ const ComboField: FC<{
           <input
             value={value}
             onChange={(e) => {
+              setTyping(true);
               onChange(e.target.value.replace(/[^0-9]/g, ""));
               if (!open) setOpen(true);
             }}
-            onFocus={() => setOpen(true)}
+            onFocus={() => { setTyping(false); setOpen(true); }}
             placeholder={placeholder}
             inputMode="numeric"
             className="flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-w-0"
@@ -300,7 +301,7 @@ const ComboField: FC<{
           <button
             type="button"
             tabIndex={-1}
-            onClick={() => setOpen((o) => !o)}
+            onClick={() => { setTyping(false); setOpen((o) => !o); }}
             className="px-2 py-2.5 flex items-center"
             aria-label="Toggle preset options"
           >
