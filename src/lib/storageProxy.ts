@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
 const PROXY_BASE = `${SUPABASE_URL}/functions/v1/storage-proxy`;
