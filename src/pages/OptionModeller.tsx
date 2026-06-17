@@ -4,6 +4,7 @@ import { CalendarIcon, ChevronDown, ChevronUp, Info, Plus, Trash2, RotateCcw } f
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SubPageHeader from "@/components/portal/SubPageHeader";
 
