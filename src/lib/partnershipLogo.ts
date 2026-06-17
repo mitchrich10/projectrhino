@@ -1,4 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
 import { companyLogos } from "@/lib/companyLogos";
 import { proxiedBucketUrl, proxiedStorageUrl } from "@/lib/storageProxy";
 
