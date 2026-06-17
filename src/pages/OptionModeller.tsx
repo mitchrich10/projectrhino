@@ -1009,39 +1009,24 @@ const OptionModeller: FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
                   <div className="sm:w-72">
                     <FieldLabel>
-                      Current Fully Diluted Shares Outstanding
-                      <TooltipComp text="The current total number of shares, options, warrants, and convertibles. Used to calculate implied share price across all scenarios." />
+                      Company Fully Diluted Shares Outstanding (FDSO)
+                      <TooltipComp text="The total number of shares the company would have if every option, warrant, and convertible were exercised — typically 10–50M for early-stage companies. Find this on your cap table, in your most recent financing agreement, or by asking your CFO/founder. Implied share price across all exit scenarios is calculated as (company valuation) ÷ (this number)." />
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
-                      onChange={(v) => { setDilutedOverridden(true); setGlobalDiluted(v); }}
+                      onChange={(v) => setGlobalDiluted(v)}
                       placeholder="e.g. 10,000,000"
                       hasError={!!dilutedError}
                       formatThousands
                     />
 
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
-                    {dilutedOverridden ? (
-                      totalOptionsAll > 0 && (
-                        <button
-                          type="button"
-                          onClick={() => { setDilutedOverridden(false); setGlobalDiluted(String(totalOptionsAll)); }}
-                          className="text-[10px] mt-1 underline decoration-dotted underline-offset-2"
-                          style={{ color: BLUE }}
-                        >
-                          Reset to auto ({totalOptionsAll.toLocaleString()} — sum of grants)
-                        </button>
-                      )
-                    ) : (
-                      totalOptionsAll > 0 && (
-                        <p className="text-[10px] mt-1" style={{ color: BLUE }}>
-                          Auto-derived from sum of all grant options.
-                        </p>
-                      )
-                    )}
+                    <p className="text-[10px] mt-1" style={{ color: MUTED }}>
+                      Replace with your company's actual FDSO.
+                    </p>
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
-                    Combined total across all grants.{" "}
+                    The company's total — not the sum of your grants.{" "}
                     <span style={{ fontStyle: "italic" }}>Each grant's gain is calculated using its own strike price.</span>
                   </p>
                 </div>
