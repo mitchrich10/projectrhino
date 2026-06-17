@@ -1034,13 +1034,31 @@ const OptionModeller: FC = () => {
                     </FieldLabel>
                     <FieldInput
                       value={globalDiluted}
-                      onChange={setGlobalDiluted}
+                      onChange={(v) => { setDilutedOverridden(true); setGlobalDiluted(v); }}
                       placeholder="e.g. 10,000,000"
                       hasError={!!dilutedError}
                       formatThousands
                     />
 
                     {dilutedError && <p className="text-[10px] mt-1" style={{ color: RED_ERR }}>{dilutedError}</p>}
+                    {dilutedOverridden ? (
+                      totalOptionsAll > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => { setDilutedOverridden(false); setGlobalDiluted(String(totalOptionsAll)); }}
+                          className="text-[10px] mt-1 underline decoration-dotted underline-offset-2"
+                          style={{ color: BLUE }}
+                        >
+                          Reset to auto ({totalOptionsAll.toLocaleString()} — sum of grants)
+                        </button>
+                      )
+                    ) : (
+                      totalOptionsAll > 0 && (
+                        <p className="text-[10px] mt-1" style={{ color: BLUE }}>
+                          Auto-derived from sum of all grant options.
+                        </p>
+                      )
+                    )}
                   </div>
                   <p className="text-[10px] pb-0.5" style={{ color: MUTED }}>
                     Combined total across all grants.{" "}
