@@ -196,11 +196,7 @@ const PreviewPanel: FC<{
   resource: Resource;
   onClose: () => void;
 }> = ({ resource, onClose }) => {
-  const meta = RESOURCE_META[resource.title] ?? {
-    icon: FileText,
-    typeBadge: "Document",
-    badgeClass: "bg-[#CDD8E3] text-[#173660]",
-  };
+  const meta = RESOURCE_META[resource.title] ?? metaFromExtension(resource.file_path);
 
   const fileUrl = resource.file_path ? getProxiedUrl(resource.file_path) : null;
   const downloadUrl = resource.file_path ? getProxiedUrl(resource.file_path, true) : null;
