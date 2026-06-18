@@ -356,7 +356,7 @@ PartnershipTile.displayName = "PartnershipTile";
 // ── Coming Soon Placeholder ──
 const COMING_SOON_ITEMS = [
   { name: "Outsourced Finance & Bookkeeping", category: "Finance" },
-  { name: "Marketing / Brand Agency", category: "Marketing" },
+  { name: "Marketing / Brand Agency", category: "Sales & Marketing" },
   { name: "Insurance Partner", category: "Insurance" },
   { name: "Benefits Partner", category: "HR & Benefits" },
 ];

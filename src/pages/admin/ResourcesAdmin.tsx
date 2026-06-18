@@ -16,7 +16,7 @@ interface Resource {
   created_at: string;
 }
 
-const CATEGORIES = ["Fundraising", "Governance", "Compensation & Equity", "Hiring"];
+const CATEGORIES = ["Fundraising", "Governance and Reporting", "Compensation & Equity", "Hiring"];
 
 const empty = (): Omit<Resource, "id" | "created_at"> => ({
   title: "",

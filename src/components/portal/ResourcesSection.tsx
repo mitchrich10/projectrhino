@@ -23,7 +23,7 @@ interface Resource {
 }
 
 /* ── Category display order ─────────────────────────────────────────────── */
-const CATEGORY_ORDER = ["Fundraising", "Governance", "Compensation & Equity"];
+const CATEGORY_ORDER = ["Fundraising", "Governance and Reporting", "Compensation & Equity"];
 
 /* ── Hardcoded gating fallback ──────────────────────────────────────────────
  * Resources that must always gate even if approval_required is somehow unset.
@@ -37,6 +37,8 @@ const GATED_FALLBACK_TITLES = new Set(["Board Meeting Best Practices"]);
 /* ── Icon resolver ──────────────────────────────────────────────────────── */
 const getResourceIcon = (title: string, filePath: string | null) => {
   const t = title.toLowerCase();
+  const fp = filePath?.toLowerCase() ?? "";
+  if (fp.endsWith(".xlsx") || fp.endsWith(".xls")) return FileSpreadsheet;
   if (t.includes("financing") || t.includes("fundrais")) return BookOpen;
   if (t.includes("option modeller") || t.includes("calculator")) return Calculator;
   if (t.includes("spreadsheet") || t.includes("tracker") || t.includes("data room") || t.includes("co-investor"))
@@ -52,7 +54,7 @@ const getFileTypeBadge = (resource: Resource, isSpecial?: boolean): string => {
   if (!resource.file_path && resource.url) return "External Link";
   const fp = resource.file_path?.toLowerCase() ?? "";
   if (fp.endsWith(".pdf")) return "PDF";
-  if (fp.endsWith(".xlsx") || fp.endsWith(".xls")) return "Excel";
+  if (fp.endsWith(".xlsx") || fp.endsWith(".xls")) return "Spreadsheet";
   if (fp.endsWith(".pptx") || fp.endsWith(".ppt")) return "Presentation";
   if (fp.endsWith(".docx") || fp.endsWith(".doc")) return "Document";
   return "File";
@@ -168,15 +170,8 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     to: "/option-modeller",
     fileType: "Interactive Tool",
   },
-  "Compensation & Equity:commission-calculator": {
-    title: "Sales Commission Model",
-    description: "Interactive tool to design and stress-test sales commission plans across quotas, accelerators, and attainment scenarios.",
-    icon: Calculator,
-    to: "/commission-calculator",
-    fileType: "Interactive Tool",
-  },
   // Financing guide is now handled by Fundraising Toolkit card
-  "Governance:project-proposal": {
+  "Governance and Reporting:project-proposal": {
     title: "Project Proposal Template",
     description: "We highly recommend all investments at your companies be tied to hypotheses on the impact to the business. Use this as a simple guide to structure company project proposals.",
     icon: FileText,
@@ -580,9 +575,9 @@ const ResourcesSection: FC = () => {
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {category !== "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
+                  {category !== "Governance and Reporting" && specialKeys.map((k) => renderSpecialCard(k))}
                   {items.map(renderCard)}
-                  {category === "Governance" && specialKeys.map((k) => renderSpecialCard(k))}
+                  {category === "Governance and Reporting" && specialKeys.map((k) => renderSpecialCard(k))}
                 </div>
               </div>
             );
