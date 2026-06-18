@@ -23,7 +23,7 @@ interface Partnership {
   created_at: string;
 }
 
-const CATEGORIES = ["Cloud", "Finance", "HR & Benefits", "Marketing", "Insurance", "Operations & Services", "Productivity", "Rhino Companies", "Swag & Merch", "Other"];
+const CATEGORIES = ["Cloud", "Finance", "HR & Benefits", "Sales & Marketing", "Insurance", "Operations & Services", "Productivity", "Rhino Companies", "Swag & Merch", "Other"];
 
 const emptyForm = () => ({
   name: "",
