@@ -30,41 +30,22 @@ interface CompanyInfo {
   logo_key: string | null;
 }
 
-/* ── Resource metadata (order + styling) ───────────────────── */
+/* ── Resource metadata (icon only) ─────────────────────────── */
 
-const RESOURCE_META: Record<
-  string,
-  { icon: typeof FileText; typeBadge: string; badgeClass: string }
-> = {
-  "Financing Process Guide": {
-    icon: Presentation,
-    typeBadge: "Presentation",
-    badgeClass: "bg-[#173660] text-white",
-  },
-  "Data Room Request": {
-    icon: FileSpreadsheet,
-    typeBadge: "Excel Tracker",
-    badgeClass: "bg-[#1A7EC8] text-white",
-  },
-  "First Meeting Prep Guide": {
-    icon: FileText,
-    typeBadge: "Word Document",
-    badgeClass: "bg-[#CDD8E3] text-[#173660]",
-  },
+const RESOURCE_META: Record<string, { icon: typeof FileText }> = {
+  "Financing Process Guide": { icon: Presentation },
+  "Data Room Request": { icon: FileSpreadsheet },
+  "First Meeting Prep Guide": { icon: FileText },
 };
 
-/* Extension-based fallback for resources not in RESOURCE_META (case-insensitive). */
+/* Extension-based icon fallback for resources not in RESOURCE_META (case-insensitive). */
 const metaFromExtension = (
   filePath: string | null,
-): { icon: typeof FileText; typeBadge: string; badgeClass: string } => {
+): { icon: typeof FileText } => {
   const fp = filePath?.toLowerCase() ?? "";
-  if (fp.endsWith(".xlsx") || fp.endsWith(".xls"))
-    return { icon: FileSpreadsheet, typeBadge: "Spreadsheet", badgeClass: "bg-[#1A7EC8] text-white" };
-  if (fp.endsWith(".pptx") || fp.endsWith(".ppt"))
-    return { icon: Presentation, typeBadge: "Presentation", badgeClass: "bg-[#173660] text-white" };
-  if (fp.endsWith(".pdf"))
-    return { icon: FileText, typeBadge: "PDF", badgeClass: "bg-[#CDD8E3] text-[#173660]" };
-  return { icon: FileText, typeBadge: "Document", badgeClass: "bg-[#CDD8E3] text-[#173660]" };
+  if (fp.endsWith(".xlsx") || fp.endsWith(".xls")) return { icon: FileSpreadsheet };
+  if (fp.endsWith(".pptx") || fp.endsWith(".ppt")) return { icon: Presentation };
+  return { icon: FileText };
 };
 
 const RESOURCE_ORDER = [
