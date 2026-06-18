@@ -334,11 +334,7 @@ const ResourceCard: FC<{
   unlocked: boolean;
   onPreview: (r: Resource) => void;
 }> = ({ resource, unlocked, onPreview }) => {
-  const meta = RESOURCE_META[resource.title] ?? {
-    icon: FileText,
-    typeBadge: "Document",
-    badgeClass: "bg-[#CDD8E3] text-[#173660]",
-  };
+  const meta = RESOURCE_META[resource.title] ?? metaFromExtension(resource.file_path);
   const Icon = meta.icon;
 
   const fileUrl = resource.file_path ? getProxiedUrl(resource.file_path, true) : null;
