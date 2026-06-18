@@ -53,6 +53,20 @@ const RESOURCE_META: Record<
   },
 };
 
+/* Extension-based fallback for resources not in RESOURCE_META (case-insensitive). */
+const metaFromExtension = (
+  filePath: string | null,
+): { icon: typeof FileText; typeBadge: string; badgeClass: string } => {
+  const fp = filePath?.toLowerCase() ?? "";
+  if (fp.endsWith(".xlsx") || fp.endsWith(".xls"))
+    return { icon: FileSpreadsheet, typeBadge: "Spreadsheet", badgeClass: "bg-[#1A7EC8] text-white" };
+  if (fp.endsWith(".pptx") || fp.endsWith(".ppt"))
+    return { icon: Presentation, typeBadge: "Presentation", badgeClass: "bg-[#173660] text-white" };
+  if (fp.endsWith(".pdf"))
+    return { icon: FileText, typeBadge: "PDF", badgeClass: "bg-[#CDD8E3] text-[#173660]" };
+  return { icon: FileText, typeBadge: "Document", badgeClass: "bg-[#CDD8E3] text-[#173660]" };
+};
+
 const RESOURCE_ORDER = [
   "Financing Process Guide",
   "Data Room Request",
