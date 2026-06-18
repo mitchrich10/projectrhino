@@ -150,13 +150,12 @@ const COMP_BENCHMARKS_DETAIL = {
 };
 
 /* ── Special tool cards (same visual style as DB resource cards) ─────────── */
-const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: typeof BookOpen; to?: string; href?: string; fileType: string }> = {
+const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: typeof BookOpen; to?: string; href?: string }> = {
   "Compensation & Equity:option-modeller": {
     title: "Option Modeller",
     description: "Interactive tool to model the value of your stock option grant across exit scenarios.",
     icon: Calculator,
     to: "/option-modeller",
-    fileType: "Interactive Tool",
   },
   // Financing guide is now handled by Fundraising Toolkit card
   "Governance and Reporting:project-proposal": {
@@ -164,7 +163,6 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     description: "We highly recommend all investments at your companies be tied to hypotheses on the impact to the business. Use this as a simple guide to structure company project proposals.",
     icon: FileText,
     to: "/investment-brief",
-    fileType: "Interactive Tool",
   },
 };
 
