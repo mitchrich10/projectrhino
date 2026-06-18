@@ -48,18 +48,6 @@ const getResourceIcon = (title: string, filePath: string | null) => {
   return FileText;
 };
 
-/* ── File type label ────────────────────────────────────────────────────── */
-const getFileTypeBadge = (resource: Resource, isSpecial?: boolean): string => {
-  if (isSpecial) return "Interactive Tool";
-  if (!resource.file_path && resource.url) return "External Link";
-  const fp = resource.file_path?.toLowerCase() ?? "";
-  if (fp.endsWith(".pdf")) return "PDF";
-  if (fp.endsWith(".xlsx") || fp.endsWith(".xls")) return "Spreadsheet";
-  if (fp.endsWith(".pptx") || fp.endsWith(".ppt")) return "Presentation";
-  if (fp.endsWith(".docx") || fp.endsWith(".doc")) return "Document";
-  return "File";
-};
-
 /* ── Download helper ────────────────────────────────────────────────────── */
 const useBlobDownload = () => {
   const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -162,13 +150,12 @@ const COMP_BENCHMARKS_DETAIL = {
 };
 
 /* ── Special tool cards (same visual style as DB resource cards) ─────────── */
-const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: typeof BookOpen; to?: string; href?: string; fileType: string }> = {
+const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: typeof BookOpen; to?: string; href?: string }> = {
   "Compensation & Equity:option-modeller": {
     title: "Option Modeller",
     description: "Interactive tool to model the value of your stock option grant across exit scenarios.",
     icon: Calculator,
     to: "/option-modeller",
-    fileType: "Interactive Tool",
   },
   // Financing guide is now handled by Fundraising Toolkit card
   "Governance and Reporting:project-proposal": {
@@ -176,7 +163,6 @@ const SPECIAL_CARDS: Record<string, { title: string; description: string; icon: 
     description: "We highly recommend all investments at your companies be tied to hypotheses on the impact to the business. Use this as a simple guide to structure company project proposals.",
     icon: FileText,
     to: "/investment-brief",
-    fileType: "Interactive Tool",
   },
 };
 
@@ -220,7 +206,6 @@ const ResourcePanel: FC<{
   const title = specialCard?.title ?? resource?.title ?? "";
   const description = specialCard?.description ?? resource?.description ?? "";
   const category = resource?.category ?? "";
-  const fileType = specialCard ? specialCard.fileType : resource ? getFileTypeBadge(resource) : "";
 
   const Icon = resource ? getResourceIcon(resource.title, resource.file_path) : specialCard ? specialCard.icon : FileText;
 
@@ -237,11 +222,6 @@ const ResourcePanel: FC<{
             {category && (
               <Badge className="bg-[#1A7EC8] text-white border-0 text-[10px] uppercase tracking-wider font-semibold">
                 {category}
-              </Badge>
-            )}
-            {fileType && (
-              <Badge variant="outline" className="text-[10px] uppercase tracking-wider font-semibold text-[#5C6B7A] border-[#CDD8E3]">
-                {fileType}
               </Badge>
             )}
           </div>

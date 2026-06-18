@@ -30,41 +30,22 @@ interface CompanyInfo {
   logo_key: string | null;
 }
 
-/* ── Resource metadata (order + styling) ───────────────────── */
+/* ── Resource metadata (icon only) ─────────────────────────── */
 
-const RESOURCE_META: Record<
-  string,
-  { icon: typeof FileText; typeBadge: string; badgeClass: string }
-> = {
-  "Financing Process Guide": {
-    icon: Presentation,
-    typeBadge: "Presentation",
-    badgeClass: "bg-[#173660] text-white",
-  },
-  "Data Room Request": {
-    icon: FileSpreadsheet,
-    typeBadge: "Excel Tracker",
-    badgeClass: "bg-[#1A7EC8] text-white",
-  },
-  "First Meeting Prep Guide": {
-    icon: FileText,
-    typeBadge: "Word Document",
-    badgeClass: "bg-[#CDD8E3] text-[#173660]",
-  },
+const RESOURCE_META: Record<string, { icon: typeof FileText }> = {
+  "Financing Process Guide": { icon: Presentation },
+  "Data Room Request": { icon: FileSpreadsheet },
+  "First Meeting Prep Guide": { icon: FileText },
 };
 
-/* Extension-based fallback for resources not in RESOURCE_META (case-insensitive). */
+/* Extension-based icon fallback for resources not in RESOURCE_META (case-insensitive). */
 const metaFromExtension = (
   filePath: string | null,
-): { icon: typeof FileText; typeBadge: string; badgeClass: string } => {
+): { icon: typeof FileText } => {
   const fp = filePath?.toLowerCase() ?? "";
-  if (fp.endsWith(".xlsx") || fp.endsWith(".xls"))
-    return { icon: FileSpreadsheet, typeBadge: "Spreadsheet", badgeClass: "bg-[#1A7EC8] text-white" };
-  if (fp.endsWith(".pptx") || fp.endsWith(".ppt"))
-    return { icon: Presentation, typeBadge: "Presentation", badgeClass: "bg-[#173660] text-white" };
-  if (fp.endsWith(".pdf"))
-    return { icon: FileText, typeBadge: "PDF", badgeClass: "bg-[#CDD8E3] text-[#173660]" };
-  return { icon: FileText, typeBadge: "Document", badgeClass: "bg-[#CDD8E3] text-[#173660]" };
+  if (fp.endsWith(".xlsx") || fp.endsWith(".xls")) return { icon: FileSpreadsheet };
+  if (fp.endsWith(".pptx") || fp.endsWith(".ppt")) return { icon: Presentation };
+  return { icon: FileText };
 };
 
 const RESOURCE_ORDER = [
@@ -196,7 +177,6 @@ const PreviewPanel: FC<{
   resource: Resource;
   onClose: () => void;
 }> = ({ resource, onClose }) => {
-  const meta = RESOURCE_META[resource.title] ?? metaFromExtension(resource.file_path);
 
   const fileUrl = resource.file_path ? getProxiedUrl(resource.file_path) : null;
   const downloadUrl = resource.file_path ? getProxiedUrl(resource.file_path, true) : null;
@@ -214,9 +194,6 @@ const PreviewPanel: FC<{
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#CDD8E3] flex-shrink-0">
           <div className="flex-1 min-w-0">
             <h3 className="font-bold text-sm text-[#173660] truncate">{resource.title}</h3>
-            <span className={`inline-block mt-1 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded ${meta.badgeClass}`}>
-              {meta.typeBadge}
-            </span>
           </div>
           <button onClick={onClose} className="text-[#5C6B7A] hover:text-[#173660] transition-colors ml-4 flex-shrink-0">
             <X className="w-5 h-5" />
@@ -358,14 +335,9 @@ const ResourceCard: FC<{
       <div className="h-1 bg-[#173660]" />
 
       <div className="p-5 flex flex-col gap-3 flex-1">
-        {/* Icon + badge row */}
-        <div className="flex items-start justify-between gap-2">
+        {/* Icon row */}
+        <div className="flex items-start gap-2">
           <Icon className="w-5 h-5 text-[#173660] flex-shrink-0 mt-0.5" />
-          <span
-            className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded ${meta.badgeClass}`}
-          >
-            {meta.typeBadge}
-          </span>
         </div>
 
         {/* Title */}
