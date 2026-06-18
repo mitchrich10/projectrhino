@@ -48,18 +48,6 @@ const getResourceIcon = (title: string, filePath: string | null) => {
   return FileText;
 };
 
-/* ── File type label ────────────────────────────────────────────────────── */
-const getFileTypeBadge = (resource: Resource, isSpecial?: boolean): string => {
-  if (isSpecial) return "Interactive Tool";
-  if (!resource.file_path && resource.url) return "External Link";
-  const fp = resource.file_path?.toLowerCase() ?? "";
-  if (fp.endsWith(".pdf")) return "PDF";
-  if (fp.endsWith(".xlsx") || fp.endsWith(".xls")) return "Spreadsheet";
-  if (fp.endsWith(".pptx") || fp.endsWith(".ppt")) return "Presentation";
-  if (fp.endsWith(".docx") || fp.endsWith(".doc")) return "Document";
-  return "File";
-};
-
 /* ── Download helper ────────────────────────────────────────────────────── */
 const useBlobDownload = () => {
   const [loadingId, setLoadingId] = useState<string | null>(null);
