@@ -208,7 +208,6 @@ const ResourcePanel: FC<{
   const title = specialCard?.title ?? resource?.title ?? "";
   const description = specialCard?.description ?? resource?.description ?? "";
   const category = resource?.category ?? "";
-  const fileType = specialCard ? specialCard.fileType : resource ? getFileTypeBadge(resource) : "";
 
   const Icon = resource ? getResourceIcon(resource.title, resource.file_path) : specialCard ? specialCard.icon : FileText;
 
