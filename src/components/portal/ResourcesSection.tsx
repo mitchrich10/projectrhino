@@ -226,11 +226,6 @@ const ResourcePanel: FC<{
                 {category}
               </Badge>
             )}
-            {fileType && (
-              <Badge variant="outline" className="text-[10px] uppercase tracking-wider font-semibold text-[#5C6B7A] border-[#CDD8E3]">
-                {fileType}
-              </Badge>
-            )}
           </div>
         </div>
 
