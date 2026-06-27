@@ -16,7 +16,7 @@ const TestimonialSection: FC = () => {
           {/* Featured Company Highlights */}
           <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
             {[
-              { logo: logoElective, name: "Elective", year: "2021", kpiValue: "$0M to $10M", kpiLabel: "Annual Revenue", url: "https://www.elective.com" },
+              { logo: logoElective, name: "Elective", year: "2021", kpiValue: "$0M to $20M", kpiLabel: "Annual Revenue", url: "https://www.elective.com" },
               { logo: logoFispan, name: "FISPAN", year: "2018", kpiValue: "$0M to $35M", kpiLabel: "ARR", url: "https://www.fispan.com" },
               { logo: logoArticle, name: "Article", year: "2016", kpiValue: "$0M to $68M", kpiLabel: "EBITDA", url: "https://www.article.com" },
               { logo: logoThinkific, name: "Thinkific", year: "2015", kpiValue: "$0M to $83M", kpiLabel: "ARR", url: "https://www.thinkific.com" },
