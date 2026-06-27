@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Anyone can read shares by token" ON public.founder_onboarding_shares;
