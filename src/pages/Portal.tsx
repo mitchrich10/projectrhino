@@ -148,6 +148,21 @@ const Portal: FC = () => {
       const inviteBatchId = (inviteData as { batch_id?: string } | null)?.batch_id ?? null;
       setBatchId(inviteBatchId);
 
+      // Auto-enroll approved, logged-in (non-admin) users into portal notifications
+      // by default. ignoreDuplicates ensures anyone who explicitly opted out is
+      // never silently re-enabled on a later login.
+      if (!adminUser) {
+        supabase
+          .from("notification_subscriptions")
+          .upsert(
+            { user_id: session.user.id, email: email.toLowerCase(), subscribed: true },
+            { onConflict: "user_id", ignoreDuplicates: true },
+          )
+          .then(({ error }) => {
+            if (error) console.error("notification auto-enroll failed", error);
+          });
+      }
+
       // Check if the founder already submitted their onboarding (so we can hide the wizard)
       if (inviteBatchId) {
         const { data: onb } = await supabase
