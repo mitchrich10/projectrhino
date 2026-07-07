@@ -9,13 +9,27 @@ interface AnalyticsSummary {
   topResources: { name: string; count: number }[];
 }
 
+type PortalStatus =
+  | "active"
+  | "invited_never_logged_in"
+  | "requested_never_logged_in"
+  | "never_logged_in";
+
 interface PortalUser {
   email: string;
   domain: string;
   company_name: string;
   created_at: string;
   last_sign_in_at: string | null;
+  status: PortalStatus;
 }
+
+const STATUS_LABEL: Record<PortalStatus, string> = {
+  active: "Active",
+  invited_never_logged_in: "Invited – never logged in",
+  requested_never_logged_in: "Requested – never logged in",
+  never_logged_in: "Never logged in",
+};
 
 type SortKey = "company_name" | "last_sign_in_at";
 
