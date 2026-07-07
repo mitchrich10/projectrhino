@@ -46,7 +46,7 @@ const teaser = (s: string): string => {
   return slice.replace(/\s+\S*$/, "") + "…";
 };
 
-const buildDigestHtml = (items: QueueItem[]): string => {
+const buildDigestHtml = (items: QueueItem[], unsubscribeUrl: string): string => {
   const sections = items
     .map((it) => {
       const label = TYPE_LABEL[it.entity_type] ?? "Update";
@@ -68,7 +68,7 @@ const buildDigestHtml = (items: QueueItem[]): string => {
       <a href="${PORTAL_URL}" style="display:inline-block;background:#1A7EC8;color:#ffffff;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 28px;text-decoration:none;border-radius:8px;margin-top:8px;">Open the Portal →</a>
     </div>
     <div style="padding:24px 32px;border-top:1px solid #e2e8f0;">
-      <p style="font-size:11px;color:#94a3b8;margin:0;">You're receiving this because you subscribed to portal updates. Manage your preferences on the portal.</p>
+      <p style="font-size:11px;color:#94a3b8;margin:0;">You're receiving this because you have a Rhino Portal account. <a href="${unsubscribeUrl}" style="color:#1A7EC8;text-decoration:underline;">Unsubscribe</a> from these updates at any time.</p>
     </div>
   </div>`;
 };
