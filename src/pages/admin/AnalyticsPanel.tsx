@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, BarChart3 } from "lucide-react";
+import { Loader2, ChevronUp, ChevronDown, Search } from "lucide-react";
 
 interface AnalyticsSummary {
   totalPartnershipClicks: number;
@@ -8,6 +8,17 @@ interface AnalyticsSummary {
   topPartnerships: { name: string; count: number }[];
   topResources: { name: string; count: number }[];
 }
+
+interface PortalUser {
+  email: string;
+  domain: string;
+  company_name: string;
+  created_at: string;
+  last_sign_in_at: string | null;
+}
+
+type SortKey = "company_name" | "last_sign_in_at";
+
 
 const AnalyticsPanel: FC = () => {
   const [loading, setLoading] = useState(true);
