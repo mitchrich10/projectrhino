@@ -277,10 +277,10 @@ const AnalyticsPanel: FC = () => {
                       <td className="p-3 text-muted-foreground hidden md:table-cell">{fmtDate(u.created_at)}</td>
                       <td className="p-3 text-muted-foreground">{fmtDateTime(u.last_sign_in_at)}</td>
                       <td className="p-3">
-                        {u.last_sign_in_at ? (
+                        {u.status === "active" ? (
                           <span className="text-xs font-bold text-primary">Active</span>
                         ) : (
-                          <span className="text-xs text-muted-foreground">Never logged in</span>
+                          <span className="text-xs text-muted-foreground">{STATUS_LABEL[u.status]}</span>
                         )}
                       </td>
                     </tr>
