@@ -29,6 +29,14 @@ const AnalyticsPanel: FC = () => {
     topResources: [],
   });
 
+  // Portal logins
+  const [users, setUsers] = useState<PortalUser[]>([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [usersError, setUsersError] = useState(false);
+  const [search, setSearch] = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("last_sign_in_at");
+  const [sortAsc, setSortAsc] = useState(false);
+
   useEffect(() => {
     const fetchAnalytics = async () => {
       const { data: rows } = await supabase
@@ -61,6 +69,63 @@ const AnalyticsPanel: FC = () => {
     };
     fetchAnalytics();
   }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("list-portal-users");
+        if (error || !data?.users) { setUsersError(true); }
+        else setUsers(data.users as PortalUser[]);
+      } catch {
+        setUsersError(true);
+      }
+      setUsersLoading(false);
+    };
+    fetchUsers();
+  }, []);
+
+  const companySummary = useMemo(() => {
+    const map = new Map<string, { total: number; loggedIn: number; lastSignIn: string | null }>();
+    users.forEach((u) => {
+      const cur = map.get(u.company_name) ?? { total: 0, loggedIn: 0, lastSignIn: null };
+      cur.total += 1;
+      if (u.last_sign_in_at) {
+        cur.loggedIn += 1;
+        if (!cur.lastSignIn || u.last_sign_in_at > cur.lastSignIn) cur.lastSignIn = u.last_sign_in_at;
+      }
+      map.set(u.company_name, cur);
+    });
+    return Array.from(map.entries())
+      .map(([company, v]) => ({ company, ...v }))
+      .sort((a, b) => b.loggedIn - a.loggedIn || a.company.localeCompare(b.company));
+  }, [users]);
+
+  const filteredUsers = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const list = users.filter(
+      (u) => !q || u.email.toLowerCase().includes(q) || u.company_name.toLowerCase().includes(q)
+    );
+    return [...list].sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "company_name") {
+        cmp = a.company_name.localeCompare(b.company_name);
+      } else {
+        cmp = (a.last_sign_in_at ?? "").localeCompare(b.last_sign_in_at ?? "");
+      }
+      return sortAsc ? cmp : -cmp;
+    });
+  }, [users, search, sortKey, sortAsc]);
+
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) setSortAsc((v) => !v);
+    else { setSortKey(key); setSortAsc(key === "company_name"); }
+  };
+
+  const fmtDate = (d: string | null) =>
+    d ? new Date(d).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "—";
+  const fmtDateTime = (d: string | null) =>
+    d ? new Date(d).toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
+
 
   if (loading) {
     return (
