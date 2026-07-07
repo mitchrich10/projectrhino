@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, BarChart3 } from "lucide-react";
+import { Loader2, ChevronUp, ChevronDown, Search } from "lucide-react";
 
 interface AnalyticsSummary {
   totalPartnershipClicks: number;
@@ -8,6 +8,17 @@ interface AnalyticsSummary {
   topPartnerships: { name: string; count: number }[];
   topResources: { name: string; count: number }[];
 }
+
+interface PortalUser {
+  email: string;
+  domain: string;
+  company_name: string;
+  created_at: string;
+  last_sign_in_at: string | null;
+}
+
+type SortKey = "company_name" | "last_sign_in_at";
+
 
 const AnalyticsPanel: FC = () => {
   const [loading, setLoading] = useState(true);
@@ -17,6 +28,14 @@ const AnalyticsPanel: FC = () => {
     topPartnerships: [],
     topResources: [],
   });
+
+  // Portal logins
+  const [users, setUsers] = useState<PortalUser[]>([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [usersError, setUsersError] = useState(false);
+  const [search, setSearch] = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("last_sign_in_at");
+  const [sortAsc, setSortAsc] = useState(false);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -50,6 +69,63 @@ const AnalyticsPanel: FC = () => {
     };
     fetchAnalytics();
   }, []);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("list-portal-users");
+        if (error || !data?.users) { setUsersError(true); }
+        else setUsers(data.users as PortalUser[]);
+      } catch {
+        setUsersError(true);
+      }
+      setUsersLoading(false);
+    };
+    fetchUsers();
+  }, []);
+
+  const companySummary = useMemo(() => {
+    const map = new Map<string, { total: number; loggedIn: number; lastSignIn: string | null }>();
+    users.forEach((u) => {
+      const cur = map.get(u.company_name) ?? { total: 0, loggedIn: 0, lastSignIn: null };
+      cur.total += 1;
+      if (u.last_sign_in_at) {
+        cur.loggedIn += 1;
+        if (!cur.lastSignIn || u.last_sign_in_at > cur.lastSignIn) cur.lastSignIn = u.last_sign_in_at;
+      }
+      map.set(u.company_name, cur);
+    });
+    return Array.from(map.entries())
+      .map(([company, v]) => ({ company, ...v }))
+      .sort((a, b) => b.loggedIn - a.loggedIn || a.company.localeCompare(b.company));
+  }, [users]);
+
+  const filteredUsers = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const list = users.filter(
+      (u) => !q || u.email.toLowerCase().includes(q) || u.company_name.toLowerCase().includes(q)
+    );
+    return [...list].sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "company_name") {
+        cmp = a.company_name.localeCompare(b.company_name);
+      } else {
+        cmp = (a.last_sign_in_at ?? "").localeCompare(b.last_sign_in_at ?? "");
+      }
+      return sortAsc ? cmp : -cmp;
+    });
+  }, [users, search, sortKey, sortAsc]);
+
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) setSortAsc((v) => !v);
+    else { setSortKey(key); setSortAsc(key === "company_name"); }
+  };
+
+  const fmtDate = (d: string | null) =>
+    d ? new Date(d).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "—";
+  const fmtDateTime = (d: string | null) =>
+    d ? new Date(d).toLocaleString(undefined, { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
+
 
   if (loading) {
     return (
@@ -111,7 +187,101 @@ const AnalyticsPanel: FC = () => {
           </div>
         )}
       </div>
+
+      {/* Portal logins / access */}
+      <div>
+        <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">
+          Portal Access
+        </h3>
+
+        {usersLoading ? (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-xs">Loading logins…</span>
+          </div>
+        ) : usersError ? (
+          <p className="text-xs text-muted-foreground">Unable to load portal access data.</p>
+        ) : (
+          <div className="space-y-6">
+            {/* Per-company summary */}
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">By Company</p>
+              <div className="space-y-2">
+                {companySummary.map((c) => (
+                  <div key={c.company} className="flex items-center justify-between border border-border rounded-lg p-3 bg-secondary/10">
+                    <span className="text-sm font-semibold text-foreground">{c.company}</span>
+                    <div className="flex items-center gap-4 text-xs">
+                      <span className="text-muted-foreground">
+                        <span className="font-bold text-primary">{c.loggedIn}</span> of {c.total} logged in
+                      </span>
+                      <span className="text-muted-foreground hidden sm:inline">Last: {fmtDate(c.lastSignIn)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Search */}
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Filter by company or email…"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+
+            {/* Users table */}
+            <div className="border border-border rounded-lg overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-secondary/20 text-left">
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Email</th>
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">
+                      <button onClick={() => toggleSort("company_name")} className="flex items-center gap-1 hover:text-foreground">
+                        Company
+                        {sortKey === "company_name" && (sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}
+                      </button>
+                    </th>
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden md:table-cell">Signed Up</th>
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">
+                      <button onClick={() => toggleSort("last_sign_in_at")} className="flex items-center gap-1 hover:text-foreground">
+                        Last Sign-In
+                        {sortKey === "last_sign_in_at" && (sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}
+                      </button>
+                    </th>
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.map((u) => (
+                    <tr key={u.email} className="border-t border-border">
+                      <td className="p-3 text-foreground">{u.email}</td>
+                      <td className="p-3 text-foreground">{u.company_name}</td>
+                      <td className="p-3 text-muted-foreground hidden md:table-cell">{fmtDate(u.created_at)}</td>
+                      <td className="p-3 text-muted-foreground">{fmtDateTime(u.last_sign_in_at)}</td>
+                      <td className="p-3">
+                        {u.last_sign_in_at ? (
+                          <span className="text-xs font-bold text-primary">Active</span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Never logged in</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredUsers.length === 0 && (
+                    <tr><td colSpan={5} className="p-3 text-xs text-muted-foreground text-center">No users match.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
+
   );
 };
 
