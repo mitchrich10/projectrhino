@@ -187,7 +187,101 @@ const AnalyticsPanel: FC = () => {
           </div>
         )}
       </div>
+
+      {/* Portal logins / access */}
+      <div>
+        <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">
+          Portal Access
+        </h3>
+
+        {usersLoading ? (
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-xs">Loading logins…</span>
+          </div>
+        ) : usersError ? (
+          <p className="text-xs text-muted-foreground">Unable to load portal access data.</p>
+        ) : (
+          <div className="space-y-6">
+            {/* Per-company summary */}
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">By Company</p>
+              <div className="space-y-2">
+                {companySummary.map((c) => (
+                  <div key={c.company} className="flex items-center justify-between border border-border rounded-lg p-3 bg-secondary/10">
+                    <span className="text-sm font-semibold text-foreground">{c.company}</span>
+                    <div className="flex items-center gap-4 text-xs">
+                      <span className="text-muted-foreground">
+                        <span className="font-bold text-primary">{c.loggedIn}</span> of {c.total} logged in
+                      </span>
+                      <span className="text-muted-foreground hidden sm:inline">Last: {fmtDate(c.lastSignIn)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Search */}
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Filter by company or email…"
+                className="w-full pl-9 pr-3 py-2 text-sm border border-border rounded-lg bg-background focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+
+            {/* Users table */}
+            <div className="border border-border rounded-lg overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-secondary/20 text-left">
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Email</th>
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">
+                      <button onClick={() => toggleSort("company_name")} className="flex items-center gap-1 hover:text-foreground">
+                        Company
+                        {sortKey === "company_name" && (sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}
+                      </button>
+                    </th>
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground hidden md:table-cell">Signed Up</th>
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">
+                      <button onClick={() => toggleSort("last_sign_in_at")} className="flex items-center gap-1 hover:text-foreground">
+                        Last Sign-In
+                        {sortKey === "last_sign_in_at" && (sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />)}
+                      </button>
+                    </th>
+                    <th className="p-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.map((u) => (
+                    <tr key={u.email} className="border-t border-border">
+                      <td className="p-3 text-foreground">{u.email}</td>
+                      <td className="p-3 text-foreground">{u.company_name}</td>
+                      <td className="p-3 text-muted-foreground hidden md:table-cell">{fmtDate(u.created_at)}</td>
+                      <td className="p-3 text-muted-foreground">{fmtDateTime(u.last_sign_in_at)}</td>
+                      <td className="p-3">
+                        {u.last_sign_in_at ? (
+                          <span className="text-xs font-bold text-primary">Active</span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Never logged in</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredUsers.length === 0 && (
+                    <tr><td colSpan={5} className="p-3 text-xs text-muted-foreground text-center">No users match.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
+
   );
 };
 
