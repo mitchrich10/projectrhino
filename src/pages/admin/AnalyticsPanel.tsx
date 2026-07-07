@@ -103,7 +103,7 @@ const AnalyticsPanel: FC = () => {
     users.forEach((u) => {
       const cur = map.get(u.company_name) ?? { total: 0, loggedIn: 0, lastSignIn: null };
       cur.total += 1;
-      if (u.last_sign_in_at) {
+      if (u.status === "active" && u.last_sign_in_at) {
         cur.loggedIn += 1;
         if (!cur.lastSignIn || u.last_sign_in_at > cur.lastSignIn) cur.lastSignIn = u.last_sign_in_at;
       }
