@@ -61,8 +61,9 @@ serve(async (req: Request) => {
     // Update status in DB
     await supabase.from("partner_requests").update({ status }).eq("id", request_id);
 
-    // Send notification email to the partner
-    if (RESEND_API_KEY) {
+    // Send notification email to the partner — only on approval.
+    // Denied requesters are intentionally NOT notified.
+    if (RESEND_API_KEY && status === "approved") {
       const types: string[] = Array.isArray(request.item_type) ? request.item_type : request.item_type ? [request.item_type] : [];
       const section = types.includes("partnership") ? "partnerships" : "resources";
       const portalUrl = `https://projectrhino.lovable.app/portal#${section}`;
