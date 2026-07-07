@@ -10,12 +10,20 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+type PortalStatus =
+  | "active"
+  | "invited_never_logged_in"
+  | "requested_never_logged_in"
+  | "never_logged_in";
+
 interface PortalUser {
   email: string;
   domain: string;
   company_name: string;
   created_at: string;
+  // Only a genuine, access-granted login. null when the user never truly logged in.
   last_sign_in_at: string | null;
+  status: PortalStatus;
 }
 
 serve(async (req: Request) => {
