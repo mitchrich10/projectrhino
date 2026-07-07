@@ -9,13 +9,27 @@ interface AnalyticsSummary {
   topResources: { name: string; count: number }[];
 }
 
+type PortalStatus =
+  | "active"
+  | "invited_never_logged_in"
+  | "requested_never_logged_in"
+  | "never_logged_in";
+
 interface PortalUser {
   email: string;
   domain: string;
   company_name: string;
   created_at: string;
   last_sign_in_at: string | null;
+  status: PortalStatus;
 }
+
+const STATUS_LABEL: Record<PortalStatus, string> = {
+  active: "Active",
+  invited_never_logged_in: "Invited – never logged in",
+  requested_never_logged_in: "Requested – never logged in",
+  never_logged_in: "Never logged in",
+};
 
 type SortKey = "company_name" | "last_sign_in_at";
 
@@ -89,7 +103,7 @@ const AnalyticsPanel: FC = () => {
     users.forEach((u) => {
       const cur = map.get(u.company_name) ?? { total: 0, loggedIn: 0, lastSignIn: null };
       cur.total += 1;
-      if (u.last_sign_in_at) {
+      if (u.status === "active" && u.last_sign_in_at) {
         cur.loggedIn += 1;
         if (!cur.lastSignIn || u.last_sign_in_at > cur.lastSignIn) cur.lastSignIn = u.last_sign_in_at;
       }
@@ -263,10 +277,10 @@ const AnalyticsPanel: FC = () => {
                       <td className="p-3 text-muted-foreground hidden md:table-cell">{fmtDate(u.created_at)}</td>
                       <td className="p-3 text-muted-foreground">{fmtDateTime(u.last_sign_in_at)}</td>
                       <td className="p-3">
-                        {u.last_sign_in_at ? (
+                        {u.status === "active" ? (
                           <span className="text-xs font-bold text-primary">Active</span>
                         ) : (
-                          <span className="text-xs text-muted-foreground">Never logged in</span>
+                          <span className="text-xs text-muted-foreground">{STATUS_LABEL[u.status]}</span>
                         )}
                       </td>
                     </tr>

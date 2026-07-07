@@ -10,12 +10,20 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+type PortalStatus =
+  | "active"
+  | "invited_never_logged_in"
+  | "requested_never_logged_in"
+  | "never_logged_in";
+
 interface PortalUser {
   email: string;
   domain: string;
   company_name: string;
   created_at: string;
+  // Only a genuine, access-granted login. null when the user never truly logged in.
   last_sign_in_at: string | null;
+  status: PortalStatus;
 }
 
 serve(async (req: Request) => {
@@ -50,6 +58,26 @@ serve(async (req: Request) => {
     const domainMap = new Map<string, string>();
     (domains ?? []).forEach((d: any) => domainMap.set(d.domain.toLowerCase(), d.company_name));
 
+    // Emails that were sent a portal/onboarding invite
+    const { data: invites } = await supabase
+      .from("onboarding_invites")
+      .select("email");
+    const invitedSet = new Set<string>();
+    (invites ?? []).forEach((i: any) => i.email && invitedSet.add(i.email.toLowerCase()));
+
+    // Emails that submitted an access request (latest status wins)
+    const { data: requests } = await supabase
+      .from("partner_requests")
+      .select("user_email, item_type, status, created_at")
+      .order("created_at", { ascending: false });
+    const requestStatus = new Map<string, string>();
+    (requests ?? []).forEach((r: any) => {
+      const em = (r.user_email ?? "").toLowerCase();
+      const types: string[] = Array.isArray(r.item_type) ? r.item_type : r.item_type ? [r.item_type] : [];
+      if (!em || !types.includes("access_request")) return;
+      if (!requestStatus.has(em)) requestStatus.set(em, r.status); // first = latest due to ordering
+    });
+
     // Page through all auth users
     const users: PortalUser[] = [];
     let page = 1;
@@ -61,16 +89,46 @@ serve(async (req: Request) => {
       for (const u of batch) {
         const email = u.email ?? "";
         if (!email) continue;
+        const emailLower = email.toLowerCase();
         const domain = email.split("@")[1]?.toLowerCase() ?? "";
+        const domainApproved = domain === "rhinovc.com" || domainMap.has(domain);
+        const invited = invitedSet.has(emailLower);
+        const reqStatus = requestStatus.get(emailLower);
         const company = domain === "rhinovc.com"
           ? "Rhino (Admin)"
           : domainMap.get(domain) ?? "Unknown";
+
+        // A user has portal access only if their domain is approved or they were invited.
+        const hasAccess = domainApproved || invited;
+        // Supabase sets last_sign_in_at on the FIRST OAuth/magic-link exchange even
+        // when the person is later denied access, so a raw timestamp is not proof of
+        // a real portal login. Treat it as a genuine login only when the account has
+        // portal access.
+        const rawSignIn = u.last_sign_in_at ?? null;
+        const genuineLogin = !!rawSignIn && hasAccess;
+
+        let status: PortalStatus;
+        if (genuineLogin) {
+          status = "active";
+        } else if (reqStatus) {
+          // Requested access (pending/denied) — never a real portal login.
+          status = "requested_never_logged_in";
+        } else if (invited) {
+          status = "invited_never_logged_in";
+        } else if (!hasAccess) {
+          // Signed in via OAuth but no approved domain / invite: effectively a request.
+          status = "requested_never_logged_in";
+        } else {
+          status = "never_logged_in";
+        }
+
         users.push({
           email,
           domain,
           company_name: company,
           created_at: u.created_at,
-          last_sign_in_at: u.last_sign_in_at ?? null,
+          last_sign_in_at: status === "active" ? rawSignIn : null,
+          status,
         });
       }
       if (batch.length < perPage) break;
