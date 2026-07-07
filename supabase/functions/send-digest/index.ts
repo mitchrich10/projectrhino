@@ -125,26 +125,31 @@ serve(async (req: Request) => {
       });
     }
 
-    const html = buildDigestHtml(queueItems);
     const subject = buildSubject();
+    const unsubscribeBase = `${SUPABASE_URL}/functions/v1/unsubscribe-notifications`;
 
     // ── Preview mode: return rendered HTML without sending ──
     if (preview) {
+      const html = buildDigestHtml(queueItems, `${unsubscribeBase}?token=preview`);
       return new Response(JSON.stringify({ ok: true, html, subject, item_count: queueItems.length }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // ── Fetch active subscribers ──
+    // ── Fetch active subscribers (only approved, logged-in users are ever enrolled) ──
     const { data: subs, error: subsErr } = await admin
       .from("notification_subscriptions")
-      .select("email")
+      .select("id, email")
       .eq("subscribed", true);
     if (subsErr) throw subsErr;
 
-    const recipients = Array.from(
-      new Set((subs ?? []).map((s: { email: string }) => s.email?.trim().toLowerCase()).filter(Boolean)),
-    );
+    // De-dupe by email, keeping the subscription id for a per-recipient unsubscribe link.
+    const recipientMap = new Map<string, string>();
+    (subs ?? []).forEach((s: { id: string; email: string }) => {
+      const em = s.email?.trim().toLowerCase();
+      if (em && !recipientMap.has(em)) recipientMap.set(em, s.id);
+    });
+    const recipients = Array.from(recipientMap.entries()); // [email, subscriptionId]
 
     if (recipients.length === 0) {
       return new Response(JSON.stringify({ error: "No active subscribers" }), {
@@ -160,11 +165,12 @@ serve(async (req: Request) => {
       });
     }
 
-    // ── Send to each subscriber ──
+    // ── Send to each subscriber with a personalized unsubscribe link ──
     let sent = 0;
     const failures: string[] = [];
-    for (const to of recipients) {
+    for (const [to, subId] of recipients) {
       try {
+        const html = buildDigestHtml(queueItems, `${unsubscribeBase}?token=${subId}`);
         const resp = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
