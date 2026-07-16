@@ -14,42 +14,55 @@ type Step = "email" | "sent";
 const PartnerLogin: FC = () => {
   usePageTitle("Partner Portal — Sign In | Rhino");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [step, setStep] = useState<Step>("email");
   const [isLoading, setIsLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // If already logged in, redirect — admins to /admin, everyone else to /portal
+  // Only allow returning to same-origin relative paths (protects OAuth consent redirect).
+  const rawNext = searchParams.get("next");
+  const nextPath = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : null;
+
+  // If already logged in, redirect — honor ?next (e.g. OAuth consent), else admin/portal by role.
   useEffect(() => {
     const routeFor = (sessionEmail?: string | null) =>
-      sessionEmail?.toLowerCase().endsWith("@rhinovc.com") ? "/admin" : "/portal";
+      nextPath
+        ? nextPath
+        : sessionEmail?.toLowerCase().endsWith("@rhinovc.com")
+        ? "/admin"
+        : "/portal";
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate(routeFor(session.user?.email));
+      if (session) {
+        if (nextPath) window.location.href = nextPath;
+        else navigate(routeFor(session.user?.email));
+      }
     });
 
-    // Listen for magic link / OAuth callback
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
-        navigate(routeFor(session.user?.email));
+        if (nextPath) window.location.href = nextPath;
+        else navigate(routeFor(session.user?.email));
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, nextPath]);
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     setError(null);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/portal`,
+      redirect_uri: nextPath
+        ? `${window.location.origin}${nextPath}`
+        : `${window.location.origin}/portal`,
     });
     if (result?.error) {
       setError("Google sign-in failed. Please try again or use a magic link.");
       setGoogleLoading(false);
     }
-    // On success the auth state change listener will redirect to /portal
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
