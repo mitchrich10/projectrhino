@@ -17,6 +17,7 @@ const OptionModeller = lazy(() => import("./pages/OptionModeller"));
 const FinancingGuide = lazy(() => import("./pages/FinancingGuide"));
 
 const InvestmentBriefBuilder = lazy(() => import("./pages/InvestmentBriefBuilder"));
+const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/portal/financing-guide" element={<FinancingGuide />} />
             <Route path="/fundraising" element={<FinancingGuide />} />
             <Route path="/investment-brief" element={<InvestmentBriefBuilder />} />
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
