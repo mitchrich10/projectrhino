@@ -17,6 +17,7 @@ const OptionModeller = lazy(() => import("./pages/OptionModeller"));
 const FinancingGuide = lazy(() => import("./pages/FinancingGuide"));
 
 const InvestmentBriefBuilder = lazy(() => import("./pages/InvestmentBriefBuilder"));
+const OAuthConsent = lazy(() => import("./pages/OAuthConsent"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
