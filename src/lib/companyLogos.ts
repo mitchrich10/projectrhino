@@ -38,7 +38,7 @@ import logoThinkcx from "@/assets/logo-thinkcx.png";
 import logoThinkific from "@/assets/logo-thinkific.png";
 import logoTutela from "@/assets/logo-tutela.png";
 import logoTwig from "@/assets/logo-twig.png";
-import logoUpperVillage from "@/assets/logo-upper-village.png";
+import logoUpperVillage from "@/assets/logo-village-vet.png.asset.json";
 
 export const companyLogos: Record<string, string> = {
   arlo: logoArlo,
@@ -81,5 +81,5 @@ export const companyLogos: Record<string, string> = {
   thinkific: logoThinkific,
   tutela: logoTutela,
   twig: logoTwig,
-  "upper-village": logoUpperVillage,
+  "upper-village": logoUpperVillage.url,
 };

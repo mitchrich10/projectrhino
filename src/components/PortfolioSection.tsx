@@ -17,7 +17,7 @@ import foundersOntopical from "@/assets/founders-ontopical.jpg";
 import logoArlo from "@/assets/logo-arlo.png";
 import logoMarz from "@/assets/logo-marz.png";
 import logoQuinnAI from "@/assets/logo-quinn-ai.png";
-import logoUpperVillage from "@/assets/logo-upper-village.png";
+import logoUpperVillage from "@/assets/logo-village-vet.png.asset.json";
 import logoNetNow from "@/assets/logo-netnow.png";
 import logoArticle from "@/assets/logo-article.png";
 import logoAspectBiosystems from "@/assets/logo-aspect-biosystems.png";
@@ -71,7 +71,7 @@ const activePortfolio = [
     category: "Healthcare Services", 
     description: "Animal health.",
     isRepresentative: true,
-    logo: logoUpperVillage,
+    logo: logoUpperVillage.url,
     logoSize: "large",
     logoOffset: 2,
     website: "https://www.uppervillagevet.com"
