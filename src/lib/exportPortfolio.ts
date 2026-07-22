@@ -2,7 +2,7 @@ export function exportActivePortfolioToCSV() {
   const activePortfolio = [
     { name: "Arlo", category: "Healthcare Services", website: "https://arlo-health.ca/" },
     { name: "Twig Fertility", category: "Healthcare Services", website: "https://twigfertility.com" },
-    { name: "Upper Village", category: "Healthcare Services", website: "https://www.uppervillagevet.com" },
+    { name: "The Village Vet", category: "Healthcare Services", website: "https://www.uppervillagevet.com" },
     { name: "Flint", category: "Healthcare Services", website: "https://www.withflint.com" },
     { name: "Stem Health", category: "Healthcare Services", website: "http://www.stemhealth.ca" },
     { name: "Article", category: "Ecommerce", website: "http://www.article.com" },

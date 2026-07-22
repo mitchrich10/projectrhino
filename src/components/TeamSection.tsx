@@ -34,7 +34,7 @@ const team: TeamMember[] = [
     photo: jayPhoto,
     linkedin: "https://www.linkedin.com/in/jayrhind/",
     coFounder: ["Rare Days"],
-    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow Technologies", "Klue", "MARZ", "Peerboard", "Quinn AI", "Showbie", "Thinkific", "Tutela", "Twig", "Upper Village"]
+    portfolio: ["Arlo", "Beanworks", "Edvisor", "Elective", "FISPAN", "Flint", "Grow Technologies", "Klue", "MARZ", "Peerboard", "Quinn AI", "Showbie", "Thinkific", "Tutela", "Twig", "The Village Vet"]
   },
   {
     name: "Mitch Richardson",

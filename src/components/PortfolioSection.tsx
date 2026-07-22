@@ -67,7 +67,7 @@ const activePortfolio = [
     website: "https://twigfertility.com"
   },
   { 
-    name: "Upper Village", 
+    name: "The Village Vet", 
     category: "Healthcare Services", 
     description: "Animal health.",
     isRepresentative: true,
