@@ -71,7 +71,7 @@ const activePortfolio = [
     category: "Healthcare Services", 
     description: "Animal health.",
     isRepresentative: true,
-    logo: logoUpperVillage,
+    logo: logoUpperVillage.url,
     logoSize: "large",
     logoOffset: 2,
     website: "https://www.uppervillagevet.com"

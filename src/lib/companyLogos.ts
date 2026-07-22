@@ -81,5 +81,5 @@ export const companyLogos: Record<string, string> = {
   thinkific: logoThinkific,
   tutela: logoTutela,
   twig: logoTwig,
-  "upper-village": logoUpperVillage,
+  "upper-village": logoUpperVillage.url,
 };
