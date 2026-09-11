@@ -28,7 +28,7 @@ const StrategySection: FC = () => {
               Where We <span className="text-primary">Partner</span>
             </h5>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              We partner with ambitious builders from the earliest stages. Sector-agnostic investors, focused on identifying underserved, underloved markets before they become consensus.
+              Sector-agnostic investors, focused on identifying underserved, underloved markets before they become consensus.
             </p>
           </div>
 
