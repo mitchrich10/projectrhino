@@ -14,7 +14,7 @@ const comparisons = [
   },
   {
     pe: "Forced exits on fixed timelines",
-    rhino: "Invests for local maxima: every exit can be meaningful",
+    rhino: "Built for real outcomes, not binary moonshots",
     vc: "Binary outcomes: unicorn or bust",
   },
 ];
