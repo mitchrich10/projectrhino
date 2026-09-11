@@ -6,11 +6,11 @@ import rhinoDetail from "@/assets/rhino-detail.jpg";
 import mapleLeaf from "@/assets/maple-leaf.png";
 
 const rotatingWords = [
+  "Early Stage",
   "Services",
   "Software",
   "Fintech",
-  "AI",
-  "Early Stage",
+  "AI Native",
 ];
 
 const HeroSection: FC = () => {
