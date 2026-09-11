@@ -6,7 +6,7 @@ import { StatCard } from "./StatCard";
 const strategyItems = [
   { 
     title: "FLEXIBLE INVESTMENTS", 
-    desc: "$2M to $10M first cheques. Backing founders from inception through growth, from pre-seed to Series A.", 
+    desc: "$2M to $10M first cheques. Backing founders from inception through growth, typically first investing at pre-seed to Series A.", 
     icon: <DollarSign className="w-5 h-5" /> 
   },
   { 
