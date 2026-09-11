@@ -4,23 +4,18 @@ import logo from "@/assets/rhino-logo-black.png";
 const comparisons = [
   {
     pe: "Focused on financial optimization",
-    rhino: "Focused exclusively on efficiently scaling exceptional businesses",
+    rhino: "Focused on efficiently scaling exceptional businesses",
     vc: "Growth prioritized above all else",
   },
   {
-    pe: "Leverage and operating cost reductions drive returns",
-    rhino: "Build organically, acquire opportunistically",
-    vc: "Binary outcomes: unicorn or bust",
+    pe: "Returns driven by leverage and operating cost reductions",
+    rhino: "Concentrated portfolio for deeper partnership and long-term support",
+    vc: "Spray and pray; unicorn or bust",
   },
   {
     pe: "Short holding periods",
-    rhino: "Long-term partners, not exit manufacturers",
-    vc: "Built for winner-take-all markets",
-  },
-  {
-    pe: "Limited tolerance for experimentation; profitability required",
-    rhino: "Encourages experimentation and willing to fund growth before profitability",
-    vc: "Prioritizes venture-stage conversion",
+    rhino: "Invests for local maxima: building value so every exit can be meaningful",
+    vc: "Binary outcomes: unicorn or bust",
   },
 ];
 
