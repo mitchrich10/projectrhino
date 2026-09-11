@@ -55,7 +55,8 @@ const HeroSection: FC = () => {
             {" "}Businesses
             <img src={mapleLeaf} alt="Canadian maple leaf" className="inline-block h-[0.5em] ml-2 align-baseline" />
           </h1>
-          <p className="text-lg md:text-xl mb-10 max-w-2xl leading-relaxed text-white/80 font-medium">You deserve a capital partner who <span className="text-primary font-bold">amplifies your success</span>.
+          <p className="text-lg md:text-xl mb-10 max-w-2xl leading-relaxed text-white/80 font-medium">
+            We partner with ambitious builders from the earliest stages.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
             <Link to="/contact">
