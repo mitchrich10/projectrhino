@@ -1,17 +1,12 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { Shield, DollarSign, Layers } from "lucide-react";
+import { DollarSign, Layers } from "lucide-react";
 import { StatCard } from "./StatCard";
 
 const strategyItems = [
   { 
-    title: "ALIGNED STRUCTURES", 
-    desc: "Minority or majority partners. Designed for the long-term.", 
-    icon: <Shield className="w-5 h-5" /> 
-  },
-  { 
     title: "FLEXIBLE INVESTMENTS", 
-    desc: "$2M to $10M first cheques. Backing founders from inception through growth. Organic expansion or acquisition-led strategies.", 
+    desc: "$2M to $10M first cheques. Backing founders from inception through growth, from pre-seed to Series A.", 
     icon: <DollarSign className="w-5 h-5" /> 
   },
   { 
@@ -33,12 +28,12 @@ const StrategySection: FC = () => {
               Where We <span className="text-primary">Partner</span>
             </h5>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              We work closely with operators looking to build, buy or scale businesses and take them to the next stage of growth.
+              We partner with ambitious builders from the earliest stages. Sector-agnostic investors, focused on identifying underserved, underloved markets before they become consensus.
             </p>
           </div>
 
           {/* Strategy Tiles */}
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             {strategyItems.map((item, i) => (
               <StatCard 
                 key={i}
