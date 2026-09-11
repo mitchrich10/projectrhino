@@ -6,11 +6,11 @@ import rhinoDetail from "@/assets/rhino-detail.jpg";
 import mapleLeaf from "@/assets/maple-leaf.png";
 
 const rotatingWords = [
-  "Producer",
-  "Wealth",
-  "Health",
-  "Insurance",
-  "Mortgage",
+  "Services",
+  "Software",
+  "Fintech",
+  "AI",
+  "Early Stage",
 ];
 
 const HeroSection: FC = () => {
@@ -18,7 +18,7 @@ const HeroSection: FC = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    const duration = currentIndex === 0 ? 6000 : 2000; // Producer stays longer, others faster
+    const duration = currentIndex === 0 ? 6000 : 2000; // First word stays longer, others faster
     
     const timeout = setTimeout(() => {
       setIsAnimating(true);

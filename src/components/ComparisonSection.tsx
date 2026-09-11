@@ -4,7 +4,7 @@ import logo from "@/assets/rhino-logo-black.png";
 const comparisons = [
   {
     pe: "Focused on financial optimization",
-    rhino: "Focused exclusively on efficiently scaling Producer businesses",
+    rhino: "Focused exclusively on efficiently scaling exceptional businesses",
     vc: "Growth prioritized above all else",
   },
   {
