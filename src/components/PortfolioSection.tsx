@@ -145,14 +145,7 @@ const activePortfolio = [
     logoSize: "large",
     website: "https://www.shopvision.ai"
   },
-  { 
-    name: "NetNow", 
-    category: "FinTech", 
-    description: "B2B credit and payments platform.",
-    logo: logoNetNow,
-    website: "http://www.netnow.io"
-  },
-  { 
+  {
     name: "MYFO", 
     category: "FinTech", 
     description: "Family office technology.",
@@ -213,6 +206,7 @@ const exitedPortfolio = [
   { name: "Beanworks", acquiredBy: "Quadient", category: "FinTech", description: "Accounts payable automation.", logo: logoBeanworks, logoOffset: 2 },
   { name: "Curatio", acquiredBy: "Pemba Capital", category: "Healthcare", description: "Patient engagement platform.", logo: logoCuratio },
   { name: "Grow", acquiredBy: "ATB Financial", category: "FinTech", description: "Digital banking platform.", logo: logoGrow },
+  { name: "NetNow", acquiredBy: "Blackline", category: "FinTech", description: "B2B credit and payments platform.", logo: logoNetNow },
   { name: "OnTopical", acquiredBy: "Sovra", category: "Media", description: "Content curation platform.", logo: logoOntopical, logoSize: "xlarge", logoOffset: 2 },
   { name: "PeerBoard", acquiredBy: "Docebo", category: "EdTech", description: "Communities platform.", logo: logoPeerboard },
   { name: "Pressboard", acquiredBy: "Impact", category: "AdTech", description: "Content marketing analytics.", logo: logoPressboard },

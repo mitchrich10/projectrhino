@@ -12,7 +12,6 @@ export function exportActivePortfolioToCSV() {
     { name: "Aspect Biosystems", category: "Biotech", website: "http://www.aspectbiosystems.com" },
     { name: "Quinn AI", category: "AI", website: "http://quinn-ai.com" },
     { name: "ShopVision", category: "AI", website: "https://www.shopvision.ai" },
-    { name: "NetNow", category: "FinTech", website: "http://www.netnow.io" },
     { name: "MYFO", category: "FinTech", website: "https://www.myfotech.com" },
     { name: "SuperAdvisor", category: "FinTech", website: "http://www.superadvisor.ai" },
     { name: "Marz", category: "VFX", website: "https://monstersaliensrobotszombies.com" },
