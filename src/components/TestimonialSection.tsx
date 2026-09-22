@@ -11,7 +11,7 @@ const TestimonialSection: FC = () => {
       <div className="max-w-6xl mx-auto">
         {/* Tagline + Featured Companies */}
         <div className="mb-16">
-          <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-12">We partner with ambitious builders to change trajectories.</p>
+          <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground text-center mb-12">The first investor in overlooked Canadian companies.</p>
           
           {/* Featured Company Highlights */}
           <div className="flex justify-center items-start gap-8 md:gap-12 lg:gap-16">
