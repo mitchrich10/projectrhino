@@ -18,16 +18,12 @@ const strategyItems = [
 
 const overlookedItems = [
   {
-    title: "Outside the consensus",
-    desc: "You're building something real, but it isn't this year's theme, so most funds pass. We invest in businesses, not trends.",
+    title: "Great businesses in underfunded markets",
+    desc: "Some great businesses don't look like traditional venture companies - and they shouldn't have to. We invest in businesses with strong fundamentals and ambitious founders, wherever we find them.",
   },
   {
-    title: "Between fund mandates",
-    desc: "Too early for private equity, wrong shape for the venture playbook. We underwrite the business, not the box it fits in.",
-  },
-  {
-    title: "No track record required",
-    desc: "First-time founders get passed over because most funds want someone else to go first. We're comfortable being first on the cap table.",
+    title: "Between venture and private equity",
+    desc: "Too early for private equity. Not built for the venture treadmill. We back businesses at the stage where the opportunity is real, but the path doesn't fit neatly into a box.",
   },
 ];
 
@@ -78,6 +74,13 @@ const StrategySection: FC = () => {
               ))}
             </div>
           </div>
+
+
+          <p className="text-foreground text-base md:text-lg font-bold leading-relaxed mt-8 text-center">
+            Building something great that doesn't fit the usual mould? That's exactly what we look for.
+          </p>
+
+
 
           {/* Bottom Statement */}
           <p className="text-foreground text-base md:text-lg font-medium leading-relaxed mt-10 text-center italic">
