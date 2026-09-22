@@ -18,16 +18,16 @@ const strategyItems = [
 
 const overlookedItems = [
   {
-    title: "Markets outside the consensus",
-    desc: "Strong businesses underserved by venture capital because they fall outside the prevailing consensus themes.",
+    title: "Outside the consensus",
+    desc: "You're building something real, but it isn't this year's theme, so most funds pass. We invest in businesses, not trends.",
   },
   {
-    title: "Businesses between fund mandates",
-    desc: "Wrong geography, stage, or business model: too early for private equity, but they don't fit the venture playbook.",
+    title: "Between fund mandates",
+    desc: "Too early for private equity, wrong shape for the venture playbook. We underwrite the business, not the box it fits in.",
   },
   {
-    title: "Talent without the track record",
-    desc: "High potential, less experienced founders get passed over because most funds don't want to be first on the cap table.",
+    title: "No track record required",
+    desc: "First-time founders get passed over because most funds want someone else to go first. We're comfortable being first on the cap table.",
   },
 ];
 
@@ -78,7 +78,7 @@ const StrategySection: FC = () => {
               ))}
             </div>
             <p className="text-foreground text-base md:text-lg font-bold leading-relaxed mt-8 text-center">
-              Overlooked markets. Fewer funds competing. Quality at attractive prices.
+              Passed over by other funds? That's usually where we start.
             </p>
           </div>
 
