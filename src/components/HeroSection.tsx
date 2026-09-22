@@ -10,7 +10,7 @@ const rotatingWords = [
   "Services",
   "Software",
   "Fintech",
-  "AI Native",
+  "Overlooked",
 ];
 
 const HeroSection: FC = () => {
