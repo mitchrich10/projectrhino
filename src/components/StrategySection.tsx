@@ -77,9 +77,6 @@ const StrategySection: FC = () => {
                 </div>
               ))}
             </div>
-            <p className="text-foreground text-base md:text-lg font-bold leading-relaxed mt-8 text-center">
-              Passed over by other funds? That's usually where we start.
-            </p>
           </div>
 
           {/* Bottom Statement */}
