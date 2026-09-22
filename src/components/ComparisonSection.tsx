@@ -17,6 +17,11 @@ const comparisons = [
     rhino: "Built for real outcomes, not binary moonshots",
     vc: "Binary outcomes: unicorn or bust",
   },
+  {
+    pe: "Wait for proven markets and established operators",
+    rhino: "Backing builders before they become consensus",
+    vc: "Fund whatever theme is crowding the market this year",
+  },
 ];
 
 const ComparisonSection: FC = () => {
