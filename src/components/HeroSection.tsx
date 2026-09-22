@@ -7,10 +7,10 @@ import mapleLeaf from "@/assets/maple-leaf.png";
 
 const rotatingWords = [
   "Early Stage",
+  "Overlooked",
   "Services",
   "Software",
   "Fintech",
-  "Overlooked",
 ];
 
 const HeroSection: FC = () => {
