@@ -16,6 +16,21 @@ const strategyItems = [
   }
 ];
 
+const overlookedItems = [
+  {
+    title: "Markets outside the consensus",
+    desc: "Strong businesses underserved by venture capital because they fall outside the prevailing consensus themes.",
+  },
+  {
+    title: "Businesses between fund mandates",
+    desc: "Wrong geography, stage, or business model: too early for private equity, but they don't fit the venture playbook.",
+  },
+  {
+    title: "Talent without the track record",
+    desc: "High potential, less experienced founders get passed over because most funds don't want to be first on the cap table.",
+  },
+];
+
 const StrategySection: FC = () => {
   return (
     <section id="strategy" className="py-20 px-6 bg-gradient-to-b from-background via-background to-secondary">
