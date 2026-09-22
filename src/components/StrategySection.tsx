@@ -72,12 +72,13 @@ const StrategySection: FC = () => {
                   </div>
                 </div>
               ))}
-            </div>
           </div>
 
-            <p className="text-foreground text-base md:text-lg font-bold leading-relaxed mt-8 text-center">
-              Building something great that doesn't fit the usual mould? That's exactly what we look for.
-            </p>
+          <p className="text-foreground text-base md:text-lg font-bold leading-relaxed mt-8 text-center">
+            Building something great that doesn't fit the usual mould? That's exactly what we look for.
+          </p>
+
+
 
           {/* Bottom Statement */}
           <p className="text-foreground text-base md:text-lg font-medium leading-relaxed mt-10 text-center italic">
