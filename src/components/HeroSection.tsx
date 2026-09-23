@@ -15,7 +15,7 @@ const HeroSection: FC = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    const duration = currentIndex === 0 ? 6000 : 2000; // First word stays longer, others faster
+    const duration = 6000; // Both words share the same cadence
     
     const timeout = setTimeout(() => {
       setIsAnimating(true);
