@@ -74,10 +74,10 @@ const proxiedStorageUrl = (supabaseUrl: string, url: string | null, download = f
 const buildSubject = (items: QueueItem[]): string => {
   const partnerships = items.filter((i) => isPartnership(i.entity_type));
   if (partnerships.length === items.length && partnerships.length === 1) {
-    return `New partner perk: ${partnerships[0].title}`;
+    return `Rhino | New partnership: ${partnerships[0].title}`;
   }
   if (partnerships.length === items.length && partnerships.length > 1) {
-    return `${partnerships.length} new partner perks on the Rhino Portal`;
+    return `Rhino | ${partnerships.length} new partnerships`;
   }
   return `What's new on the Rhino Portal — ${monthDay(new Date())}`;
 };
@@ -86,8 +86,8 @@ const buildIntro = (items: QueueItem[]): string => {
   const partnerships = items.filter((i) => isPartnership(i.entity_type));
   if (partnerships.length === items.length) {
     return partnerships.length === 1
-      ? "We've just added a new partnership to the Rhino Portal — here's what's in it for your company."
-      : "We've just added new partnerships to the Rhino Portal — here's what's in them for your company.";
+      ? "We've added a new partnership to the Rhino Portal."
+      : "We've added new partnerships to the Rhino Portal.";
   }
   return "Here's the latest from Rhino Ventures — new partnerships, resources, and events for your company.";
 };
@@ -98,7 +98,12 @@ const partnershipCard = (
   supabaseUrl: string,
 ): string => {
   const label = TYPE_LABEL[it.entity_type] ?? "New Partnership";
-  const description = p?.description ? teaser(p.description, 280) : it.summary ? teaser(it.summary) : null;
+  // Prefer the benefit paragraph, not a truncated intro followed by a flattened heading.
+  const summaryParagraph = p?.description?.match(/(?:^|\n)Partnership Summary\s*\n+([^\n]+)/i)?.[1];
+  const firstParagraph = p?.description?.split(/\n\s*\n/)[0];
+  const description = summaryParagraph
+    ? teaser(summaryParagraph.replace(/^Rhino portfolio companies\s+/i, "You "), 600)
+    : firstParagraph ? teaser(firstParagraph, 280) : it.summary ? teaser(it.summary) : null;
   const pdfUrl = proxiedStorageUrl(supabaseUrl, p?.partnership_pdf_path ?? p?.detail_pdf_url ?? null, true);
   const redeemUrl = p?.redemption_url ?? null;
 
@@ -158,7 +163,7 @@ const buildDigestHtml = (
     <div style="padding:32px;">
       <p style="font-size:15px;color:#475569;margin:0 0 24px;line-height:1.6;">${buildIntro(items)}</p>
       ${sections}
-      <a href="${PORTAL_URL}" style="display:inline-block;background:#1A7EC8;color:#ffffff;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 28px;text-decoration:none;border-radius:8px;margin-top:8px;">Open the Portal →</a>
+      ${items.some((it) => !isPartnership(it.entity_type)) ? `<a href="${PORTAL_URL}" style="display:inline-block;color:#1A7EC8;font-size:12px;text-decoration:underline;margin-top:8px;">View resources and events on the portal</a>` : ""}
     </div>
     <div style="padding:24px 32px;border-top:1px solid #e2e8f0;">
       <p style="font-size:11px;color:#94a3b8;margin:0;">You're receiving this because you have a Rhino Portal account. <a href="${unsubscribeUrl}" style="color:#1A7EC8;text-decoration:underline;">Unsubscribe</a> from these updates at any time.</p>
