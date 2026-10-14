@@ -102,15 +102,19 @@ const partnershipCard = (
   const summaryParagraph = p?.description?.match(/(?:^|\n)Partnership Summary\s*\n+([^\n]+)/i)?.[1];
   const firstParagraph = p?.description?.split(/\n\s*\n/)[0];
   const description = summaryParagraph
-    ? teaser(summaryParagraph.replace(/^Rhino portfolio companies\s+/i, "You "), 600)
+    ? teaser(summaryParagraph.replace(/^Rhino portfolio companies\s+/i, "Rhino companies ").replace(/\b(?:a\s+)?flat\s+/gi, ""), 600)
     : firstParagraph ? teaser(firstParagraph, 280) : it.summary ? teaser(it.summary) : null;
+  const companyIntro = summaryParagraph && firstParagraph ? teaser(firstParagraph, 280) : null;
   const pdfUrl = proxiedStorageUrl(supabaseUrl, p?.partnership_pdf_path ?? p?.detail_pdf_url ?? null, true);
   const redeemUrl = p?.redemption_url ?? null;
+  const websiteUrl = p?.website_url
+    ? (/^https?:\/\//i.test(p.website_url) ? p.website_url : `https://${p.website_url}`)
+    : null;
 
   const buttons: string[] = [];
   if (pdfUrl) {
     buttons.push(
-      `<a href="${pdfUrl}" style="display:inline-block;background:#173660;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:11px 20px;text-decoration:none;border-radius:8px;margin:0 8px 8px 0;">Download the PDF</a>`,
+      `<a href="${pdfUrl}" style="display:inline-block;background:#173660;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:11px 20px;text-decoration:none;border-radius:8px;margin:0 8px 8px 0;">Download partnership details</a>`,
     );
   }
   if (redeemUrl) {
@@ -126,8 +130,10 @@ const partnershipCard = (
     <div style="border:1px solid #e2e8f0;border-radius:10px;padding:22px;margin:0 0 16px;">
       <p style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1A7EC8;margin:0 0 8px;">${label}</p>
       <h3 style="font-size:18px;font-weight:700;color:#173660;margin:0;line-height:1.3;">${escapeHtml(it.title)}</h3>
-      ${p?.tagline ? `<p style="font-size:13px;font-weight:600;color:#173660;margin:6px 0 0;line-height:1.5;">${escapeHtml(p.tagline)}</p>` : ""}
+      ${!summaryParagraph && p?.tagline ? `<p style="font-size:13px;font-weight:600;color:#173660;margin:6px 0 0;line-height:1.5;">${escapeHtml(p.tagline)}</p>` : ""}
+      ${companyIntro ? `<p style="font-size:14px;color:#475569;margin:10px 0 0;line-height:1.6;">${escapeHtml(companyIntro)}</p>` : ""}
       ${description ? `<p style="font-size:14px;color:#475569;margin:10px 0 0;line-height:1.6;">${escapeHtml(description)}</p>` : ""}
+      ${websiteUrl ? `<p style="font-size:13px;margin:10px 0 0;line-height:1.5;"><a href="${escapeHtml(websiteUrl)}" style="color:#1A7EC8;text-decoration:underline;">${escapeHtml(websiteUrl.replace(/^https?:\/\//i, "").replace(/\/$/, ""))}</a></p>` : ""}
       ${p?.promo_code ? `<p style="font-size:13px;color:#173660;margin:10px 0 0;">Promo code: <strong>${escapeHtml(p.promo_code)}</strong></p>` : ""}
       <div style="margin-top:16px;">${buttons.join("")}</div>
     </div>`;
