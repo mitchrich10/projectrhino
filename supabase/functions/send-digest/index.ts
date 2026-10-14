@@ -8,7 +8,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const PORTAL_URL = "https://projectrhino.lovable.app/portal";
+const PORTAL_URL = "https://rhinovc.com/portal";
 
 interface QueueItem {
   id: string;
@@ -18,6 +18,17 @@ interface QueueItem {
   summary: string | null;
 }
 
+interface PartnershipDetails {
+  id: string;
+  tagline: string | null;
+  description: string | null;
+  redemption_url: string | null;
+  promo_code: string | null;
+  website_url: string | null;
+  partnership_pdf_path: string | null;
+  detail_pdf_url: string | null;
+}
+
 const TYPE_LABEL: Record<string, string> = {
   partnership_added: "New Partnership",
   partnership_updated: "Partnership Update",
@@ -25,45 +36,127 @@ const TYPE_LABEL: Record<string, string> = {
   event_added: "New Event",
 };
 
-
-
+const isPartnership = (t: string) => t === "partnership_added" || t === "partnership_updated";
 
 const monthDay = (d: Date) =>
   d.toLocaleDateString("en-US", { month: "long", day: "numeric", timeZone: "America/New_York" });
-
-const buildSubject = () => `What's new on the Rhino Portal — ${monthDay(new Date())}`;
 
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 // Safety net: keep summaries short even if a queue row still holds a long body.
-const teaser = (s: string): string => {
+const teaser = (s: string, max = 150): string => {
   const clean = s.replace(/\s+/g, " ").trim();
-  if (clean.length <= 150) return clean;
-  const slice = clean.slice(0, 150);
+  if (clean.length <= max) return clean;
+  const slice = clean.slice(0, max);
   const lastStop = Math.max(slice.lastIndexOf(". "), slice.lastIndexOf("! "), slice.lastIndexOf("? "));
   if (lastStop > 60) return slice.slice(0, lastStop + 1);
   return slice.replace(/\s+\S*$/, "") + "…";
 };
 
-const buildDigestHtml = (items: QueueItem[], unsubscribeUrl: string): string => {
+// Rewrite a Supabase public-storage URL through the storage-proxy edge function
+// (the /storage/v1/ path is commonly blocked by ad blockers).
+const proxiedStorageUrl = (supabaseUrl: string, url: string | null, download = false): string | null => {
+  if (!url) return null;
+  const match = url.match(/\/storage\/v1\/object\/public\/([^/]+)\/(.+)$/);
+  if (!match) return url;
+  let path = match[2];
+  try {
+    path = decodeURIComponent(path);
+  } catch {
+    /* keep as-is */
+  }
+  const params = new URLSearchParams({ bucket: match[1], path });
+  if (download) params.set("download", "1");
+  return `${supabaseUrl}/functions/v1/storage-proxy?${params.toString()}`;
+};
+
+const buildSubject = (items: QueueItem[]): string => {
+  const partnerships = items.filter((i) => isPartnership(i.entity_type));
+  if (partnerships.length === items.length && partnerships.length === 1) {
+    return `New partner perk: ${partnerships[0].title}`;
+  }
+  if (partnerships.length === items.length && partnerships.length > 1) {
+    return `${partnerships.length} new partner perks on the Rhino Portal`;
+  }
+  return `What's new on the Rhino Portal — ${monthDay(new Date())}`;
+};
+
+const buildIntro = (items: QueueItem[]): string => {
+  const partnerships = items.filter((i) => isPartnership(i.entity_type));
+  if (partnerships.length === items.length) {
+    return partnerships.length === 1
+      ? "We've just added a new partnership to the Rhino Portal — here's what's in it for your company."
+      : "We've just added new partnerships to the Rhino Portal — here's what's in them for your company.";
+  }
+  return "Here's the latest from Rhino Ventures — new partnerships, resources, and events for your company.";
+};
+
+const partnershipCard = (
+  it: QueueItem,
+  p: PartnershipDetails | undefined,
+  supabaseUrl: string,
+): string => {
+  const label = TYPE_LABEL[it.entity_type] ?? "New Partnership";
+  const description = p?.description ? teaser(p.description, 280) : it.summary ? teaser(it.summary) : null;
+  const pdfUrl = proxiedStorageUrl(supabaseUrl, p?.partnership_pdf_path ?? p?.detail_pdf_url ?? null, true);
+  const redeemUrl = p?.redemption_url ?? null;
+
+  const buttons: string[] = [];
+  if (pdfUrl) {
+    buttons.push(
+      `<a href="${pdfUrl}" style="display:inline-block;background:#173660;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:11px 20px;text-decoration:none;border-radius:8px;margin:0 8px 8px 0;">Download the PDF</a>`,
+    );
+  }
+  if (redeemUrl) {
+    buttons.push(
+      `<a href="${redeemUrl}" style="display:inline-block;background:#1A7EC8;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:11px 20px;text-decoration:none;border-radius:8px;margin:0 8px 8px 0;">Redeem This Offer</a>`,
+    );
+  }
+  buttons.push(
+    `<a href="${PORTAL_URL}" style="display:inline-block;color:#1A7EC8;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:11px 4px;text-decoration:underline;">More info on the portal</a>`,
+  );
+
+  return `
+    <div style="border:1px solid #e2e8f0;border-radius:10px;padding:22px;margin:0 0 16px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1A7EC8;margin:0 0 8px;">${label}</p>
+      <h3 style="font-size:18px;font-weight:700;color:#173660;margin:0;line-height:1.3;">${escapeHtml(it.title)}</h3>
+      ${p?.tagline ? `<p style="font-size:13px;font-weight:600;color:#173660;margin:6px 0 0;line-height:1.5;">${escapeHtml(p.tagline)}</p>` : ""}
+      ${description ? `<p style="font-size:14px;color:#475569;margin:10px 0 0;line-height:1.6;">${escapeHtml(description)}</p>` : ""}
+      ${p?.promo_code ? `<p style="font-size:13px;color:#173660;margin:10px 0 0;">Promo code: <strong>${escapeHtml(p.promo_code)}</strong></p>` : ""}
+      <div style="margin-top:16px;">${buttons.join("")}</div>
+    </div>`;
+};
+
+const simpleCard = (it: QueueItem): string => {
+  const label = TYPE_LABEL[it.entity_type] ?? "Update";
+  return `
+    <div style="border:1px solid #e2e8f0;border-radius:10px;padding:20px 22px;margin:0 0 16px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1A7EC8;margin:0 0 8px;">${label}</p>
+      <h3 style="font-size:17px;font-weight:700;color:#173660;margin:0;line-height:1.3;">${escapeHtml(it.title)}</h3>
+      ${it.summary ? `<p style="font-size:14px;color:#475569;margin:8px 0 0;line-height:1.6;">${escapeHtml(teaser(it.summary))}</p>` : ""}
+    </div>`;
+};
+
+const buildDigestHtml = (
+  items: QueueItem[],
+  partnerships: Map<string, PartnershipDetails>,
+  unsubscribeUrl: string,
+  supabaseUrl: string,
+): string => {
   const sections = items
-    .map((it) => {
-      const label = TYPE_LABEL[it.entity_type] ?? "Update";
-      return `
-        <div style="border:1px solid #e2e8f0;border-radius:10px;padding:20px 22px;margin:0 0 16px;">
-          <p style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1A7EC8;margin:0 0 8px;">${label}</p>
-          <h3 style="font-size:17px;font-weight:700;color:#173660;margin:0;line-height:1.3;">${escapeHtml(it.title)}</h3>
-          ${it.summary ? `<p style="font-size:14px;color:#475569;margin:8px 0 0;line-height:1.6;">${escapeHtml(teaser(it.summary))}</p>` : ""}
-        </div>`;
-    })
+    .map((it) =>
+      isPartnership(it.entity_type) && it.entity_id
+        ? partnershipCard(it, partnerships.get(it.entity_id), supabaseUrl)
+        : simpleCard(it),
+    )
     .join("");
 
   return `
   <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
     ${emailHeader()}
     <div style="padding:32px;">
-      <p style="font-size:15px;color:#475569;margin:0 0 24px;line-height:1.6;">Here's the latest from Rhino Ventures — new partnerships, resources, and events for your company.</p>
+      <p style="font-size:15px;color:#475569;margin:0 0 24px;line-height:1.6;">${buildIntro(items)}</p>
       ${sections}
       <a href="${PORTAL_URL}" style="display:inline-block;background:#1A7EC8;color:#ffffff;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:14px 28px;text-decoration:none;border-radius:8px;margin-top:8px;">Open the Portal →</a>
     </div>
@@ -125,12 +218,25 @@ serve(async (req: Request) => {
       });
     }
 
-    const subject = buildSubject();
+    // ── Enrich partnership items with full details (tagline, PDF, redemption link) ──
+    const partnershipIds = queueItems
+      .filter((i) => isPartnership(i.entity_type) && i.entity_id)
+      .map((i) => i.entity_id as string);
+    const partnerships = new Map<string, PartnershipDetails>();
+    if (partnershipIds.length > 0) {
+      const { data: rows } = await admin
+        .from("partnerships")
+        .select("id, tagline, description, redemption_url, promo_code, website_url, partnership_pdf_path, detail_pdf_url")
+        .in("id", partnershipIds);
+      (rows as PartnershipDetails[] | null)?.forEach((r) => partnerships.set(r.id, r));
+    }
+
+    const subject = buildSubject(queueItems);
     const unsubscribeBase = `${SUPABASE_URL}/functions/v1/unsubscribe-notifications`;
 
     // ── Preview mode: return rendered HTML without sending ──
     if (preview) {
-      const html = buildDigestHtml(queueItems, `${unsubscribeBase}?token=preview`);
+      const html = buildDigestHtml(queueItems, partnerships, `${unsubscribeBase}?token=preview`, SUPABASE_URL);
       return new Response(JSON.stringify({ ok: true, html, subject, item_count: queueItems.length }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -170,7 +276,7 @@ serve(async (req: Request) => {
     const failures: string[] = [];
     for (const [to, subId] of recipients) {
       try {
-        const html = buildDigestHtml(queueItems, `${unsubscribeBase}?token=${subId}`);
+        const html = buildDigestHtml(queueItems, partnerships, `${unsubscribeBase}?token=${subId}`, SUPABASE_URL);
         const resp = await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
