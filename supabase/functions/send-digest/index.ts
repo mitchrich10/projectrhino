@@ -102,7 +102,7 @@ const partnershipCard = (
   const summaryParagraph = p?.description?.match(/(?:^|\n)Partnership Summary\s*\n+([^\n]+)/i)?.[1];
   const firstParagraph = p?.description?.split(/\n\s*\n/)[0];
   const description = summaryParagraph
-    ? teaser(summaryParagraph.replace(/^Rhino portfolio companies\s+/i, "Your company "), 600)
+    ? teaser(summaryParagraph.replace(/^Rhino portfolio companies\s+/i, "You "), 600)
     : firstParagraph ? teaser(firstParagraph, 280) : it.summary ? teaser(it.summary) : null;
   const pdfUrl = proxiedStorageUrl(supabaseUrl, p?.partnership_pdf_path ?? p?.detail_pdf_url ?? null, true);
   const redeemUrl = p?.redemption_url ?? null;
