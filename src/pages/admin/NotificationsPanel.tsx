@@ -213,6 +213,25 @@ const NotificationsPanel: FC = () => {
           <button onClick={() => setError(null)}><X className="w-3.5 h-3.5" /></button>
         </div>
       )}
+      {sendFailures && sendFailures.length > 0 && (
+        <div className="text-xs bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="flex items-center gap-1.5 font-bold text-amber-700">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              {sendFailures.length} subscriber{sendFailures.length !== 1 ? "s" : ""} not delivered
+            </span>
+            <button onClick={() => setSendFailures(null)}><X className="w-3.5 h-3.5 text-amber-700" /></button>
+          </div>
+          <div className="space-y-1">
+            {sendFailures.map((f) => (
+              <div key={f.email} className="flex items-baseline gap-2">
+                <span className="font-semibold text-foreground">{f.email}</span>
+                <span className="text-muted-foreground break-all">{f.reason}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Queue */}
       <section>
