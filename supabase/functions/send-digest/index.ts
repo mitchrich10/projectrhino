@@ -331,6 +331,20 @@ serve(async (req: Request) => {
       });
     }
 
+    if (testEmail) {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          test: true,
+          sent,
+          failed: failures.length,
+          item_count: queueItems.length,
+          failures,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     // ── Mark queue rows sent + record audit ──
     const batchId = crypto.randomUUID();
     const sentAt = new Date().toISOString();
