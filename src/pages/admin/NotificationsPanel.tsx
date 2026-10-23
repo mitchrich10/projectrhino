@@ -416,6 +416,19 @@ const NotificationsPanel: FC = () => {
               <p className="text-[11px] text-muted-foreground">
                 {viewDigest.digest.item_count} items · sent to {viewDigest.digest.subscriber_count} subscribers
               </p>
+              {(viewDigest.digest.failures?.length ?? 0) > 0 && (
+                <div className="text-[11px] bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                  <p className="font-bold text-amber-700 mb-1">{viewDigest.digest.failures!.length} not delivered:</p>
+                  <div className="space-y-0.5">
+                    {viewDigest.digest.failures!.map((f) => (
+                      <div key={f.email} className="flex items-baseline gap-2">
+                        <span className="font-semibold text-foreground">{f.email}</span>
+                        <span className="text-muted-foreground break-all">{f.reason}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="space-y-2 pt-2">
                 {viewDigest.items.map((it) => (
                   <div key={it.id} className="border border-border rounded-lg p-3 bg-secondary/10">
