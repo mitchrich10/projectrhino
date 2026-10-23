@@ -1,4 +1,5 @@
 import { FC, memo, startTransition, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchApprovedDomain } from "@/hooks/useApprovedDomain";
 import { Loader2, ExternalLink, Copy, Check, Lock, Download, Mail, ChevronDown } from "lucide-react";
@@ -405,6 +406,8 @@ const PartnershipsSkeleton: FC = () => (
 
 // ── Main Section ──
 const PartnershipsSection: FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const partnershipId = searchParams.get("partnership");
   const [partnerships, setPartnerships] = useState<Partnership[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Partnership | null>(null);
@@ -431,6 +434,20 @@ const PartnershipsSection: FC = () => {
     };
     init();
   }, []);
+
+  useEffect(() => {
+    if (loading) return;
+    setSelected(partnerships.find((p) => p.id === partnershipId) ?? null);
+  }, [loading, partnerships, partnershipId]);
+
+  const selectPartnership = (id: string | null) => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      if (id) next.set("partnership", id);
+      else next.delete("partnership");
+      return next;
+    }, { replace: true });
+  };
 
   const { grouped, categories, extraComingSoonByCategory } = useMemo(() => {
     const grouped = partnerships.reduce<Record<string, Partnership[]>>((acc, p) => {
@@ -476,7 +493,7 @@ const PartnershipsSection: FC = () => {
                       onClick={() => {
                         trackPortalEvent("partnership_click", p.name, p.id);
                         // F-004: defer the state update so the click handler returns immediately
-                        startTransition(() => setSelected(p));
+                        startTransition(() => selectPartnership(p.id));
                       }}
                     />
                   ))}
@@ -509,7 +526,7 @@ const PartnershipsSection: FC = () => {
           companyName={companyName}
           isApproved={approvedIds.has(selected.id)}
           open={!!selected}
-          onClose={() => setSelected(null)}
+          onClose={() => selectPartnership(null)}
         />
       )}
     </section>
