@@ -68,16 +68,28 @@ const NotificationsPanel: FC = () => {
   const [viewDigest, setViewDigest] = useState<{ digest: SentDigest; items: QueueItem[] } | null>(null);
 
   const fetchAll = async () => {
-    const [queueRes, subsRes, digestRes] = await Promise.all([
+    const [queueRes, subsRes, digestRes, allSubsRes, domainsRes] = await Promise.all([
       supabase.from("digest_queue").select("*").is("sent_at", null).order("queued_at", { ascending: false }),
       supabase.from("notification_subscriptions").select("id", { count: "exact", head: true }).eq("subscribed", true),
       supabase.from("digests_sent").select("*").order("sent_at", { ascending: false }).limit(20),
+      supabase.from("notification_subscriptions").select("email, subscribed, created_at").order("email", { ascending: true }),
+      supabase.from("approved_domains").select("domain, company_name"),
     ]);
     const queue = (queueRes.data as QueueItem[]) ?? [];
     setItems(queue);
     setSelected(new Set(queue.map((i) => i.id)));
     setSubscriberCount(subsRes.count ?? 0);
     setDigests((digestRes.data as SentDigest[]) ?? []);
+    const domainMap = new Map<string, string>();
+    ((domainsRes.data as { domain: string; company_name: string }[]) ?? []).forEach((d) =>
+      domainMap.set(d.domain.toLowerCase(), d.company_name),
+    );
+    setSubs(
+      ((allSubsRes.data as { email: string; subscribed: boolean; created_at: string }[]) ?? []).map((s) => ({
+        ...s,
+        company: domainMap.get(s.email.split("@")[1]?.toLowerCase() ?? "") ?? "—",
+      })),
+    );
     setLoading(false);
   };
 
