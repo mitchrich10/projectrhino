@@ -203,6 +203,8 @@ serve(async (req: Request) => {
     const body = await req.json().catch(() => ({}));
     const itemIds: string[] = Array.isArray(body.item_ids) ? body.item_ids : [];
     const preview: boolean = body.preview === true;
+    const testEmail: string | null =
+      typeof body.test_email === "string" && body.test_email.includes("@") ? body.test_email.trim().toLowerCase() : null;
 
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -242,7 +244,7 @@ serve(async (req: Request) => {
       (rows as PartnershipDetails[] | null)?.forEach((r) => partnerships.set(r.id, r));
     }
 
-    const subject = buildSubject(queueItems);
+    const subject = testEmail ? `[TEST] ${buildSubject(queueItems)}` : buildSubject(queueItems);
     const unsubscribeBase = `${SUPABASE_URL}/functions/v1/unsubscribe-notifications`;
 
     // ── Preview mode: return rendered HTML without sending ──
@@ -266,13 +268,15 @@ serve(async (req: Request) => {
       const em = s.email?.trim().toLowerCase();
       if (em && !recipientMap.has(em)) recipientMap.set(em, s.id);
     });
-    const recipients = Array.from(recipientMap.entries()); // [email, subscriptionId]
-
+    // Test mode: send only to the requested address, don't touch the queue or history.
+    const recipients = testEmail
+      ? Array.from(recipientMap.entries()).filter(([em]) => em === testEmail)
+      : Array.from(recipientMap.entries()); // [email, subscriptionId]
     if (recipients.length === 0) {
-      return new Response(JSON.stringify({ error: "No active subscribers" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: testEmail ? "That address isn't in the subscriber list" : "No active subscribers" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     if (!RESEND_API_KEY) {
@@ -283,26 +287,41 @@ serve(async (req: Request) => {
     }
 
     // ── Send to each subscriber with a personalized unsubscribe link ──
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
     let sent = 0;
-    const failures: string[] = [];
+    const failures: { email: string; reason: string }[] = [];
     for (const [to, subId] of recipients) {
-      try {
-        const html = buildDigestHtml(queueItems, partnerships, `${unsubscribeBase}?token=${subId}`, SUPABASE_URL);
-        const resp = await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
-          body: JSON.stringify({
-            from: "Rhino Portal <portal@rhinovc.com>",
-            to: [to],
-            subject,
-            html,
-          }),
-        });
-        if (resp.ok) sent++;
-        else failures.push(`${to}: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
-      } catch (e) {
-        failures.push(`${to}: ${String(e).slice(0, 200)}`);
+      let delivered = false;
+      let lastReason = "unknown error";
+      // One retry on transient errors (rate limit / service hiccup) with a backoff.
+      for (let attempt = 0; attempt < 2 && !delivered; attempt++) {
+        if (attempt > 0) await sleep(2000);
+        try {
+          const html = buildDigestHtml(queueItems, partnerships, `${unsubscribeBase}?token=${subId}`, SUPABASE_URL);
+          const resp = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
+            body: JSON.stringify({
+              from: "Rhino Portal <portal@rhinovc.com>",
+              to: [to],
+              subject,
+              html,
+            }),
+          });
+          if (resp.ok) {
+            delivered = true;
+          } else {
+            lastReason = `${resp.status} ${(await resp.text()).slice(0, 200)}`;
+            // Only retry transient failures — permanent ones (bad address, unauthorized) won't recover.
+            if (!(resp.status === 429 || resp.status >= 500)) break;
+          }
+        } catch (e) {
+          lastReason = String(e).slice(0, 200);
+        }
+        if (attempt === 0) await sleep(300); // small stagger between recipients to stay under rate limits
       }
+      if (delivered) sent++;
+      else failures.push({ email: to, reason: lastReason });
     }
 
     if (sent === 0) {
@@ -310,6 +329,20 @@ serve(async (req: Request) => {
         status: 502,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    if (testEmail) {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          test: true,
+          sent,
+          failed: failures.length,
+          item_count: queueItems.length,
+          failures,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     // ── Mark queue rows sent + record audit ──
@@ -328,12 +361,20 @@ serve(async (req: Request) => {
       item_count: queueItems.length,
       subject,
       item_ids: sentIds,
+      failures: failures.length > 0 ? failures : null,
       sent_by_admin_id: userData?.user?.id ?? null,
       sent_at: sentAt,
     });
 
     return new Response(
-      JSON.stringify({ ok: true, batch_id: batchId, sent, item_count: queueItems.length, failures }),
+      JSON.stringify({
+        ok: true,
+        batch_id: batchId,
+        sent,
+        failed: failures.length,
+        item_count: queueItems.length,
+        failures,
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {

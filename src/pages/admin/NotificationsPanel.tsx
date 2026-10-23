@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, X, Trash2, Eye, Send, Bell, Search, Copy, Check } from "lucide-react";
+import { FunctionsHttpError } from "@supabase/supabase-js";
+import { Loader2, X, Trash2, Eye, Send, Bell, Search, Copy, Check, AlertTriangle } from "lucide-react";
 
 interface QueueItem {
   id: string;
@@ -18,7 +19,13 @@ interface SentDigest {
   item_count: number;
   subject: string | null;
   item_ids: string[];
+  failures: { email: string; reason: string }[] | null;
   sent_at: string;
+}
+
+interface SendFailure {
+  email: string;
+  reason: string;
 }
 
 interface Subscription {
@@ -65,6 +72,7 @@ const NotificationsPanel: FC = () => {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
+  const [sendFailures, setSendFailures] = useState<SendFailure[] | null>(null);
   const [viewDigest, setViewDigest] = useState<{ digest: SentDigest; items: QueueItem[] } | null>(null);
 
   const fetchAll = async () => {
@@ -79,7 +87,7 @@ const NotificationsPanel: FC = () => {
     setItems(queue);
     setSelected(new Set(queue.map((i) => i.id)));
     setSubscriberCount(subsRes.count ?? 0);
-    setDigests((digestRes.data as SentDigest[]) ?? []);
+    setDigests((digestRes.data as unknown as SentDigest[]) ?? []);
     const domainMap = new Map<string, string>();
     ((domainsRes.data as { domain: string; company_name: string }[]) ?? []).forEach((d) =>
       domainMap.set(d.domain.toLowerCase(), d.company_name),
@@ -126,14 +134,39 @@ const NotificationsPanel: FC = () => {
   const send = async () => {
     setSending(true);
     setError(null);
+    setSendFailures(null);
     const ids = selectedIds();
     const { data, error: e } = await supabase.functions.invoke("send-digest", {
       body: { item_ids: ids },
     });
     setSending(false);
     setConfirmOpen(false);
-    if (e || data?.error) { setError(e?.message || data?.error || "Send failed."); return; }
-    setResult(`Digest sent to ${data.sent} subscriber${data.sent !== 1 ? "s" : ""}.`);
+    if (e) {
+      // A failed response can still carry per-recipient failure details.
+      let failures: SendFailure[] | null = null;
+      if (e instanceof FunctionsHttpError) {
+        try {
+          const body = await e.context.json();
+          if (Array.isArray(body?.failures)) failures = body.failures as SendFailure[];
+          else if (typeof body?.error === "string" && body.error !== "All sends failed") setError(body.error);
+        } catch { /* non-JSON error body */ }
+      }
+      if (failures && failures.length > 0) setSendFailures(failures);
+      if (!failures || failures.length === 0) {
+        setError((prev) => prev ?? e?.message ?? "Send failed.");
+        return;
+      }
+      await fetchAll();
+      return;
+    }
+    if (data?.error) { setError(data.error || "Send failed."); return; }
+    const failed: SendFailure[] = data?.failures ?? [];
+    if (failed.length > 0) {
+      setResult(`Digest sent to ${data.sent} subscriber${data.sent !== 1 ? "s" : ""}, but ${failed.length} failed — see below.`);
+      setSendFailures(failed);
+    } else {
+      setResult(`Digest sent to ${data.sent} subscriber${data.sent !== 1 ? "s" : ""}.`);
+    }
     await fetchAll();
   };
 
@@ -178,6 +211,25 @@ const NotificationsPanel: FC = () => {
         <div className="flex items-center justify-between text-xs font-medium text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-4 py-3">
           <span>{error}</span>
           <button onClick={() => setError(null)}><X className="w-3.5 h-3.5" /></button>
+        </div>
+      )}
+      {sendFailures && sendFailures.length > 0 && (
+        <div className="text-xs bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="flex items-center gap-1.5 font-bold text-amber-700">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              {sendFailures.length} subscriber{sendFailures.length !== 1 ? "s" : ""} not delivered
+            </span>
+            <button onClick={() => setSendFailures(null)}><X className="w-3.5 h-3.5 text-amber-700" /></button>
+          </div>
+          <div className="space-y-1">
+            {sendFailures.map((f) => (
+              <div key={f.email} className="flex items-baseline gap-2">
+                <span className="font-semibold text-foreground">{f.email}</span>
+                <span className="text-muted-foreground break-all">{f.reason}</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -326,6 +378,9 @@ const NotificationsPanel: FC = () => {
                 <span>{d.item_count} item{d.item_count !== 1 ? "s" : ""}</span>
                 <span className="text-muted-foreground/50">·</span>
                 <span>sent to {d.subscriber_count} subscriber{d.subscriber_count !== 1 ? "s" : ""}</span>
+                {(d.failures?.length ?? 0) > 0 && (
+                  <span className="font-bold text-destructive">· {d.failures!.length} failed</span>
+                )}
                 <button onClick={() => openViewDigest(d)} className="ml-auto text-primary hover:underline font-semibold">view</button>
               </div>
             ))}
@@ -361,6 +416,19 @@ const NotificationsPanel: FC = () => {
               <p className="text-[11px] text-muted-foreground">
                 {viewDigest.digest.item_count} items · sent to {viewDigest.digest.subscriber_count} subscribers
               </p>
+              {(viewDigest.digest.failures?.length ?? 0) > 0 && (
+                <div className="text-[11px] bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                  <p className="font-bold text-amber-700 mb-1">{viewDigest.digest.failures!.length} not delivered:</p>
+                  <div className="space-y-0.5">
+                    {viewDigest.digest.failures!.map((f) => (
+                      <div key={f.email} className="flex items-baseline gap-2">
+                        <span className="font-semibold text-foreground">{f.email}</span>
+                        <span className="text-muted-foreground break-all">{f.reason}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="space-y-2 pt-2">
                 {viewDigest.items.map((it) => (
                   <div key={it.id} className="border border-border rounded-lg p-3 bg-secondary/10">
