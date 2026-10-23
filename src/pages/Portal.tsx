@@ -92,7 +92,8 @@ const Portal: FC = () => {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session?.user?.email) {
-        navigate("/partner-login");
+        const next = `/portal${searchParams.size ? `?${searchParams.toString()}` : ""}`;
+        navigate(`/partner-login?next=${encodeURIComponent(next)}`, { replace: true });
         return;
       }
 

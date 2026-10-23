@@ -56,8 +56,8 @@ const PartnerLogin: FC = () => {
     setError(null);
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: nextPath
-        ? `${window.location.origin}${nextPath}`
-        : `${window.location.origin}/portal`,
+        ? `${window.location.origin}/partner-login?next=${encodeURIComponent(nextPath)}`
+        : `${window.location.origin}/partner-login`,
     });
     if (result?.error) {
       setError("Google sign-in failed. Please try again or use a magic link.");

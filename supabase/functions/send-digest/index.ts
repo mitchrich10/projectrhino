@@ -123,7 +123,7 @@ const partnershipCard = (
     );
   }
   buttons.push(
-    `<a href="${PORTAL_URL}" style="display:inline-block;color:#1A7EC8;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:11px 4px;text-decoration:underline;">More info on the portal</a>`,
+    `<a href="${PORTAL_URL}?partnership=${encodeURIComponent(it.entity_id ?? "")}" style="display:inline-block;color:#1A7EC8;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:11px 4px;text-decoration:underline;">More info on the portal</a>`,
   );
 
   return `
