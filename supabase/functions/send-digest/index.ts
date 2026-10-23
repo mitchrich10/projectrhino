@@ -203,6 +203,8 @@ serve(async (req: Request) => {
     const body = await req.json().catch(() => ({}));
     const itemIds: string[] = Array.isArray(body.item_ids) ? body.item_ids : [];
     const preview: boolean = body.preview === true;
+    const testEmail: string | null =
+      typeof body.test_email === "string" && body.test_email.includes("@") ? body.test_email.trim().toLowerCase() : null;
 
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -266,13 +268,15 @@ serve(async (req: Request) => {
       const em = s.email?.trim().toLowerCase();
       if (em && !recipientMap.has(em)) recipientMap.set(em, s.id);
     });
-    const recipients = Array.from(recipientMap.entries()); // [email, subscriptionId]
-
+    // Test mode: send only to the requested address, don't touch the queue or history.
+    const recipients = testEmail
+      ? Array.from(recipientMap.entries()).filter(([em]) => em === testEmail)
+      : Array.from(recipientMap.entries()); // [email, subscriptionId]
     if (recipients.length === 0) {
-      return new Response(JSON.stringify({ error: "No active subscribers" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: testEmail ? "That address isn't in the subscriber list" : "No active subscribers" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     if (!RESEND_API_KEY) {
