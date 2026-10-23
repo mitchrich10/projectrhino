@@ -283,26 +283,41 @@ serve(async (req: Request) => {
     }
 
     // ── Send to each subscriber with a personalized unsubscribe link ──
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
     let sent = 0;
-    const failures: string[] = [];
+    const failures: { email: string; reason: string }[] = [];
     for (const [to, subId] of recipients) {
-      try {
-        const html = buildDigestHtml(queueItems, partnerships, `${unsubscribeBase}?token=${subId}`, SUPABASE_URL);
-        const resp = await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
-          body: JSON.stringify({
-            from: "Rhino Portal <portal@rhinovc.com>",
-            to: [to],
-            subject,
-            html,
-          }),
-        });
-        if (resp.ok) sent++;
-        else failures.push(`${to}: ${resp.status} ${(await resp.text()).slice(0, 200)}`);
-      } catch (e) {
-        failures.push(`${to}: ${String(e).slice(0, 200)}`);
+      let delivered = false;
+      let lastReason = "unknown error";
+      // One retry on transient errors (rate limit / service hiccup) with a backoff.
+      for (let attempt = 0; attempt < 2 && !delivered; attempt++) {
+        if (attempt > 0) await sleep(2000);
+        try {
+          const html = buildDigestHtml(queueItems, partnerships, `${unsubscribeBase}?token=${subId}`, SUPABASE_URL);
+          const resp = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${RESEND_API_KEY}` },
+            body: JSON.stringify({
+              from: "Rhino Portal <portal@rhinovc.com>",
+              to: [to],
+              subject,
+              html,
+            }),
+          });
+          if (resp.ok) {
+            delivered = true;
+          } else {
+            lastReason = `${resp.status} ${(await resp.text()).slice(0, 200)}`;
+            // Only retry transient failures — permanent ones (bad address, unauthorized) won't recover.
+            if (!(resp.status === 429 || resp.status >= 500)) break;
+          }
+        } catch (e) {
+          lastReason = String(e).slice(0, 200);
+        }
+        if (attempt === 0) await sleep(300); // small stagger between recipients to stay under rate limits
       }
+      if (delivered) sent++;
+      else failures.push({ email: to, reason: lastReason });
     }
 
     if (sent === 0) {
