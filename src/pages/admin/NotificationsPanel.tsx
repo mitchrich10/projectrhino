@@ -72,6 +72,7 @@ const NotificationsPanel: FC = () => {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<string | null>(null);
+  const [sendFailures, setSendFailures] = useState<SendFailure[] | null>(null);
   const [viewDigest, setViewDigest] = useState<{ digest: SentDigest; items: QueueItem[] } | null>(null);
 
   const fetchAll = async () => {
@@ -133,14 +134,39 @@ const NotificationsPanel: FC = () => {
   const send = async () => {
     setSending(true);
     setError(null);
+    setSendFailures(null);
     const ids = selectedIds();
     const { data, error: e } = await supabase.functions.invoke("send-digest", {
       body: { item_ids: ids },
     });
     setSending(false);
     setConfirmOpen(false);
-    if (e || data?.error) { setError(e?.message || data?.error || "Send failed."); return; }
-    setResult(`Digest sent to ${data.sent} subscriber${data.sent !== 1 ? "s" : ""}.`);
+    if (e) {
+      // A failed response can still carry per-recipient failure details.
+      let failures: SendFailure[] | null = null;
+      if (e instanceof FunctionsHttpError) {
+        try {
+          const body = await e.context.json();
+          if (Array.isArray(body?.failures)) failures = body.failures as SendFailure[];
+          else if (typeof body?.error === "string" && body.error !== "All sends failed") setError(body.error);
+        } catch { /* non-JSON error body */ }
+      }
+      if (failures && failures.length > 0) setSendFailures(failures);
+      if (!failures || failures.length === 0) {
+        setError((prev) => prev ?? e?.message ?? "Send failed.");
+        return;
+      }
+      await fetchAll();
+      return;
+    }
+    if (data?.error) { setError(data.error || "Send failed."); return; }
+    const failed: SendFailure[] = data?.failures ?? [];
+    if (failed.length > 0) {
+      setResult(`Digest sent to ${data.sent} subscriber${data.sent !== 1 ? "s" : ""}, but ${failed.length} failed — see below.`);
+      setSendFailures(failed);
+    } else {
+      setResult(`Digest sent to ${data.sent} subscriber${data.sent !== 1 ? "s" : ""}.`);
+    }
     await fetchAll();
   };
 
