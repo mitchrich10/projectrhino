@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, X, Trash2, Eye, Send, Bell } from "lucide-react";
+import { Loader2, X, Trash2, Eye, Send, Bell, Search, Copy, Check } from "lucide-react";
 
 interface QueueItem {
   id: string;
@@ -19,6 +19,13 @@ interface SentDigest {
   subject: string | null;
   item_ids: string[];
   sent_at: string;
+}
+
+interface Subscription {
+  email: string;
+  subscribed: boolean;
+  created_at: string;
+  company: string;
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -48,6 +55,9 @@ const NotificationsPanel: FC = () => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [subscriberCount, setSubscriberCount] = useState(0);
   const [digests, setDigests] = useState<SentDigest[]>([]);
+  const [subs, setSubs] = useState<Subscription[]>([]);
+  const [subSearch, setSubSearch] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
