@@ -74,6 +74,7 @@ export type Database = {
       digests_sent: {
         Row: {
           batch_id: string
+          failures: Json | null
           id: string
           item_count: number
           item_ids: string[]
@@ -84,6 +85,7 @@ export type Database = {
         }
         Insert: {
           batch_id: string
+          failures?: Json | null
           id?: string
           item_count?: number
           item_ids?: string[]
@@ -94,6 +96,7 @@ export type Database = {
         }
         Update: {
           batch_id?: string
+          failures?: Json | null
           id?: string
           item_count?: number
           item_ids?: string[]
