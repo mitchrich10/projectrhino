@@ -244,7 +244,7 @@ serve(async (req: Request) => {
       (rows as PartnershipDetails[] | null)?.forEach((r) => partnerships.set(r.id, r));
     }
 
-    const subject = buildSubject(queueItems);
+    const subject = testEmail ? `[TEST] ${buildSubject(queueItems)}` : buildSubject(queueItems);
     const unsubscribeBase = `${SUPABASE_URL}/functions/v1/unsubscribe-notifications`;
 
     // ── Preview mode: return rendered HTML without sending ──
