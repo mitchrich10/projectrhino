@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, X, Trash2, Eye, Send, Bell, Search, Copy, Check } from "lucide-react";
+import { FunctionsHttpError } from "@supabase/supabase-js";
+import { Loader2, X, Trash2, Eye, Send, Bell, Search, Copy, Check, AlertTriangle } from "lucide-react";
 
 interface QueueItem {
   id: string;
@@ -18,7 +19,13 @@ interface SentDigest {
   item_count: number;
   subject: string | null;
   item_ids: string[];
+  failures: { email: string; reason: string }[] | null;
   sent_at: string;
+}
+
+interface SendFailure {
+  email: string;
+  reason: string;
 }
 
 interface Subscription {
