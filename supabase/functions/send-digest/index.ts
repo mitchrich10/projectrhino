@@ -343,12 +343,20 @@ serve(async (req: Request) => {
       item_count: queueItems.length,
       subject,
       item_ids: sentIds,
+      failures: failures.length > 0 ? failures : null,
       sent_by_admin_id: userData?.user?.id ?? null,
       sent_at: sentAt,
     });
 
     return new Response(
-      JSON.stringify({ ok: true, batch_id: batchId, sent, item_count: queueItems.length, failures }),
+      JSON.stringify({
+        ok: true,
+        batch_id: batchId,
+        sent,
+        failed: failures.length,
+        item_count: queueItems.length,
+        failures,
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
