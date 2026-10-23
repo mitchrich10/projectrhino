@@ -378,6 +378,9 @@ const NotificationsPanel: FC = () => {
                 <span>{d.item_count} item{d.item_count !== 1 ? "s" : ""}</span>
                 <span className="text-muted-foreground/50">·</span>
                 <span>sent to {d.subscriber_count} subscriber{d.subscriber_count !== 1 ? "s" : ""}</span>
+                {(d.failures?.length ?? 0) > 0 && (
+                  <span className="font-bold text-destructive">· {d.failures!.length} failed</span>
+                )}
                 <button onClick={() => openViewDigest(d)} className="ml-auto text-primary hover:underline font-semibold">view</button>
               </div>
             ))}
