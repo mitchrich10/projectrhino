@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, X, Trash2, Eye, Send, Bell } from "lucide-react";
+import { Loader2, X, Trash2, Eye, Send, Bell, Search, Copy, Check } from "lucide-react";
 
 interface QueueItem {
   id: string;
@@ -19,6 +19,13 @@ interface SentDigest {
   subject: string | null;
   item_ids: string[];
   sent_at: string;
+}
+
+interface Subscription {
+  email: string;
+  subscribed: boolean;
+  created_at: string;
+  company: string;
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -48,6 +55,9 @@ const NotificationsPanel: FC = () => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [subscriberCount, setSubscriberCount] = useState(0);
   const [digests, setDigests] = useState<SentDigest[]>([]);
+  const [subs, setSubs] = useState<Subscription[]>([]);
+  const [subSearch, setSubSearch] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const [previewHtml, setPreviewHtml] = useState<string | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -58,16 +68,28 @@ const NotificationsPanel: FC = () => {
   const [viewDigest, setViewDigest] = useState<{ digest: SentDigest; items: QueueItem[] } | null>(null);
 
   const fetchAll = async () => {
-    const [queueRes, subsRes, digestRes] = await Promise.all([
+    const [queueRes, subsRes, digestRes, allSubsRes, domainsRes] = await Promise.all([
       supabase.from("digest_queue").select("*").is("sent_at", null).order("queued_at", { ascending: false }),
       supabase.from("notification_subscriptions").select("id", { count: "exact", head: true }).eq("subscribed", true),
       supabase.from("digests_sent").select("*").order("sent_at", { ascending: false }).limit(20),
+      supabase.from("notification_subscriptions").select("email, subscribed, created_at").order("email", { ascending: true }),
+      supabase.from("approved_domains").select("domain, company_name"),
     ]);
     const queue = (queueRes.data as QueueItem[]) ?? [];
     setItems(queue);
     setSelected(new Set(queue.map((i) => i.id)));
     setSubscriberCount(subsRes.count ?? 0);
     setDigests((digestRes.data as SentDigest[]) ?? []);
+    const domainMap = new Map<string, string>();
+    ((domainsRes.data as { domain: string; company_name: string }[]) ?? []).forEach((d) =>
+      domainMap.set(d.domain.toLowerCase(), d.company_name),
+    );
+    setSubs(
+      ((allSubsRes.data as { email: string; subscribed: boolean; created_at: string }[]) ?? []).map((s) => ({
+        ...s,
+        company: domainMap.get(s.email.split("@")[1]?.toLowerCase() ?? "") ?? "—",
+      })),
+    );
     setLoading(false);
   };
 
@@ -121,6 +143,22 @@ const NotificationsPanel: FC = () => {
   };
 
   const selectedCount = selectedIds().length;
+
+  const subQuery = subSearch.trim().toLowerCase();
+  const visibleSubs = subs.filter(
+    (s) => !subQuery || s.email.toLowerCase().includes(subQuery) || s.company.toLowerCase().includes(subQuery),
+  );
+  const subscribedEmails = subs.filter((s) => s.subscribed).map((s) => s.email);
+
+  const copyEmails = async () => {
+    try {
+      await navigator.clipboard.writeText(subscribedEmails.join(", "));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard unavailable */
+    }
+  };
 
   if (loading) return (
     <div className="flex items-center gap-2 text-muted-foreground">
@@ -212,6 +250,64 @@ const NotificationsPanel: FC = () => {
             <span><span className="font-bold text-foreground">{subscriberCount}</span> active subscriber{subscriberCount !== 1 ? "s" : ""}</span>
           )}
         </div>
+      </section>
+
+      {/* Subscribers */}
+      <section>
+        <h3 className="text-xs font-black uppercase tracking-widest text-primary mb-4 pb-2 border-b border-border">
+          Subscribers ({subscriberCount})
+        </h3>
+
+        {subs.length === 0 ? (
+          <p className="text-xs text-muted-foreground">
+            No one has subscribed yet. People are added automatically the first time they sign in to the portal.
+          </p>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center gap-3 mb-3">
+              <div className="relative flex-1 min-w-[200px]">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  value={subSearch}
+                  onChange={(e) => setSubSearch(e.target.value)}
+                  placeholder="Search by company or email"
+                  className="w-full border border-border rounded-lg bg-background pl-9 pr-3 py-2 text-xs focus:outline-none focus:border-primary"
+                />
+              </div>
+              <button
+                onClick={copyEmails}
+                className="flex items-center gap-2 border border-border text-xs font-bold uppercase tracking-widest px-4 py-2 rounded hover:border-primary hover:text-primary transition-colors"
+              >
+                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? "Copied" : "Copy emails"}
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              {visibleSubs.map((s) => (
+                <div
+                  key={s.email}
+                  className="flex items-center gap-3 text-xs border border-border rounded-lg px-4 py-3 bg-secondary/10"
+                >
+                  <span className="font-bold text-foreground w-40 truncate" title={s.company}>{s.company}</span>
+                  <span className="text-muted-foreground flex-1 truncate">{s.email}</span>
+                  {!s.subscribed && (
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-amber-600 border border-amber-200 bg-amber-50 px-1.5 py-0.5 rounded">
+                      Unsubscribed
+                    </span>
+                  )}
+                  <span className="text-muted-foreground/70 whitespace-nowrap">{formatDate(s.created_at)}</span>
+                </div>
+              ))}
+              {visibleSubs.length === 0 && <p className="text-xs text-muted-foreground">No matches.</p>}
+            </div>
+
+            <p className="mt-4 text-xs text-muted-foreground">
+              People are added automatically the first time they sign in to the portal. Anyone can unsubscribe from
+              an update email — their row stays here marked as unsubscribed.
+            </p>
+          </>
+        )}
       </section>
 
       {/* Previous digests */}
