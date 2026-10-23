@@ -87,7 +87,7 @@ const NotificationsPanel: FC = () => {
     setItems(queue);
     setSelected(new Set(queue.map((i) => i.id)));
     setSubscriberCount(subsRes.count ?? 0);
-    setDigests((digestRes.data as SentDigest[]) ?? []);
+    setDigests((digestRes.data as unknown as SentDigest[]) ?? []);
     const domainMap = new Map<string, string>();
     ((domainsRes.data as { domain: string; company_name: string }[]) ?? []).forEach((d) =>
       domainMap.set(d.domain.toLowerCase(), d.company_name),
